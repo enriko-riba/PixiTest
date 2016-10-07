@@ -22,6 +22,11 @@
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="assets\Images\trees01.png" />
+    <Content Include="assets\Images\trees02.png" />
+    <Content Include="assets\Images\trees03.png" />
+    <Content Include="assets\Images\trees04.png" />
+    <Content Include="assets\Images\trees05.png" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
