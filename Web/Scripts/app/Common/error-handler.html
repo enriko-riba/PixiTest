@@ -1,0 +1,50 @@
+﻿<div data-bind="with:errorDialogModal">
+    <div data-bind="modal: IsVisible" class="modal fade" id="basicModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="modal-title text-center text-danger" id="myModalLabel" data-bind="text: Title"></h3>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div data-bind="if:xhrStatus">
+                            <div class="col-md-12">
+                                <h2 class="text-info">Status</h2>
+                                <h4 data-bind="text: xhrStatus"></h4>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <h2 class="text-info">Message</h2>
+                        </div>
+                        <div data-bind="foreach:message">
+                            <div class="col-md-12">
+                                <h4 data-bind="text: $data"></h4>
+                            </div>
+                        </div>
+                        <div data-bind="if:responseText">
+                            <div class="col-md-12">
+                                <h2 class="text-info">Response</h2>
+                                <h4 data-bind="text: responseText"></h4>
+                            </div>
+                        </div>
+                        <div data-bind="if:stackTrace">
+                            <div class="col-md-12" data-bind="visible:showStackTraceInfo">
+                                <h2>Stack trace</h2>
+                                <textarea style="padding:10px;margin:0 0 10px; font-size:13px; color:#333; word-break:break-all;display:block;
+                                                 word-wrap:break-word; background-color: #f5f5f5;border: 1px solid #ccc; border-radius: 5px; height:40vh;width:100%"
+                                          id="stackTrace" data-bind="text: stackTrace"></textarea>
+                                <button class="btn btn-info margin-left-med col-md-4" data-bind="click:CopyToClipboard">Copy to clipboard</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary pull-right" data-bind="text: SubmitText, click: SubmitClick"></button>
+                    <button type="button" class="btn btn-primary pull-left" data-bind="text: StackTraceText, click: ShowStackTrace, visible:ShowStackTraceBtn"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

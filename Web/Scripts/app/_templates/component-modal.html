@@ -1,0 +1,40 @@
+﻿<!--
+        Generic modal dialog
+
+        This component must be either bound to ModalDialog or to an object matching:
+        {
+            IsVisible       : boolean,
+            Title           : string,
+            BodyTemplate    : string (the name of the template rendered inside the modal body)
+
+
+            CloseText       : string
+            SubmitText      : string
+            SubmitClick     : function
+        }
+-->
+<div data-bind="visible: IsVisible" id="basicModal"> <!--tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true"-->
+    <div class="modal-dialog" data-bind="css: ModalCss">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title text-center" id="myModalLabel" data-bind="text: Title"></h4>
+            </div>
+            <div class="modal-body" data-bind="template: BodyTemplate">
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary pull-right" data-bind="text: SubmitText, click: SubmitClick, enable:CanSubmit"></button>
+
+                <div data-bind="if:CloseBtnVisible" class="inline-block inline-block-list pull-right">
+                    <button type="button" class="btn" data-dismiss="modal" data-bind="text: CloseText, click:LeftButtonClick"></button>
+                </div>
+
+                <div class="inline-block inline-block-list pull-right" data-bind="if:DeletebtnVisible">
+                    <button type="button" class="btn" data-bind="text: DeleteText, click: DeleteButtonClick"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
