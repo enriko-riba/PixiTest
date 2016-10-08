@@ -22,11 +22,22 @@
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="assets\Images\trees01.png" />
-    <Content Include="assets\Images\trees02.png" />
-    <Content Include="assets\Images\trees03.png" />
-    <Content Include="assets\Images\trees04.png" />
-    <Content Include="assets\Images\trees05.png" />
+    <Content Include="assets\Images\background\Canyon.png" />
+    <Content Include="assets\Images\background\Mountains.png" />
+    <Content Include="assets\Images\Gui\Button1.png" />
+    <Content Include="assets\Images\Gui\ListItem.png" />
+    <Content Include="assets\Images\loading.png" />
+    <Content Include="assets\Images\Npcs\bahamut.png" />
+    <Content Include="assets\Images\Npcs\barrissoffee.png" />
+    <Content Include="assets\Images\Npcs\ifrit.png" />
+    <Content Include="assets\Images\Npcs\leviathan.png" />
+    <Content Include="assets\Images\Npcs\phoenix.png" />
+    <Content Include="assets\Images\Npcs\tonberry.png" />
+    <Content Include="assets\Images\background\trees01.png" />
+    <Content Include="assets\Images\background\trees02.png" />
+    <Content Include="assets\Images\background\trees03.png" />
+    <Content Include="assets\Images\background\trees04.png" />
+    <Content Include="assets\Images\background\trees05.png" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
@@ -110,7 +121,17 @@
     <TypeScriptCompile Include="Scripts\app\Common\error-handler.ts" />
     <TypeScriptCompile Include="Scripts\app\Common\IOverlay.ts" />
     <TypeScriptCompile Include="Scripts\app\Common\overlay.ts" />
+    <TypeScriptCompile Include="Scripts\app\_engine\Button.ts" />
     <TypeScriptCompile Include="Scripts\app\Demo\Demo.ts" />
+    <TypeScriptCompile Include="Scripts\app\_engine\Dictionary.ts" />
+    <TypeScriptCompile Include="Scripts\app\Demo\Global.ts" />
+    <TypeScriptCompile Include="Scripts\app\Demo\InGameScene.ts" />
+    <TypeScriptCompile Include="Scripts\app\_engine\KeyboardMapper.ts" />
+    <TypeScriptCompile Include="Scripts\app\Demo\LoadMenuScene.ts" />
+    <TypeScriptCompile Include="Scripts\app\Demo\LoaderScene.ts" />
+    <TypeScriptCompile Include="Scripts\app\Demo\MainMenuScene.ts" />
+    <TypeScriptCompile Include="Scripts\app\_engine\Scene.ts" />
+    <TypeScriptCompile Include="Scripts\app\_engine\SceneManager.ts" />
     <TypeScriptCompile Include="Scripts\app\Home\Home.ts" />
     <TypeScriptCompile Include="Scripts\app\main.ts" />
     <TypeScriptCompile Include="Scripts\app\Route-not-found\Route-not-found.ts" />
