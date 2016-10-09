@@ -43,6 +43,8 @@ export class LoaderScene extends Scene {
         PIXI.loader.reset();
 
         var assets = [
+            "assets/images/hero.png",
+
             "assets/images/Gui/Button1.png",
             "assets/images/Gui/Listitem.png",
 

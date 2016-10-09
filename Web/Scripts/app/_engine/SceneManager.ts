@@ -1,8 +1,14 @@
 ﻿import { Scene } from "./Scene";
 
 export enum State {
-    GENERAL,
-    MAIN_MENU,
+    GLOBAL,
+    MENU,
+    IN_GAME,
+    CUSTOM1,
+    CUSTOM2,
+    CUSTOM3,
+    CUSTOM4,
+    CUSTOM5,
 }
 
 /**
@@ -16,8 +22,8 @@ export class SceneManager {
     private designWidth: number;
     private designHeight: number;
     private designedAspect: number;
-    private resizer: () => void;
-
+    private customResizer: () => void;
+    
     /**
     *   Creates a new SceneManager instance.
     *
@@ -29,7 +35,7 @@ export class SceneManager {
         this.designWidth = width;
         this.designHeight = height;
         this.designedAspect = this.designWidth / this.designHeight;
-        this.resizer = resizer;
+        this.customResizer = resizer;
            
         if (!options) {
             options = { antialias: true, backgroundColor: 0x012135 };
@@ -39,6 +45,7 @@ export class SceneManager {
         window.removeEventListener('resize', this.resizeHandler);
         window.addEventListener('resize', this.resizeHandler, true);
         this.render();
+        PIXI.utils.EventEmitter
     }
 
     /**
@@ -103,14 +110,16 @@ export class SceneManager {
         console.log("resize...");
 
         //  if there is a custom resizer invoke it and bail out
-        if (this.resizer) {
-            this.resizer();
+        if (this.customResizer) {
+            this.customResizer();
+            if (this.currentScene && this.currentScene.onResize) {
+                this.currentScene.onResize();
+            }
             return;
         }
 
 
         var maxWidth: number, maxHeight: number;
-
         var winAspect = window.innerWidth / window.innerHeight;
         maxWidth = this.designedAspect * window.innerHeight;
         maxHeight = window.innerHeight;
@@ -127,6 +136,9 @@ export class SceneManager {
         this.renderer.resize(maxWidth, maxHeight);
         if (this.currentScene) {
             this.currentScene.scale.set(maxWidth / this.designWidth);
+        }
+        if (this.currentScene && this.currentScene.onResize) {
+            this.currentScene.onResize();
         }
     }
 

@@ -57,6 +57,7 @@ define(["require", "exports", "app/_engine/Scene", "app/Demo/InGameScene", "app/
             console.log("Initializing...");
             PIXI.loader.reset();
             var assets = [
+                "assets/images/hero.png",
                 "assets/images/Gui/Button1.png",
                 "assets/images/Gui/Listitem.png",
                 "assets/images/Npcs/bahamut.png",

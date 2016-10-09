@@ -12,6 +12,7 @@ export class Scene extends PIXI.Container {
 
     public onActivate: () => void;
     public onUpdate: () => void;
+    public onResize: () => void;
 
 
     /**

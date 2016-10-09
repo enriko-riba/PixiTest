@@ -24,11 +24,9 @@ export class KeyboardMapper {
     *   Creates a new KeyboardMapper instance.
     */
     constructor() {
-
+        this.stateActions = {};
         this.keyboard = [];
         for (var i: number = 0; i < 256; i++) { this.keyboard[i] = false; }
-
-        this.initStateActions();
 
         document.addEventListener('keydown', this.keydown.bind(this), false);
         document.addEventListener('keyup', this.keyup.bind(this), false);
@@ -45,7 +43,7 @@ export class KeyboardMapper {
 
 
         //  global handlers
-        actions = this.stateActions[State.GENERAL];
+        actions = this.stateActions[State.GLOBAL];
         this.findHandlerAndInvoke(actions);
     }
 
@@ -69,41 +67,17 @@ export class KeyboardMapper {
         }
     }
 
-    private initStateActions() {
-        this.stateActions = {};
-
-        //this.stateActions[Global.State.SECTOR_TACTICAL] = [];            
-        //this.stateActions[Global.State.SECTOR_TACTICAL].push( /*W*/new KeyboardAction(87, 'Increase thrust', () => this.shipEngine.thrustIncrease(), false ));
-        //this.stateActions[Global.State.SECTOR_TACTICAL].push( /*S*/new KeyboardAction(83, 'Decrease thrust', () => this.shipEngine.thrustDecrease(), false ));
-        //this.stateActions[Global.State.SECTOR_TACTICAL].push( /*Q*/new KeyboardAction(81, 'Roll left', () => this.shipEngine.rollLeft(), false ));
-        //this.stateActions[Global.State.SECTOR_TACTICAL].push( /*E*/new KeyboardAction(69, 'Roll right', () => this.shipEngine.rollRight(), false ));
-        //this.stateActions[Global.State.SECTOR_TACTICAL].push( /*C*/new KeyboardAction(67, 'Next celestial', () => this.vm.playerControls.targetCelestialShift(1) ));
-        //this.stateActions[Global.State.SECTOR_TACTICAL].push( /*C + shift*/new KeyboardAction(67, 'Previous celestial', () => this.vm.playerControls.targetCelestialShift(-1), true, true));           
-        //this.stateActions[Global.State.SECTOR_TACTICAL].push( /*X*/new KeyboardAction(88, 'Autotarget celestial', () => this.shipEngine.autotargetCelestial() ));
-        //this.stateActions[Global.State.SECTOR_TACTICAL].push( /*1*/new KeyboardAction(49, '1/3 speed', () => this.shipEngine.speedControl(0.33333333) ));
-        //this.stateActions[Global.State.SECTOR_TACTICAL].push( /*2*/new KeyboardAction(50, '1/2 speed', () => this.shipEngine.speedControl(0.5) ));
-        //this.stateActions[Global.State.SECTOR_TACTICAL].push( /*3*/new KeyboardAction(51, 'Full speed', () => this.shipEngine.speedControl(1.0)));
-
-        //this.stateActions[Global.State.SECTOR_TACTICAL].push( /*T*/new KeyboardAction(84, 'Next target', () => this.vm.playerControls.targetTacticalShift(1)));
-        //this.stateActions[Global.State.SECTOR_TACTICAL].push( /*C + shift*/new KeyboardAction(84, 'Previous target', () => this.vm.playerControls.targetTacticalShift(-1), true, true));
-
-        //this.stateActions[Global.State.SECTOR_SHIP] = [];
-        //this.stateActions[Global.State.SECTOR_NAV_MAP] = [];
-
-
-        //this.stateActions[Global.State.DOCKED_MISSIONS] = [];
-        //this.stateActions[Global.State.DOCKED_MODULES] = [];
-        //this.stateActions[Global.State.DOCKED_REPAIR] = [];
-        //this.stateActions[Global.State.DOCKED_TRADE] = [];
-
-    }
-
     private keydown(e/*: JQueryEventObject*/) {
         this.keyboard[e.which] = true;
     }
 
     private keyup(e/*: JQueryEventObject*/) {
         this.keyboard[e.which] = false;
+    }
+
+    public AddKeyboardActionHandler = (action: KeyboardAction, state: State) => {
+        if (!this.stateActions[state]) this.stateActions[state] = [];
+        this.stateActions[state].push(action);
     }
 }
 
