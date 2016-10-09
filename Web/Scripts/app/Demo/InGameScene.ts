@@ -1,14 +1,16 @@
 ﻿import { Scene } from "app/_engine/Scene";
+import { State } from "app/_engine/SceneManager";
+import { Parallax } from "app/_engine/Parallax";
+import { KeyboardAction } from "app/_engine/KeyboardMapper";
 import * as Global from "app/Demo/Global";
-
 
 /**
 *   Load in game scene.
 */
 export class InGameScene extends Scene {
 
-    private backgroundNear = new PIXI.Container();
-    private backgroundFar = new PIXI.Container();
+    private backgroundNear : Parallax;
+    private backgroundFar : Parallax;
     private hero: PIXI.Sprite;
     private entities: Array<PIXI.Sprite> = [];
 
@@ -22,25 +24,57 @@ export class InGameScene extends Scene {
 
     private setup() {
         this.BackGroundColor = 0x1099bb;
+        Global.kbd.AddKeyboardActionHandler(new KeyboardAction(65, 'Move left', () => this.MoveLeft(), false), State.IN_GAME);
+        Global.kbd.AddKeyboardActionHandler(new KeyboardAction(68, 'Move right', () => this.MoveRight(), false), State.IN_GAME);
         //var hud = new Hud();
         //this.HudOverlay = hud;
 
         var resources = PIXI.loader.resources;
 
-        //  setup background
-        this.addChild(this.backgroundFar);
+        //-----------------------------
+        //  setup backgrounds
+        //-----------------------------
         var t = resources["assets/images/background/Mountains.png"].texture;
-        var tilingSprite = new PIXI.extras.TilingSprite(t, Global.SCENE_WIDTH*10, Global.SCENE_HEIGHT);
-        this.backgroundFar.addChild(tilingSprite);
+        this.backgroundFar = new Parallax([t]);
+        this.addChild(this.backgroundFar);
 
-        this.addChild(this.backgroundNear);
-        this.backgroundNear.position.y = 30;
+        var nearTextures : Array<PIXI.Texture> = [];        
         for (var i :number = 0; i < 5; i++) {
             var name = `assets/images/background/trees0${i + 1}.png`;
-            let tree = new PIXI.Sprite(resources[name].texture);
-            tree.position.x = i * 800;
-            this.backgroundNear.addChild(tree);
-        }       
+            nearTextures.push(resources[name].texture);
+        }    
+        this.backgroundNear = new Parallax(nearTextures); 
+        this.backgroundNear.position.y = 10;  
+        this.addChild(this.backgroundNear);
+
+        //-----------------------------
+        //  setup hero
+        //-----------------------------
+        this.hero = new PIXI.Sprite(resources["assets/images/hero.png"].texture);
+        this.hero.anchor.set(0.5);
+        this.hero.position.set(Global.sceneMngr.Renderer.width / 2, Global.sceneMngr.Renderer.height - 50);
+        this.addChild(this.hero);
+    }
+
+    private MoveLeft = () => {
+        this.backgroundFar.position.x += 1.0;
+        this.backgroundNear.position.x += 1.85;
+    }
+
+    private MoveRight = () => {
+        this.backgroundFar.position.x -= 1.0;
+        this.backgroundNear.position.x -= 1.85;
+    }
+
+    public onResize = () => {
+        this.hero.position.set(Global.sceneMngr.Renderer.width / 2, Global.sceneMngr.Renderer.height - this.hero.height - 10);
+        var vps = new PIXI.Point(Global.sceneMngr.Renderer.width, Global.sceneMngr.Renderer.height);
+        this.backgroundNear.ViewPortSize = vps;
+        this.backgroundFar.ViewPortSize = vps;
+    }
+
+    public onUpdate = () => {
+        Global.kbd.update(State.IN_GAME);
     }
 }
 

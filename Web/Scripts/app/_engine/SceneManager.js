@@ -1,8 +1,14 @@
 define(["require", "exports"], function (require, exports) {
     "use strict";
     (function (State) {
-        State[State["GENERAL"] = 0] = "GENERAL";
-        State[State["MAIN_MENU"] = 1] = "MAIN_MENU";
+        State[State["GLOBAL"] = 0] = "GLOBAL";
+        State[State["MENU"] = 1] = "MENU";
+        State[State["IN_GAME"] = 2] = "IN_GAME";
+        State[State["CUSTOM1"] = 3] = "CUSTOM1";
+        State[State["CUSTOM2"] = 4] = "CUSTOM2";
+        State[State["CUSTOM3"] = 5] = "CUSTOM3";
+        State[State["CUSTOM4"] = 6] = "CUSTOM4";
+        State[State["CUSTOM5"] = 7] = "CUSTOM5";
     })(exports.State || (exports.State = {}));
     var State = exports.State;
     /**
@@ -22,8 +28,11 @@ define(["require", "exports"], function (require, exports) {
             this.resizeHandler = function () {
                 console.log("resize...");
                 //  if there is a custom resizer invoke it and bail out
-                if (_this.resizer) {
-                    _this.resizer();
+                if (_this.customResizer) {
+                    _this.customResizer();
+                    if (_this.currentScene && _this.currentScene.onResize) {
+                        _this.currentScene.onResize();
+                    }
                     return;
                 }
                 var maxWidth, maxHeight;
@@ -43,6 +52,9 @@ define(["require", "exports"], function (require, exports) {
                 if (_this.currentScene) {
                     _this.currentScene.scale.set(maxWidth / _this.designWidth);
                 }
+                if (_this.currentScene && _this.currentScene.onResize) {
+                    _this.currentScene.onResize();
+                }
             };
             this.render = function () {
                 requestAnimationFrame(_this.render);
@@ -56,7 +68,7 @@ define(["require", "exports"], function (require, exports) {
             this.designWidth = width;
             this.designHeight = height;
             this.designedAspect = this.designWidth / this.designHeight;
-            this.resizer = resizer;
+            this.customResizer = resizer;
             if (!options) {
                 options = { antialias: true, backgroundColor: 0x012135 };
             }
@@ -65,6 +77,7 @@ define(["require", "exports"], function (require, exports) {
             window.removeEventListener('resize', this.resizeHandler);
             window.addEventListener('resize', this.resizeHandler, true);
             this.render();
+            PIXI.utils.EventEmitter;
         }
         Object.defineProperty(SceneManager.prototype, "Renderer", {
             /**
