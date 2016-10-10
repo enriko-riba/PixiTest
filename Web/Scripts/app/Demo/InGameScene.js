@@ -3,7 +3,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-define(["require", "exports", "app/_engine/Scene", "app/_engine/SceneManager", "app/_engine/Parallax", "app/_engine/KeyboardMapper", "app/Demo/Global"], function (require, exports, Scene_1, SceneManager_1, Parallax_1, KeyboardMapper_1, Global) {
+define(["require", "exports", "app/_engine/Scene", "app/_engine/SceneManager", "app/_engine/Parallax", "app/_engine/KeyboardMapper", "app/_engine/AnimatedSprite", "app/Demo/Global"], function (require, exports, Scene_1, SceneManager_1, Parallax_1, KeyboardMapper_1, AnimatedSprite_1, Global) {
     "use strict";
     /**
     *   Load in game scene.
@@ -20,10 +20,12 @@ define(["require", "exports", "app/_engine/Scene", "app/_engine/SceneManager", "
             this.MoveLeft = function () {
                 _this.backgroundFar.ViewPort.x += 1.0;
                 _this.backgroundNear.ViewPort.x += 1.85;
+                _this.hero.PlayAnimation("left");
             };
             this.MoveRight = function () {
                 _this.backgroundFar.ViewPort.x -= 1.0;
                 _this.backgroundNear.ViewPort.x -= 1.85;
+                _this.hero.PlayAnimation("right");
             };
             this.onResize = function () {
                 _this.hero.position.set(Global.sceneMngr.Renderer.width / 2, Global.SCENE_HEIGHT - 100);
@@ -33,6 +35,7 @@ define(["require", "exports", "app/_engine/Scene", "app/_engine/SceneManager", "
             };
             this.onUpdate = function () {
                 Global.kbd.update(SceneManager_1.State.IN_GAME);
+                _this.hero.update(16.7);
             };
             this.setup();
         }
@@ -61,10 +64,14 @@ define(["require", "exports", "app/_engine/Scene", "app/_engine/SceneManager", "
             //-----------------------------
             //  setup hero
             //-----------------------------
-            this.hero = new PIXI.Sprite(resources["assets/images/hero.png"].texture);
-            this.hero.anchor.set(0.5);
+            this.hero = new AnimatedSprite_1.AnimatedSprite("assets/images/hero.png", 32, 32); //new PIXI.Sprite(resources["assets/images/hero.png"].texture);
+            this.hero.addAnimations(new AnimatedSprite_1.AnimationSequence("right", [12, 13, 14, 15, 16, 17]));
+            this.hero.addAnimations(new AnimatedSprite_1.AnimationSequence("left", [6, 7, 8, 9, 10, 11]));
+            this.hero.addAnimations(new AnimatedSprite_1.AnimationSequence("idle", [1, 7, 10, 9, 6, 3]));
+            //this.hero.anchor.set(0.5);
             this.hero.position.set(Global.sceneMngr.Renderer.width / 2, Global.sceneMngr.Renderer.height - 120);
             this.addChild(this.hero);
+            this.hero.PlayAnimation("idle");
         };
         return InGameScene;
     }(Scene_1.Scene));

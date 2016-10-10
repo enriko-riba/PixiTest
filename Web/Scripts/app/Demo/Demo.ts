@@ -24,7 +24,7 @@ class DemoVM {
         Global.sceneMngr.AddScene(new LoaderScene());
         Global.sceneMngr.ActivateScene("Loader");
     }
-
+     
     private customResizer = () => {
         const HEADER_HEIGHT = 50;
         const FOOTER_HEIGHT = 50;
