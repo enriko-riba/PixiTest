@@ -51,9 +51,10 @@ define(["require", "exports"], function (require, exports) {
                 _this.renderer.resize(maxWidth, maxHeight);
                 if (_this.currentScene) {
                     _this.currentScene.scale.set(maxWidth / _this.designWidth);
-                }
-                if (_this.currentScene && _this.currentScene.onResize) {
-                    _this.currentScene.onResize();
+                    //   trigger scene onResize
+                    if (_this.currentScene.onResize) {
+                        _this.currentScene.onResize();
+                    }
                 }
             };
             this.render = function () {

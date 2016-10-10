@@ -34,7 +34,7 @@ export class InGameScene extends Scene {
         //-----------------------------
         //  setup backgrounds
         //-----------------------------
-        var t = resources["assets/images/background/Mountains.png"].texture;
+        var t = resources["assets/images/background/Canyon.png"].texture;
         this.backgroundFar = new Parallax([t]);
         this.addChild(this.backgroundFar);
 
@@ -44,7 +44,7 @@ export class InGameScene extends Scene {
             nearTextures.push(resources[name].texture);
         }    
         this.backgroundNear = new Parallax(nearTextures); 
-        this.backgroundNear.position.y = 10;  
+        this.backgroundNear.position.y = Global.SCENE_HEIGHT - this.backgroundNear.height-5;  
         this.addChild(this.backgroundNear);
 
         //-----------------------------
@@ -52,7 +52,7 @@ export class InGameScene extends Scene {
         //-----------------------------
         this.hero = new PIXI.Sprite(resources["assets/images/hero.png"].texture);
         this.hero.anchor.set(0.5);
-        this.hero.position.set(Global.sceneMngr.Renderer.width / 2, Global.sceneMngr.Renderer.height - 50);
+        this.hero.position.set(Global.sceneMngr.Renderer.width / 2, Global.sceneMngr.Renderer.height - 120);
         this.addChild(this.hero);
     }
 
@@ -67,7 +67,7 @@ export class InGameScene extends Scene {
     }
 
     public onResize = () => {
-        this.hero.position.set(this.scale.x * Global.SCENE_WIDTH / 2, this.scale.y * Global.SCENE_HEIGHT - this.hero.height - 10);
+        this.hero.position.set(Global.sceneMngr.Renderer.width / 2, Global.SCENE_HEIGHT - 100);
         var vps = new PIXI.Point(Global.sceneMngr.Renderer.width, Global.sceneMngr.Renderer.height);
         this.backgroundNear.ViewPortSize = vps;
         this.backgroundFar.ViewPortSize = vps;

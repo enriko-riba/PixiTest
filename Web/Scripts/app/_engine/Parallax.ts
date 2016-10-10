@@ -43,8 +43,9 @@ export class Parallax extends PIXI.Container {
 
     private recalculatePosition = () => {
         console.log("recalculating parallax viewport... ");
-        this.calcHorizontalTextures();
-        //  calculate how many textures to take 
+
+        //  offset from 0 
+        var startX = -(this.viewPort.x % this.totalTextureWidth);
 
         if (this.viewPortSize.x <= this.totalTextureWidth) {
         }

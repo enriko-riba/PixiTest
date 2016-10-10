@@ -38,10 +38,13 @@
             <div class="col-xs-12" data-bind="component: ActiveRoute().component"></div>
         </div>
     </div>
-    <footer class="footer">
-        <div class="container">
-            <p>Demo application build <span data-bind="text: build_version"></span>, SPA framework <span data-bind="text: spa_version"></span>, &copy; 2015 - 2016 </p>
-        </div>
-    </footer>
+
+    <div data-bind="visible: ActiveRoute().href == '#home'">
+        <footer class="footer">
+            <div class="container">
+                <p>Demo application build <span data-bind="text: build_version"></span>, SPA framework <span data-bind="text: spa_version"></span>, &copy; 2015 - 2016 </p>
+            </div>
+        </footer>
+    </div>
 </body>
 </html>
