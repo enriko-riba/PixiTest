@@ -51,7 +51,7 @@ export class InGameScene extends Scene {
         //-----------------------------
         //  setup hero
         //-----------------------------
-        this.hero = new AnimatedSprite("assets/images/hero.png", 32, 32);//new PIXI.Sprite(resources["assets/images/hero.png"].texture);
+        this.hero = new AnimatedSprite();//new PIXI.Sprite(resources["assets/images/hero.png"].texture);
         this.hero.addAnimations(new AnimationSequence("right", [12, 13, 14, 15, 16, 17]));
         this.hero.addAnimations(new AnimationSequence("left", [6, 7, 8, 9, 10, 11]));
         this.hero.addAnimations(new AnimationSequence("idle", [1, 7, 10, 9, 6, 3]));

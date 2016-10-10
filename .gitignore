@@ -252,3 +252,4 @@ paket-files/
 *.sln.iml
 
 *.map
+Web/Scripts/app/**/*.js
