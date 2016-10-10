@@ -2,6 +2,7 @@
 import { State } from "app/_engine/SceneManager";
 import { Parallax } from "app/_engine/Parallax";
 import { KeyboardAction } from "app/_engine/KeyboardMapper";
+import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
 import * as Global from "app/Demo/Global";
 
 /**
@@ -11,7 +12,7 @@ export class InGameScene extends Scene {
 
     private backgroundNear : Parallax;
     private backgroundFar : Parallax;
-    private hero: PIXI.Sprite;
+    private hero: AnimatedSprite;//PIXI.Sprite;
     private entities: Array<PIXI.Sprite> = [];
 
     /**
@@ -50,20 +51,26 @@ export class InGameScene extends Scene {
         //-----------------------------
         //  setup hero
         //-----------------------------
-        this.hero = new PIXI.Sprite(resources["assets/images/hero.png"].texture);
-        this.hero.anchor.set(0.5);
+        this.hero = new AnimatedSprite("assets/images/hero.png", 32, 32);//new PIXI.Sprite(resources["assets/images/hero.png"].texture);
+        this.hero.addAnimations(new AnimationSequence("right", [12, 13, 14, 15, 16, 17]));
+        this.hero.addAnimations(new AnimationSequence("left", [6, 7, 8, 9, 10, 11]));
+        this.hero.addAnimations(new AnimationSequence("idle", [1, 7, 10, 9, 6, 3]));
+        //this.hero.anchor.set(0.5);
         this.hero.position.set(Global.sceneMngr.Renderer.width / 2, Global.sceneMngr.Renderer.height - 120);
         this.addChild(this.hero);
+        this.hero.PlayAnimation("idle");
     }
 
     private MoveLeft = () => {
         this.backgroundFar.ViewPort.x += 1.0;
         this.backgroundNear.ViewPort.x += 1.85;
+        this.hero.PlayAnimation("left");
     }
 
     private MoveRight = () => {
         this.backgroundFar.ViewPort.x -= 1.0;
         this.backgroundNear.ViewPort.x -= 1.85;
+        this.hero.PlayAnimation("right");
     }
 
     public onResize = () => {
@@ -75,6 +82,7 @@ export class InGameScene extends Scene {
 
     public onUpdate = () => {
         Global.kbd.update(State.IN_GAME);
+        this.hero.update(16.7);
     }
 }
 
