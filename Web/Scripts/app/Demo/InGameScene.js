@@ -18,12 +18,12 @@ define(["require", "exports", "app/_engine/Scene", "app/_engine/SceneManager", "
             _super.call(this, "InGame");
             this.entities = [];
             this.MoveLeft = function () {
-                _this.backgroundFar.position.x += 1.0;
-                _this.backgroundNear.position.x += 1.85;
+                _this.backgroundFar.ViewPort.x += 1.0;
+                _this.backgroundNear.ViewPort.x += 1.85;
             };
             this.MoveRight = function () {
-                _this.backgroundFar.position.x -= 1.0;
-                _this.backgroundNear.position.x -= 1.85;
+                _this.backgroundFar.ViewPort.x -= 1.0;
+                _this.backgroundNear.ViewPort.x -= 1.85;
             };
             this.onResize = function () {
                 _this.hero.position.set(_this.scale.x * Global.SCENE_WIDTH / 2, _this.scale.y * Global.SCENE_HEIGHT - _this.hero.height - 10);
