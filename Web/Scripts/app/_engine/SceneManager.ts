@@ -136,9 +136,11 @@ export class SceneManager {
         this.renderer.resize(maxWidth, maxHeight);
         if (this.currentScene) {
             this.currentScene.scale.set(maxWidth / this.designWidth);
-        }
-        if (this.currentScene && this.currentScene.onResize) {
-            this.currentScene.onResize();
+
+            //   trigger scene onResize
+            if (this.currentScene.onResize) {
+                this.currentScene.onResize();
+            }
         }
     }
 

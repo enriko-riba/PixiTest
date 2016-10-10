@@ -29,7 +29,7 @@ class DemoVM {
         const HEADER_HEIGHT = 50;
         const FOOTER_HEIGHT = 50;
         var w = window.innerWidth;
-        var h = window.innerHeight - HEADER_HEIGHT - FOOTER_HEIGHT;
+        var h = window.innerHeight - HEADER_HEIGHT;
 
         var ratio = Math.min(w / Global.SCENE_WIDTH, h / Global.SCENE_HEIGHT);
         Global.sceneMngr.CurrentScene.scale.set(ratio);

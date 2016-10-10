@@ -1,7 +1,7 @@
 define(["require", "exports", "app/_engine/KeyboardMapper"], function (require, exports, KeyboardMapper_1) {
     "use strict";
-    exports.SCENE_WIDTH = 800;
-    exports.SCENE_HEIGHT = 600;
+    exports.SCENE_WIDTH = 1366;
+    exports.SCENE_HEIGHT = 768;
     exports.BTN_WIDTH = 100;
     exports.BTN_HEIGHT = 48;
     exports.BTN_STYLE = {

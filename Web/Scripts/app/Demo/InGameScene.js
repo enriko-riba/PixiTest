@@ -26,7 +26,7 @@ define(["require", "exports", "app/_engine/Scene", "app/_engine/SceneManager", "
                 _this.backgroundNear.ViewPort.x -= 1.85;
             };
             this.onResize = function () {
-                _this.hero.position.set(_this.scale.x * Global.SCENE_WIDTH / 2, _this.scale.y * Global.SCENE_HEIGHT - _this.hero.height - 10);
+                _this.hero.position.set(Global.sceneMngr.Renderer.width / 2, Global.SCENE_HEIGHT - 100);
                 var vps = new PIXI.Point(Global.sceneMngr.Renderer.width, Global.sceneMngr.Renderer.height);
                 _this.backgroundNear.ViewPortSize = vps;
                 _this.backgroundFar.ViewPortSize = vps;
@@ -47,7 +47,7 @@ define(["require", "exports", "app/_engine/Scene", "app/_engine/SceneManager", "
             //-----------------------------
             //  setup backgrounds
             //-----------------------------
-            var t = resources["assets/images/background/Mountains.png"].texture;
+            var t = resources["assets/images/background/Canyon.png"].texture;
             this.backgroundFar = new Parallax_1.Parallax([t]);
             this.addChild(this.backgroundFar);
             var nearTextures = [];
@@ -56,14 +56,14 @@ define(["require", "exports", "app/_engine/Scene", "app/_engine/SceneManager", "
                 nearTextures.push(resources[name].texture);
             }
             this.backgroundNear = new Parallax_1.Parallax(nearTextures);
-            this.backgroundNear.position.y = 10;
+            this.backgroundNear.position.y = Global.SCENE_HEIGHT - this.backgroundNear.height - 5;
             this.addChild(this.backgroundNear);
             //-----------------------------
             //  setup hero
             //-----------------------------
             this.hero = new PIXI.Sprite(resources["assets/images/hero.png"].texture);
             this.hero.anchor.set(0.5);
-            this.hero.position.set(Global.sceneMngr.Renderer.width / 2, Global.sceneMngr.Renderer.height - 50);
+            this.hero.position.set(Global.sceneMngr.Renderer.width / 2, Global.sceneMngr.Renderer.height - 120);
             this.addChild(this.hero);
         };
         return InGameScene;

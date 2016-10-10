@@ -21,8 +21,8 @@ define(["require", "exports", "app/Demo/Global"], function (require, exports, Gl
             this.totalTextureHeight = 0;
             this.recalculatePosition = function () {
                 console.log("recalculating parallax viewport... ");
-                _this.calcHorizontalTextures();
-                //  calculate how many textures to take 
+                //  offset from 0 
+                var startX = -(_this.viewPort.x % _this.totalTextureWidth);
                 if (_this.viewPortSize.x <= _this.totalTextureWidth) {
                 }
             };
