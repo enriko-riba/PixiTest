@@ -67,7 +67,7 @@ export class InGameScene extends Scene {
     }
 
     public onResize = () => {
-        this.hero.position.set(Global.sceneMngr.Renderer.width / 2, Global.sceneMngr.Renderer.height - this.hero.height - 10);
+        this.hero.position.set(this.scale.x * Global.SCENE_WIDTH / 2, this.scale.y * Global.SCENE_HEIGHT - this.hero.height - 10);
         var vps = new PIXI.Point(Global.sceneMngr.Renderer.width, Global.sceneMngr.Renderer.height);
         this.backgroundNear.ViewPortSize = vps;
         this.backgroundFar.ViewPortSize = vps;
