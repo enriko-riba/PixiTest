@@ -57,13 +57,13 @@ export class InGameScene extends Scene {
     }
 
     private MoveLeft = () => {
-        this.backgroundFar.position.x += 1.0;
-        this.backgroundNear.position.x += 1.85;
+        this.backgroundFar.ViewPort.x += 1.0;
+        this.backgroundNear.ViewPort.x += 1.85;
     }
 
     private MoveRight = () => {
-        this.backgroundFar.position.x -= 1.0;
-        this.backgroundNear.position.x -= 1.85;
+        this.backgroundFar.ViewPort.x -= 1.0;
+        this.backgroundNear.ViewPort.x -= 1.85;
     }
 
     public onResize = () => {
