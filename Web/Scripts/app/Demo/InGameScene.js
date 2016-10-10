@@ -26,7 +26,7 @@ define(["require", "exports", "app/_engine/Scene", "app/_engine/SceneManager", "
                 _this.backgroundNear.position.x -= 1.85;
             };
             this.onResize = function () {
-                _this.hero.position.set(Global.sceneMngr.Renderer.width / 2, Global.sceneMngr.Renderer.height - _this.hero.height - 10);
+                _this.hero.position.set(_this.scale.x * Global.SCENE_WIDTH / 2, _this.scale.y * Global.SCENE_HEIGHT - _this.hero.height - 10);
                 var vps = new PIXI.Point(Global.sceneMngr.Renderer.width, Global.sceneMngr.Renderer.height);
                 _this.backgroundNear.ViewPortSize = vps;
                 _this.backgroundFar.ViewPortSize = vps;

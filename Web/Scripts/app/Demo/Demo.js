@@ -1,4 +1,4 @@
-define(["require", "exports", "app/_engine/SceneManager", "app/Demo/Global", "app/Demo/LoaderScene"], function (require, exports, SceneManager_1, Global, LoaderScene_1) {
+define(["require", "exports", "app/_engine/SceneManager", "app/Demo/LoaderScene", "app/Demo/Global"], function (require, exports, SceneManager_1, LoaderScene_1, Global) {
     "use strict";
     var DemoVM = (function () {
         function DemoVM() {

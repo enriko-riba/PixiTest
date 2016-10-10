@@ -1,7 +1,7 @@
 ﻿import * as ko from "knockout";
 import { SceneManager } from "app/_engine/SceneManager";
-import * as Global from "app/Demo/Global";
 import { LoaderScene } from "app/Demo/LoaderScene";
+import * as Global from "app/Demo/Global";
 
 class DemoVM {
 
