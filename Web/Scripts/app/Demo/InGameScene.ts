@@ -27,6 +27,7 @@ export class InGameScene extends Scene {
         this.BackGroundColor = 0x1099bb;
         Global.kbd.AddKeyboardActionHandler(new KeyboardAction(65, 'Move left', () => this.MoveLeft(), false), State.IN_GAME);
         Global.kbd.AddKeyboardActionHandler(new KeyboardAction(68, 'Move right', () => this.MoveRight(), false), State.IN_GAME);
+        Global.kbd.AddKeyboardActionHandler(new KeyboardAction(83, 'Stop', () => this.MoveIdle(), false), State.IN_GAME);
         //var hud = new Hud();
         //this.HudOverlay = hud;
 
@@ -52,25 +53,23 @@ export class InGameScene extends Scene {
         //  setup hero
         //-----------------------------
         this.hero = new AnimatedSprite();//new PIXI.Sprite(resources["assets/images/hero.png"].texture);
-        this.hero.addAnimations(new AnimationSequence("right", [12, 13, 14, 15, 16, 17]));
-        this.hero.addAnimations(new AnimationSequence("left", [6, 7, 8, 9, 10, 11]));
-        this.hero.addAnimations(new AnimationSequence("idle", [1, 7, 10, 9, 6, 3]));
-        //this.hero.anchor.set(0.5);
+        this.hero.addAnimations(new AnimationSequence("right", "assets/images/hero.png", [12, 13, 14, 15, 16, 17], 32, 32));
+        this.hero.addAnimations(new AnimationSequence("left", "assets/images/hero.png", [6, 7, 8, 9, 10, 11], 32, 32));
+        this.hero.addAnimations(new AnimationSequence("idle", "assets/images/hero.png", [28, 7, 10, 9, 6, 3], 32, 32));        
         this.hero.position.set(Global.sceneMngr.Renderer.width / 2, Global.sceneMngr.Renderer.height - 120);
+        this.hero.scale.set(2);
         this.addChild(this.hero);
         this.hero.PlayAnimation("idle");
     }
 
     private MoveLeft = () => {
-        this.backgroundFar.ViewPort.x += 1.0;
-        this.backgroundNear.ViewPort.x += 1.85;
         this.hero.PlayAnimation("left");
     }
-
     private MoveRight = () => {
-        this.backgroundFar.ViewPort.x -= 1.0;
-        this.backgroundNear.ViewPort.x -= 1.85;
         this.hero.PlayAnimation("right");
+    }
+    private MoveIdle = () => {
+        this.hero.PlayAnimation("idle");
     }
 
     public onResize = () => {
@@ -82,7 +81,6 @@ export class InGameScene extends Scene {
 
     public onUpdate = () => {
         Global.kbd.update(State.IN_GAME);
-        this.hero.update(16.7);
     }
 }
 
