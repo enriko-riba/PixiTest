@@ -5,33 +5,26 @@ export class AnimatedSprite extends PIXI.Container {
         super();
         
         this.Fps = 12;
-        this.sprite = new PIXI.Sprite();
-        this.sprite.anchor.set(0.5);
-        this.addChild(this.sprite);
     }
 
-    private textureName: string;
-    private sprite : PIXI.Sprite;
-    private frameWidth: number;
-    private frameHeight: number
     private fps: number = 0;
     private animations = new Dictionary<AnimationSequence>();
     private isPlaying: boolean = false;
-    private frame: number = 0;
     private currentSequence: AnimationSequence;
-    private currentElapsed: number;
-    private frameTime: number;
 
     public addAnimations(...sequences: Array<AnimationSequence>) {
         sequences.forEach((seq, idx, arr) => {
-            this.animations.set(seq.Name, seq);
+            this.animations.set(seq.sequenceName, seq);
         });
     }
 
     public PlayAnimation(name: string) {
-        if (!this.currentSequence || this.currentSequence.Name !== name) {
+        if (!this.currentSequence || this.currentSequence.sequenceName !== name) {
             this.currentSequence = this.animations.get(name);
             this.resetAnimation();
+            this.addChild(this.currentSequence.Clip);
+            this.currentSequence.Clip.animationSpeed = 0.05;
+            this.currentSequence.Clip.play();
         }
     }
 
@@ -44,57 +37,39 @@ export class AnimatedSprite extends PIXI.Container {
     }
     public set Fps(fps: number) {
         this.fps = fps;
-        this.frameTime = 1000 / fps; 
-    }
-
-    public update = (deltaMilliseconds: number) => {
-
-        if (this.isPlaying && this.currentSequence) {
-
-            //  add elapsed
-            this.currentElapsed += deltaMilliseconds;
-
-            if (this.currentElapsed > this.frameTime) {
-                this.currentElapsed -= this.frameTime;
-
-                //  advance frames
-                if (++this.frame >= this.currentSequence.FrameCount) {
-                    this.frame = 0;
-                }
-
-                this.updateFrameTexture();
-            }            
-        }
-    }
-
-    private updateFrameTexture() {
-            var atlasTexture = PIXI.loader.resources[this.textureName].texture;
-            var xFrames = Math.floor(atlasTexture.baseTexture.width / this.frameWidth);
-            var yFrames = Math.floor(atlasTexture.baseTexture.height / this.frameHeight);
-
-            var animationFrame = this.currentSequence.frames[this.frame];
-            var y = Math.floor(animationFrame / yFrames);
-            var x = animationFrame % xFrames;
-
-            var rect = new PIXI.Rectangle(x * this.frameWidth, y * this.frameHeight, this.frameWidth, this.frameHeight);
-            this.sprite = new PIXI.Sprite(atlasTexture);
-            this.sprite.anchor.set(0.5);
-            this.removeChildren();
-            this.addChild(this.sprite);
-            this.sprite.texture.frame = rect;
     }
 
     private resetAnimation() {
-        this.frame = 0;
-        this.currentElapsed = 0;
         this.isPlaying = true;
-        this.updateFrameTexture();
+        this.removeChildren();
+        if (this.currentSequence) {
+            this.currentSequence.Clip.stop();
+        }
     }
 }
 
 export class AnimationSequence  {
-    constructor(public Name: string, public frames: Array<number> = []) {
+    constructor(public sequenceName: string, private textureName:string, private frames: Array<number> = [], frameWidth : number, frameHeight : number) {
+        var base: PIXI.BaseTexture = PIXI.utils.TextureCache[textureName];
+        var xFrames = Math.floor(base.width / frameWidth);
+        var yFrames = Math.floor(base.height / frameHeight);
+        var textures = [];
+        frames.forEach((frame, idx, arr) => {
+            var texture = new PIXI.Texture(base);            
+            var y = Math.floor(frame / xFrames);
+            var x = frame % xFrames;            
+            var rect = new PIXI.Rectangle(x * frameWidth, y * frameHeight, frameWidth, frameHeight);
+            console.log('clip: ' + sequenceName + ', frame: ' + frame + ', rect: {' + rect.x + ', ' + + rect.y + '}');
+            texture.frame = rect;
+            textures.push(texture);
+        });
+        this.clip = new PIXI.extras.MovieClip(textures);        
+    }
 
+    private clip: PIXI.extras.MovieClip = null;  
+
+    public get Clip() {
+        return this.clip;
     }
 
     public get FrameCount() {
