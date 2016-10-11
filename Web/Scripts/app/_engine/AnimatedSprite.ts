@@ -2,12 +2,10 @@
 
 export class AnimatedSprite extends PIXI.Container {
     constructor() {
-        super();
-        
-        this.Fps = 12;
+        super();        
     }
 
-    private fps: number = 0;
+    private fps: number = 12;
     private animations = new Dictionary<AnimationSequence>();
     private isPlaying: boolean = false;
     private currentSequence: AnimationSequence;
