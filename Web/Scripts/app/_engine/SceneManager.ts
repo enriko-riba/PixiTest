@@ -23,7 +23,9 @@ export class SceneManager {
     private designHeight: number;
     private designedAspect: number;
     private customResizer: () => void;
-    
+
+    private startTime = null;
+
     /**
     *   Creates a new SceneManager instance.
     *
@@ -44,8 +46,8 @@ export class SceneManager {
         this.renderer.autoResize = true;
         window.removeEventListener('resize', this.resizeHandler);
         window.addEventListener('resize', this.resizeHandler, true);
-        this.render();
-        PIXI.utils.EventEmitter
+        this.render(0);
+        
     }
 
     /**
@@ -98,6 +100,7 @@ export class SceneManager {
             scene = sceneOrName as Scene;
         }
         console.log("ActivateScene " + scene.Name);
+        this.startTime = null;
         this.currentScene = scene;
         this.renderer.backgroundColor = scene.BackGroundColor;
         this.resizeHandler();
@@ -144,15 +147,20 @@ export class SceneManager {
         }
     }
 
-    private render = () => {
+    private render = (timestamp) => {
         requestAnimationFrame(this.render);
 
         //  exit if no scene or paused
         if (!this.currentScene || this.currentScene.isPaused())
             return;
 
+        if (!this.startTime)
+            this.startTime = timestamp;
+
+        var dt = timestamp - this.startTime;
+        this.startTime = timestamp;
         if (this.currentScene.onUpdate)
-            this.currentScene.onUpdate();
+            this.currentScene.onUpdate(dt);
 
         this.renderer.render(this.currentScene);
     }

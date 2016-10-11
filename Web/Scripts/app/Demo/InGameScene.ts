@@ -5,15 +5,25 @@ import { KeyboardAction } from "app/_engine/KeyboardMapper";
 import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
 import * as Global from "app/Demo/Global";
 
+enum MovementState {
+    Left,
+    Right,
+    Idle,
+}
+
+
 /**
 *   Load in game scene.
 */
 export class InGameScene extends Scene {
 
-    private backgroundNear : Parallax;
-    private backgroundFar : Parallax;
-    private hero: AnimatedSprite;//PIXI.Sprite;
+    private backgroundNear: Parallax;
+    private backgroundFar: Parallax;
+    private hero: AnimatedSprite;
     private entities: Array<PIXI.Sprite> = [];
+
+    private movementState: MovementState = -1;
+    private movementPosition = new PIXI.Point();
 
     /**
     *   Creates a new scene instance.
@@ -40,13 +50,13 @@ export class InGameScene extends Scene {
         this.backgroundFar = new Parallax([t]);
         this.addChild(this.backgroundFar);
 
-        var nearTextures : Array<PIXI.Texture> = [];        
-        for (var i :number = 0; i < 5; i++) {
+        var nearTextures: Array<PIXI.Texture> = [];
+        for (var i: number = 0; i < 5; i++) {
             var name = `assets/images/background/trees0${i + 1}.png`;
             nearTextures.push(resources[name].texture);
-        }    
-        this.backgroundNear = new Parallax(nearTextures); 
-        this.backgroundNear.position.y = Global.SCENE_HEIGHT - this.backgroundNear.height-5;  
+        }
+        this.backgroundNear = new Parallax(nearTextures);
+        this.backgroundNear.position.y = Global.SCENE_HEIGHT - this.backgroundNear.height - 5;
         this.addChild(this.backgroundNear);
 
         //-----------------------------
@@ -55,21 +65,30 @@ export class InGameScene extends Scene {
         this.hero = new AnimatedSprite();//new PIXI.Sprite(resources["assets/images/hero.png"].texture);
         this.hero.addAnimations(new AnimationSequence("right", "assets/images/hero.png", [12, 13, 14, 15, 16, 17], 32, 32));
         this.hero.addAnimations(new AnimationSequence("left", "assets/images/hero.png", [6, 7, 8, 9, 10, 11], 32, 32));
-        this.hero.addAnimations(new AnimationSequence("idle", "assets/images/hero.png", [28, 7, 10, 9, 6, 3], 32, 32));        
+        this.hero.addAnimations(new AnimationSequence("idle", "assets/images/hero.png", [28, 7, 10, 9, 6, 3], 32, 32));
         this.hero.position.set(Global.sceneMngr.Renderer.width / 2, Global.sceneMngr.Renderer.height - 120);
-        this.hero.scale.set(2);
+        this.hero.scale.set(2.5);
         this.addChild(this.hero);
         this.hero.PlayAnimation("idle");
     }
 
     private MoveLeft = () => {
-        this.hero.PlayAnimation("left");
+        if (this.movementState != MovementState.Left) {
+            this.hero.PlayAnimation("left");
+            this.movementState = MovementState.Left;
+        }
     }
     private MoveRight = () => {
-        this.hero.PlayAnimation("right");
+        if (this.movementState != MovementState.Right) {
+            this.hero.PlayAnimation("right");
+            this.movementState = MovementState.Right;
+        }
     }
     private MoveIdle = () => {
-        this.hero.PlayAnimation("idle");
+        if (this.movementState != MovementState.Idle) {
+            this.hero.PlayAnimation("idle");
+            this.movementState = MovementState.Idle;
+        }
     }
 
     public onResize = () => {
@@ -79,8 +98,20 @@ export class InGameScene extends Scene {
         this.backgroundFar.ViewPortSize = vps;
     }
 
-    public onUpdate = () => {
+    public onUpdate = (dt: number) => {
+        //console.log('onUpdate(' + dt + ')');
         Global.kbd.update(State.IN_GAME);
+
+        var move = 0;
+        if (this.movementState === MovementState.Left) {
+            move = 1000/dt;
+        } else if (this.movementState === MovementState.Right) {
+            move = -1000/dt;
+        }
+
+        this.movementPosition.x += move * 10;
+        this.backgroundNear.ViewPort = new PIXI.Point(this.movementPosition.x * 19, 0);
+        this.backgroundFar.ViewPort = new PIXI.Point(this.movementPosition.x * 15, 0);
     }
 }
 
