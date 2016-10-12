@@ -1,10 +1,10 @@
 ﻿import { SceneManager } from "app/_engine/SceneManager";
 import { KeyboardMapper } from "app/_engine/KeyboardMapper";
 
-export var SCENE_WIDTH = 1366;
-export var SCENE_HEIGHT = 768;
-export var BTN_WIDTH = 100;
-export var BTN_HEIGHT = 48;
+export var SCENE_WIDTH : number = 1366;
+export var SCENE_HEIGHT: number = 768;
+export var BTN_WIDTH : number = 100;
+export var BTN_HEIGHT: number = 48;
 
 export var BTN_STYLE: PIXI.ITextStyle =
     {
