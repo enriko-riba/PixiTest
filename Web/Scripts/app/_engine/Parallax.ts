@@ -42,38 +42,58 @@ export class Parallax extends PIXI.Container {
 
 
     private recalculatePosition = () => {
-        console.log("recalculating parallax viewport... ");
+        //console.log("recalculating parallax viewport... ");
 
-        //  offset from 0 
-        var startX = -(this.viewPort.x % this.totalTextureWidth);
+        //  move sprites
+        this.spritePool.forEach((sprite) => {            
+            var originalPosition :PIXI.Point = (sprite as any).originalPosition;
+            sprite.position.x = originalPosition.x - this.ViewPort.x;
+        });
+       
+    }
 
-        if (this.viewPortSize.x <= this.totalTextureWidth) {
-        }
+    private spritePoolStartIndex: number;
+    private spritePoolEndIndex: number;
+    private spritePool: Array<PIXI.Sprite> = [];
+    private addSpritesToPool = () => {
+        this.textures.forEach((texture) => {
+            var spr = new PIXI.Sprite(texture);
+            spr.position.x = this.totalTextureWidth;
+            (spr as any).originalPosition = new PIXI.Point(spr.position.x, spr.position.y);
+            this.spritePool.push(spr);
+            this.totalTextureWidth += texture.width;    
+        });
+        this.totalTextureWidth *= Global.sceneMngr.CurrentScene.scale.x;
     }
 
     private calcHorizontalTextures = () => {
         this.removeChildren();
-
-        //  recalculate texture set size
         this.totalTextureWidth = 0;
-        this.textures.forEach((texture) => {
-            this.totalTextureWidth += (texture.width * Global.sceneMngr.CurrentScene.scale.x);
-        });
+        this.spritePoolStartIndex = 0;
+        this.spritePoolEndIndex = 0;
 
-        //  offset from 0 
-        var startX = -(this.ViewPort.x % this.totalTextureWidth);
+        //-------------------------------------------------------
+        //  create sprites from textures and add them to sprite pool
+        //-------------------------------------------------------
+        while (this.totalTextureWidth <= this.ViewPortSize.x) {
+            this.addSpritesToPool();
+        }
 
-        //  add tiles until viewport is filled
-        var textureX = startX;
-        var idx = 0;
-        while ( (textureX * Global.sceneMngr.CurrentScene.scale.x) <= this.ViewPortSize.x) {
-            var spr = new PIXI.Sprite(this.textures[idx]);
-            spr.position.x = textureX;
-            this.addChild(spr);
-            textureX += this.textures[idx].width ;
-            if (++idx >= this.textures.length) {
-                idx = 0;
+        //-------------------------------------------------------
+        //  find sprite index of last sprite visible in viewport
+        //-------------------------------------------------------
+        var currentSpriteWidth = 0;
+        for (var i = 0; i < this.spritePool.length; i++) {
+            this.addChild(this.spritePool[i]);
+            currentSpriteWidth += this.spritePool[i].width;
+            if (currentSpriteWidth > this.viewPortSize.x) {
+                this.spritePoolEndIndex = i;
+                break;
             }
         }
+
+        console.log('Sprites in pool: ' + this.spritePool.length);
+        console.log('First sprite index: ' + this.spritePoolStartIndex);
+        console.log('Last sprite index: ' + this.spritePoolEndIndex);
     }
 }
