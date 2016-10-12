@@ -17,6 +17,7 @@ enum MovementState {
 */
 export class InGameScene extends Scene {
 
+    private backgroundGround: Parallax;
     private backgroundNear: Parallax;
     private backgroundFar: Parallax;
     private hero: AnimatedSprite;
@@ -48,9 +49,37 @@ export class InGameScene extends Scene {
         this.hero.addAnimations(new AnimationSequence("left", "assets/images/hero_64x64.png", [6, 7, 8, 9, 10, 11], FRAME_SIZE, FRAME_SIZE));
         this.hero.addAnimations(new AnimationSequence("idle", "assets/images/hero_64x64.png", [24, 36, 37, 19, 20, 29, 28, 1], FRAME_SIZE, FRAME_SIZE));
         this.hero.pivot.set(0.5, 1);
+        this.hero.scale.set(1.2);
         this.hero.position.set(Global.SCENE_WIDTH / 2, Global.SCENE_HEIGHT - 150);
         this.addChild(this.hero);
         this.hero.PlayAnimation("idle");
+
+
+        //-----------------------------
+        //  setup backgrounds
+        //-----------------------------
+        var resources = PIXI.loader.resources;
+        var t = resources["assets/images/background/Canyon.png"].texture;
+        this.backgroundFar = new Parallax([t]);
+        this.addChildAt(this.backgroundFar, 0);
+
+        var nearTextures: Array<PIXI.Texture> = [];
+        for (var i: number = 0; i < 5; i++) {
+            var name = `assets/images/background/trees0${i + 1}.png`;
+            nearTextures.push(resources[name].texture);
+        }
+        this.backgroundNear = new Parallax(nearTextures);
+        this.backgroundNear.position.y = Global.SCENE_HEIGHT - this.backgroundNear.height - 5;
+        this.addChildAt(this.backgroundNear, 1);
+
+        t = resources["assets/images/background/ground.png"].texture;
+        this.backgroundGround = new Parallax([t]);
+        this.backgroundGround.position.y = Global.SCENE_HEIGHT - this.backgroundGround.height + 35;
+        this.addChildAt(this.backgroundGround, 2);
+
+        var vps = new PIXI.Point(Global.SCENE_WIDTH, Global.SCENE_HEIGHT);
+        this.backgroundNear.ViewPortSize = vps;
+        this.backgroundFar.ViewPortSize = vps;
     }
 
     private MoveLeft = () => {
@@ -72,41 +101,6 @@ export class InGameScene extends Scene {
         }
     }
 
-    public onResize = () => {
-        //this.hero.position.set(Global.sceneMngr.Renderer.width / 2, Global.SCENE_HEIGHT - 100);
-        //if (this.backgroundNear) {
-        //    var vps = new PIXI.Point(Global.sceneMngr.Renderer.width, Global.sceneMngr.Renderer.height);
-        //    this.backgroundNear.ViewPortSize = vps;
-        //    this.backgroundFar.ViewPortSize = vps;
-        //}
-    }
-
-    public onActivate = () => {
-        if (!this.backgroundNear) {
-            var resources = PIXI.loader.resources;
-
-            //-----------------------------
-            //  setup backgrounds
-            //-----------------------------
-            var t = resources["assets/images/background/Canyon.png"].texture;
-            this.backgroundFar = new Parallax([t]);
-            this.addChildAt(this.backgroundFar, 0);
-
-            var nearTextures: Array<PIXI.Texture> = [];
-            for (var i: number = 0; i < 5; i++) {
-                var name = `assets/images/background/trees0${i + 1}.png`;
-                nearTextures.push(resources[name].texture);
-            }
-            this.backgroundNear = new Parallax(nearTextures);
-            this.backgroundNear.position.y = Global.SCENE_HEIGHT - this.backgroundNear.height - 5;
-            this.addChildAt(this.backgroundNear, 1);
-
-            var vps = new PIXI.Point(Global.SCENE_WIDTH, Global.SCENE_HEIGHT);//Global.sceneMngr.Renderer.width, Global.sceneMngr.Renderer.height);
-            this.backgroundNear.ViewPortSize = vps;
-            this.backgroundFar.ViewPortSize = vps;
-        }
-    }
-
     public onUpdate = (dt: number) => {
         //console.log('onUpdate(' + dt + ')');
         Global.kbd.update(State.IN_GAME);
@@ -119,10 +113,11 @@ export class InGameScene extends Scene {
         }
 
         if (move !== 0) {
-            const VELOCITY = 20;
+            const VELOCITY = 40;
             this.movementPosition.x += (move * VELOCITY);
-            this.backgroundNear.ViewPort = new PIXI.Point(this.movementPosition.x * 0.9, 0);
-            this.backgroundFar.ViewPort = new PIXI.Point(this.movementPosition.x * 0.6, 0);
+            this.backgroundGround.ViewPort = new PIXI.Point(this.movementPosition.x, 0);
+            this.backgroundNear.ViewPort = new PIXI.Point(this.movementPosition.x * 0.7, 0);
+            this.backgroundFar.ViewPort = new PIXI.Point(this.movementPosition.x * 0.55, 0);
         }
     }
 }
