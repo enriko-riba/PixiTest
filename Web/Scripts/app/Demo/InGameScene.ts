@@ -67,9 +67,8 @@ export class InGameScene extends Scene {
         this.hero.addAnimations(new AnimationSequence("right", "assets/images/hero_64x64.png", [12, 13, 14, 15, 16, 17], FRAME_SIZE, FRAME_SIZE));
         this.hero.addAnimations(new AnimationSequence("left", "assets/images/hero_64x64.png", [6, 7, 8, 9, 10, 11], FRAME_SIZE, FRAME_SIZE));
         this.hero.addAnimations(new AnimationSequence("idle", "assets/images/hero_64x64.png", [24, 36, 37, 19, 20, 29, 28, 1], FRAME_SIZE, FRAME_SIZE));
-        this.hero.position.set(Global.sceneMngr.Renderer.width / 2, Global.sceneMngr.Renderer.height - 120);
-        //this.hero.scale.set(1);
-        this.hero.position.set(Global.SCENE_WIDTH / 2, Global.SCENE_HEIGHT - 100);
+        this.hero.pivot.set(0.5, 1);
+        this.hero.position.set(Global.SCENE_WIDTH / 2, Global.SCENE_HEIGHT - 150);
         this.addChild(this.hero);
         this.hero.PlayAnimation("idle");
     }

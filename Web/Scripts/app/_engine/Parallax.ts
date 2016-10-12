@@ -18,7 +18,7 @@ export class Parallax extends PIXI.Container {
     constructor(textures: Array<PIXI.Texture>) {
         super();
 
-        this.textures = textures;
+        this.textures = textures; 
         this.viewPort = new PIXI.Point();
         this.viewPortSize = new PIXI.Point(textures[0].width, textures[0].height);
         this.calcHorizontalTextures();

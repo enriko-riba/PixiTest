@@ -108,27 +108,10 @@ export class SceneManager {
     }
 
     private resizeHandler = () => {
-        console.log("resize...");
-
         var avlSize = this.sceneResizer.GetAvailableSize();
         var aspect = this.sceneResizer.GetAspectRatio();
         var size = this.sceneResizer.CalculateSize(avlSize, aspect);
         this.renderer.resize(size.x, size.y);
-
-        //var maxWidth: number, maxHeight: number;
-        //maxWidth = this.designedAspect * size.y;
-        //maxHeight = window.innerHeight;
-
-        //if (winAspect >= 1) {
-        //    maxWidth = this.designedAspect * window.innerHeight;
-        //    maxHeight = window.innerHeight;
-        //}
-        //else {
-        //    maxHeight = window.innerWidth / this.designedAspect;
-        //    maxWidth = window.innerWidth;
-        //}
-        //var ratio = Math.min(window.innerWidth / this.designWidth, window.innerHeight / this.designHeight);
-        //this.renderer.resize(maxWidth, maxHeight);
 
         if (this.currentScene) {
             this.currentScene.scale.set(this.sceneResizer.CalculateScale(size));
