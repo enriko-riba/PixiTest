@@ -62,12 +62,14 @@ export class InGameScene extends Scene {
         //-----------------------------
         //  setup hero
         //-----------------------------
+        const FRAME_SIZE = 64;
         this.hero = new AnimatedSprite();//new PIXI.Sprite(resources["assets/images/hero.png"].texture);
-        this.hero.addAnimations(new AnimationSequence("right", "assets/images/hero.png", [12, 13, 14, 15, 16, 17], 32, 32));
-        this.hero.addAnimations(new AnimationSequence("left", "assets/images/hero.png", [6, 7, 8, 9, 10, 11], 32, 32));
-        this.hero.addAnimations(new AnimationSequence("idle", "assets/images/hero.png", [28, 7, 10, 9, 6, 3], 32, 32));
+        this.hero.addAnimations(new AnimationSequence("right", "assets/images/hero_64x64.png", [12, 13, 14, 15, 16, 17], FRAME_SIZE, FRAME_SIZE));
+        this.hero.addAnimations(new AnimationSequence("left", "assets/images/hero_64x64.png", [6, 7, 8, 9, 10, 11], FRAME_SIZE, FRAME_SIZE));
+        this.hero.addAnimations(new AnimationSequence("idle", "assets/images/hero_64x64.png", [24, 36, 37, 19, 20, 29, 28, 1], FRAME_SIZE, FRAME_SIZE));
         this.hero.position.set(Global.sceneMngr.Renderer.width / 2, Global.sceneMngr.Renderer.height - 120);
-        this.hero.scale.set(2.5);
+        //this.hero.scale.set(1);
+        this.hero.position.set(Global.SCENE_WIDTH / 2, Global.SCENE_HEIGHT - 100);
         this.addChild(this.hero);
         this.hero.PlayAnimation("idle");
     }
@@ -92,7 +94,7 @@ export class InGameScene extends Scene {
     }
 
     public onResize = () => {
-        this.hero.position.set(Global.sceneMngr.Renderer.width / 2, Global.SCENE_HEIGHT - 100);
+        //this.hero.position.set(Global.sceneMngr.Renderer.width / 2, Global.SCENE_HEIGHT - 100);
         var vps = new PIXI.Point(Global.sceneMngr.Renderer.width, Global.sceneMngr.Renderer.height);
         this.backgroundNear.ViewPortSize = vps;
         this.backgroundFar.ViewPortSize = vps;

@@ -26,6 +26,7 @@
     <Content Include="assets\Images\background\Mountains.png" />
     <Content Include="assets\Images\Gui\Button1.png" />
     <Content Include="assets\Images\Gui\ListItem.png" />
+    <Content Include="assets\Images\Hero_64x64.png" />
     <Content Include="assets\Images\loading.png" />
     <Content Include="assets\Images\Npcs\bahamut.png" />
     <Content Include="assets\Images\Npcs\barrissoffee.png" />

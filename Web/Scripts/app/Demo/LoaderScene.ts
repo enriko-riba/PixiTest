@@ -44,6 +44,7 @@ export class LoaderScene extends Scene {
 
         var assets = [
             "assets/images/hero.png",
+            "assets/images/hero_64x64.png",
 
             "assets/images/Gui/Button1.png",
             "assets/images/Gui/Listitem.png",
