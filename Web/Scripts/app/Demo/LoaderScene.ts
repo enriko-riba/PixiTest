@@ -63,6 +63,7 @@ export class LoaderScene extends Scene {
             "assets/images/background/trees03.png",
             "assets/images/background/trees04.png",
             "assets/images/background/trees05.png",
+            "assets/images/background/ground.png",
         ];
         
         PIXI.loader.add(assets)

@@ -140,8 +140,8 @@ export class SceneManager {
     }
 }
 
-class DefaultResizer implements ISceneResizer {
-    constructor(private designedWidth, private designedHeight) {
+export class DefaultResizer implements ISceneResizer {
+    constructor(protected designedWidth, protected designedHeight) {
     }
     public GetAvailableSize() {
         return { x: window.innerWidth, y: window.innerHeight};
