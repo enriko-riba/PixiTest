@@ -105,14 +105,17 @@ export class InGameScene extends Scene {
 
         var move = 0;
         if (this.movementState === MovementState.Left) {
-            move = 1000/dt;
+            move = -dt / 1000;
         } else if (this.movementState === MovementState.Right) {
-            move = -1000/dt;
+            move = dt / 1000;
         }
 
-        this.movementPosition.x += move * 10;
-        this.backgroundNear.ViewPort = new PIXI.Point(this.movementPosition.x * 19, 0);
-        this.backgroundFar.ViewPort = new PIXI.Point(this.movementPosition.x * 15, 0);
+        if (move !== 0) {
+            const VELOCITY = 20;
+            this.movementPosition.x += (move * VELOCITY);
+            this.backgroundNear.ViewPort = new PIXI.Point(this.movementPosition.x * 0.9, 0);
+            this.backgroundFar.ViewPort = new PIXI.Point(this.movementPosition.x * 0.6, 0);
+        }
     }
 }
 

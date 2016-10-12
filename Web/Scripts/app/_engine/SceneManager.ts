@@ -160,7 +160,6 @@ class DefaultResizer implements ISceneResizer {
     }
 }
 
-
 export interface ISize {
     x: number;
     y: number;
