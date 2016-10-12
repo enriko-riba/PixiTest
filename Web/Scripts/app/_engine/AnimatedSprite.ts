@@ -21,9 +21,7 @@ export class AnimatedSprite extends PIXI.Container {
             this.currentSequence = this.animations.get(name);
             this.resetAnimation();
             this.addChild(this.currentSequence.Clip);
-            this.currentSequence.Clip.animationSpeed = 0.05;
-            //this.currentSequence.Clip.position.set(this.position.x, this.position.y);
-            //this.currentSequence.Clip.pivot.set(this.pivot.x, this.pivot.y);
+            this.currentSequence.Clip.animationSpeed = 0.1;
             this.currentSequence.Clip.play();
         }
     }

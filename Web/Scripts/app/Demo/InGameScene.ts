@@ -38,27 +38,7 @@ export class InGameScene extends Scene {
         Global.kbd.AddKeyboardActionHandler(new KeyboardAction(65, 'Move left', () => this.MoveLeft(), false), State.IN_GAME);
         Global.kbd.AddKeyboardActionHandler(new KeyboardAction(68, 'Move right', () => this.MoveRight(), false), State.IN_GAME);
         Global.kbd.AddKeyboardActionHandler(new KeyboardAction(83, 'Stop', () => this.MoveIdle(), false), State.IN_GAME);
-        //var hud = new Hud();
-        //this.HudOverlay = hud;
-
-        var resources = PIXI.loader.resources;
-
-        //-----------------------------
-        //  setup backgrounds
-        //-----------------------------
-        var t = resources["assets/images/background/Canyon.png"].texture;
-        this.backgroundFar = new Parallax([t]);
-        this.addChild(this.backgroundFar);
-
-        var nearTextures: Array<PIXI.Texture> = [];
-        for (var i: number = 0; i < 5; i++) {
-            var name = `assets/images/background/trees0${i + 1}.png`;
-            nearTextures.push(resources[name].texture);
-        }
-        this.backgroundNear = new Parallax(nearTextures);
-        this.backgroundNear.position.y = Global.SCENE_HEIGHT - this.backgroundNear.height - 5;
-        this.addChild(this.backgroundNear);
-
+        
         //-----------------------------
         //  setup hero
         //-----------------------------
@@ -94,9 +74,37 @@ export class InGameScene extends Scene {
 
     public onResize = () => {
         //this.hero.position.set(Global.sceneMngr.Renderer.width / 2, Global.SCENE_HEIGHT - 100);
-        var vps = new PIXI.Point(Global.sceneMngr.Renderer.width, Global.sceneMngr.Renderer.height);
-        this.backgroundNear.ViewPortSize = vps;
-        this.backgroundFar.ViewPortSize = vps;
+        //if (this.backgroundNear) {
+        //    var vps = new PIXI.Point(Global.sceneMngr.Renderer.width, Global.sceneMngr.Renderer.height);
+        //    this.backgroundNear.ViewPortSize = vps;
+        //    this.backgroundFar.ViewPortSize = vps;
+        //}
+    }
+
+    public onActivate = () => {
+        if (!this.backgroundNear) {
+            var resources = PIXI.loader.resources;
+
+            //-----------------------------
+            //  setup backgrounds
+            //-----------------------------
+            var t = resources["assets/images/background/Canyon.png"].texture;
+            this.backgroundFar = new Parallax([t]);
+            this.addChildAt(this.backgroundFar, 0);
+
+            var nearTextures: Array<PIXI.Texture> = [];
+            for (var i: number = 0; i < 5; i++) {
+                var name = `assets/images/background/trees0${i + 1}.png`;
+                nearTextures.push(resources[name].texture);
+            }
+            this.backgroundNear = new Parallax(nearTextures);
+            this.backgroundNear.position.y = Global.SCENE_HEIGHT - this.backgroundNear.height - 5;
+            this.addChildAt(this.backgroundNear, 1);
+
+            var vps = new PIXI.Point(Global.SCENE_WIDTH, Global.SCENE_HEIGHT);//Global.sceneMngr.Renderer.width, Global.sceneMngr.Renderer.height);
+            this.backgroundNear.ViewPortSize = vps;
+            this.backgroundFar.ViewPortSize = vps;
+        }
     }
 
     public onUpdate = (dt: number) => {

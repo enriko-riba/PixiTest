@@ -61,9 +61,8 @@ export class Parallax extends PIXI.Container {
             spr.position.x = this.totalTextureWidth;
             (spr as any).originalPosition = new PIXI.Point(spr.position.x, spr.position.y);
             this.spritePool.push(spr);
-            this.totalTextureWidth += texture.width;    
+            this.totalTextureWidth += texture.width;   
         });
-        this.totalTextureWidth *= Global.sceneMngr.CurrentScene.scale.x;
     }
 
     private calcHorizontalTextures = () => {
