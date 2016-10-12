@@ -21,8 +21,7 @@ export class SceneManager {
 
     private designWidth: number;
     private designHeight: number;
-    private designedAspect: number;
-    private customResizer: () => void;
+    private sceneResizer: ISceneResizer;
 
     private startTime = null;
 
@@ -33,11 +32,10 @@ export class SceneManager {
     *   @param height the height of the scene
     *   @param resizer custom resize function
     */
-    constructor(width: number, height: number, options?: PIXI.IRendererOptions, resizer? : ()=> void) {
+    constructor(width: number, height: number, options?: PIXI.IRendererOptions, resizer? : ISceneResizer) {
         this.designWidth = width;
         this.designHeight = height;
-        this.designedAspect = this.designWidth / this.designHeight;
-        this.customResizer = resizer;
+        this.sceneResizer = resizer || new DefaultResizer(this.designWidth, this.designHeight);
            
         if (!options) {
             options = { antialias: true, backgroundColor: 0x012135 };
@@ -112,20 +110,14 @@ export class SceneManager {
     private resizeHandler = () => {
         console.log("resize...");
 
-        //  if there is a custom resizer invoke it and bail out
-        if (this.customResizer) {
-            this.customResizer();
-            if (this.currentScene && this.currentScene.onResize) {
-                this.currentScene.onResize();
-            }
-            return;
-        }
+        var avlSize = this.sceneResizer.GetAvailableSize();
+        var aspect = this.sceneResizer.GetAspectRatio();
+        var size = this.sceneResizer.CalculateSize(avlSize, aspect);
+        this.renderer.resize(size.x, size.y);
 
-
-        var maxWidth: number, maxHeight: number;
-        var winAspect = window.innerWidth / window.innerHeight;
-        maxWidth = this.designedAspect * window.innerHeight;
-        maxHeight = window.innerHeight;
+        //var maxWidth: number, maxHeight: number;
+        //maxWidth = this.designedAspect * size.y;
+        //maxHeight = window.innerHeight;
 
         //if (winAspect >= 1) {
         //    maxWidth = this.designedAspect * window.innerHeight;
@@ -135,12 +127,11 @@ export class SceneManager {
         //    maxHeight = window.innerWidth / this.designedAspect;
         //    maxWidth = window.innerWidth;
         //}
-        var ratio = Math.min(window.innerWidth / this.designWidth, window.innerHeight / this.designHeight);
-        this.renderer.resize(maxWidth, maxHeight);
-        if (this.currentScene) {
-            this.currentScene.scale.set(maxWidth / this.designWidth);
+        //var ratio = Math.min(window.innerWidth / this.designWidth, window.innerHeight / this.designHeight);
+        //this.renderer.resize(maxWidth, maxHeight);
 
-            //   trigger scene onResize
+        if (this.currentScene) {
+            this.currentScene.scale.set(this.sceneResizer.CalculateScale(size));
             if (this.currentScene.onResize) {
                 this.currentScene.onResize();
             }
@@ -164,4 +155,51 @@ export class SceneManager {
 
         this.renderer.render(this.currentScene);
     }
+}
+
+class DefaultResizer implements ISceneResizer {
+    constructor(private designedWidth, private designedHeight) {
+    }
+    public GetAvailableSize() {
+        return { x: window.innerWidth, y: window.innerHeight};
+    }   
+    public GetAspectRatio() {
+        return this.designedWidth / this.designedHeight;
+    }
+    public CalculateSize(availableSize : ISize, aspect: number) {
+        var maxWidth: number, maxHeight: number;
+        maxWidth = aspect * availableSize.y;
+        maxHeight = window.innerHeight;
+        return { x: maxWidth, y: maxHeight };
+    }
+    public CalculateScale(newSize: ISize) {
+        return newSize.x / this.designedWidth
+    }
+}
+
+
+export interface ISize {
+    x: number;
+    y: number;
+}
+
+/**
+*   Object passed to the SceneManager handling various aspects of scene resizing.
+*
+*/
+export interface ISceneResizer {
+
+    /*
+    *   Returns the available width.
+    */
+    GetAvailableSize: () => ISize;
+
+    /*
+    *   Returns the desired aspect ratio for the stage.
+    */
+    GetAspectRatio: () => number;
+
+    CalculateSize: (availableSize: ISize, aspect: number) => ISize;
+
+    CalculateScale(newSize: ISize): number;
 }
