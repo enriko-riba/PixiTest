@@ -5,7 +5,6 @@ export class AnimatedSprite extends PIXI.Container {
         super();        
     }
 
-    private fps: number = 12;
     private animations = new Dictionary<AnimationSequence>();
     private isPlaying: boolean = false;
     private currentSequence: AnimationSequence;
@@ -16,25 +15,21 @@ export class AnimatedSprite extends PIXI.Container {
         });
     }
 
-    public PlayAnimation(name: string) {
+    public PlayAnimation(name: string, fps?:number) {
         if (!this.currentSequence || this.currentSequence.sequenceName !== name) {
             this.currentSequence = this.animations.get(name);
             this.resetAnimation();
             this.addChild(this.currentSequence.Clip);
-            this.currentSequence.Clip.animationSpeed = 0.15;
+            if (fps) {
+                var animationSpeed = fps / 60;
+                this.currentSequence.Clip.animationSpeed = animationSpeed;
+            }
             this.currentSequence.Clip.play();
         }
     }
 
     public Stop() {
         this.isPlaying = false;
-    }
-
-    public get Fps() {
-        return this.fps;
-    }
-    public set Fps(fps: number) {
-        this.fps = fps;
     }
 
     private resetAnimation() {
@@ -47,7 +42,7 @@ export class AnimatedSprite extends PIXI.Container {
 }
 
 export class AnimationSequence  {
-    constructor(public sequenceName: string, private textureName:string, private frames: Array<number> = [], frameWidth : number, frameHeight : number) {
+    constructor(public sequenceName: string, private textureName:string, private frames: Array<number> = [], frameWidth : number, frameHeight : number, private fps : number = 8) {
         var base: PIXI.BaseTexture = PIXI.utils.TextureCache[textureName];
         var xFrames = Math.floor(base.width / frameWidth);
         var yFrames = Math.floor(base.height / frameHeight);
@@ -57,11 +52,13 @@ export class AnimationSequence  {
             var y = Math.floor(frame / xFrames);
             var x = frame % xFrames;            
             var rect = new PIXI.Rectangle(x * frameWidth, y * frameHeight, frameWidth, frameHeight);
-            console.log('clip: ' + sequenceName + ', frame: ' + frame + ', rect: {' + rect.x + ', ' + + rect.y + '}');
+            //console.log('clip: ' + sequenceName + ', frame: ' + frame + ', rect: {' + rect.x + ', ' + + rect.y + '}');
             texture.frame = rect;
             textures.push(texture);
         });
-        this.clip = new PIXI.extras.MovieClip(textures);        
+        var animationSpeed = fps / 60;
+        this.clip = new PIXI.extras.MovieClip(textures);  
+        this.clip.animationSpeed = animationSpeed;   
     }
 
     private clip: PIXI.extras.MovieClip = null;  

@@ -1,14 +1,13 @@
 ﻿import * as ko from "knockout";
+import { ViewModelBase, RouteNavigationData } from "app/_framework/SpaApplication";
 import { SceneManager, ISceneResizer, ISize, DefaultResizer } from "app/_engine/SceneManager";
 import { LoaderScene } from "app/Demo/LoaderScene";
 import * as Global from "app/Demo/Global";
 
-class DemoVM {
+class DemoVM extends ViewModelBase{
 
     constructor() {
-        if (Global.sceneMngr) {
-            Global.sceneMngr.Renderer.destroy();
-        }
+        super();        
 
         //  prepare canvas and scene manager
         var canvas: HTMLCanvasElement = document.getElementById("stage") as HTMLCanvasElement;
@@ -23,6 +22,12 @@ class DemoVM {
 
         Global.sceneMngr.AddScene(new LoaderScene());
         Global.sceneMngr.ActivateScene("Loader");
+    }
+
+    protected OnDeactivate(data: RouteNavigationData) {
+        if (Global.sceneMngr) {            
+            Global.sceneMngr.Destroy();
+        }
     }
 }
 
