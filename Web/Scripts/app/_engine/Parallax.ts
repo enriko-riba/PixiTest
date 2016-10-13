@@ -3,7 +3,7 @@
 *   Represents a parallax background with textures that tile inside the viewport. 
 */
 export class Parallax extends PIXI.Container {
-   
+
     private textures: Array<PIXI.Texture>;
     private viewPort: PIXI.Point;
     private viewPortSize: PIXI.Point;
@@ -18,7 +18,7 @@ export class Parallax extends PIXI.Container {
     constructor(textures: Array<PIXI.Texture>) {
         super();
 
-        this.textures = textures; 
+        this.textures = textures;
         this.viewPort = new PIXI.Point();
         this.viewPortSize = new PIXI.Point(textures[0].width, textures[0].height);
         this.calcHorizontalTextures();
@@ -40,16 +40,46 @@ export class Parallax extends PIXI.Container {
         this.calcHorizontalTextures();
     }
 
+    private arrayRotate = (arr: Array<any>, count: number) => {
+        count -= arr.length * Math.floor(count / arr.length)
+        arr.push.apply(arr, arr.splice(0, count))
+        return arr
+    }
 
     private recalculatePosition = () => {
         //console.log("recalculating parallax viewport... ");
 
-        //  move sprites
-        this.spritePool.forEach((sprite) => {            
-            var originalPosition :PIXI.Point = (sprite as any).originalPosition;
-            sprite.position.x = originalPosition.x - this.ViewPort.x;
+        //  update sprite positions
+        this.spritePoolStartIndex = -1;
+        this.spritePoolEndIndex = -1;
+        var xPosition = 0;
+        this.spritePool.forEach((sprite, index) => {
+            var localPosition = xPosition;
+            xPosition += sprite.width;
+            sprite.position.x = localPosition - this.ViewPort.x;
+
+            //  find the starting sprite
+            if (this.spritePoolStartIndex === -1) {
+                if (sprite.position.x + sprite.width >= this.viewPort.x) {
+                    this.spritePoolStartIndex = index;
+                }
+            }
+
+            //  find the ending sprite
+            if (this.spritePoolEndIndex === -1) {
+                var end = this.viewPort.x + this.ViewPortSize.x;
+                if (sprite.position.x + sprite.width <= end) {
+                    this.spritePoolEndIndex = index;
+                }
+            }
         });
-       
+
+        //-----------------------------------
+        //  reorder sprites in array 
+        //-----------------------------------
+        if (this.spritePoolStartIndex > 0) {
+            this.arrayRotate(this.spritePool, this.spritePoolStartIndex);
+        }
     }
 
     private spritePoolStartIndex: number;
@@ -61,7 +91,7 @@ export class Parallax extends PIXI.Container {
             spr.position.x = this.totalTextureWidth;
             (spr as any).originalPosition = new PIXI.Point(spr.position.x, spr.position.y);
             this.spritePool.push(spr);
-            this.totalTextureWidth += texture.width;   
+            this.totalTextureWidth += texture.width;
         });
     }
 
