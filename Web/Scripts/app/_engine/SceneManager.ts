@@ -24,6 +24,7 @@ export class SceneManager {
     private sceneResizer: ISceneResizer;
 
     private startTime = null;
+    private animationFrameHandle: number;
 
     /**
     *   Creates a new SceneManager instance.
@@ -107,6 +108,18 @@ export class SceneManager {
             scene.onActivate();
     }
 
+    /**
+    *   Cancels the animationFrame loop, removes all scenes and finaly destroys the renderer.
+    */
+    public Destroy = () => {        
+        cancelAnimationFrame(this.animationFrameHandle);
+        if (this.currentScene) this.currentScene.pause();
+        this.scenes.forEach((scene) => {
+            this.RemoveScene(scene);
+        });
+        this.renderer.destroy(true);
+    }
+
     private resizeHandler = () => {
         var avlSize = this.sceneResizer.GetAvailableSize();
         var aspect = this.sceneResizer.GetAspectRatio();
@@ -122,7 +135,7 @@ export class SceneManager {
     }
 
     private render = (timestamp) => {
-        requestAnimationFrame(this.render);
+        this.animationFrameHandle = requestAnimationFrame(this.render);
 
         //  exit if no scene or paused
         if (!this.currentScene || this.currentScene.isPaused())

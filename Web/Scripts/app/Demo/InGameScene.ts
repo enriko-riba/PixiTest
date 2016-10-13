@@ -47,7 +47,7 @@ export class InGameScene extends Scene {
         this.hero = new AnimatedSprite();//new PIXI.Sprite(resources["assets/images/hero.png"].texture);
         this.hero.addAnimations(new AnimationSequence("right", "assets/images/hero_64x64.png", [12, 13, 14, 15, 16, 17], FRAME_SIZE, FRAME_SIZE));
         this.hero.addAnimations(new AnimationSequence("left", "assets/images/hero_64x64.png", [6, 7, 8, 9, 10, 11], FRAME_SIZE, FRAME_SIZE));
-        this.hero.addAnimations(new AnimationSequence("idle", "assets/images/hero_64x64.png", [24, 36, 37, 19, 20, 29, 28, 1], FRAME_SIZE, FRAME_SIZE));
+        this.hero.addAnimations(new AnimationSequence("idle", "assets/images/hero_64x64.png", [25, 24, 40, 19, 19, 18, 19, 22, 30, 31, 1, 1, 1], FRAME_SIZE, FRAME_SIZE, 2));
         this.hero.pivot.set(0.5, 1);
         this.hero.scale.set(1.2);
         this.hero.position.set(Global.SCENE_WIDTH / 2, Global.SCENE_HEIGHT - 150);
