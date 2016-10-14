@@ -21,15 +21,13 @@ export class Parallax extends PIXI.Container {
         this.textures = textures;
         this.viewPort = new PIXI.Point();
         this.viewPortSize = new PIXI.Point(textures[0].width, textures[0].height);
-        this.calcHorizontalTextures();
+        //this.calcHorizontalTextures();
     }
 
-    public get ViewPort() {
-        return this.viewPort;
-    }
-    public set ViewPort(point: PIXI.Point) {
-        this.viewPort = point;
-        this.recalculatePosition();
+    public SetViewPortX(x: number) {
+        var distance = this.viewPort.x - x;
+        this.viewPort.x = x;
+        this.recalculatePosition(distance);
     }
 
     public get ViewPortSize() {
@@ -40,89 +38,84 @@ export class Parallax extends PIXI.Container {
         this.calcHorizontalTextures();
     }
 
-    private arrayRotate = (arr: Array<any>, count: number) => {
-        count -= arr.length * Math.floor(count / arr.length)
-        arr.push.apply(arr, arr.splice(0, count))
-        return arr
-    }
-
-    private recalculatePosition = () => {
+    private recalculatePosition = (distance: number) => {
         //console.log("recalculating parallax viewport... ");
 
-        //  update sprite positions
-        this.spritePoolStartIndex = -1;
-        this.spritePoolEndIndex = -1;
-        var xPosition = 0;
+        //  update sprite positions       
         this.spritePool.forEach((sprite, index) => {
-            var localPosition = xPosition;
-            xPosition += sprite.width;
-            sprite.position.x = localPosition - this.ViewPort.x;
-
-            //  find the starting sprite
-            if (this.spritePoolStartIndex === -1) {
-                if (sprite.position.x + sprite.width >= this.viewPort.x) {
-                    this.spritePoolStartIndex = index;
-                }
-            }
-
-            //  find the ending sprite
-            if (this.spritePoolEndIndex === -1) {
-                var end = this.viewPort.x + this.ViewPortSize.x;
-                if (sprite.position.x + sprite.width <= end) {
-                    this.spritePoolEndIndex = index;
-                }
-            }
+            sprite.position.x += distance;
         });
 
-        //-----------------------------------
-        //  reorder sprites in array 
-        //-----------------------------------
-        if (this.spritePoolStartIndex > 0) {
-            this.arrayRotate(this.spritePool, this.spritePoolStartIndex);
+        //  if parallax is moving left
+        if (distance < 0) {
+
+            //  if right sprite ends before edge than ROL
+            var rightEdge = this.viewPort.x + this.viewPortSize.x;
+            var lastRightSpriteEdge = this.lastVisible.position.x + this.lastVisible.width;
+            if (lastRightSpriteEdge < rightEdge) {
+                //  perform ROL
+                this.firstVisible.position.x = this.lastVisible.position.x + this.lastVisible.width;
+                this.firstVisible = (this.firstVisible as any).next;
+                this.lastVisible = (this.lastVisible as any).next;
+            }
         }
+        else {  //  if parallax is moving right
+
+        }
+
     }
 
-    private spritePoolStartIndex: number;
-    private spritePoolEndIndex: number;
+    private firstVisible: PIXI.Sprite;
+    private lastVisible: PIXI.Sprite;
+
     private spritePool: Array<PIXI.Sprite> = [];
-    private addSpritesToPool = () => {
-        this.textures.forEach((texture) => {
+    private addSpritesToPool = (): number => {
+        var totalWidth = 0;
+        var previous = null;
+        this.textures.forEach((texture, index) => {
             var spr = new PIXI.Sprite(texture);
             spr.position.x = this.totalTextureWidth;
-            (spr as any).originalPosition = new PIXI.Point(spr.position.x, spr.position.y);
+            if (previous) {
+                (spr as any).previous = previous;
+                (previous as any).next = spr;
+            }
+            previous = spr;
             this.spritePool.push(spr);
-            this.totalTextureWidth += texture.width;
+            totalWidth += texture.width;
         });
+        (this.spritePool[0] as any).previous = previous;
+        (previous as any).next = this.spritePool[0];
+        return totalWidth;
     }
 
     private calcHorizontalTextures = () => {
         this.removeChildren();
         this.totalTextureWidth = 0;
-        this.spritePoolStartIndex = 0;
-        this.spritePoolEndIndex = 0;
 
         //-------------------------------------------------------
         //  create sprites from textures and add them to sprite pool
         //-------------------------------------------------------
         while (this.totalTextureWidth <= this.ViewPortSize.x) {
-            this.addSpritesToPool();
+            this.totalTextureWidth += this.addSpritesToPool();
         }
 
         //-------------------------------------------------------
-        //  find sprite index of last sprite visible in viewport
+        //  find sprite index of last and first sprite visible 
         //-------------------------------------------------------
-        var currentSpriteWidth = 0;
+        var totalWidth = 0;
+        var rightEdge = this.viewPort.x + this.viewPortSize.x;
         for (var i = 0; i < this.spritePool.length; i++) {
-            this.addChild(this.spritePool[i]);
-            currentSpriteWidth += this.spritePool[i].width;
-            if (currentSpriteWidth > this.viewPortSize.x) {
-                this.spritePoolEndIndex = i;
-                break;
+            var spr = this.spritePool[i];
+            totalWidth += spr.width;
+            this.addChild(spr);
+            if (spr.position.x <= this.viewPort.x && spr.position.x + spr.width > this.viewPort.x) {
+                this.firstVisible = spr;
+            }
+            var sprRightEdge = spr.position.x + spr.width;
+            if (spr.position.x > this.viewPort.x && spr.position.x < rightEdge && sprRightEdge >= rightEdge) {
+                this.lastVisible = spr;
             }
         }
-
-        console.log('Sprites in pool: ' + this.spritePool.length);
-        console.log('First sprite index: ' + this.spritePoolStartIndex);
-        console.log('Last sprite index: ' + this.spritePoolEndIndex);
+        console.log('Sprites in pool: ' + this.spritePool.length + ', first sprite: ' + this.firstVisible.position.x + ', last sprite: ' + this.lastVisible.position.x);
     }
 }
