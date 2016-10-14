@@ -133,6 +133,7 @@
     <TypeScriptCompile Include="Scripts\app\Demo\LoadMenuScene.ts" />
     <TypeScriptCompile Include="Scripts\app\Demo\LoaderScene.ts" />
     <TypeScriptCompile Include="Scripts\app\Demo\MainMenuScene.ts" />
+    <TypeScriptCompile Include="Scripts\app\_engine\LinkedList.ts" />
     <TypeScriptCompile Include="Scripts\app\_engine\Parallax.ts" />
     <TypeScriptCompile Include="Scripts\app\_engine\Scene.ts" />
     <TypeScriptCompile Include="Scripts\app\_engine\SceneManager.ts" />

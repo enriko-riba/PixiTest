@@ -51,7 +51,7 @@ export class InGameScene extends Scene {
         this.hero.addAnimations(new AnimationSequence("idle", "assets/images/hero_64x64.png", [25, 24, 40, 19, 19, 18, 19, 22, 30, 31, 1, 1, 1], FRAME_SIZE, FRAME_SIZE, 3));
         this.hero.pivot.set(0.5, 1);
         this.hero.scale.set(1.2);
-        this.hero.position.set(Global.SCENE_WIDTH / 2, Global.SCENE_HEIGHT - 150);
+        this.hero.position.set((Global.SCENE_WIDTH / 2) - (this.hero.width / 2), Global.SCENE_HEIGHT - 150);
         this.addChild(this.hero);
         this.hero.PlayAnimation("idle");
 
@@ -74,13 +74,14 @@ export class InGameScene extends Scene {
             nearTextures.push(resources[name].texture);
         }
         this.backgroundNear = new Parallax(nearTextures);
-        this.backgroundNear.position.y = Global.SCENE_HEIGHT - this.backgroundNear.height - 5;
         this.backgroundNear.ViewPortSize = vps;
+        this.backgroundNear.position.y = Global.SCENE_HEIGHT - this.backgroundNear.height;
         this.addChildAt(this.backgroundNear, 1);
 
         //  bottom (nearest) parallax
         t = resources["assets/images/background/ground.png"].texture;
         this.backgroundGround = new Parallax([t]);
+        this.backgroundGround.ViewPortSize = vps;
         this.backgroundGround.position.y = Global.SCENE_HEIGHT - this.backgroundGround.height + 35;
         this.addChildAt(this.backgroundGround, 2);        
     }

@@ -1,4 +1,6 @@
 ﻿import * as Global from "app/Demo/Global";
+import { LinkedListNode, LinkedList } from "./LinkedList";
+
 /**
 *   Represents a parallax background with textures that tile inside the viewport. 
 */
@@ -9,7 +11,6 @@ export class Parallax extends PIXI.Container {
     private viewPortSize: PIXI.Point;
 
     private totalTextureWidth = 0;
-    private totalTextureHeight = 0;
 
     /**
     *   Creates a new ParalaxSprite instance.
@@ -21,7 +22,6 @@ export class Parallax extends PIXI.Container {
         this.textures = textures;
         this.viewPort = new PIXI.Point();
         this.viewPortSize = new PIXI.Point(textures[0].width, textures[0].height);
-        //this.calcHorizontalTextures();
     }
 
     public SetViewPortX(x: number) {
@@ -39,11 +39,10 @@ export class Parallax extends PIXI.Container {
     }
 
     private recalculatePosition = (distance: number) => {
-        //console.log("recalculating parallax viewport... ");
 
         //  update sprite positions       
-        this.spritePool.forEach((sprite, index) => {
-            sprite.position.x += distance;
+        this.spriteList.forEach((node) => {
+            node.data.position.x += distance;
         });
 
         //  if parallax is moving left
@@ -51,12 +50,14 @@ export class Parallax extends PIXI.Container {
 
             //  if right sprite ends before edge than ROL
             var rightEdge = this.viewPort.x + this.viewPortSize.x;
-            var lastRightSpriteEdge = this.lastVisible.position.x + this.lastVisible.width;
+            var lastRightSpriteEdge = this.lastVisible.data.position.x + this.lastVisible.data.width;
             if (lastRightSpriteEdge < rightEdge) {
                 //  perform ROL
-                this.firstVisible.position.x = this.lastVisible.position.x + this.lastVisible.width;
-                this.firstVisible = (this.firstVisible as any).next;
-                this.lastVisible = (this.lastVisible as any).next;
+                var last = this.spriteList.Last;
+                this.firstVisible.data.position.x = last.data.position.x + last.data.width;
+                this.spriteList.RollLeft();
+                this.firstVisible = this.firstVisible.next;
+                this.lastVisible = this.lastVisible.next;
             }
         }
         else {  //  if parallax is moving right
@@ -65,26 +66,19 @@ export class Parallax extends PIXI.Container {
 
     }
 
-    private firstVisible: PIXI.Sprite;
-    private lastVisible: PIXI.Sprite;
+    private firstVisible: LinkedListNode<PIXI.Sprite>;
+    private lastVisible: LinkedListNode<PIXI.Sprite>;
+    private spriteList: LinkedList<PIXI.Sprite> = new LinkedList<PIXI.Sprite>();
 
-    private spritePool: Array<PIXI.Sprite> = [];
     private addSpritesToPool = (): number => {
-        var totalWidth = 0;
+        var totalWidth = this.totalTextureWidth;
         var previous = null;
         this.textures.forEach((texture, index) => {
             var spr = new PIXI.Sprite(texture);
-            spr.position.x = this.totalTextureWidth;
-            if (previous) {
-                (spr as any).previous = previous;
-                (previous as any).next = spr;
-            }
-            previous = spr;
-            this.spritePool.push(spr);
+            spr.position.x = totalWidth;            
             totalWidth += texture.width;
-        });
-        (this.spritePool[0] as any).previous = previous;
-        (previous as any).next = this.spritePool[0];
+            this.spriteList.AddNode(spr);
+        });        
         return totalWidth;
     }
 
@@ -100,22 +94,22 @@ export class Parallax extends PIXI.Container {
         }
 
         //-------------------------------------------------------
-        //  find sprite index of last and first sprite visible 
+        //  find first and last sprite visible 
         //-------------------------------------------------------
         var totalWidth = 0;
         var rightEdge = this.viewPort.x + this.viewPortSize.x;
-        for (var i = 0; i < this.spritePool.length; i++) {
-            var spr = this.spritePool[i];
+        this.spriteList.forEach((node) => {
+            var spr = node.data;
             totalWidth += spr.width;
             this.addChild(spr);
             if (spr.position.x <= this.viewPort.x && spr.position.x + spr.width > this.viewPort.x) {
-                this.firstVisible = spr;
+                this.firstVisible = node;
             }
             var sprRightEdge = spr.position.x + spr.width;
-            if (spr.position.x > this.viewPort.x && spr.position.x < rightEdge && sprRightEdge >= rightEdge) {
-                this.lastVisible = spr;
+            if (spr.position.x >= this.viewPort.x && spr.position.x < rightEdge && sprRightEdge >= rightEdge) {
+                this.lastVisible = node;
             }
-        }
-        console.log('Sprites in pool: ' + this.spritePool.length + ', first sprite: ' + this.firstVisible.position.x + ', last sprite: ' + this.lastVisible.position.x);
+        });
+        console.log('Sprites in pool: ' + this.spriteList.Length + ', first sprite: ' + this.firstVisible.data.position.x + ', last sprite: ' + this.lastVisible.data.position.x);
     }
 }
