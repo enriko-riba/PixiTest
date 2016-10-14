@@ -39,30 +39,35 @@ export class InGameScene extends Scene {
         Global.kbd.AddKeyboardActionHandler(new KeyboardAction(65, 'Move left', () => this.MoveLeft(), false), State.IN_GAME);
         Global.kbd.AddKeyboardActionHandler(new KeyboardAction(68, 'Move right', () => this.MoveRight(), false), State.IN_GAME);
         Global.kbd.AddKeyboardActionHandler(new KeyboardAction(83, 'Stop', () => this.MoveIdle(), false), State.IN_GAME);
-        
+
         //-----------------------------
         //  setup hero
         //-----------------------------
+        PIXI.SCALE_MODES.DEFAULT = PIXI.SCALE_MODES.NEAREST;
         const FRAME_SIZE = 64;
         this.hero = new AnimatedSprite();//new PIXI.Sprite(resources["assets/images/hero.png"].texture);
         this.hero.addAnimations(new AnimationSequence("right", "assets/images/hero_64x64.png", [12, 13, 14, 15, 16, 17], FRAME_SIZE, FRAME_SIZE));
         this.hero.addAnimations(new AnimationSequence("left", "assets/images/hero_64x64.png", [6, 7, 8, 9, 10, 11], FRAME_SIZE, FRAME_SIZE));
-        this.hero.addAnimations(new AnimationSequence("idle", "assets/images/hero_64x64.png", [25, 24, 40, 19, 19, 18, 19, 22, 30, 31, 1, 1, 1], FRAME_SIZE, FRAME_SIZE, 2));
+        this.hero.addAnimations(new AnimationSequence("idle", "assets/images/hero_64x64.png", [25, 24, 40, 19, 19, 18, 19, 22, 30, 31, 1, 1, 1], FRAME_SIZE, FRAME_SIZE, 3));
         this.hero.pivot.set(0.5, 1);
         this.hero.scale.set(1.2);
         this.hero.position.set(Global.SCENE_WIDTH / 2, Global.SCENE_HEIGHT - 150);
         this.addChild(this.hero);
         this.hero.PlayAnimation("idle");
 
-
         //-----------------------------
         //  setup backgrounds
         //-----------------------------
         var resources = PIXI.loader.resources;
+        var vps = new PIXI.Point(Global.SCENE_WIDTH, Global.SCENE_HEIGHT);
+
+        //  far parallax
         var t = resources["assets/images/background/Canyon.png"].texture;
         this.backgroundFar = new Parallax([t]);
+        this.backgroundFar.ViewPortSize = vps;
         this.addChildAt(this.backgroundFar, 0);
 
+        //  near parallax
         var nearTextures: Array<PIXI.Texture> = [];
         for (var i: number = 0; i < 5; i++) {
             var name = `assets/images/background/trees0${i + 1}.png`;
@@ -70,16 +75,14 @@ export class InGameScene extends Scene {
         }
         this.backgroundNear = new Parallax(nearTextures);
         this.backgroundNear.position.y = Global.SCENE_HEIGHT - this.backgroundNear.height - 5;
+        this.backgroundNear.ViewPortSize = vps;
         this.addChildAt(this.backgroundNear, 1);
 
+        //  bottom (nearest) parallax
         t = resources["assets/images/background/ground.png"].texture;
         this.backgroundGround = new Parallax([t]);
         this.backgroundGround.position.y = Global.SCENE_HEIGHT - this.backgroundGround.height + 35;
-        this.addChildAt(this.backgroundGround, 2);
-
-        var vps = new PIXI.Point(Global.SCENE_WIDTH, Global.SCENE_HEIGHT);
-        this.backgroundNear.ViewPortSize = vps;
-        this.backgroundFar.ViewPortSize = vps;
+        this.addChildAt(this.backgroundGround, 2);        
     }
 
     private MoveLeft = () => {
@@ -113,11 +116,11 @@ export class InGameScene extends Scene {
         }
 
         if (move !== 0) {
-            const VELOCITY = 40;
+            const VELOCITY = 60;
             this.movementPosition.x += (move * VELOCITY);
-            this.backgroundGround.ViewPort = new PIXI.Point(this.movementPosition.x, 0);
-            this.backgroundNear.ViewPort = new PIXI.Point(this.movementPosition.x * 0.7, 0);
-            this.backgroundFar.ViewPort = new PIXI.Point(this.movementPosition.x * 0.55, 0);
+            this.backgroundGround.SetViewPortX(this.movementPosition.x);// = new PIXI.Point(this.movementPosition.x, 0);
+            this.backgroundNear.SetViewPortX(this.movementPosition.x * 0.7);//= new PIXI.Point(this.movementPosition.x * 0.7, 0);
+            this.backgroundFar.SetViewPortX(this.movementPosition.x * 0.5); //new PIXI.Point(this.movementPosition.x * 0.55, 0);
         }
     }
 }
