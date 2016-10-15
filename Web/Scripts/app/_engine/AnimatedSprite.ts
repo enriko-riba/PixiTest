@@ -59,6 +59,11 @@ export class AnimationSequence  {
         var animationSpeed = fps / 60;
         this.clip = new PIXI.extras.MovieClip(textures);  
         this.clip.animationSpeed = animationSpeed;   
+
+        //var filter = new PIXI.filters.BlurXFilter();
+        //filter.quality = 1;
+        //filter.strength = 1.5;
+        //this.clip.filters = [filter];
     }
 
     private clip: PIXI.extras.MovieClip = null;  

@@ -1,6 +1,6 @@
 ﻿import { Scene } from "app/_engine/Scene";
 import { State } from "app/_engine/SceneManager";
-import { Parallax } from "app/_engine/Parallax";
+import { Parallax, CyclicTextureLoader } from "app/_engine/Parallax";
 import { KeyboardAction } from "app/_engine/KeyboardMapper";
 import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
 import * as Global from "app/Demo/Global";
@@ -63,7 +63,7 @@ export class InGameScene extends Scene {
 
         //  far parallax
         var t = resources["assets/images/background/Canyon.png"].texture;
-        this.backgroundFar = new Parallax([t]);
+        this.backgroundFar = new Parallax(new CyclicTextureLoader([t]));
         this.backgroundFar.ViewPortSize = vps;
         this.addChildAt(this.backgroundFar, 0);
 
@@ -73,14 +73,14 @@ export class InGameScene extends Scene {
             var name = `assets/images/background/trees0${i + 1}.png`;
             nearTextures.push(resources[name].texture);
         }
-        this.backgroundNear = new Parallax(nearTextures);
+        this.backgroundNear = new Parallax(new CyclicTextureLoader(nearTextures));
         this.backgroundNear.ViewPortSize = vps;
         this.backgroundNear.position.y = Global.SCENE_HEIGHT - this.backgroundNear.height;
         this.addChildAt(this.backgroundNear, 1);
 
         //  bottom (nearest) parallax
         t = resources["assets/images/background/ground.png"].texture;
-        this.backgroundGround = new Parallax([t]);
+        this.backgroundGround = new Parallax(new CyclicTextureLoader([t]));
         this.backgroundGround.ViewPortSize = vps;
         this.backgroundGround.position.y = Global.SCENE_HEIGHT - this.backgroundGround.height + 35;
         this.addChildAt(this.backgroundGround, 2);        
@@ -90,18 +90,28 @@ export class InGameScene extends Scene {
         if (this.movementState != MovementState.Left) {
             this.hero.PlayAnimation("left");
             this.movementState = MovementState.Left;
+            var filter = new PIXI.filters.BlurXFilter();
+            filter.quality = 1;
+            filter.strength = 1.5;
+            this.backgroundGround.filters = [filter];
         }
     }
     private MoveRight = () => {
         if (this.movementState != MovementState.Right) {
             this.hero.PlayAnimation("right");
             this.movementState = MovementState.Right;
+
+            var filter = new PIXI.filters.BlurXFilter();
+            filter.quality = 1;
+            filter.strength = 1.5;
+            this.backgroundGround.filters = [filter];
         }
     }
     private MoveIdle = () => {
         if (this.movementState != MovementState.Idle) {
             this.hero.PlayAnimation("idle");
             this.movementState = MovementState.Idle;
+            this.backgroundGround.filters = null;
         }
     }
 
