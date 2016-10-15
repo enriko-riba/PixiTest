@@ -39,6 +39,29 @@
         return node;
     }
 
+    public InsertNode = (data: T): LinkedListNode<T> => {
+        var node = new LinkedListNode<T>();
+        node.data = data;
+        node.previous = node.next = null;
+        node.list = this;
+        if (!this.first) {
+            this.first = node;
+            this.last = node;
+        } else {
+            this.first.next.previous = node;
+            node.previous = this.first.next;
+            this.first = node;
+        }
+        this.length++;
+        return node;
+    }
+
+    public RemoveNode(node: LinkedListNode<T>) {
+        if (node.previous) node.previous = node.next;
+        if (node.next) node.next.previous = node.previous;
+        this.length--;
+    }
+
     public RollLeft() {
         var last = this.first;
         var second = this.first.next;
