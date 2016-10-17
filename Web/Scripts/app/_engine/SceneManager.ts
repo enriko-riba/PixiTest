@@ -145,6 +145,7 @@ export class SceneManager {
             this.startTime = timestamp;
 
         var dt = timestamp - this.startTime;
+        if (dt > 50) dt = 50;
         this.startTime = timestamp;
         if (this.currentScene.onUpdate)
             this.currentScene.onUpdate(dt);

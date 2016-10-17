@@ -23,41 +23,41 @@
     }
 
     public AddNode = (data: T): LinkedListNode<T> => {
-        var node = new LinkedListNode<T>();
-        node.data = data;
-        node.previous = node.next = null;
-        node.list = this;
+        var newLastNode = new LinkedListNode<T>();
+        newLastNode.data = data;
+        newLastNode.previous = newLastNode.next = null;
+        newLastNode.list = this;
         if (!this.first) {
-            this.first = node;
-            this.last = node;
+            this.first = newLastNode;
+            this.last = newLastNode;
         } else {
-            this.last.next = node;
-            node.previous = this.last;
-            this.last = node;
+            newLastNode.previous = this.last;
+            this.last.next = newLastNode;
+            this.last = newLastNode;
         }
         this.length++;
-        return node;
+        return newLastNode;
     }
 
     public InsertNode = (data: T): LinkedListNode<T> => {
-        var node = new LinkedListNode<T>();
-        node.data = data;
-        node.previous = node.next = null;
-        node.list = this;
+        var newFirstNode = new LinkedListNode<T>();
+        newFirstNode.data = data;
+        newFirstNode.previous = newFirstNode.next = null;
+        newFirstNode.list = this;
         if (!this.first) {
-            this.first = node;
-            this.last = node;
+            this.first = newFirstNode;
+            this.last = newFirstNode;
         } else {
-            this.first.next.previous = node;
-            node.previous = this.first.next;
-            this.first = node;
+            newFirstNode.next = this.first;
+            this.first.previous = newFirstNode;
+            this.first = newFirstNode;
         }
         this.length++;
-        return node;
+        return newFirstNode;
     }
 
     public RemoveNode(node: LinkedListNode<T>) {
-        if (node.previous) node.previous = node.next;
+        if (node.previous) node.previous.next = node.next;
         if (node.next) node.next.previous = node.previous;
         this.length--;
     }
