@@ -64,8 +64,8 @@ export class InGameScene extends Scene {
         //  far parallax
         var t = resources["assets/images/background/Canyon.png"].texture;
         this.backgroundFar = new Parallax(new CyclicTextureLoader([t]));
-        this.backgroundFar.ViewPortSize = vps;
-        this.addChildAt(this.backgroundFar, 0);
+        //this.backgroundFar.ViewPortSize = vps;
+        //this.addChildAt(this.backgroundFar, 0);
 
         //  near parallax
         var nearTextures: Array<PIXI.Texture> = [];
@@ -76,14 +76,16 @@ export class InGameScene extends Scene {
         this.backgroundNear = new Parallax(new CyclicTextureLoader(nearTextures));
         this.backgroundNear.ViewPortSize = vps;
         this.backgroundNear.position.y = Global.SCENE_HEIGHT - this.backgroundNear.height;
-        this.addChildAt(this.backgroundNear, 1);
+        this.addChildAt(this.backgroundNear, 0);
 
         //  bottom (nearest) parallax
         t = resources["assets/images/background/ground.png"].texture;
         this.backgroundGround = new Parallax(new CyclicTextureLoader([t]));
-        this.backgroundGround.ViewPortSize = vps;
-        this.backgroundGround.position.y = Global.SCENE_HEIGHT - this.backgroundGround.height + 35;
-        this.addChildAt(this.backgroundGround, 2);        
+        //this.backgroundGround.ViewPortSize = vps;
+        //this.backgroundGround.position.y = Global.SCENE_HEIGHT - this.backgroundGround.height + 35;
+        //this.addChildAt(this.backgroundGround, 2); 
+
+        this.setParallaxPositions();       
     }
 
     private MoveLeft = () => {
@@ -129,10 +131,14 @@ export class InGameScene extends Scene {
         if (move !== 0) {
             const VELOCITY = 60;
             this.movementPosition.x += (move * VELOCITY);
-            this.backgroundGround.SetViewPortX(this.movementPosition.x);// = new PIXI.Point(this.movementPosition.x, 0);
-            this.backgroundNear.SetViewPortX(this.movementPosition.x * 0.7);//= new PIXI.Point(this.movementPosition.x * 0.7, 0);
-            this.backgroundFar.SetViewPortX(this.movementPosition.x * 0.5); //new PIXI.Point(this.movementPosition.x * 0.55, 0);
+            this.setParallaxPositions();
         }
+    }
+
+    private setParallaxPositions() {
+        this.backgroundGround.SetViewPortX(this.movementPosition.x);// = new PIXI.Point(this.movementPosition.x, 0);
+        this.backgroundNear.SetViewPortX(this.movementPosition.x * 0.7);//= new PIXI.Point(this.movementPosition.x * 0.7, 0);
+        this.backgroundFar.SetViewPortX(this.movementPosition.x * 0.5); //new PIXI.Point(this.movementPosition.x * 0.55, 0);
     }
 }
 
