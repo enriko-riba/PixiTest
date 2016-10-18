@@ -26,6 +26,8 @@ export class InGameScene extends Scene {
     private movementState: MovementState = -1;
     private movementPosition = new PIXI.Point();
 
+    private txtWorldPosition: PIXI.Text;
+
     /**
     *   Creates a new scene instance.
     */
@@ -39,6 +41,10 @@ export class InGameScene extends Scene {
         Global.kbd.AddKeyboardActionHandler(new KeyboardAction(65, 'Move left', () => this.MoveLeft(), false), State.IN_GAME);
         Global.kbd.AddKeyboardActionHandler(new KeyboardAction(68, 'Move right', () => this.MoveRight(), false), State.IN_GAME);
         Global.kbd.AddKeyboardActionHandler(new KeyboardAction(83, 'Stop', () => this.MoveIdle(), false), State.IN_GAME);
+
+        this.txtWorldPosition = new PIXI.Text("Position: (0,0)", Global.BTN_STYLE);
+        this.txtWorldPosition.position.set(10); 
+        this.addChild(this.txtWorldPosition);
 
         //-----------------------------
         //  setup hero
@@ -54,6 +60,7 @@ export class InGameScene extends Scene {
         this.hero.position.set((Global.SCENE_WIDTH / 2) - (this.hero.width / 2), Global.SCENE_HEIGHT - 150);
         this.addChild(this.hero);
         this.hero.PlayAnimation("idle");
+        this.movementPosition.x = -1024;
 
         //-----------------------------
         //  setup backgrounds
@@ -64,27 +71,27 @@ export class InGameScene extends Scene {
         //  far parallax
         var t = resources["assets/images/background/Canyon.png"].texture;
         this.backgroundFar = new Parallax(new CyclicTextureLoader([t]));
-        //this.backgroundFar.ViewPortSize = vps;
-        //this.addChildAt(this.backgroundFar, 0);
+        this.backgroundFar.ViewPortSize = vps;
+        this.addChildAt(this.backgroundFar, 0);
 
         //  near parallax
         var nearTextures: Array<PIXI.Texture> = [];
-        for (var i: number = 0; i < 5; i++) {
+        for (var i: number = 0; i < 3; i++) {
             var name = `assets/images/background/trees0${i + 1}.png`;
             nearTextures.push(resources[name].texture);
         }
         this.backgroundNear = new Parallax(new CyclicTextureLoader(nearTextures));
         this.backgroundNear.ViewPortSize = vps;
-        this.backgroundNear.position.y = Global.SCENE_HEIGHT - this.backgroundNear.height;
-        this.addChildAt(this.backgroundNear, 0);
+        this.backgroundNear.position.y = Global.SCENE_HEIGHT - nearTextures[0].height;   
+        this.addChildAt(this.backgroundNear, 1);
 
         //  bottom (nearest) parallax
         t = resources["assets/images/background/ground.png"].texture;
         this.backgroundGround = new Parallax(new CyclicTextureLoader([t]));
-        //this.backgroundGround.ViewPortSize = vps;
-        //this.backgroundGround.position.y = Global.SCENE_HEIGHT - this.backgroundGround.height + 35;
-        //this.addChildAt(this.backgroundGround, 2); 
-
+        this.backgroundGround.ViewPortSize = vps;
+        this.backgroundGround.position.y = Global.SCENE_HEIGHT - t.height + 35;
+        this.addChildAt(this.backgroundGround, 2); 
+        
         this.setParallaxPositions();       
     }
 
@@ -92,10 +99,10 @@ export class InGameScene extends Scene {
         if (this.movementState != MovementState.Left) {
             this.hero.PlayAnimation("left");
             this.movementState = MovementState.Left;
-            var filter = new PIXI.filters.BlurXFilter();
-            filter.quality = 1;
-            filter.strength = 1.5;
-            this.backgroundGround.filters = [filter];
+            //var filter = new PIXI.filters.BlurXFilter();
+            //filter.quality = 1;
+            //filter.strength = 1.5;
+            //this.backgroundGround.filters = [filter];
         }
     }
     private MoveRight = () => {
@@ -103,17 +110,17 @@ export class InGameScene extends Scene {
             this.hero.PlayAnimation("right");
             this.movementState = MovementState.Right;
 
-            var filter = new PIXI.filters.BlurXFilter();
-            filter.quality = 1;
-            filter.strength = 1.5;
-            this.backgroundGround.filters = [filter];
+            //var filter = new PIXI.filters.BlurXFilter();
+            //filter.quality = 1;
+            //filter.strength = 1.5;
+            //this.backgroundGround.filters = [filter];
         }
     }
     private MoveIdle = () => {
         if (this.movementState != MovementState.Idle) {
             this.hero.PlayAnimation("idle");
             this.movementState = MovementState.Idle;
-            this.backgroundGround.filters = null;
+            //this.backgroundGround.filters = null;
         }
     }
 
@@ -132,13 +139,19 @@ export class InGameScene extends Scene {
             const VELOCITY = 60;
             this.movementPosition.x += (move * VELOCITY);
             this.setParallaxPositions();
+            this.txtWorldPosition.text = `Position: (${this.movementPosition.x.toFixed(0)}, ${this.movementPosition.y.toFixed(0)})`;
         }
     }
 
     private setParallaxPositions() {
-        this.backgroundGround.SetViewPortX(this.movementPosition.x);// = new PIXI.Point(this.movementPosition.x, 0);
-        this.backgroundNear.SetViewPortX(this.movementPosition.x * 0.7);//= new PIXI.Point(this.movementPosition.x * 0.7, 0);
-        this.backgroundFar.SetViewPortX(this.movementPosition.x * 0.5); //new PIXI.Point(this.movementPosition.x * 0.55, 0);
+        var halfsize = this.backgroundGround.ViewPortSize.x / 2;
+        this.backgroundGround.SetViewPortX(this.movementPosition.x - halfsize);
+
+        halfsize = this.backgroundNear.ViewPortSize.x / 2;
+        this.backgroundNear.SetViewPortX(this.movementPosition.x * 0.7 - halfsize);
+
+        halfsize = this.backgroundFar.ViewPortSize.x / 2;
+        this.backgroundFar.SetViewPortX(this.movementPosition.x * 0.5 - halfsize);
     }
 }
 
