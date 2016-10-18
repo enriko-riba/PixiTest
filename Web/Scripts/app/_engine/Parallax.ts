@@ -8,8 +8,7 @@ export class Parallax extends PIXI.Container {
 
     private viewPortSize: PIXI.Point;
     private textureLoader: IParallaxTextureLoader;
-    private rightEdge: number;
-    private leftEdge: number;
+    private worldPositionX: number;
 
     /**
     *   Creates a new ParalaxSprite instance.
@@ -19,26 +18,24 @@ export class Parallax extends PIXI.Container {
 
         this.textureLoader = textureLoader;
         this.viewPortSize = new PIXI.Point(100, 100);
-        this.leftEdge = 0;
-        this.rightEdge = 100;
+        this.worldPositionX = 0;
     }
 
     public SetViewPortX(x: number) {
-        var newPosition = x - (this.viewPortSize.x / 2);
-        var distance = this.leftEdge - newPosition;
-        this.leftEdge = newPosition;
-        this.rightEdge = newPosition + this.viewPortSize.x;
-        this.recalculatePosition(distance);
+        x = ~~x;
+        var distance = this.worldPositionX - x;
+        this.worldPositionX = x;
+        this.updatePosition(distance);
     }
+
     public get ViewPortSize() {
         return this.viewPortSize;
     }
     public set ViewPortSize(point: PIXI.Point) {
         this.viewPortSize = point;
-        this.calcHorizontalTextures();
     }
 
-    private recalculatePosition = (distance: number) => {
+    private updatePosition = (distance: number) => {
 
         if (this.children.length == 0)
             this.calcHorizontalTextures();
@@ -50,13 +47,13 @@ export class Parallax extends PIXI.Container {
             if (distance < 0) {
 
                 //  check removal
-                if (spr.position.x < (this.leftEdge - spr.width)) {
+                if (spr.position.x + spr.width < 0) {
                     this.removeChild(spr);
                 }
             } else {
 
                 //  check removal
-                if (spr.position.x > this.rightEdge) {
+                if (spr.position.x > this.ViewPortSize.x) {
                     this.removeChild(spr);
                 }
             }
@@ -68,27 +65,28 @@ export class Parallax extends PIXI.Container {
         var spr = new PIXI.Sprite(texture);
         spr.position.x = positionX;
         this.addChild(spr);
+        console.log('added sprite at: ' + positionX);
     }
 
 
-    private calcHorizontalTextures = () => {
+    public calcHorizontalTextures = () => {
 
         this.removeChildren();
-        var totalTextureWidth = 0;
+        var currentPositionX = 0;
 
         //-------------------------------------------------------
         //  create sprites from textures
         //-------------------------------------------------------
-        while (totalTextureWidth <= this.ViewPortSize.x) {
-            var texture = this.textureLoader.GetTextureFor(this.leftEdge + totalTextureWidth);
-            this.addSprite(texture, totalTextureWidth);
-            totalTextureWidth += texture.width;
+        while (currentPositionX <= this.ViewPortSize.x) {
+            var texture = this.textureLoader.GetTextureFor(this.worldPositionX + currentPositionX);
+            this.addSprite(texture, currentPositionX);
+            currentPositionX += texture.width;
         }
     }
 }
 
 export interface IParallaxTextureLoader {
-    GetTextureFor(position: number): PIXI.Texture;
+    GetTextureFor(worldPosition: number): PIXI.Texture;
 }
 
 export class CyclicTextureLoader implements IParallaxTextureLoader {
@@ -104,17 +102,22 @@ export class CyclicTextureLoader implements IParallaxTextureLoader {
     }
 
 
-    public GetTextureFor(position: number): PIXI.Texture {
-        var searchX = position % this.totalWidth;
+    public GetTextureFor(worldPosition: number): PIXI.Texture {
+        var searchX = worldPosition % this.totalWidth;
         var width: number = 0;
 
         while (searchX < 0) {
             searchX += this.totalWidth;
         }
+        console.log('GetTextureFor( ' + worldPosition + ' )' + ', searchX: ' + searchX);
+        var tx: PIXI.Texture;
         for (var i: number = 0; i < this.textures.length; i++) {
-            var tx = this.textures[i];
+            tx = this.textures[i];
             width += tx.width;
-            if (width > searchX) return tx;
+            if (width > searchX) break;;
         }
+
+        console.log('Found texture: ' + tx.baseTexture.imageUrl);
+        return tx;
     }
 }
