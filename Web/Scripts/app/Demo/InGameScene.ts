@@ -25,8 +25,12 @@ export class InGameScene extends Scene {
 
     private movementState: MovementState = -1;
     private movementPosition = new PIXI.Point();
-    private readonly VELOCITY = 860;
+    private readonly VELOCITY = 300;
     private readonly ANIMATION_FPS = 10;
+
+    private isRunning = false;
+
+    private txtPosition: PIXI.Text;
 
     /**
     *   Creates a new scene instance.
@@ -38,9 +42,12 @@ export class InGameScene extends Scene {
 
     private setup() {
         this.BackGroundColor = 0x1099bb;
-        Global.kbd.AddKeyboardActionHandler(new KeyboardAction(65, 'Move left', () => this.MoveLeft(), false), State.IN_GAME);
-        Global.kbd.AddKeyboardActionHandler(new KeyboardAction(68, 'Move right', () => this.MoveRight(), false), State.IN_GAME);
-        Global.kbd.AddKeyboardActionHandler(new KeyboardAction(83, 'Stop', () => this.MoveIdle(), false), State.IN_GAME);
+        Global.kbd.AddKeyboardActionHandler(new KeyboardAction(65, 'Move left', () => this.MoveLeft(), true), State.IN_GAME);
+        Global.kbd.AddKeyboardActionHandler(new KeyboardAction(68, 'Move right', () => this.MoveRight(), true), State.IN_GAME);
+        //Global.kbd.AddKeyboardActionHandler(new KeyboardAction(65, 'Run left', () => this.RunLeft(), true, true), State.IN_GAME);
+        //Global.kbd.AddKeyboardActionHandler(new KeyboardAction(68, 'Run right', () => this.RunRight(), true, true), State.IN_GAME);
+        Global.kbd.AddKeyboardActionHandler(new KeyboardAction(16, 'Run', () => this.Run(), false, true), State.IN_GAME);
+        Global.kbd.AddKeyboardActionHandler(new KeyboardAction(83, 'Stop', () => this.MoveIdle(), true), State.IN_GAME);
 
         //-----------------------------
         //  setup hero
@@ -82,40 +89,37 @@ export class InGameScene extends Scene {
         this.addChildAt(this.backgroundGround, 2);        
         this.backgroundGround.y = Global.SCENE_HEIGHT - this.backgroundGround.height + 35;
 
-        this.setParallaxPositions();       
+        this.setParallaxPositions(); 
+
+        this.txtPosition = new PIXI.Text("Position: (0, 0)", Global.TXT_STYLE);
+        this.txtPosition.resolution = window.devicePixelRatio;
+        this.addChild(this.txtPosition);
     }
 
     private MoveLeft = () => {
         if (this.movementState != MovementState.Left) {
             this.hero.PlayAnimation("left");
             this.movementState = MovementState.Left;
-            //var filter = new PIXI.filters.BlurXFilter();
-            //filter.quality = 1;
-            //filter.strength = 1.5;
-            //this.backgroundGround.filters = [filter];
         }
     }
     private MoveRight = () => {
         if (this.movementState != MovementState.Right) {
             this.hero.PlayAnimation("right");
             this.movementState = MovementState.Right;
-
-            //var filter = new PIXI.filters.BlurXFilter();
-            //filter.quality = 1;
-            //filter.strength = 1.5;
-            //this.backgroundGround.filters = [filter];
         }
     }
+    private Run = () => {
+        this.isRunning = true;
+    }
+    
     private MoveIdle = () => {
         if (this.movementState != MovementState.Idle) {
             this.hero.PlayAnimation("idle");
             this.movementState = MovementState.Idle;
-            //this.backgroundGround.filters = null;
         }
     }
 
     public onUpdate = (dt: number) => {
-        //console.log('onUpdate(' + dt + ')');
         Global.kbd.update(State.IN_GAME);
 
         var move = 0;
@@ -126,9 +130,19 @@ export class InGameScene extends Scene {
         }
 
         if (move !== 0) {
-            this.movementPosition.x += (move * this.VELOCITY);
+            this.movementPosition.x += (move * this.VELOCITY) * (this.isRunning ? 2.7 : 1.0);
+            if (this.isRunning) {
+                this.hero.Fps = this.ANIMATION_FPS * 3;
+                this.movementPosition.x += (move * this.VELOCITY) * 2.7;
+            } else {
+                this.hero.Fps = this.ANIMATION_FPS;
+                this.movementPosition.x += (move * this.VELOCITY);
+            }
+
             this.setParallaxPositions();
+            this.txtPosition.text = `Position: (${this.movementPosition.x.toFixed(0)}, ${this.movementPosition.y.toFixed(0)})`;
         }
+        this.isRunning = false;
     }
 
     private setParallaxPositions() {

@@ -19,7 +19,16 @@ export var BTN_STYLE: PIXI.ITextStyle =
         strokeThickness: 1,
         stroke: 0xCC5010
     };
-
+export var TXT_STYLE: PIXI.ITextStyle =
+    {
+        align: "center",
+        padding: 0,
+        fontSize: "18px",
+        fontFamily: "Calibri",
+        fill: 0x901010,
+        strokeThickness: 1,
+        stroke: 0x901010
+    };
 
 export var sceneMngr: SceneManager;
 export var kbd = new KeyboardMapper();
