@@ -16,7 +16,7 @@ export class Parallax extends PIXI.Container {
     constructor(size?: PIXI.Point) {
         super();
 
-        this.ViewPortSize = size || new PIXI.Point(100, 100);       
+        this.ViewPortSize = size || new PIXI.Point(100, 100);
     }
 
     public SetViewPortX(x: number) {
@@ -30,11 +30,18 @@ export class Parallax extends PIXI.Container {
         return this.viewPortSize;
     }
     public set ViewPortSize(point: PIXI.Point) {
-        this.viewPortSize = point;         
+        this.viewPortSize = point;
     }
 
+    private startIDX: number;
+    private endIDX: number;
+    private spriteBuffer: Array<PIXI.Sprite> = [];
+
+    public setTextures(...textures: Array<PIXI.Texture>) {
+
+    }
     private recalculatePosition = (distance: number) => {
-        
+
         //   have an array with all sprites
         //   have an start,end index for sprites in viewport
         //   check if start/end sprites are out of vp, if yes remove them and update start/end index
@@ -43,7 +50,7 @@ export class Parallax extends PIXI.Container {
         //          if not inside array bounds ROL/ROR array and index, add new sprite and update start/end
 
         //  update sprite positions       
-        this.children.forEach((spr:PIXI.Sprite) => {
+        this.children.forEach((spr: PIXI.Sprite) => {
             spr.x += distance;
 
             if (distance < 0) {
@@ -58,7 +65,7 @@ export class Parallax extends PIXI.Container {
                     this.removeChild(spr);
                     this.swapQueue.push(spr);
                 }
-            }            
+            }
         });
 
         if (distance < 0) {
