@@ -40,7 +40,7 @@ export class AnimatedSprite extends PIXI.Container {
     public set Fps(fps: number) {
         var animationSpeed = fps / 60;
         this.clip.animationSpeed = animationSpeed;
-        console.log('animation speed: ' + animationSpeed);
+        //console.log('FPS changed to: '  + fps + ', animation speed: ' + animationSpeed);
     }
     public Stop() {
         this.isPlaying = false;
@@ -49,11 +49,7 @@ export class AnimatedSprite extends PIXI.Container {
     private resetAnimation() {
         this.isPlaying = true;
         if(this.clip)
-            this.clip.stop();
-        //this.removeChildren();
-        //if (this.currentSequence) {
-        //    this.clip.stop();
-        //}
+            this.clip.stop();        
     }
 }
 
