@@ -21,13 +21,21 @@ export class AnimatedSprite extends PIXI.Container {
             this.resetAnimation();
             this.addChild(this.currentSequence.Clip);
             if (fps) {
-                var animationSpeed = fps / 60;
-                this.currentSequence.Clip.animationSpeed = animationSpeed;
+                this.Fps = fps;
+                //var animationSpeed = fps / 60;
+                //this.currentSequence.Clip.animationSpeed = animationSpeed;
             }
             this.currentSequence.Clip.play();
         }
     }
 
+    public get Fps() {
+        return this.currentSequence.Clip.animationSpeed * 60;
+    }
+    public set Fps(fps: number) {
+        var animationSpeed = fps / 60;
+        this.currentSequence.Clip.animationSpeed = animationSpeed;
+    }
     public Stop() {
         this.isPlaying = false;
     }
