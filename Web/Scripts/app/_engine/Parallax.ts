@@ -68,13 +68,6 @@ export class Parallax extends PIXI.Container {
         var firstSpr: PIXI.Sprite = this.spriteBuffer[this.startIDX];
         var lastSpr: PIXI.Sprite = this.spriteBuffer[this.endIDX];
 
-        //   have an array with all sprites
-        //   have an start,end index for sprites in viewport
-        //   check if start/end sprites are out of vp, if yes remove them and update start/end index
-        //   check if start/end is fully inside vp and a new sprite must be added
-        //      if yes calculate new index and check it is inside array bounds
-        //          if not inside array bounds ROL/ROR array and index, add new sprite and update start/end
-
         //  update sprite positions       
         this.children.forEach((spr: PIXI.Sprite) => {
             spr.x += distance;
@@ -91,7 +84,7 @@ export class Parallax extends PIXI.Container {
                 }
             }
 
-            //  check for new sprites from righth side
+            //  check for new sprites from right side
             if (lastSpr.x + lastSpr.width < this.viewPortSize.x) {
                 this.endIDX++;
                 if (this.endIDX >= this.spriteBuffer.length) {

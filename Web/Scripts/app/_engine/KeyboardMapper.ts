@@ -79,6 +79,10 @@ export class KeyboardMapper {
         if (!this.stateActions[state]) this.stateActions[state] = [];
         this.stateActions[state].push(action);
     }
+
+    public IsKeyDown(keyCode: number) {
+        return this.keyboard[keyCode];
+    }
 }
 
 
