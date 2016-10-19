@@ -2,12 +2,13 @@
 
 export class AnimatedSprite extends PIXI.Container {
     constructor() {
-        super();        
+        super();
     }
 
     private animations = new Dictionary<AnimationSequence>();
     private isPlaying: boolean = false;
     private currentSequence: AnimationSequence;
+    private clip: PIXI.extras.MovieClip = null;  
 
     public addAnimations(...sequences: Array<AnimationSequence>) {
         sequences.forEach((seq, idx, arr) => {
@@ -19,22 +20,27 @@ export class AnimatedSprite extends PIXI.Container {
         if (!this.currentSequence || this.currentSequence.sequenceName !== name) {
             this.currentSequence = this.animations.get(name);
             this.resetAnimation();
-            this.addChild(this.currentSequence.Clip);
-            if (fps) {
-                this.Fps = fps;
-                //var animationSpeed = fps / 60;
-                //this.currentSequence.Clip.animationSpeed = animationSpeed;
+
+            if (!this.clip) {
+                this.clip = new PIXI.extras.MovieClip(this.currentSequence.Textures);
+                this.addChild(this.clip);
+                if (!fps) fps = 8;  //    default for new animations
+            } else {
+                this.clip.textures = this.currentSequence.Textures;
             }
-            this.currentSequence.Clip.play();
+            
+            this.Fps = fps || this.Fps;
+            this.clip.play();
         }
-    }
+    } 
 
     public get Fps() {
-        return this.currentSequence.Clip.animationSpeed * 60;
+        return this.clip.animationSpeed * 60;
     }
     public set Fps(fps: number) {
         var animationSpeed = fps / 60;
-        this.currentSequence.Clip.animationSpeed = animationSpeed;
+        this.clip.animationSpeed = animationSpeed;
+        console.log('animation speed: ' + animationSpeed);
     }
     public Stop() {
         this.isPlaying = false;
@@ -42,45 +48,47 @@ export class AnimatedSprite extends PIXI.Container {
 
     private resetAnimation() {
         this.isPlaying = true;
-        this.removeChildren();
-        if (this.currentSequence) {
-            this.currentSequence.Clip.stop();
-        }
+        if(this.clip)
+            this.clip.stop();
+        //this.removeChildren();
+        //if (this.currentSequence) {
+        //    this.clip.stop();
+        //}
     }
 }
 
+/*
+*   Creates textures form a texture atlas.
+*/
 export class AnimationSequence  {
-    constructor(public sequenceName: string, private textureName:string, private frames: Array<number> = [], frameWidth : number, frameHeight : number, private fps : number = 8) {
-        var base: PIXI.BaseTexture = PIXI.utils.TextureCache[textureName];
+    private textures: Array<PIXI.Texture> = [];
+    constructor(public sequenceName: string, textureAtlasName:string, frames: Array<number> = [], frameWidth : number, frameHeight : number) {
+        var base: PIXI.BaseTexture = PIXI.utils.TextureCache[textureAtlasName];
         var xFrames = Math.floor(base.width / frameWidth);
         var yFrames = Math.floor(base.height / frameHeight);
-        var textures = [];
+       
         frames.forEach((frame, idx, arr) => {
             var texture = new PIXI.Texture(base);            
             var y = Math.floor(frame / xFrames);
             var x = frame % xFrames;            
             var rect = new PIXI.Rectangle(x * frameWidth, y * frameHeight, frameWidth, frameHeight);
-            //console.log('clip: ' + sequenceName + ', frame: ' + frame + ', rect: {' + rect.x + ', ' + + rect.y + '}');
             texture.frame = rect;
-            textures.push(texture);
+            this.textures.push(texture);
         });
-        var animationSpeed = fps / 60;
-        this.clip = new PIXI.extras.MovieClip(textures);  
-        this.clip.animationSpeed = animationSpeed;   
-
-        //var filter = new PIXI.filters.BlurXFilter();
-        //filter.quality = 1;
-        //filter.strength = 1.5;
-        //this.clip.filters = [filter];
+        //var animationSpeed = fps / 60;
+        //this.clip = new PIXI.extras.MovieClip(textures);  
+        //this.clip.animationSpeed = animationSpeed;        
     }
 
-    private clip: PIXI.extras.MovieClip = null;  
+    //private clip: PIXI.extras.MovieClip = null;  
 
-    public get Clip() {
-        return this.clip;
+    //public get Clip() {
+    //    return this.clip;
+    //}
+    public get Textures() {
+        return this.textures;
     }
-
     public get FrameCount() {
-        return this.frames.length;
+        return this.textures.length;
     }
 }
