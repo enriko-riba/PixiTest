@@ -25,7 +25,7 @@ export class InGameScene extends Scene {
 
     private movementState: MovementState = -1;
     private movementPosition = new PIXI.Point();
-    private readonly VELOCITY = 300;
+    private readonly VELOCITY = 200;
     private readonly ANIMATION_FPS = 10;
 
     private isRunning = false;
@@ -70,10 +70,10 @@ export class InGameScene extends Scene {
         //  near parallax
         this.backgroundNear = new Parallax(vps);
         this.backgroundNear.setTextures("assets/images/background/trees01.png",
-            "assets/images/background/trees02.png",
-            "assets/images/background/trees03.png",
-            "assets/images/background/trees04.png",
-            "assets/images/background/trees05.png");
+                                        "assets/images/background/trees02.png",
+                                        "assets/images/background/trees03.png",
+                                        "assets/images/background/trees04.png",
+                                        "assets/images/background/trees05.png");
         this.addChildAt(this.backgroundNear, 1);
         this.backgroundNear.y = Global.SCENE_HEIGHT - this.backgroundNear.height;
 
@@ -81,10 +81,11 @@ export class InGameScene extends Scene {
         this.backgroundGround = new Parallax(vps);
         this.backgroundGround.setTextures("assets/images/background/ground.png");
         this.addChildAt(this.backgroundGround, 2);
-        this.backgroundGround.y = Global.SCENE_HEIGHT - this.backgroundGround.height + 35;
+        this.backgroundGround.y = Global.SCENE_HEIGHT - this.backgroundGround.height + 10;
 
         this.setParallaxPositions();
 
+        //  debug text
         this.txtPosition = new PIXI.Text("Position: (0, 0)", Global.TXT_STYLE);
         this.txtPosition.resolution = window.devicePixelRatio;
         this.addChild(this.txtPosition);
@@ -97,8 +98,7 @@ export class InGameScene extends Scene {
         var newIsRunning: boolean = kbd.IsKeyDown(16);
 
         //  run or normal speed?             
-        var animationFPS = this.ANIMATION_FPS * (this.isRunning ? 3 : 1);
-        console.log('isRunning: ' + newIsRunning + ', animationFPS: ' + animationFPS);
+        var animationFPS = this.ANIMATION_FPS * (newIsRunning ? 1.6 : 1);
 
         //  check action keys
         if (kbd.IsKeyDown(65)) {
@@ -116,10 +116,10 @@ export class InGameScene extends Scene {
                     this.hero.PlayAnimation("idle", this.ANIMATION_FPS / 2);
                     break;
                 case MovementState.Left:
-                    this.hero.PlayAnimation("left");
+                    this.hero.PlayAnimation("left", animationFPS);
                     break;
                 case MovementState.Right:
-                    this.hero.PlayAnimation("right");
+                    this.hero.PlayAnimation("right", animationFPS);
                     break;
             }
         }
@@ -145,7 +145,7 @@ export class InGameScene extends Scene {
 
         var velocity = 0;
         if (move !== 0) {
-            velocity = (move * this.VELOCITY) * (this.isRunning ? 3 : 1.0);
+            velocity = (move * this.VELOCITY) * (this.isRunning ? 2 : 1.0);
             this.movementPosition.x += velocity;
             this.setParallaxPositions();
         }
@@ -154,8 +154,8 @@ export class InGameScene extends Scene {
 
     private setParallaxPositions() {
         this.backgroundGround.SetViewPortX(this.movementPosition.x);
-        this.backgroundNear.SetViewPortX(this.movementPosition.x * 0.7);
-        this.backgroundFar.SetViewPortX(this.movementPosition.x * 0.5);
+        this.backgroundNear.SetViewPortX(this.movementPosition.x * 0.6);
+        this.backgroundFar.SetViewPortX(this.movementPosition.x * 0.4);
     }
 }
 
