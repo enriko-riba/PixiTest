@@ -58,43 +58,27 @@ export class InGameScene extends Scene {
         //-----------------------------
         //  setup backgrounds
         //-----------------------------
-        var resources = PIXI.loader.resources;
         var vps = new PIXI.Point(Global.SCENE_WIDTH, Global.SCENE_HEIGHT);
-        var spr: PIXI.Sprite;
 
         //  far parallax
-        var t = resources["assets/images/background/Canyon.png"].texture;        
         this.backgroundFar = new Parallax(vps);
-        this.addChildAt(this.backgroundFar, 0);
-        for (var i: number = 0; i < 3; i++) {
-            spr = new PIXI.Sprite(t);
-            spr.x = spr.width * i;
-            this.backgroundFar.addChild(spr);
-        }
+        this.backgroundFar.setTextures("assets/images/background/Canyon.png");
+        this.addChildAt(this.backgroundFar, 0);        
 
         //  near parallax
-        this.backgroundNear = new Parallax(vps);
-        this.addChildAt(this.backgroundNear, 1);
-        for (var j = 1; j < 3; j++) {
-            for (var i: number = 0; i < 5; i++) {
-                var name = `assets/images/background/trees0${i + 1}.png`;
-                var t = resources[name].texture;
-                spr = new PIXI.Sprite(t);
-                spr.x = j * i * t.width;
-                this.backgroundNear.addChild(spr);
-            }
-        }        
+        this.backgroundNear = new Parallax(vps);        
+        this.backgroundNear.setTextures("assets/images/background/trees01.png",
+                                        "assets/images/background/trees02.png",
+                                        "assets/images/background/trees03.png",
+                                        "assets/images/background/trees04.png",
+                                        "assets/images/background/trees05.png");  
+        this.addChildAt(this.backgroundNear, 1);        
         this.backgroundNear.y = Global.SCENE_HEIGHT - this.backgroundNear.height;
 
         //  bottom (nearest) parallax
-        t = resources["assets/images/background/ground.png"].texture;
         this.backgroundGround = new Parallax(vps);
-        this.addChildAt(this.backgroundGround, 2); 
-        for (var i: number = 0; i < 3; i++) {
-            spr = new PIXI.Sprite(t);
-            spr.x = i * t.width;
-            this.backgroundGround.addChild(spr);
-        }
+        this.backgroundGround.setTextures("assets/images/background/ground.png");
+        this.addChildAt(this.backgroundGround, 2);        
         this.backgroundGround.y = Global.SCENE_HEIGHT - this.backgroundGround.height + 35;
 
         this.setParallaxPositions();       
@@ -141,16 +125,16 @@ export class InGameScene extends Scene {
         }
 
         if (move !== 0) {
-            const VELOCITY = 60;
+            const VELOCITY = 560;
             this.movementPosition.x += (move * VELOCITY);
             this.setParallaxPositions();
         }
     }
 
     private setParallaxPositions() {
-        this.backgroundGround.SetViewPortX(this.movementPosition.x);// = new PIXI.Point(this.movementPosition.x, 0);
-        this.backgroundNear.SetViewPortX(this.movementPosition.x * 0.7);//= new PIXI.Point(this.movementPosition.x * 0.7, 0);
-        this.backgroundFar.SetViewPortX(this.movementPosition.x * 0.5); //new PIXI.Point(this.movementPosition.x * 0.55, 0);
+        this.backgroundGround.SetViewPortX(this.movementPosition.x);
+        this.backgroundNear.SetViewPortX(this.movementPosition.x * 0.7);
+        this.backgroundFar.SetViewPortX(this.movementPosition.x * 0.5); 
     }
 }
 
