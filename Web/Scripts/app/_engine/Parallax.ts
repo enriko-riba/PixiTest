@@ -7,114 +7,76 @@ import { LinkedListNode, LinkedList } from "./LinkedList";
 export class Parallax extends PIXI.Container {
 
     private viewPortSize: PIXI.Point;
-    private textureLoader: IParallaxTextureLoader;
-    private rightEdge: number;
-    private leftEdge: number;
+    private worldPosition: number = 0;
+    private swapQueue: Array<PIXI.Sprite> = [];
 
     /**
     *   Creates a new ParalaxSprite instance.
     */
-    constructor(textureLoader: IParallaxTextureLoader) {
+    constructor(size?: PIXI.Point) {
         super();
 
-        this.textureLoader = textureLoader;
-        this.viewPortSize = new PIXI.Point(100, 100);
-        this.leftEdge = 0;
-        this.rightEdge = 100;
+        this.ViewPortSize = size || new PIXI.Point(100, 100);       
     }
 
     public SetViewPortX(x: number) {
-        var newPosition = x - (this.viewPortSize.x / 2);
-        var distance = this.leftEdge - newPosition;
-        this.leftEdge = newPosition;
-        this.rightEdge = newPosition + this.viewPortSize.x;
+        //var newPosition = x - (this.viewPortSize.x / 2);
+        var distance = this.worldPosition - x;//newPosition;
+        this.worldPosition = x;   //newPosition;     
         this.recalculatePosition(distance);
     }
+
     public get ViewPortSize() {
         return this.viewPortSize;
     }
     public set ViewPortSize(point: PIXI.Point) {
-        this.viewPortSize = point;
-        this.calcHorizontalTextures();
+        this.viewPortSize = point;         
     }
 
     private recalculatePosition = (distance: number) => {
-
-        if (this.children.length == 0)
-            this.calcHorizontalTextures();
+        
+        //   have an array with all sprites
+        //   have an start,end index for sprites in viewport
+        //   check if start/end sprites are out of vp, if yes remove them and update start/end index
+        //   check if start/end is fully inside vp and a new sprite must be added
+        //      if yes calculate new index and check it is inside array bounds
+        //          if not inside array bounds ROL/ROR array and index, add new sprite and update start/end
 
         //  update sprite positions       
         this.children.forEach((spr:PIXI.Sprite) => {
-            spr.position.x += distance;
+            spr.x += distance;
 
             if (distance < 0) {
-
                 //  check removal
-                if (spr.position.x < (this.leftEdge - spr.width)) {
+                if (spr.x + spr.width < 0) {
                     this.removeChild(spr);
+                    this.swapQueue.unshift(spr);
                 }
             } else {
-
                 //  check removal
-                if (spr.position.x > this.rightEdge) {
+                if (spr.x > this.viewPortSize.x) {
                     this.removeChild(spr);
+                    this.swapQueue.push(spr);
                 }
+            }            
+        });
+
+        if (distance < 0) {
+            //  add new sprite at start
+            if (this.children[0].x > 0) {
+                var sprite = this.swapQueue.splice(0, 1)[0];
+                sprite.x = this.children[0].x - sprite.width;
+                this.addChild(sprite);
             }
-        });
-    }
-
-
-    private addSprite(texture: PIXI.Texture, positionX: number) {
-        var spr = new PIXI.Sprite(texture);
-        spr.position.x = positionX;
-        this.addChild(spr);
-    }
-
-
-    private calcHorizontalTextures = () => {
-
-        this.removeChildren();
-        var totalTextureWidth = 0;
-
-        //-------------------------------------------------------
-        //  create sprites from textures
-        //-------------------------------------------------------
-        while (totalTextureWidth <= this.ViewPortSize.x) {
-            var texture = this.textureLoader.GetTextureFor(this.leftEdge + totalTextureWidth);
-            this.addSprite(texture, totalTextureWidth);
-            totalTextureWidth += texture.width;
+        } else {
+            //  add new sprite at end
+            var lastSpr: PIXI.Sprite = this.children[this.children.length - 1] as PIXI.Sprite;
+            if (lastSpr.x + lastSpr.width < this.viewPortSize.x) {
+                var sprite = this.swapQueue.pop();
+                sprite.x = lastSpr.x + lastSpr.width;
+                this.addChild(sprite);
+            }
         }
     }
 }
 
-export interface IParallaxTextureLoader {
-    GetTextureFor(position: number): PIXI.Texture;
-}
-
-export class CyclicTextureLoader implements IParallaxTextureLoader {
-
-    private textures: Array<PIXI.Texture>;
-    private totalWidth: number = 0;
-
-    constructor(textures: Array<PIXI.Texture>) {
-        this.textures = textures;
-        textures.forEach((tx) => {
-            this.totalWidth += tx.width;
-        });
-    }
-
-
-    public GetTextureFor(position: number): PIXI.Texture {
-        var searchX = position % this.totalWidth;
-        var width: number = 0;
-
-        while (searchX < 0) {
-            searchX += this.totalWidth;
-        }
-        for (var i: number = 0; i < this.textures.length; i++) {
-            var tx = this.textures[i];
-            width += tx.width;
-            if (width > searchX) return tx;
-        }
-    }
-}

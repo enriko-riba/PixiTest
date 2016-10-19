@@ -1,6 +1,6 @@
 ﻿import { Scene } from "app/_engine/Scene";
 import { State } from "app/_engine/SceneManager";
-import { Parallax, CyclicTextureLoader } from "app/_engine/Parallax";
+import { Parallax } from "app/_engine/Parallax";
 import { KeyboardAction } from "app/_engine/KeyboardMapper";
 import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
 import * as Global from "app/Demo/Global";
@@ -60,30 +60,42 @@ export class InGameScene extends Scene {
         //-----------------------------
         var resources = PIXI.loader.resources;
         var vps = new PIXI.Point(Global.SCENE_WIDTH, Global.SCENE_HEIGHT);
+        var spr: PIXI.Sprite;
 
         //  far parallax
-        var t = resources["assets/images/background/Canyon.png"].texture;
-        this.backgroundFar = new Parallax(new CyclicTextureLoader([t]));
-        //this.backgroundFar.ViewPortSize = vps;
-        //this.addChildAt(this.backgroundFar, 0);
+        var t = resources["assets/images/background/Canyon.png"].texture;        
+        this.backgroundFar = new Parallax(vps);
+        this.addChildAt(this.backgroundFar, 0);
+        for (var i: number = 0; i < 3; i++) {
+            spr = new PIXI.Sprite(t);
+            spr.x = spr.width * i;
+            this.backgroundFar.addChild(spr);
+        }
 
         //  near parallax
-        var nearTextures: Array<PIXI.Texture> = [];
-        for (var i: number = 0; i < 5; i++) {
-            var name = `assets/images/background/trees0${i + 1}.png`;
-            nearTextures.push(resources[name].texture);
-        }
-        this.backgroundNear = new Parallax(new CyclicTextureLoader(nearTextures));
-        this.backgroundNear.ViewPortSize = vps;
-        this.backgroundNear.position.y = Global.SCENE_HEIGHT - this.backgroundNear.height;
-        this.addChildAt(this.backgroundNear, 0);
+        this.backgroundNear = new Parallax(vps);
+        this.addChildAt(this.backgroundNear, 1);
+        for (var j = 1; j < 3; j++) {
+            for (var i: number = 0; i < 5; i++) {
+                var name = `assets/images/background/trees0${i + 1}.png`;
+                var t = resources[name].texture;
+                spr = new PIXI.Sprite(t);
+                spr.x = j * i * t.width;
+                this.backgroundNear.addChild(spr);
+            }
+        }        
+        this.backgroundNear.y = Global.SCENE_HEIGHT - this.backgroundNear.height;
 
         //  bottom (nearest) parallax
         t = resources["assets/images/background/ground.png"].texture;
-        this.backgroundGround = new Parallax(new CyclicTextureLoader([t]));
-        //this.backgroundGround.ViewPortSize = vps;
-        //this.backgroundGround.position.y = Global.SCENE_HEIGHT - this.backgroundGround.height + 35;
-        //this.addChildAt(this.backgroundGround, 2); 
+        this.backgroundGround = new Parallax(vps);
+        this.addChildAt(this.backgroundGround, 2); 
+        for (var i: number = 0; i < 3; i++) {
+            spr = new PIXI.Sprite(t);
+            spr.x = i * t.width;
+            this.backgroundGround.addChild(spr);
+        }
+        this.backgroundGround.y = Global.SCENE_HEIGHT - this.backgroundGround.height + 35;
 
         this.setParallaxPositions();       
     }
@@ -92,10 +104,10 @@ export class InGameScene extends Scene {
         if (this.movementState != MovementState.Left) {
             this.hero.PlayAnimation("left");
             this.movementState = MovementState.Left;
-            var filter = new PIXI.filters.BlurXFilter();
-            filter.quality = 1;
-            filter.strength = 1.5;
-            this.backgroundGround.filters = [filter];
+            //var filter = new PIXI.filters.BlurXFilter();
+            //filter.quality = 1;
+            //filter.strength = 1.5;
+            //this.backgroundGround.filters = [filter];
         }
     }
     private MoveRight = () => {
@@ -103,17 +115,17 @@ export class InGameScene extends Scene {
             this.hero.PlayAnimation("right");
             this.movementState = MovementState.Right;
 
-            var filter = new PIXI.filters.BlurXFilter();
-            filter.quality = 1;
-            filter.strength = 1.5;
-            this.backgroundGround.filters = [filter];
+            //var filter = new PIXI.filters.BlurXFilter();
+            //filter.quality = 1;
+            //filter.strength = 1.5;
+            //this.backgroundGround.filters = [filter];
         }
     }
     private MoveIdle = () => {
         if (this.movementState != MovementState.Idle) {
             this.hero.PlayAnimation("idle");
             this.movementState = MovementState.Idle;
-            this.backgroundGround.filters = null;
+            //this.backgroundGround.filters = null;
         }
     }
 
