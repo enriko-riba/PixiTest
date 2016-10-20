@@ -58,6 +58,7 @@ export class InGameScene extends Scene {
         this.hero.addAnimations(new AnimationSequence("left", "assets/images/hero_64x64.png", [6, 7, 8, 9, 10, 11], FRAME_SIZE, FRAME_SIZE));
         this.hero.addAnimations(new AnimationSequence("jumpleft", "assets/images/hero_64x64.png", [48, 49, 50, 51, 52, 53], FRAME_SIZE, FRAME_SIZE));
         this.hero.addAnimations(new AnimationSequence("jumpright", "assets/images/hero_64x64.png", [54, 55, 56, 57, 58, 59], FRAME_SIZE, FRAME_SIZE));
+        this.hero.addAnimations(new AnimationSequence("jumpup", "assets/images/hero_64x64.png", [1, 3, 4], FRAME_SIZE, FRAME_SIZE));
         this.hero.addAnimations(new AnimationSequence("idle", "assets/images/hero_64x64.png", [25, 24, 40, 19, 19, 18, 19, 22, 30, 31, 1, 1, 1], FRAME_SIZE, FRAME_SIZE));
         this.hero.pivot.set(0.5, 1);
         this.hero.position.set((Global.SCENE_WIDTH / 2) - (this.hero.width / 2), Global.SCENE_HEIGHT - 150);
@@ -90,7 +91,7 @@ export class InGameScene extends Scene {
         this.addChildAt(this.backgroundGround, 2);
         this.backgroundGround.y = Global.SCENE_HEIGHT - this.backgroundGround.height + 10;
 
-        this.setParallaxPositions();
+        this.setParallaxPositions(this.movementPosition.x);
 
         //  debug text
         this.txtPosition = new PIXI.Text("Position: (0, 0)", Global.TXT_STYLE);
@@ -169,13 +170,15 @@ export class InGameScene extends Scene {
 
         //  has a jump started
         if (newIsJumping) {
-            this.jumpStart = new Date().getMilliseconds();
+            var velocity = this.getVelocityX();
+            this.jumpData = new JumpData(this.movementPosition, velocity);
         }
-
 
         this.isRunning = newIsRunning;
         this.movementState = newState;
+        this.isJumping = this.isJumping || newIsJumping;
     }
+    
 
     public onUpdate = (dt: number) => {
         this.handleKeyboard();
@@ -183,38 +186,99 @@ export class InGameScene extends Scene {
             this.updateJump(dt);
         else
             this.updateMovement(dt);
+    }
 
+    /**
+     * holds current jump information.
+     */
+    private jumpData: JumpData;
+
+    /**
+     * 
+     * @param dt the elapsed time in milliseconds
+     */
+    private updateJump(dt: number) {        
+        this.jumpData.update(dt);
+        this.movementPosition.x = this.jumpData.position.x;
+        this.movementPosition.y = this.jumpData.position.y;
+        this.hero.position.y = Global.SCENE_HEIGHT - 150 - this.movementPosition.y;
+        if (this.movementPosition.y < 0) {
+            this.isJumping = false;
+            this.movementState = MovementState.Idle;
+            this.hero.PlayAnimation("idle", this.ANIMATION_FPS / 2);
+        }
+        this.setParallaxPositions(this.movementPosition.x);
+    }
+
+    /**
+     * Calculates movement based on elapsed time, isRunning flag and direction.
+     * @param dt the elapsed time in milliseconds
+     */
+    private updateMovement(dt: number) {
+        var velocity = this.getVelocityX() * dt;
+        if (velocity !== 0) {           
+            this.movementPosition.x += velocity;
+            this.setParallaxPositions(this.movementPosition.x);
+        }
         this.txtPosition.text = `Position: (${this.movementPosition.x.toFixed(0)}, ${this.movementPosition.y.toFixed(0)}), velocity: ${velocity.toFixed(1)}`;
     }
 
-    private jumpStart: number;
-    private updateJump(dt) {
-
-    }
-
-    /*
-    *   Calculates movement based on ellapsed time, isRunning flag and direction.
-    */
-    private updateMovement(dt: number) {
+    /**
+     * Calculates the horizontal velocity
+     */
+    private getVelocityX() : number {
         var move = 0;
-        if (this.movementState === MovementState.Left) {
-            move = -dt / 1000;
-        } else if (this.movementState === MovementState.Right) {
-            move = dt / 1000;
+        if (this.movementState === MovementState.Left || this.movementState === MovementState.JumpLeft) {
+            move = -1 / 1000;
+        } else if (this.movementState === MovementState.Right || this.movementState === MovementState.JumpRight) {
+            move = 1 / 1000;
         }
-
-        if (move !== 0) {
-            var velocity = (move * this.VELOCITY) * (this.isRunning ? 2 : 1.0);
-            this.movementPosition.x += velocity;
-            this.setParallaxPositions();
-        }
+        var velocity = (move * this.VELOCITY) * (this.isRunning ? 2 : 1.0);
+        return velocity;
     }
 
+    /**
+     * Updates the parallax background components to a new world position.
+     * @param movementPositionX
+     */
+    private setParallaxPositions(movementPositionX: number) {
+        this.backgroundGround.SetViewPortX(movementPositionX);
+        this.backgroundNear.SetViewPortX(movementPositionX * 0.6);
+        this.backgroundFar.SetViewPortX(movementPositionX * 0.4);
+    }
+}
 
-    private setParallaxPositions() {
-        this.backgroundGround.SetViewPortX(this.movementPosition.x);
-        this.backgroundNear.SetViewPortX(this.movementPosition.x * 0.6);
-        this.backgroundFar.SetViewPortX(this.movementPosition.x * 0.4);
+class JumpData {
+    private startTime: number;
+    private accelerationY: number;
+    private velocityX: number;
+    private velocityY: number;
+    private dragDirection: number;
+
+    private readonly GRAVITY =  0.0005;
+    private readonly DRAG_STR = 0.00001;
+    private readonly JUMP_STR = 0.500;
+
+    constructor(public position: PIXI.Point, velocityX:number) {
+        this.dragDirection = velocityX / Math.abs(velocityX);
+        this.startTime = new Date().getMilliseconds();
+        this.velocityY = this.JUMP_STR;
+        this.velocityX = Math.abs(velocityX);
+        this.accelerationY = 0;        
+    }
+
+    public update(dt: number) {
+        var delta = 0;
+        if (this.velocityX > 0) {
+            delta = (this.velocityX * dt);
+            this.velocityX -= (this.DRAG_STR * dt);
+            this.position.x += (this.dragDirection * delta);
+        }
+        delta = (this.velocityY * dt);
+        this.accelerationY += (this.GRAVITY * dt);
+        this.accelerationY = Math.min(this.accelerationY, 10);
+        this.velocityY -= this.accelerationY;
+        this.position.y += delta;
     }
 }
 
