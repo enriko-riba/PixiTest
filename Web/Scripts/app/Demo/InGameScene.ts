@@ -9,6 +9,9 @@ enum MovementState {
     Left,
     Right,
     Idle,
+    JumpLeft,
+    JumpRight,
+    JumpUp,
 }
 
 
@@ -29,6 +32,7 @@ export class InGameScene extends Scene {
     private readonly ANIMATION_FPS = 10;
 
     private isRunning = false;
+    private isJumping = false;
 
     private txtPosition: PIXI.Text;
 
@@ -43,14 +47,17 @@ export class InGameScene extends Scene {
     private setup() {
         this.BackGroundColor = 0x1099bb;
 
+        PIXI.SCALE_MODES.DEFAULT = PIXI.SCALE_MODES.LINEAR;
+
         //-----------------------------
         //  setup hero
         //-----------------------------
-        PIXI.SCALE_MODES.DEFAULT = PIXI.SCALE_MODES.NEAREST;
         const FRAME_SIZE = 64;
         this.hero = new AnimatedSprite();
         this.hero.addAnimations(new AnimationSequence("right", "assets/images/hero_64x64.png", [12, 13, 14, 15, 16, 17], FRAME_SIZE, FRAME_SIZE));
         this.hero.addAnimations(new AnimationSequence("left", "assets/images/hero_64x64.png", [6, 7, 8, 9, 10, 11], FRAME_SIZE, FRAME_SIZE));
+        this.hero.addAnimations(new AnimationSequence("jumpleft", "assets/images/hero_64x64.png", [48, 49, 50, 51, 52, 53], FRAME_SIZE, FRAME_SIZE));
+        this.hero.addAnimations(new AnimationSequence("jumpright", "assets/images/hero_64x64.png", [54, 55, 56, 57, 58, 59], FRAME_SIZE, FRAME_SIZE));
         this.hero.addAnimations(new AnimationSequence("idle", "assets/images/hero_64x64.png", [25, 24, 40, 19, 19, 18, 19, 22, 30, 31, 1, 1, 1], FRAME_SIZE, FRAME_SIZE));
         this.hero.pivot.set(0.5, 1);
         this.hero.position.set((Global.SCENE_WIDTH / 2) - (this.hero.width / 2), Global.SCENE_HEIGHT - 150);
@@ -70,10 +77,10 @@ export class InGameScene extends Scene {
         //  near parallax
         this.backgroundNear = new Parallax(vps);
         this.backgroundNear.setTextures("assets/images/background/trees01.png",
-                                        "assets/images/background/trees02.png",
-                                        "assets/images/background/trees03.png",
-                                        "assets/images/background/trees04.png",
-                                        "assets/images/background/trees05.png");
+            "assets/images/background/trees02.png",
+            "assets/images/background/trees03.png",
+            "assets/images/background/trees04.png",
+            "assets/images/background/trees05.png");
         this.addChildAt(this.backgroundNear, 1);
         this.backgroundNear.y = Global.SCENE_HEIGHT - this.backgroundNear.height;
 
@@ -94,20 +101,39 @@ export class InGameScene extends Scene {
 
     private handleKeyboard = () => {
         var kbd = Global.kbd;
-        var newState: MovementState = MovementState.Idle;
+        var newState: MovementState; 
         var newIsRunning: boolean = kbd.IsKeyDown(16);
+        var newIsJumping: boolean = false;
 
         //  run or normal speed?             
         var animationFPS = this.ANIMATION_FPS * (newIsRunning ? 1.6 : 1);
 
-        //  check action keys
-        if (kbd.IsKeyDown(65)) {
-            newState = MovementState.Left;
-        } else if (kbd.IsKeyDown(68)) {
-            newState = MovementState.Right;
-        } else if (kbd.IsKeyDown(83)) {
+        //  check movement action keys
+        if (!this.isJumping) {
             newState = MovementState.Idle;
+
+            if (kbd.IsKeyDown(65)) {
+                newState = MovementState.Left;
+            } else if (kbd.IsKeyDown(68)) {
+                newState = MovementState.Right;
+            }
+            //else if (kbd.IsKeyDown(83)) {
+              //  newState = MovementState.Idle;
+            //}
+
+            //  check jump
+            if (kbd.IsKeyDown(87)) {
+                if (newState == MovementState.Left)
+                    newState = MovementState.JumpLeft;
+                else if (newState == MovementState.Right)
+                    newState = MovementState.JumpRight;
+                else if (newState == MovementState.Idle)
+                    newState = MovementState.JumpUp;
+            }
+        } else {
+            newState = this.movementState;
         }
+
 
         //  has state changed
         if (newState != this.movementState) {
@@ -121,6 +147,18 @@ export class InGameScene extends Scene {
                 case MovementState.Right:
                     this.hero.PlayAnimation("right", animationFPS);
                     break;
+                case MovementState.JumpLeft:
+                    newIsJumping = true;
+                    this.hero.PlayAnimation("jumpleft", this.ANIMATION_FPS / 2);
+                    break;
+                case MovementState.JumpRight:
+                    newIsJumping = true;
+                    this.hero.PlayAnimation("jumpright", this.ANIMATION_FPS / 2);
+                    break;
+                case MovementState.JumpUp:
+                    newIsJumping = true;
+                    this.hero.PlayAnimation("jumpup", this.ANIMATION_FPS / 2);
+                    break;
             }
         }
 
@@ -129,13 +167,35 @@ export class InGameScene extends Scene {
             this.hero.Fps = animationFPS;
         }
 
+        //  has a jump started
+        if (newIsJumping) {
+            this.jumpStart = new Date().getMilliseconds();
+        }
+
+
         this.isRunning = newIsRunning;
         this.movementState = newState;
     }
 
     public onUpdate = (dt: number) => {
         this.handleKeyboard();
+        if (this.isJumping) 
+            this.updateJump(dt);
+        else
+            this.updateMovement(dt);
 
+        this.txtPosition.text = `Position: (${this.movementPosition.x.toFixed(0)}, ${this.movementPosition.y.toFixed(0)}), velocity: ${velocity.toFixed(1)}`;
+    }
+
+    private jumpStart: number;
+    private updateJump(dt) {
+
+    }
+
+    /*
+    *   Calculates movement based on ellapsed time, isRunning flag and direction.
+    */
+    private updateMovement(dt: number) {
         var move = 0;
         if (this.movementState === MovementState.Left) {
             move = -dt / 1000;
@@ -143,14 +203,13 @@ export class InGameScene extends Scene {
             move = dt / 1000;
         }
 
-        var velocity = 0;
         if (move !== 0) {
-            velocity = (move * this.VELOCITY) * (this.isRunning ? 2 : 1.0);
+            var velocity = (move * this.VELOCITY) * (this.isRunning ? 2 : 1.0);
             this.movementPosition.x += velocity;
             this.setParallaxPositions();
         }
-        this.txtPosition.text = `Position: (${this.movementPosition.x.toFixed(0)}, ${this.movementPosition.y.toFixed(0)}), velocity: ${velocity.toFixed(1)}`;
     }
+
 
     private setParallaxPositions() {
         this.backgroundGround.SetViewPortX(this.movementPosition.x);
