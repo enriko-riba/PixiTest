@@ -54,7 +54,7 @@ export class AnimatedSprite extends PIXI.Container {
 }
 
 /*
-*   Creates textures form a texture atlas.
+*   Creates and holds textures form a texture atlas.
 */
 export class AnimationSequence  {
     private textures: Array<PIXI.Texture> = [];
@@ -71,16 +71,7 @@ export class AnimationSequence  {
             texture.frame = rect;
             this.textures.push(texture);
         });
-        //var animationSpeed = fps / 60;
-        //this.clip = new PIXI.extras.MovieClip(textures);  
-        //this.clip.animationSpeed = animationSpeed;        
     }
-
-    //private clip: PIXI.extras.MovieClip = null;  
-
-    //public get Clip() {
-    //    return this.clip;
-    //}
     public get Textures() {
         return this.textures;
     }
