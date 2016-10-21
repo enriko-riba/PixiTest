@@ -257,7 +257,7 @@ class JumpData {
 
     private readonly GRAVITY =  0.0005;
     private readonly DRAG_STR = 0.00001;
-    private readonly JUMP_STR = 0.500;
+    private readonly JUMP_STR = 0.600;
 
     constructor(public position: PIXI.Point, velocityX:number) {
         this.dragDirection = velocityX / Math.abs(velocityX);
