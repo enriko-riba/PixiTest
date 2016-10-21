@@ -33,7 +33,7 @@ export class SceneManager {
     *   @param height the height of the scene
     *   @param resizer custom resize function
     */
-    constructor(width: number, height: number, options?: PIXI.IRendererOptions, resizer? : ISceneResizer) {
+    constructor(width: number, height: number, options?: PIXI.IRendererOptions, resizer?: ISceneResizer) {        
         this.designWidth = width;
         this.designHeight = height;
         this.sceneResizer = resizer || new DefaultResizer(this.designWidth, this.designHeight);
@@ -146,12 +146,13 @@ export class SceneManager {
         if (!this.startTime)
             this.startTime = timestamp;
 
-        var dt = timestamp - this.startTime;
-        if (dt > 50) dt = 50;
-        this.startTime = timestamp;
-        if (this.currentScene.onUpdate)
+        if (this.currentScene.onUpdate) {
+            var dt = timestamp - this.startTime;
+            if (dt > 50) dt = 50;
             this.currentScene.onUpdate(dt);
+        }
 
+        this.startTime = timestamp;
         this.renderer.render(this.currentScene);
     }
 }
