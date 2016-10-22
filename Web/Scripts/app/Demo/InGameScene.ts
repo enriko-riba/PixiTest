@@ -95,12 +95,12 @@ export class InGameScene extends Scene {
         //  near parallax
         this.backgroundNear = new Parallax(vps);
         this.backgroundNear.setTextures("assets/images/background/trees01.png",
-            "assets/images/background/trees02.png",
-            "assets/images/background/trees03.png",
-            "assets/images/background/trees04.png",
-            "assets/images/background/trees05.png");
+                                        "assets/images/background/trees02.png",
+                                        "assets/images/background/trees03.png",
+                                        "assets/images/background/trees04.png",
+                                        "assets/images/background/trees05.png");
         this.addChildAt(this.backgroundNear, 1);
-        this.backgroundNear.y = Global.SCENE_HEIGHT - this.backgroundNear.height;
+        this.backgroundNear.y = Global.SCENE_HEIGHT - this.backgroundNear.height-30;
 
         //  bottom (nearest) parallax
         this.backgroundGround = new Parallax(vps);
@@ -193,10 +193,16 @@ export class InGameScene extends Scene {
 
     public onUpdate = (dt: number) => {
         this.handleKeyboard();
-        if (this.jumpCtrl.isJumping) 
-            this.updateJump(dt);
-        else
-            this.updateMovement(dt);
+        if (this.jumpCtrl.isJumping) {
+            this.jumpCtrl.update(dt);
+            this.hero.position.y = Global.SCENE_HEIGHT - 150 - this.movementPosition.y;
+        }
+        else {
+            var velocity = this.getVelocityX() * dt;
+            if (velocity !== 0) {
+                this.movementPosition.x += velocity;
+            }
+        }
 
         this.setParallaxPositions(this.movementPosition.x);
         this.txtPosition.text = `Position: (${this.movementPosition.x.toFixed(0)}, ${this.movementPosition.y.toFixed(0)})`;
@@ -205,29 +211,6 @@ export class InGameScene extends Scene {
     private onJumpEnd = () => {
             this.movementState = MovementState.Idle;
             this.hero.PlayAnimation("idle", this.ANIMATION_FPS / 2);
-    }
-   
-
-    /**
-     * 
-     * @param dt the elapsed time in milliseconds
-     */
-    private updateJump(dt: number):void {        
-        this.jumpCtrl.update(dt);
-        this.movementPosition.x = this.jumpCtrl.position.x;
-        this.movementPosition.y = this.jumpCtrl.position.y;
-        this.hero.position.y = Global.SCENE_HEIGHT - 150 - this.movementPosition.y;
-    }
-
-    /**
-     * Calculates movement based on elapsed time, isRunning flag and direction.
-     * @param dt the elapsed time in milliseconds
-     */
-    private updateMovement(dt: number) {
-        var velocity = this.getVelocityX() * dt;
-        if (velocity !== 0) {           
-            this.movementPosition.x += velocity;
-        }
     }
 
     /**
@@ -250,8 +233,8 @@ export class InGameScene extends Scene {
      */
     private setParallaxPositions(movementPositionX: number) {
         this.backgroundGround.SetViewPortX(movementPositionX);
-        this.backgroundNear.SetViewPortX(movementPositionX * 0.6);
-        this.backgroundFar.SetViewPortX(movementPositionX * 0.4);
+        this.backgroundNear.SetViewPortX(movementPositionX * 0.5);
+        this.backgroundFar.SetViewPortX(movementPositionX * 0.3);
     }
 }
 
