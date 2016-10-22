@@ -1,8 +1,9 @@
 ﻿import { Scene } from "app/_engine/Scene";
-import { State } from "app/_engine/SceneManager";
+// import { State } from "app/_engine/SceneManager";
 import { Parallax } from "app/_engine/Parallax";
-import { KeyboardAction } from "app/_engine/KeyboardMapper";
+// import { KeyboardAction } from "app/_engine/KeyboardMapper";
 import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
+import { JumpController } from "./JumpController";
 import * as Global from "app/Demo/Global";
 
 enum MovementState {
@@ -16,8 +17,8 @@ enum MovementState {
 
 
 /**
-*   Load in game scene.
-*/
+ *   Load in game scene.
+ */
 export class InGameScene extends Scene {
 
     private backgroundGround: Parallax;
@@ -32,13 +33,18 @@ export class InGameScene extends Scene {
     private readonly ANIMATION_FPS = 10;
 
     private isRunning = false;
-    private isJumping = false;
+    
 
     private txtPosition: PIXI.Text;
 
     /**
-    *   Creates a new scene instance.
+    * holds current jump information.
     */
+    private jumpCtrl: JumpController;
+
+    /**
+     *   Creates a new scene instance.
+     */
     constructor() {
         super("InGame");
 
@@ -63,7 +69,7 @@ export class InGameScene extends Scene {
         //-----------------------------
         //  setup hero
         //-----------------------------
-        const FRAME_SIZE = 64;
+        const FRAME_SIZE :number = 64;
         this.hero = new AnimatedSprite();
         this.hero.addAnimations(new AnimationSequence("right", "assets/images/hero_64x64.png", [12, 13, 14, 15, 16, 17], FRAME_SIZE, FRAME_SIZE));
         this.hero.addAnimations(new AnimationSequence("left", "assets/images/hero_64x64.png", [6, 7, 8, 9, 10, 11], FRAME_SIZE, FRAME_SIZE));
@@ -108,55 +114,52 @@ export class InGameScene extends Scene {
         this.txtPosition = new PIXI.Text("Position: (0, 0)", Global.TXT_STYLE);
         this.txtPosition.resolution = window.devicePixelRatio;
         this.addChild(this.txtPosition);
+
+        //  controllers
+        this.jumpCtrl = new JumpController(this.movementPosition, this.onJumpEnd);
     }
 
 
     private handleKeyboard = () => {
-        var kbd = Global.kbd;
-        var newState: MovementState = this.movementState; 
-        var newIsRunning: boolean = kbd.IsKeyDown(16);
-        var newIsJumping: boolean = false;
-
-        //  run or normal speed?             
-        var animationFPS = this.ANIMATION_FPS * (newIsRunning ? 1.6 : 1);
+        const LEFT: number = 65;
+        const RIGHT: number = 68;
+        const JUMP: number = 87;
+        const SHIFT: number = 16;
 
         //  no movement while jumping
-        if (!this.isJumping) {
-            newState = MovementState.Idle;
+        if (this.jumpCtrl.isJumping) return;
 
-            if (kbd.IsKeyDown(65)) {
-                newState = MovementState.Left;
-            } else if (kbd.IsKeyDown(68)) {
-                newState = MovementState.Right;
-            }            
+        var newState: MovementState =  MovementState.Idle; 
+        var kbd = Global.kbd;
 
-            //  check if jump is pressed
-            if (kbd.IsKeyDown(87)) {
+        this.isRunning = kbd.IsKeyDown(SHIFT);
+        var newIsJumping: boolean = false;
 
-                //  check if state is ok
-                if (this.movementState == MovementState.Left ||
-                    this.movementState == MovementState.Right ||
-                    this.movementState == MovementState.Idle) {
+        if (kbd.IsKeyDown(LEFT)) {
+            newState = MovementState.Left;
+        } else if (kbd.IsKeyDown(RIGHT)) {
+            newState = MovementState.Right;
+        }            
 
-                    //  check if jump is allowed
-                    if (this.nextJumpAllowed < performance.now()) {
-                        if (newState == MovementState.Left)
-                            newState = MovementState.JumpLeft;
-                        else if (newState == MovementState.Right)
-                            newState = MovementState.JumpRight;
-                        else if (newState == MovementState.Idle)
-                            newState = MovementState.JumpUp;
-                    }
-                }
-            }
-        } 
-
+        //  check if jump is pressed
+        if (kbd.IsKeyDown(JUMP) && this.jumpCtrl.canJump) {        
+            if (newState === MovementState.Left)
+                newState = MovementState.JumpLeft;
+            else if (newState === MovementState.Right)
+                newState = MovementState.JumpRight;
+            else if (newState === MovementState.Idle)
+                newState = MovementState.JumpUp;               
+        }
 
         //  has state changed
-        if (newState != this.movementState) {
+        if (newState !== this.movementState) {
+
+            var animationFPS = this.ANIMATION_FPS * (this.isRunning ? 1.6 : 1);
+            var slowAnimationFPS = this.ANIMATION_FPS / 2;
+
             switch (newState) {
                 case MovementState.Idle:
-                    this.hero.PlayAnimation("idle", this.ANIMATION_FPS / 2);
+                    this.hero.PlayAnimation("idle", slowAnimationFPS);
                     break;
                 case MovementState.Left:
                     this.hero.PlayAnimation("left", animationFPS);
@@ -166,15 +169,15 @@ export class InGameScene extends Scene {
                     break;
                 case MovementState.JumpLeft:
                     newIsJumping = true;
-                    this.hero.PlayAnimation("jumpleft", this.ANIMATION_FPS / 2);
+                    this.hero.PlayAnimation("jumpleft", slowAnimationFPS);
                     break;
                 case MovementState.JumpRight:
                     newIsJumping = true;
-                    this.hero.PlayAnimation("jumpright", this.ANIMATION_FPS / 2);
+                    this.hero.PlayAnimation("jumpright", slowAnimationFPS);
                     break;
                 case MovementState.JumpUp:
                     newIsJumping = true;
-                    this.hero.PlayAnimation("jumpup", this.ANIMATION_FPS / 2);
+                    this.hero.PlayAnimation("jumpup", slowAnimationFPS);
                     break;
             }
         }
@@ -182,50 +185,38 @@ export class InGameScene extends Scene {
         //  has a jump started
         if (newIsJumping) {
             var velocity = this.getVelocityX();
-            this.jumpData = new JumpData(this.movementPosition, velocity);
+            this.jumpCtrl.startJump(velocity);
         }
 
-        this.isRunning = newIsRunning;
         this.movementState = newState;
-        this.isJumping = this.isJumping || newIsJumping;
     }
-    
 
     public onUpdate = (dt: number) => {
         this.handleKeyboard();
-        if (this.isJumping) 
+        if (this.jumpCtrl.isJumping) 
             this.updateJump(dt);
         else
             this.updateMovement(dt);
+
+        this.setParallaxPositions(this.movementPosition.x);
+        this.txtPosition.text = `Position: (${this.movementPosition.x.toFixed(0)}, ${this.movementPosition.y.toFixed(0)})`;
     }
 
-    /**
-     * holds current jump information.
-     */
-    private jumpData: JumpData;
-
-    /**
-     * holds next allowed jump timestamp.
-     */
-    private nextJumpAllowed: number = 0;
+    private onJumpEnd = () => {
+            this.movementState = MovementState.Idle;
+            this.hero.PlayAnimation("idle", this.ANIMATION_FPS / 2);
+    }
+   
 
     /**
      * 
      * @param dt the elapsed time in milliseconds
      */
-    private updateJump(dt: number) {        
-        this.jumpData.update(dt);
-        this.movementPosition.x = this.jumpData.position.x;
-        this.movementPosition.y = this.jumpData.position.y;
+    private updateJump(dt: number):void {        
+        this.jumpCtrl.update(dt);
+        this.movementPosition.x = this.jumpCtrl.position.x;
+        this.movementPosition.y = this.jumpCtrl.position.y;
         this.hero.position.y = Global.SCENE_HEIGHT - 150 - this.movementPosition.y;
-        if (this.movementPosition.y < 0) {
-            this.isJumping = false;
-            this.movementState = MovementState.Idle;
-            this.hero.PlayAnimation("idle", this.ANIMATION_FPS / 2);
-            const JUMP_DELAY_INTERVAL: number = 100;
-            this.nextJumpAllowed = performance.now() + JUMP_DELAY_INTERVAL;
-        }
-        this.setParallaxPositions(this.movementPosition.x);
     }
 
     /**
@@ -236,9 +227,7 @@ export class InGameScene extends Scene {
         var velocity = this.getVelocityX() * dt;
         if (velocity !== 0) {           
             this.movementPosition.x += velocity;
-            this.setParallaxPositions(this.movementPosition.x);
         }
-        this.txtPosition.text = `Position: (${this.movementPosition.x.toFixed(0)}, ${this.movementPosition.y.toFixed(0)}), velocity: ${velocity.toFixed(1)}`;
     }
 
     /**
@@ -264,40 +253,6 @@ export class InGameScene extends Scene {
         this.backgroundNear.SetViewPortX(movementPositionX * 0.6);
         this.backgroundFar.SetViewPortX(movementPositionX * 0.4);
     }
-}
-
-class JumpData {   
-    private accelerationY: number;
-    private velocityX: number;
-    private velocityY: number;
-    private dragDirection: number;
-
-    private readonly GRAVITY =  0.0003;
-    private readonly DRAG_STR = 0.00001;
-    private readonly JUMP_STR = 0.450;
-
-    constructor(public position: PIXI.Point, velocityX:number) {
-        this.dragDirection = velocityX / Math.abs(velocityX);
-        
-        this.velocityY = this.JUMP_STR;
-        this.velocityX = Math.abs(velocityX);
-        this.accelerationY = 0;        
-    }
-
-    public update(dt: number) {
-        var delta = 0;
-        if (this.velocityX > 0) {
-            delta = (this.velocityX * dt);
-            this.velocityX -= (this.DRAG_STR * dt);
-            this.position.x += (this.dragDirection * delta);
-        }
-        delta = (this.velocityY * dt);
-        this.accelerationY += (this.GRAVITY * dt);
-        this.accelerationY = Math.min(this.accelerationY, 10);
-        this.velocityY -= this.accelerationY;
-        this.position.y += delta;
-    }
-
 }
 
 /*
