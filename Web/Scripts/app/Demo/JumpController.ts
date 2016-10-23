@@ -1,4 +1,5 @@
-﻿export class JumpController {
+﻿
+export class JumpController {
     private readonly GRAVITY = 0.0003;
     private readonly DRAG_STR = 0.00005;
     private readonly JUMP_STR = 0.750;
@@ -46,7 +47,7 @@
         distance = (this.velocityY * dt);                   //  movement on y axis calculation           
         this.position.y += distance;                        //  move position
         this.accelY += (this.GRAVITY * dt);                 //  acceleration due to gravity
-       // this.accelY = Math.min(this.accelY, 10);            //  cap to 10
+        // this.accelY = Math.min(this.accelY, 10);            //  cap to 10
         this.velocityY -= this.accelY;                      //  update velocity
 
         if (this.position.y <= 0) {
