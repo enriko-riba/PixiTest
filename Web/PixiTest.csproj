@@ -30,6 +30,7 @@
     <Content Include="assets\Images\background\trees03_dbg.png" />
     <Content Include="assets\Images\background\trees04_dbg.png" />
     <Content Include="assets\Images\background\trees05_dbg.png" />
+    <Content Include="assets\Images\background\Wood_night.png" />
     <Content Include="assets\Images\Gui\Button1.png" />
     <Content Include="assets\Images\Gui\ListItem.png" />
     <Content Include="assets\Images\Hero_64x64.png" />
