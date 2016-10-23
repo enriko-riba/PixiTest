@@ -90,6 +90,7 @@ export class InGameScene extends Scene {
         //  far parallax
         this.backgroundFar = new Parallax(vps);
         this.backgroundFar.setTextures("assets/images/background/Canyon.png");
+        //this.backgroundFar.setTextures("assets/images/background/Wood_night.png");
         this.addChildAt(this.backgroundFar, 0);
 
         //  near parallax
