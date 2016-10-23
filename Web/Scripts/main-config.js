@@ -13,6 +13,7 @@ require.config({
     shim: {
         "bootstrap": { "deps": ["jquery"] },
         "koMapping": { "deps": ["knockout"] },
+        "p2": { exports: "p2" }
     },
 });
 require(["knockout", "app/main", "koMapping", "pixi", "bootstrap", "knockout-amd-helpers", "text", "koBindings", "postbox"], function (ko, mainModule, koMapping, PIXI) {

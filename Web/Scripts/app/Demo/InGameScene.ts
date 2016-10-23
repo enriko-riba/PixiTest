@@ -1,10 +1,10 @@
 ﻿import { Scene } from "app/_engine/Scene";
-// import { State } from "app/_engine/SceneManager";
 import { Parallax } from "app/_engine/Parallax";
-// import { KeyboardAction } from "app/_engine/KeyboardMapper";
 import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
 import { JumpController } from "./JumpController";
 import * as Global from "app/Demo/Global";
+
+import { PWorld } from "./PWorld";
 
 enum MovementState {
     Left,
@@ -42,6 +42,7 @@ export class InGameScene extends Scene {
     */
     private jumpCtrl: JumpController;
 
+    private p2w: PWorld;
     /**
      *   Creates a new scene instance.
      */
@@ -59,6 +60,7 @@ export class InGameScene extends Scene {
         })();
 
         this.setup();
+        this.p2w = new PWorld(this.movementPosition);
     }
 
     private setup() {
@@ -191,19 +193,26 @@ export class InGameScene extends Scene {
 
         this.movementState = newState;
     }
-
+    
     public onUpdate = (dt: number) => {
         this.handleKeyboard();
         if (this.jumpCtrl.isJumping) {
             this.jumpCtrl.update(dt);
-            this.hero.position.y = Global.SCENE_HEIGHT - 150 - this.movementPosition.y;
+            //this.hero.position.y = Global.SCENE_HEIGHT - 150 - this.movementPosition.y;
         }
         else {
-            var velocity = this.getVelocityX() * dt;
-            if (velocity !== 0) {
-                this.movementPosition.x += velocity;
-            }
+            //var velocity = this.getVelocityX() * dt;
+            //if (velocity !== 0) {
+                //this.movementPosition.x += velocity;
+                //this.p2w.player.velocity[0] = velocity;
+            //}
         }
+            var velocity = this.getVelocityX();
+            this.p2w.player.velocity[0] = velocity;
+
+        this.p2w.update(dt);
+        this.hero.position.x = this.movementPosition.x + Global.SCENE_WIDTH /2 - this.hero.width/2;
+        this.hero.position.y = Global.SCENE_HEIGHT - 150 - this.movementPosition.y;
 
         this.setParallaxPositions(this.movementPosition.x);
         this.txtPosition.text = `Position: (${this.movementPosition.x.toFixed(0)}, ${this.movementPosition.y.toFixed(0)})`;
@@ -238,6 +247,8 @@ export class InGameScene extends Scene {
         this.backgroundFar.SetViewPortX(movementPositionX * 0.3);
     }
 }
+
+
 
 /*
 class Hud extends PIXI.Container {

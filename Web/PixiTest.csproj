@@ -103,6 +103,7 @@
     <Content Include="Scripts\knockout-postbox.min.js" />
     <Content Include="Scripts\knockout.mapping-latest.debug.js" />
     <Content Include="Scripts\knockout.mapping-latest.js" />
+    <Content Include="Scripts\p2.js" />
     <Content Include="Scripts\pixi.js" />
     <Content Include="Scripts\pixi.min.js" />
     <Content Include="Scripts\r.js" />
@@ -130,6 +131,7 @@
     <TypeScriptCompile Include="Scripts\app\Common\IOverlay.ts" />
     <TypeScriptCompile Include="Scripts\app\Common\overlay.ts" />
     <TypeScriptCompile Include="Scripts\app\Demo\JumpController.ts" />
+    <TypeScriptCompile Include="Scripts\app\Demo\PWorld.ts" />
     <TypeScriptCompile Include="Scripts\app\_engine\AnimatedSprite.ts" />
     <TypeScriptCompile Include="Scripts\app\_engine\Button.ts" />
     <TypeScriptCompile Include="Scripts\app\Demo\Demo.ts" />
@@ -158,6 +160,7 @@
     <TypeScriptCompile Include="Scripts\typings\knockout.postbox\knockout-postbox.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\knockout\knockout.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\knockout\tests\jasmine.extensions.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\p2\p2.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\pixi\pixi-filters.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\pixi\pixi.js.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\requirejs\require.d.ts" />

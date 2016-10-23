@@ -10,12 +10,14 @@ require.config({
         "sammy": "sammy-0.7.5.min",
         "bootstrap": "bootstrap.min",
         "koMapping": "knockout.mapping-latest",
-        "pixi.js" : "pixi.min",
+        "pixi.js": "pixi.min",
+        
     },
 
     shim: {
         "bootstrap": { "deps": ["jquery"] },
         "koMapping": { "deps": ["knockout"] },
+        "p2": {exports: "p2"}
     },
     //  urlArgs: "v=" + gSiteVersion
 });
