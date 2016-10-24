@@ -27,19 +27,14 @@ export class PWorld {
 
         // Create an empty dynamic body
         this.player = new p2.Body({
-            mass: 50,
-            position: [10, 50]
+            mass: 40,
+            position: [playerPosition.x, playerPosition.y]
         });
-
-        // Add a circle shape to the body
-        var circleShape = new p2.Circle({ radius: 16 });
-        this.player.addShape(circleShape);
-
-        // ...and add the body to the world.
-        // If we don't add it to the world, it won't be simulated.
+        var shape = new p2.Capsule({ length: 50, radius: 10 });
+        this.player.addShape(shape);
         this.world.addBody(this.player);
 
-        //this.world.on("beginContact", this.contact, this);
+        this.world.on("beginContact", this.contact, this);
     }
 
     public update(dt: number) {
@@ -57,10 +52,10 @@ export class PWorld {
         return body;
     }
 
-    //private contact = (evt: any) => {
-    //    if (evt.bodyA === this.player || evt.bodyB === this.player) {
-    //        console.log('player body contact');
-    //    }        
-    //}
+    private contact = (evt: any) => {
+        if (evt.bodyA === this.player || evt.bodyB === this.player) {
+            console.log('player body contact');
+        }        
+    }
      
 }
