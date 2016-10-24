@@ -14,7 +14,6 @@ export class Parallax extends PIXI.Container {
     */
     constructor(size?: PIXI.Point) {
         super();
-
         this.ViewPortSize = size || new PIXI.Point(100, 100);
     }
 
