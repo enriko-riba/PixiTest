@@ -30,9 +30,13 @@ export class InGameScene extends Scene {
 
     private movementState: MovementState = -1;
     private movementPosition: PIXI.Point = new PIXI.Point(0, 150);
+
+    /**
+     *  Value to be subtracted from renderer position to get the world position.
+     */
     private heroPositionOffset: PIXI.Point;
 
-    private readonly VELOCITY = 50;
+    private readonly VELOCITY = 20;
     private readonly ANIMATION_FPS = 10;
 
     private isRunning = false;
@@ -77,9 +81,10 @@ export class InGameScene extends Scene {
             var velocity = this.calculateHorizontalVelocity();
             this.p2w.player.velocity[0] = velocity;
         }
-
+            
         this.p2w.update(dt);
         this.hero.position.y = this.heroPositionOffset.y - this.movementPosition.y;
+        console.log('physics x,y: ' + this.movementPosition.x + ',' + this.movementPosition.y + ', render x,y: ' + this.hero.position.x + ',' + this.hero.position.y);
         this.setParallaxPositions(this.movementPosition.x);
         this.txtPosition.text = `Position: (${this.movementPosition.x.toFixed(0)}, ${this.movementPosition.y.toFixed(0)})`;
     }
@@ -101,6 +106,7 @@ export class InGameScene extends Scene {
         this.hero.addAnimations(new AnimationSequence("jumpup", "assets/images/hero_64x64.png", [1, 3, 4], FRAME_SIZE, FRAME_SIZE));
         this.hero.addAnimations(new AnimationSequence("idle", "assets/images/hero_64x64.png", [25, 24, 40, 19, 19, 18, 19, 22, 30, 31, 1, 1, 1], FRAME_SIZE, FRAME_SIZE));
         this.hero.pivot.set(0.5, 1);
+        this.movementPosition.set(0, 150);
         this.hero.position.set((Global.SCENE_WIDTH / 2) - (this.hero.width / 2), Global.SCENE_HEIGHT - 150);
         this.heroPositionOffset = new PIXI.Point((Global.SCENE_WIDTH / 2) - (this.hero.width / 2), Global.SCENE_HEIGHT - 150);
         this.addChild(this.hero);
@@ -278,10 +284,6 @@ export class InGameScene extends Scene {
         this.p2w.addObject(options);
     }
 }
-
-interface P2Position {
-}
-
 
 /*
 class Hud extends PIXI.Container {
