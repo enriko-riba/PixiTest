@@ -18,12 +18,10 @@ export class PWorld {
 
         // Create an infinite ground plane body
         this.ground = new p2.Body({
-            mass: 0 // Setting mass to 0 makes it static
+            mass: 0, // Setting mass to 0 makes it static
         });
-        var groundShape = new p2.Plane();
-        this.ground.addShape(groundShape);
+        this.ground.addShape(new p2.Plane());
         this.world.addBody(this.ground);
-
 
         // Create an empty dynamic body
         this.player = new p2.Body({
@@ -38,15 +36,16 @@ export class PWorld {
     }
 
     public update(dt: number) {
-        this.world.step(this.fixedTimeStep, dt, 10);
+        this.world.step(this.fixedTimeStep, dt, 20);
         this.playerPosition.x = this.player.interpolatedPosition[0];
         this.playerPosition.y = this.player.interpolatedPosition[1];
     }
 
     public addObject(bodyOptions?: p2.BodyOptions, shape?: p2.Shape): p2.Body {
         var body = new p2.Body(bodyOptions);
-        if (!shape)
-            shape = new p2.Box({ width: 10, height: 10 });
+        if (!shape) {
+            shape = new p2.Box({ width: 100, height: 40 });
+        }
         body.addShape(shape);
         this.world.addBody(body);
         return body;
@@ -55,7 +54,10 @@ export class PWorld {
     private contact = (evt: any) => {
         if (evt.bodyA === this.player || evt.bodyB === this.player) {
             console.log('player body contact');
+        }  
+
+        if (evt.bodyA === this.ground || evt.bodyB === this.ground) {
+            console.log('ground contact');
         }        
-    }
-     
+    }     
 }
