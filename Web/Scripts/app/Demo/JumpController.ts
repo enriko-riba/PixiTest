@@ -1,4 +1,5 @@
-﻿
+﻿import * as p2 from "p2";
+
 export class JumpController {
     private readonly GRAVITY = 0.0003;
     private readonly DRAG_STR = 0.00005;
@@ -55,5 +56,30 @@ export class JumpController {
             this.isJump = false;
             this.nextJumpAllowed = performance.now() + this.JUMP_DELAY_INTERVAL;
         }   
+    }
+}
+
+export class P2JumpController {
+    private readonly JUMP_FORCE = 2500;
+    private nextJumpAllowed: number = 0;
+    private onJumpEnd: () => void;
+
+    public body: p2.Body;
+
+    constructor(body: p2.Body, onJumpEndHandler?: () => void) {
+        this.body = body;
+        this.onJumpEnd = onJumpEndHandler;
+    }
+
+    public get isJumping() {
+        return Math.abs(this.body.velocity[1]) > 0.001;
+    }
+
+    public get canJump() {
+        return !this.isJumping && this.nextJumpAllowed < performance.now();
+    }
+
+    public startJump() {
+        this.body.applyImpulse([0, this.JUMP_FORCE]);
     }
 }
