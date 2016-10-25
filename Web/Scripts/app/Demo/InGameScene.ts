@@ -15,6 +15,10 @@ enum MovementState {
     JumpUp,
 }
 
+class PhysicsTupple {
+    constructor(public spr: PIXI.Sprite,
+                public body: p2.Body) { }
+}
 
 /**
  *   Load in game scene.
@@ -26,7 +30,7 @@ export class InGameScene extends Scene {
     private backgroundFar: Parallax;
     private worldContainer: PIXI.Container;
     private hero: AnimatedSprite;
-    private entities: Array<PIXI.Sprite> = [];
+    private entities: Array<PhysicsTupple> = [];
 
     private movementState: MovementState = -1;
     private movementPosition: PIXI.Point = new PIXI.Point(0, 150);
@@ -83,10 +87,19 @@ export class InGameScene extends Scene {
         }
             
         this.p2w.update(dt);
-        this.hero.position.y = this.heroPositionOffset.y - this.movementPosition.y;
+        //this.hero.position.y = this.heroPositionOffset.y - this.movementPosition.y;
+        this.hero.position.x = this.movementPosition.x;
+        this.hero.position.y = Global.SCENE_HEIGHT - this.movementPosition.y-150;
+        this.position.x = (Global.SCENE_WIDTH / 2 - this.hero.position.x - 32) * this.scale.x;
+        this.txtPosition.position.x = (this.hero.position.x -32 - Global.SCENE_WIDTH / 2) * this.scale.x;
+
         console.log('physics x,y: ' + this.movementPosition.x.toFixed(0) + ',' + this.movementPosition.y.toFixed(0) + ', render x,y: ' + this.hero.position.x.toFixed(0) + ',' + this.hero.position.y.toFixed(0));
-        this.setParallaxPositions(this.movementPosition.x);
+        //this.setParallaxPositions(this.movementPosition.x);
         this.txtPosition.text = `Position: (${this.movementPosition.x.toFixed(0)}, ${this.movementPosition.y.toFixed(0)})`;
+
+        this.entities.forEach((tupple) => {
+            tupple.spr.position.set(tupple.body.interpolatedPosition[0], Global.SCENE_HEIGHT - tupple.body.interpolatedPosition[1]-150);
+        });
     }
 
     private setup() {
@@ -276,16 +289,20 @@ export class InGameScene extends Scene {
         for (var x = 0; x < 4; x++) {
             var spr = new PIXI.Sprite(PIXI.loader.resources["assets/images/objects/box.png"].texture);
             spr.anchor.set(0, 0.5);
-            spr.position.x = this.movementPosition.x + 256 + (x * 512);
-            spr.position.y = Global.SCENE_HEIGHT - 150;
+            spr.position.x = this.movementPosition.x + 150 + (x * 512);
+            spr.position.y = Global.SCENE_HEIGHT - 500;
             spr.scale.set(0.5);
             this.worldContainer.addChild(spr);
-            this.addStaticObject(spr.position, new p2.Box({ width: 64, height: 64 }));
+            var body = new p2.Body({ mass: 10, position: [spr.position.x - this.heroPositionOffset.x, this.heroPositionOffset.y - spr.position.y] });
+            body.addShape(new p2.Box({ width: 64, height: 64 }));
+            this.p2w.addBody(body);
+            this.entities.push(new PhysicsTupple(spr, body));
+            //this.addStaticObject(spr.position, new p2.Box({ width: 64, height: 64 }));
         }
     }
-
+    
     /**
-     * adds an object to the scene and p2 world
+     * adds an static object to the scene and p2 world
      * @param pixiObject
      * @param shape
      */

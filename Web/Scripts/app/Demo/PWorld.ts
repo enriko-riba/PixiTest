@@ -40,6 +40,11 @@ export class PWorld {
         this.playerPosition.y = this.player.interpolatedPosition[1];
     }
 
+    /**
+    * adds an object to the p2 world
+    * @param bodyOptions
+    * @param shape
+    */
     public addObject(bodyOptions?: p2.BodyOptions, shape?: p2.Shape): p2.Body {
         var body = new p2.Body(bodyOptions);
         if (!shape) {
@@ -48,6 +53,14 @@ export class PWorld {
         body.addShape(shape);
         this.world.addBody(body);
         return body;
+    }
+
+    /**
+    * adds an object to the p2 world
+    * @param body
+    */
+    public addBody(body: p2.Body) {
+        this.world.addBody(body);
     }
 
     private contact = (evt: any) => {
