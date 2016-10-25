@@ -66,9 +66,9 @@ export class InGameScene extends Scene {
                 Date.now  /*none found - fallback to browser default */
         })();
 
-        this.p2w = new PWorld(this.movementPosition);
+        
         this.setup();
-        this.jumpCtrl = new P2JumpController(this.p2w.player);
+        
     }
 
     /**
@@ -84,7 +84,7 @@ export class InGameScene extends Scene {
             
         this.p2w.update(dt);
         this.hero.position.y = this.heroPositionOffset.y - this.movementPosition.y;
-        console.log('physics x,y: ' + this.movementPosition.x + ',' + this.movementPosition.y + ', render x,y: ' + this.hero.position.x + ',' + this.hero.position.y);
+        console.log('physics x,y: ' + this.movementPosition.x.toFixed(0) + ',' + this.movementPosition.y.toFixed(0) + ', render x,y: ' + this.hero.position.x.toFixed(0) + ',' + this.hero.position.y.toFixed(0));
         this.setParallaxPositions(this.movementPosition.x);
         this.txtPosition.text = `Position: (${this.movementPosition.x.toFixed(0)}, ${this.movementPosition.y.toFixed(0)})`;
     }
@@ -106,11 +106,14 @@ export class InGameScene extends Scene {
         this.hero.addAnimations(new AnimationSequence("jumpup", "assets/images/hero_64x64.png", [1, 3, 4], FRAME_SIZE, FRAME_SIZE));
         this.hero.addAnimations(new AnimationSequence("idle", "assets/images/hero_64x64.png", [25, 24, 40, 19, 19, 18, 19, 22, 30, 31, 1, 1, 1], FRAME_SIZE, FRAME_SIZE));
         this.hero.pivot.set(0.5, 1);
-        this.movementPosition.set(0, 150);
-        this.hero.position.set((Global.SCENE_WIDTH / 2) - (this.hero.width / 2), Global.SCENE_HEIGHT - 150);
-        this.heroPositionOffset = new PIXI.Point((Global.SCENE_WIDTH / 2) - (this.hero.width / 2), Global.SCENE_HEIGHT - 150);
+        this.movementPosition.set((Global.SCENE_WIDTH / 2) - (FRAME_SIZE / 2), 20);
+        this.hero.position.set((Global.SCENE_WIDTH / 2) - (FRAME_SIZE / 2), Global.SCENE_HEIGHT - 150);
+        this.heroPositionOffset = new PIXI.Point((Global.SCENE_WIDTH / 2) - (FRAME_SIZE / 2), Global.SCENE_HEIGHT - 150);
         this.addChild(this.hero);
         this.hero.PlayAnimation("idle");
+
+        this.p2w = new PWorld(this.movementPosition);
+        this.jumpCtrl = new P2JumpController(this.p2w.player);
 
         //-----------------------------
         //  setup backgrounds
@@ -261,14 +264,23 @@ export class InGameScene extends Scene {
     }
 
     private addBoxes = () => {
-        for (var x = 0; x < 6000; x += 512) {
+        for (var x = 0; x < 4; x ++) {
             var spr = new PIXI.Sprite(PIXI.loader.resources["assets/images/objects/box.png"].texture);
-            spr.anchor.set(0.5, 1);
-            spr.position.x = x;
-            spr.position.y = Global.SCENE_HEIGHT - 100;
+            spr.anchor.set(0, 0.5);
+            spr.position.x = this.movementPosition.x + (x*512);
+            spr.position.y = Global.SCENE_HEIGHT - 190;
+            spr.scale.set(0.5);
+            this.worldContainer.addChild(spr);            
+            this.addStaticObject(spr.position, new p2.Box({width:64, height:64}));
+        }
+        for (var x = 0; x < 4; x++) {
+            var spr = new PIXI.Sprite(PIXI.loader.resources["assets/images/objects/box.png"].texture);
+            spr.anchor.set(0, 0.5);
+            spr.position.x = this.movementPosition.x + 256 + (x * 512);
+            spr.position.y = Global.SCENE_HEIGHT - 150;
             spr.scale.set(0.5);
             this.worldContainer.addChild(spr);
-            this.addStaticObject(spr.position, new p2.Box({width:64, height:64}));
+            this.addStaticObject(spr.position, new p2.Box({ width: 64, height: 64 }));
         }
     }
 
@@ -279,9 +291,9 @@ export class InGameScene extends Scene {
      */
     private addStaticObject(position: PIXI.Point, shape?: p2.Shape) {
         var options: p2.BodyOptions = {
-            position: [position.x, Global.SCENE_HEIGHT - position.y]            
+            position: [position.x - this.heroPositionOffset.x, this.heroPositionOffset.y - position.y]            
         };
-        this.p2w.addObject(options);
+        this.p2w.addObject(options, shape);
     }
 }
 

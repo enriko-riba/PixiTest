@@ -23,12 +23,11 @@ export class PWorld {
         this.ground.addShape(new p2.Plane());
         this.world.addBody(this.ground);
 
-        // Create an empty dynamic body
         this.player = new p2.Body({
             mass: 40,
             position: [playerPosition.x, playerPosition.y]
         });
-        var shape = new p2.Capsule({ length: 50, radius: 10 });
+        var shape = new p2.Capsule({ length: 30, radius: 2});
         this.player.addShape(shape);
         this.world.addBody(this.player);
 
