@@ -29,7 +29,7 @@ export class PWorld {
         });
         var shape = new p2.Capsule({
             length: 20,
-            radius: 2,
+            radius: 6,
         });
         this.player.addShape(shape);
         this.world.addBody(this.player);

@@ -78,7 +78,8 @@ export class InGameScene extends Scene {
         this.p2w.update(dt);
         this.hero.x = this.heroPosition.x;
         this.hero.y = this.heroPosition.y;
-        this.worldContainer.x = -this.hero.x - (this.HERO_FRAME_SIZE/2) + this.SCENE_HALF_WIDTH;
+        //this.worldContainer.x = -this.hero.x - (this.HERO_FRAME_SIZE/2) + this.SCENE_HALF_WIDTH;
+        this.worldContainer.x = -this.hero.x + this.SCENE_HALF_WIDTH;
         this.worldContainer.y = Global.SCENE_HEIGHT-70;
         
 
@@ -106,7 +107,7 @@ export class InGameScene extends Scene {
         this.hero.addAnimations(new AnimationSequence("jumpright", "assets/images/hero_64x64.png", [54, 55, 56, 57, 58, 59], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
         this.hero.addAnimations(new AnimationSequence("jumpup", "assets/images/hero_64x64.png", [1, 3, 4], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
         this.hero.addAnimations(new AnimationSequence("idle", "assets/images/hero_64x64.png", [25, 24, 40, 19, 19, 18, 19, 22, 30, 31, 1, 1, 1], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
-        this.hero.Anchor = new PIXI.Point(0.5, 0);
+        this.hero.Anchor = new PIXI.Point(0.5, 0.1);
         this.heroPosition.set((Global.SCENE_WIDTH / 2) - (this.HERO_FRAME_SIZE / 2), 1);
         this.worldContainer.addChild(this.hero);
         this.hero.PlayAnimation("idle");
@@ -253,24 +254,29 @@ export class InGameScene extends Scene {
     }
 
     private addBoxes = () => {
-        //for (var x = 0; x < 4; x ++) {
-        //    var spr = new PIXI.Sprite(PIXI.loader.resources["assets/images/objects/box.png"].texture);
-        //    spr.anchor.set(0, 0.5);
-        //    spr.position.x = this.movementPosition.x + (x*512);
-        //    spr.position.y = Global.SCENE_HEIGHT - 190;
-        //    spr.scale.set(0.5);
-        //    this.worldContainer.addChild(spr);            
-        //    this.addStaticObject(spr.position, new p2.Box({width:64, height:64}));
-        //}
-        var t = PIXI.loader.resources["assets/images/objects/box_dbg.png"].texture;
-        t.rotate = 8;
-        for (var x = 0; x < 2; x++) {            
-            var spr = new PIXI.Sprite(t);
-            spr.position.set(50 + (x * 256), 100);
+        var texture: PIXI.Texture;
+        texture = PIXI.loader.resources["assets/images/objects/box_03.png"].texture;
+        texture.rotate = 8;
+        for (var x = 0; x < 10; x ++) {
+            var spr = new PIXI.Sprite(texture);
             spr.pivot.set(0.5);
-            spr.anchor.set(0.5, 0.5);
+            spr.anchor.set(0.5);
+            spr.position.set(128 + (x * 512), x%2 == 0 ? 64 : 160);
+            this.worldContainer.addChild(spr);    
+                    
+            this.addStaticObject(spr.position, new p2.Box({width:128, height:128}));
+        }
+
+        texture = PIXI.loader.resources["assets/images/objects/box_01.png"].texture;
+        texture.rotate = 8;
+        for (var x = 0; x < 10; x++) {            
+            var spr = new PIXI.Sprite(texture);
+            spr.position.set(x * 256, 100);
+            spr.pivot.set(0.5);
+            spr.anchor.set(0.5);
             spr.scale.set(0.5);
             this.worldContainer.addChild(spr);
+
             var body = new p2.Body({ mass: 100, position: [spr.x, spr.y] });
             body.addShape(new p2.Box({ width: 64, height: 64 }));
             this.p2w.addBody(body);

@@ -66,7 +66,9 @@ export class LoaderScene extends Scene {
             "assets/images/background/trees05.png",
             "assets/images/background/ground.png",
 
-            "assets/images/objects/box.png",
+            "assets/images/objects/box_01.png",
+            "assets/images/objects/box_02.png",
+            "assets/images/objects/box_03.png",
             "assets/images/objects/box_dbg.png",
         ];
         

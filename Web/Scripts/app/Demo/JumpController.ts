@@ -61,7 +61,7 @@ export class JumpController {
 }
 
 export class P2JumpController {
-    private readonly JUMP_FORCE = 2000;
+    private readonly JUMP_FORCE = 2400;
     private nextJumpAllowed: number = 0;
     private onJumpEnd: () => void;
 
