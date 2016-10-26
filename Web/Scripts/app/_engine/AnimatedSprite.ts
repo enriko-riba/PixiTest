@@ -3,53 +3,65 @@
 export class AnimatedSprite extends PIXI.Container {
     constructor() {
         super();
+       
     }
 
     private animations = new Dictionary<AnimationSequence>();
-    private isPlaying: boolean = false;
     private currentSequence: AnimationSequence;
     private clip: PIXI.extras.MovieClip = null;  
 
     public addAnimations(...sequences: Array<AnimationSequence>) {
         sequences.forEach((seq, idx, arr) => {
             this.animations.set(seq.sequenceName, seq);
+
+            //  if no clip exists create it from first animation sequence
+            if (!this.clip && idx === 0) {
+                this.createClip(seq);
+            }
         });
+        
     }
 
     public PlayAnimation(name: string, fps?:number) {
         if (!this.currentSequence || this.currentSequence.sequenceName !== name) {
             this.currentSequence = this.animations.get(name);
             this.resetAnimation();
-
-            if (!this.clip) {
-                this.clip = new PIXI.extras.MovieClip(this.currentSequence.Textures);
-                this.addChild(this.clip);
-                if (!fps) fps = 8;  //    default for new animations
-            } else {
-                this.clip.textures = this.currentSequence.Textures;
-            }
+            this.createClip(this.currentSequence);
             
             this.Fps = fps || this.Fps;
             this.clip.play();
         }
     } 
-
+    public Stop() {
+        this.clip.stop();
+    }
     public get Fps() {
         return this.clip.animationSpeed * 60;
     }
     public set Fps(fps: number) {
         var animationSpeed = fps / 60;
         this.clip.animationSpeed = animationSpeed;
-        //console.log('FPS changed to: '  + fps + ', animation speed: ' + animationSpeed);
     }
-    public Stop() {
-        this.isPlaying = false;
+    public get Anchor() {
+        var p = new PIXI.Point;
+        this.clip.anchor.copy(p);
+        return p;
     }
-
+    public set Anchor(p:PIXI.Point) {
+        this.clip.anchor.set(p.x, p.y);
+    }
     private resetAnimation() {
-        this.isPlaying = true;
         if(this.clip)
             this.clip.stop();        
+    }
+    private createClip(sequence: AnimationSequence) {
+        if (!this.clip) {
+            this.clip = new PIXI.extras.MovieClip(sequence.Textures);
+            this.clip.anchor.set(0.5);
+            this.addChild(this.clip);
+        } else {
+            this.clip.textures = this.currentSequence.Textures;
+        }
     }
 }
 
@@ -64,11 +76,12 @@ export class AnimationSequence  {
         var yFrames = Math.floor(base.height / frameHeight);
        
         frames.forEach((frame, idx, arr) => {
-            var texture = new PIXI.Texture(base);            
+            var texture = new PIXI.Texture(base);  
             var y = Math.floor(frame / xFrames);
             var x = frame % xFrames;            
             var rect = new PIXI.Rectangle(x * frameWidth, y * frameHeight, frameWidth, frameHeight);
             texture.frame = rect;
+            texture.rotate = 8;          
             this.textures.push(texture);
         });
     }

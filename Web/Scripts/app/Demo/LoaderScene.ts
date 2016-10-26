@@ -67,6 +67,7 @@ export class LoaderScene extends Scene {
             "assets/images/background/ground.png",
 
             "assets/images/objects/box.png",
+            "assets/images/objects/box_dbg.png",
         ];
         
         PIXI.loader.add(assets)

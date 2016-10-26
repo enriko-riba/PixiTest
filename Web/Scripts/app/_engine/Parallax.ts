@@ -48,6 +48,7 @@ export class Parallax extends PIXI.Container {
                 } else {
                     t = textures[i] as PIXI.Texture;
                 }
+                t.rotate = 8;
                 var spr = new PIXI.Sprite(t);
                 spr.x = totalWidth;
                 this.spriteBuffer.push(spr);

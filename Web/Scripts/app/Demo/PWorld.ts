@@ -27,7 +27,7 @@ export class PWorld {
             mass: 40,
             position: [playerPosition.x, playerPosition.y]
         });
-        var shape = new p2.Capsule({ length: 30, radius: 2});
+        var shape = new p2.Capsule({ length: 1, radius: 1});
         this.player.addShape(shape);
         this.world.addBody(this.player);
 
@@ -48,7 +48,7 @@ export class PWorld {
     public addObject(bodyOptions?: p2.BodyOptions, shape?: p2.Shape): p2.Body {
         var body = new p2.Body(bodyOptions);
         if (!shape) {
-            shape = new p2.Box({ width: 100, height: 40 });
+            shape = new p2.Box({ width: 64, height: 64 });
         }
         body.addShape(shape);
         this.world.addBody(body);

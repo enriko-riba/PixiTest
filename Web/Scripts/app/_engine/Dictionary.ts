@@ -2,7 +2,7 @@ export class Dictionary<T> {
     private values: { [key: string]: T; } = {};
 
     public get(key: string): T {
-        return this.values[key];
+        return this.values[key];        
     }
 
     public contains(key: string): boolean {
