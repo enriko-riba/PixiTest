@@ -32,3 +32,12 @@ export var TXT_STYLE: PIXI.ITextStyle =
 
 export var sceneMngr: SceneManager;
 export var kbd = new KeyboardMapper();
+
+export enum MovementState {
+    Left,
+    Right,
+    Idle,
+    JumpLeft,
+    JumpRight,
+    JumpUp,
+}

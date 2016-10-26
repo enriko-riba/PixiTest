@@ -74,18 +74,40 @@ export class Parallax extends PIXI.Container {
 
         var delta = this.worldPosition - newPositionX;
         var parallaxDistance = delta * (1-parallaxFactor);
-        this.worldPosition = newPositionX;
 
         //  update sprite positions       
         this.children.forEach((spr: PIXI.Sprite) => {
             spr.x -= parallaxDistance;
         });
 
+        //-------------------------------------
+        //  remove sprites outside viewport
+        //-------------------------------------
         if (delta < 0) {
             //  check for removals from left side
-            //if (firstSpr.x + firstSpr.width < 0) {
             if (firstSpr.x + firstSpr.width < ( this.worldPosition - this.halfSizeX)) {
-                //this.removeChild(firstSpr);
+                firstSpr.visible = false;
+                this.startIDX++;
+                if (this.startIDX >= this.spriteBuffer.length) {
+                    this.startIDX = 0;
+                }
+            }
+        } else {
+            //  check for removals from right side
+            if (lastSpr.x > (this.worldPosition + this.halfSizeX)) {
+                lastSpr.visible = false;
+                this.endIDX--;
+                if (this.endIDX < 0) {
+                    this.endIDX = this.spriteBuffer.length - 1;
+                }
+            }
+        }
+
+        this.worldPosition = newPositionX;
+
+        if (delta < 0) {
+            //  check for removals from left side
+            if (firstSpr.x + firstSpr.width < (this.worldPosition - this.halfSizeX)) {
                 firstSpr.visible = false;
                 this.startIDX++;
                 if (this.startIDX >= this.spriteBuffer.length) {
@@ -94,7 +116,6 @@ export class Parallax extends PIXI.Container {
             }
 
             //  check for new sprites from right side
-            //if (lastSpr.x + lastSpr.width < this.viewPortSize.x) {
             if (lastSpr.x + lastSpr.width <= this.worldPosition + this.halfSizeX) {
                 this.endIDX++;
                 if (this.endIDX >= this.spriteBuffer.length) {
@@ -102,15 +123,12 @@ export class Parallax extends PIXI.Container {
                 }
                 var newSpr = this.spriteBuffer[this.endIDX];
                 newSpr.x = lastSpr.x + lastSpr.width;
-                //this.addChild(newSpr);
                 newSpr.visible = true;
             }
 
         } else {
             //  check for removals from right side
-            //if (lastSpr.x > this.viewPortSize.x) {
             if (lastSpr.x > (this.worldPosition + this.halfSizeX)) {
-                //this.removeChild(lastSpr);
                 lastSpr.visible = false;
                 this.endIDX--;
                 if (this.endIDX < 0) {
@@ -119,7 +137,6 @@ export class Parallax extends PIXI.Container {
             }
 
             //  check for new sprites from left side
-            //if (firstSpr.x > 0) {
             if (firstSpr.x >= (this.worldPosition - this.halfSizeX)) {
                 this.startIDX--;
                 if (this.startIDX < 0) {
@@ -127,7 +144,6 @@ export class Parallax extends PIXI.Container {
                 }
                 var newSpr = this.spriteBuffer[this.startIDX];
                 newSpr.x = firstSpr.x - newSpr.width;
-                //this.addChild(newSpr);
                 newSpr.visible = true;
             }
         }

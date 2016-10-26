@@ -13,7 +13,7 @@ export class PWorld {
     constructor(playerPosition: PIXI.Point) {
         this.playerPosition = playerPosition;
         this.world = new p2.World({
-            gravity: [0, -9.82]
+            gravity: [0, -9.0]
         });
 
         // Create an infinite ground plane body
@@ -29,7 +29,7 @@ export class PWorld {
         });
         var shape = new p2.Capsule({
             length: 20,
-            radius: 3,
+            radius: 2,
         });
         this.player.addShape(shape);
         this.world.addBody(this.player);
