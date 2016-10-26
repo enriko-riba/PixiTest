@@ -1,4 +1,5 @@
 ﻿import * as p2 from "p2";
+import { MovementState } from "app/Demo/Global";
 
 export class JumpController {
     private readonly GRAVITY = 0.0003;
@@ -60,7 +61,7 @@ export class JumpController {
 }
 
 export class P2JumpController {
-    private readonly JUMP_FORCE = 2500;
+    private readonly JUMP_FORCE = 2000;
     private nextJumpAllowed: number = 0;
     private onJumpEnd: () => void;
 
@@ -79,7 +80,16 @@ export class P2JumpController {
         return !this.isJumping && this.nextJumpAllowed < performance.now();
     }
 
-    public startJump() {
-        this.body.applyImpulse([0, this.JUMP_FORCE]);
+    public startJump(direction: MovementState.JumpLeft | MovementState.JumpRight | MovementState.JumpUp) {
+        var forceVector: Array<number>;
+
+        if (direction == MovementState.JumpUp) {
+            forceVector = [0, this.JUMP_FORCE];
+        } else if (direction == MovementState.JumpLeft) {
+            forceVector = [-this.JUMP_FORCE/4, this.JUMP_FORCE];
+        } else if (direction == MovementState.JumpRight) {
+            forceVector = [this.JUMP_FORCE / 4, this.JUMP_FORCE];
+        }
+        this.body.applyImpulse(forceVector);
     }
 }
