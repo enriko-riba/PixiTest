@@ -31,6 +31,9 @@
     <Content Include="assets\Images\background\trees04_dbg.png" />
     <Content Include="assets\Images\background\trees05_dbg.png" />
     <Content Include="assets\Images\background\Wood_night.png" />
+    <Content Include="assets\Images\Objects\Box_02.png" />
+    <Content Include="assets\Images\Objects\Box_03.png" />
+    <Content Include="assets\Images\Objects\Box_dbg.png" />
     <Content Include="assets\Images\Objects\flowers_and_pots.png" />
     <Content Include="assets\Images\Gui\Button1.png" />
     <Content Include="assets\Images\Gui\ListItem.png" />
@@ -47,7 +50,7 @@
     <Content Include="assets\Images\background\trees03.png" />
     <Content Include="assets\Images\background\trees04.png" />
     <Content Include="assets\Images\background\trees05.png" />
-    <Content Include="assets\Images\Objects\Box.png" />
+    <Content Include="assets\Images\Objects\Box_01.png" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
