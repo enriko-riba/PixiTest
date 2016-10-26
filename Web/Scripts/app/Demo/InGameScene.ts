@@ -254,20 +254,25 @@ export class InGameScene extends Scene {
     }
 
     private addBoxes = () => {
-        var texture: PIXI.Texture;
-        texture = PIXI.loader.resources["assets/images/objects/box_03.png"].texture;
-        texture.rotate = 8;
+        var textureEven: PIXI.Texture;
+        var textureOdd: PIXI.Texture;
+        textureEven = PIXI.loader.resources["assets/images/objects/box_01.png"].texture;
+        textureEven.rotate = 8;
+        textureOdd = PIXI.loader.resources["assets/images/objects/box_03.png"].texture;
+        textureOdd.rotate = 8;
         for (var x = 0; x < 10; x ++) {
-            var spr = new PIXI.Sprite(texture);
+            var spr = new PIXI.Sprite(x % 2 == 0 ? textureEven:textureOdd);
             spr.pivot.set(0.5);
             spr.anchor.set(0.5);
-            spr.position.set(128 + (x * 512), x%2 == 0 ? 64 : 160);
+            spr.position.set(128 + (x * 512), x % 2 == 0 ? 64 : 160);
+            spr.rotation = x * Math.PI / 2
             this.worldContainer.addChild(spr);    
                     
             this.addStaticObject(spr.position, new p2.Box({width:128, height:128}));
         }
 
-        texture = PIXI.loader.resources["assets/images/objects/box_01.png"].texture;
+        var texture: PIXI.Texture;
+        texture = PIXI.loader.resources["assets/images/objects/box_02.png"].texture;
         texture.rotate = 8;
         for (var x = 0; x < 10; x++) {            
             var spr = new PIXI.Sprite(texture);
