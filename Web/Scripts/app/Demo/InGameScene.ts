@@ -31,7 +31,7 @@ export class InGameScene extends Scene {
     private movementState: MovementState = -1;
     private heroPosition: PIXI.Point = new PIXI.Point();
     
-    private readonly VELOCITY = 20;
+    private readonly VELOCITY = 10;
     private readonly ANIMATION_FPS = 10;
 
     private isRunning = false;
@@ -257,9 +257,9 @@ export class InGameScene extends Scene {
      * @param movementPositionX
      */
     private setParallaxPositions(movementPositionX: number) {
-        this.backgroundGround.SetViewPortX(movementPositionX);
-        this.backgroundNear.SetViewPortX(movementPositionX * 0.5);
-        this.backgroundFar.SetViewPortX(movementPositionX * 0.3);
+        this.backgroundGround.SetViewPortX(movementPositionX, 1);
+        this.backgroundNear.SetViewPortX(movementPositionX, 0.8);
+        this.backgroundFar.SetViewPortX(movementPositionX, 0.5);
     }
 
     private addBoxes = () => {
@@ -279,10 +279,10 @@ export class InGameScene extends Scene {
             spr.position.set(50 + (x * 256), 100);
             spr.pivot.set(0.5);
             spr.anchor.set(0.5, 0.5);
-            //spr.scale.set(0.5);
+            spr.scale.set(0.5);
             this.worldContainer.addChild(spr);
-            var body = new p2.Body({ mass: 20, position: [spr.position.x, spr.position.y] });
-            body.addShape(new p2.Box({ width: 128, height: 128 }));
+            var body = new p2.Body({ mass: 60, position: [spr.position.x, spr.position.y] });
+            body.addShape(new p2.Box({ width: 64, height: 64 }));
             this.p2w.addBody(body);
             this.entities.push(new PhysicsTuple(spr, body));
         }

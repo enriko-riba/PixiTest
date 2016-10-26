@@ -27,7 +27,10 @@ export class PWorld {
             mass: 40,
             position: [playerPosition.x, playerPosition.y]
         });
-        var shape = new p2.Capsule({ length: 1, radius: 1});
+        var shape = new p2.Capsule({
+            length: 20,
+            radius: 3,
+        });
         this.player.addShape(shape);
         this.world.addBody(this.player);
 
@@ -35,7 +38,7 @@ export class PWorld {
     }
 
     public update(dt: number) {
-        this.world.step(this.fixedTimeStep, dt, 20);
+        this.world.step(this.fixedTimeStep, dt, 30);
         this.playerPosition.x = this.player.interpolatedPosition[0];
         this.playerPosition.y = this.player.interpolatedPosition[1];
     }
