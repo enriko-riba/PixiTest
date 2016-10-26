@@ -29,20 +29,15 @@ export class InGameScene extends Scene {
     private entities: Array<PhysicsTuple<p2.Body>> = [];
 
     private movementState: MovementState = -1;
-    private movementPosition: PIXI.Point = new PIXI.Point(0, 150);
-
-    /**
-     *  Value to be subtracted from renderer position to get the world position.
-     */
-    private heroPositionOffset: PIXI.Point;
-
+    private heroPosition: PIXI.Point = new PIXI.Point();
+    
     private readonly VELOCITY = 20;
     private readonly ANIMATION_FPS = 10;
 
     private isRunning = false;
 
 
-    private txtPosition: PIXI.Text;
+    private readonly HALF_WIDTH = Global.SCENE_WIDTH / 2;
 
     /**
     * holds current jump information.
@@ -50,6 +45,9 @@ export class InGameScene extends Scene {
     private jumpCtrl: P2JumpController;
 
     private p2w: PWorld;
+
+    private hud = new Hud();
+
     /**
      *   Creates a new scene instance.
      */
@@ -66,7 +64,9 @@ export class InGameScene extends Scene {
                 Date.now  /*none found - fallback to browser default */
         })();
 
-        
+        this.worldContainer = new PIXI.Container();
+        this.worldContainer.scale.y = -1;        
+        this.HudOverlay = this.hud;
         this.setup();
         
     }
@@ -83,25 +83,24 @@ export class InGameScene extends Scene {
         }
             
         this.p2w.update(dt);
-        //this.hero.position.y = this.heroPositionOffset.y - this.movementPosition.y;
-        this.hero.position.x = this.movementPosition.x;
-        this.hero.position.y = Global.SCENE_HEIGHT - this.movementPosition.y-150;
-        this.position.x = (Global.SCENE_WIDTH / 2 - this.hero.position.x - 32) * this.scale.x;
-        this.txtPosition.position.x = (this.hero.position.x -32 - Global.SCENE_WIDTH / 2) * this.scale.x;
+        this.hero.position.x = this.heroPosition.x;
+        this.hero.position.y = this.heroPosition.y;
+        this.worldContainer.x = -this.hero.position.x - 32 + this.HALF_WIDTH;
+        this.worldContainer.position.y = Global.SCENE_HEIGHT-70;
+        
 
-        console.log('physics x,y: ' + this.movementPosition.x.toFixed(0) + ',' + this.movementPosition.y.toFixed(0) + ', render x,y: ' + this.hero.position.x.toFixed(0) + ',' + this.hero.position.y.toFixed(0));
-        //this.setParallaxPositions(this.movementPosition.x);
-        this.txtPosition.text = `Position: (${this.movementPosition.x.toFixed(0)}, ${this.movementPosition.y.toFixed(0)})`;
+        console.log('physics x,y: ' + this.heroPosition.x.toFixed(0) + ',' + this.heroPosition.y.toFixed(0) + ', render x,y: ' + this.hero.position.x.toFixed(0) + ',' + this.hero.position.y.toFixed(0));
+        this.setParallaxPositions(this.hero.position.x);
+        this.hud.txtPosition.text = `Position: (${this.heroPosition.x.toFixed(0)}, ${this.heroPosition.y.toFixed(0)})`;
 
         this.entities.forEach((tupple) => {
-            tupple.displayObject.position.set(tupple.body.interpolatedPosition[0], Global.SCENE_HEIGHT - tupple.body.interpolatedPosition[1] - 150);
+            tupple.displayObject.position.set(tupple.body.interpolatedPosition[0], tupple.body.interpolatedPosition[1] );
             tupple.displayObject.rotation = tupple.body.interpolatedAngle;
         });
     }
 
     private setup() {
         this.BackGroundColor = 0x1099bb;
-
         PIXI.SCALE_MODES.DEFAULT = PIXI.SCALE_MODES.LINEAR;
         
         //-----------------------------
@@ -115,14 +114,12 @@ export class InGameScene extends Scene {
         this.hero.addAnimations(new AnimationSequence("jumpright", "assets/images/hero_64x64.png", [54, 55, 56, 57, 58, 59], FRAME_SIZE, FRAME_SIZE));
         this.hero.addAnimations(new AnimationSequence("jumpup", "assets/images/hero_64x64.png", [1, 3, 4], FRAME_SIZE, FRAME_SIZE));
         this.hero.addAnimations(new AnimationSequence("idle", "assets/images/hero_64x64.png", [25, 24, 40, 19, 19, 18, 19, 22, 30, 31, 1, 1, 1], FRAME_SIZE, FRAME_SIZE));
-        this.hero.pivot.set(0.5, 1);
-        this.movementPosition.set((Global.SCENE_WIDTH / 2) - (FRAME_SIZE / 2), 20);
-        this.hero.position.set((Global.SCENE_WIDTH / 2) - (FRAME_SIZE / 2), Global.SCENE_HEIGHT - 150);
-        this.heroPositionOffset = new PIXI.Point((Global.SCENE_WIDTH / 2) - (FRAME_SIZE / 2), Global.SCENE_HEIGHT - 150);
-        this.addChild(this.hero);
+        this.hero.Anchor = new PIXI.Point(0.5, 0);
+        this.heroPosition.set((Global.SCENE_WIDTH / 2) - (FRAME_SIZE / 2), 1);
+        this.worldContainer.addChild(this.hero);
         this.hero.PlayAnimation("idle");
 
-        this.p2w = new PWorld(this.movementPosition);
+        this.p2w = new PWorld(this.heroPosition);
         this.jumpCtrl = new P2JumpController(this.p2w.player);
 
         //-----------------------------
@@ -134,7 +131,7 @@ export class InGameScene extends Scene {
         this.backgroundFar = new Parallax(vps);
         this.backgroundFar.setTextures("assets/images/background/Canyon.png");
         //this.backgroundFar.setTextures("assets/images/background/Wood_night.png");
-        this.addChildAt(this.backgroundFar, 0);
+        this.worldContainer.addChildAt(this.backgroundFar, 0);
 
         //  near parallax
         this.backgroundNear = new Parallax(vps);
@@ -143,25 +140,18 @@ export class InGameScene extends Scene {
             "assets/images/background/trees03.png",
             "assets/images/background/trees04.png",
             "assets/images/background/trees05.png");
-        this.addChildAt(this.backgroundNear, 1);
-        this.backgroundNear.y = Global.SCENE_HEIGHT - this.backgroundNear.height - 30;
+        this.worldContainer.addChildAt(this.backgroundNear, 1);
+        this.backgroundNear.y = 15;
 
-        //  bottom (nearest) parallax
+        //  ground (nearest) parallax
         this.backgroundGround = new Parallax(vps);
         this.backgroundGround.setTextures("assets/images/background/ground.png");
-        this.addChildAt(this.backgroundGround, 2);
-        this.backgroundGround.y = Global.SCENE_HEIGHT - this.backgroundGround.height + 10;
-
-
-        //  debug text
-        this.txtPosition = new PIXI.Text("Position: (0, 0)", Global.TXT_STYLE);
-        this.txtPosition.resolution = window.devicePixelRatio;
-        this.addChild(this.txtPosition);
-
-        this.worldContainer = new PIXI.Container();
+        this.worldContainer.addChildAt(this.backgroundGround, 2);
+        this.backgroundGround.y = -90;
+        
         this.addChild(this.worldContainer);
 
-        this.setParallaxPositions(this.movementPosition.x);
+        this.setParallaxPositions(this.heroPosition.x);
 
         this.addBoxes();
     }
@@ -270,7 +260,6 @@ export class InGameScene extends Scene {
         this.backgroundGround.SetViewPortX(movementPositionX);
         this.backgroundNear.SetViewPortX(movementPositionX * 0.5);
         this.backgroundFar.SetViewPortX(movementPositionX * 0.3);
-        this.worldContainer.position.x = -movementPositionX;
     }
 
     private addBoxes = () => {
@@ -283,18 +272,19 @@ export class InGameScene extends Scene {
         //    this.worldContainer.addChild(spr);            
         //    this.addStaticObject(spr.position, new p2.Box({width:64, height:64}));
         //}
-        for (var x = 0; x < 2; x++) {
-            var spr = new PIXI.Sprite(PIXI.loader.resources["assets/images/objects/box.png"].texture);
-            spr.anchor.set(0, 0.5);
-            spr.position.x = this.movementPosition.x + 150 + (x * 512);
-            spr.position.y = Global.SCENE_HEIGHT - 500;
-            spr.scale.set(0.5);
+        var t = PIXI.loader.resources["assets/images/objects/box_dbg.png"].texture;
+        t.rotate = 8;
+        for (var x = 0; x < 2; x++) {            
+            var spr = new PIXI.Sprite(t);
+            spr.position.set(50 + (x * 256), 100);
+            spr.pivot.set(0.5);
+            spr.anchor.set(0.5, 0.5);
+            //spr.scale.set(0.5);
             this.worldContainer.addChild(spr);
-            var body = new p2.Body({ mass: 10, position: [spr.position.x - this.heroPositionOffset.x, this.heroPositionOffset.y - spr.position.y] });
-            body.addShape(new p2.Box({ width: 64, height: 64 }));
+            var body = new p2.Body({ mass: 20, position: [spr.position.x, spr.position.y] });
+            body.addShape(new p2.Box({ width: 128, height: 128 }));
             this.p2w.addBody(body);
             this.entities.push(new PhysicsTuple(spr, body));
-            //this.addStaticObject(spr.position, new p2.Box({ width: 64, height: 64 }));
         }
     }
     
@@ -305,24 +295,31 @@ export class InGameScene extends Scene {
      */
     private addStaticObject(position: PIXI.Point, shape?: p2.Shape) {
         var options: p2.BodyOptions = {
-            position: [position.x - this.heroPositionOffset.x, this.heroPositionOffset.y - position.y]            
+            position: [position.x, position.y]            
         };
         this.p2w.addObject(options, shape);
     }
 }
 
-/*
+
 class Hud extends PIXI.Container {
     constructor() {
         super();
         this.setup();
     }
 
+    public txtPosition: PIXI.Text;
+
     private setup() {
-        var bottomBar = new PIXI.Sprite(PIXI.loader.resources["Assets/Images/bottom_bar_full.png"].texture);
-        bottomBar.anchor.set(0.5, 1);
-        bottomBar.position.set(Global.SCENE_WIDTH / 2, Global.SCENE_HEIGHT);
-        this.addChild(bottomBar);
+        //var bottomBar = new PIXI.Sprite(PIXI.loader.resources["Assets/Images/bottom_bar_full.png"].texture);
+        //bottomBar.anchor.set(0.5, 1);
+        //bottomBar.position.set(Global.SCENE_WIDTH / 2, Global.SCENE_HEIGHT);
+        //this.addChild(bottomBar);
+
+        //  debug text
+        this.txtPosition = new PIXI.Text("Position: (0, 0)", Global.TXT_STYLE);
+        this.txtPosition.resolution = window.devicePixelRatio;
+        this.addChild(this.txtPosition);
     }
 }
-*/
+
