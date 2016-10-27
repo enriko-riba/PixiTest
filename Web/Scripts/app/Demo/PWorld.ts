@@ -6,7 +6,7 @@ export class PWorld {
     private world: p2.World;
     private ground: p2.Body;
 
-    private readonly fixedTimeStep = 1 / 60; // seconds
+    private readonly fixedTimeStep = 1 / 80; // seconds
 
     private playerPosition: PIXI.Point;
 
