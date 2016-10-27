@@ -135,8 +135,9 @@
     <TypeScriptCompile Include="Scripts\app\Common\error-handler.ts" />
     <TypeScriptCompile Include="Scripts\app\Common\IOverlay.ts" />
     <TypeScriptCompile Include="Scripts\app\Common\overlay.ts" />
+    <TypeScriptCompile Include="Scripts\app\Demo\JumpControllerP2.ts" />
     <TypeScriptCompile Include="Scripts\app\Demo\JumpController.ts" />
-    <TypeScriptCompile Include="Scripts\app\Demo\PWorld.ts" />
+    <TypeScriptCompile Include="Scripts\app\Demo\WorldP2.ts" />
     <TypeScriptCompile Include="Scripts\app\_engine\AnimatedSprite.ts" />
     <TypeScriptCompile Include="Scripts\app\_engine\Button.ts" />
     <TypeScriptCompile Include="Scripts\app\Demo\Demo.ts" />

@@ -1,17 +1,22 @@
 ﻿import * as p2 from "p2";
 import { Dictionary } from "app/_engine/Dictionary";
 
-export class PWorld {
-    public player: p2.Body;
+export class ContactPair {
+    constructor(public BodyA: p2.Body, public BodyB: p2.Body) { }
+}
 
+export class WorldP2 {
+    public player: p2.Body;
     private world: p2.World;
     private ground: p2.Body;
 
-    private readonly fixedTimeStep = 1 / 80; // seconds
 
     private playerPosition: PIXI.Point;
     private materials: Dictionary<p2.Material>;
 
+    private contactPairs: Array<ContactPair> = [];
+
+    private readonly fixedTimeStep = 1 / 60; // seconds
     constructor(playerPosition: PIXI.Point) {
         this.world = new p2.World({
             gravity: [0, -9.0]
@@ -44,7 +49,12 @@ export class PWorld {
         this.world.addBody(this.player);
 
 
-        this.world.on("beginContact", this.contact, this);
+        this.world.on("beginContact", this.beginContact, this);
+        this.world.on("endContact", this.endContact, this);
+    }
+
+    public get World() {
+        return this.world;
     }
 
     public update(dt: number) {
@@ -54,9 +64,9 @@ export class PWorld {
     }
 
     /**
-    * adds an object to the p2 world
-    * @param bodyOptions
-    * @param shape
+     * adds an object to the p2 world
+     * @param bodyOptions
+     * @param shape
     */
     public addObject(bodyOptions?: p2.BodyOptions, shape?: p2.Shape): p2.Body {
         var body = new p2.Body(bodyOptions);
@@ -72,23 +82,48 @@ export class PWorld {
     }
 
     /**
-    * adds an object to the p2 world
-    * @param body
+     * adds an object to the p2 world
+     * @param body
     */
     public addBody(body: p2.Body) {
         this.world.addBody(body);
     }
 
-    private contact = (evt: any) => {
-        if (evt.bodyA === this.player || evt.bodyB === this.player) {
-            console.log('player body contact');
+    /**
+     * returns all contact pairs for the given body.
+     * @param body
+    */
+    public getContactsForBody(body: p2.Body): Array<ContactPair>{
+        var foundPairs : Array<ContactPair> = [];
+        this.contactPairs.forEach((cp, idx, arr) => {
+            if (cp.BodyA == body || cp.BodyB == body) {
+                foundPairs.push(cp);
+            }
+        });
+        return foundPairs;
+    }
+
+    private beginContact = (evt: any) => {
+        var cp = new ContactPair(evt.bodyA, evt.bodyB);
+        this.contactPairs.push(cp);
+    }
+
+    private endContact = (evt: any) => {
+        var foundIdx: number = -1;
+        for (var i = 0; i < this.contactPairs.length; i++) {
+            var cp = this.contactPairs[i];
+            if (
+                (cp.BodyA == evt.bodyA && cp.BodyB == evt.bodyB) ||
+                (cp.BodyA == evt.bodyB && cp.BodyB == evt.bodyA)) {
+                foundIdx = i;
+                break;
+            }
         }  
 
-        if (evt.bodyA === this.ground || evt.bodyB === this.ground) {
-            console.log('ground contact');
-        }        
+        if (foundIdx >=0) {
+            this.contactPairs.splice(foundIdx, 1);
+        }      
     }  
-
 
     private setupMaterials() {
         this.materials = new Dictionary<p2.Material>();
@@ -116,7 +151,7 @@ export class PWorld {
             this.materials.get('box_default'),
             {
                 friction: 0.2,
-                restitution: 0.4,
+                restitution: 0.3,
                 stiffness: p2.Equation.DEFAULT_STIFFNESS * 0.5,
                 relaxation: p2.Equation.DEFAULT_RELAXATION,
                 frictionStiffness: p2.Equation.DEFAULT_STIFFNESS,
