@@ -2,8 +2,8 @@
 import { Parallax } from "app/_engine/Parallax";
 import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
 import { PhysicsTuple } from "app/_engine/PhysicsConnector";
-import { JumpController, P2JumpController } from "./JumpController";
-import { PWorld } from "./PWorld";
+import { JumpControllerP2 } from "./JumpControllerP2";
+import { WorldP2 } from "./WorldP2";
 import { MovementState } from "app/Demo/Global";
 import * as Global from "app/Demo/Global";
 
@@ -35,9 +35,9 @@ export class InGameScene extends Scene {
     /**
     * holds current jump information.
     */
-    private jumpCtrl: P2JumpController;
+    private jumpCtrl: JumpControllerP2;
 
-    private p2w: PWorld;
+    private wp2: WorldP2;
 
     private hud = new Hud();
 
@@ -72,24 +72,32 @@ export class InGameScene extends Scene {
 
         if (!this.jumpCtrl.isJumping) {
             var velocity = this.calculateHorizontalVelocity();
-            this.p2w.player.velocity[0] = velocity;
+            this.wp2.player.velocity[0] = velocity;
         }
             
-        this.p2w.update(dt);
+        this.wp2.update(dt);
+
+        //  hero position
         this.hero.x = this.heroPosition.x;
         this.hero.y = this.heroPosition.y;
+        this.setParallaxPositions(this.heroPosition.x);
+        this.hud.txtPosition.text = `Position: (${this.heroPosition.x.toFixed(0)}, ${this.heroPosition.y.toFixed(0)})`;
+
+        //  give the ctrl a chance to do stuff
+        this.jumpCtrl.onUpdate(dt);
+
+
+        //  world container position
         this.worldContainer.x = -this.hero.x + this.SCENE_HALF_WIDTH;
         this.worldContainer.y = Global.SCENE_HEIGHT-70;
         
 
-        //console.log('physics x,y: ' + this.heroPosition.x.toFixed(0) + ',' + this.heroPosition.y.toFixed(0) + ', render x,y: ' + this.hero.x.toFixed(0) + ',' + this.hero.y.toFixed(0));
-        this.setParallaxPositions(this.hero.x);
-        this.hud.txtPosition.text = `Position: (${this.heroPosition.x.toFixed(0)}, ${this.heroPosition.y.toFixed(0)})`;
-
+        //  entities position
         this.entities.forEach((tupple) => {
             tupple.displayObject.position.set(tupple.body.interpolatedPosition[0], tupple.body.interpolatedPosition[1] );
             tupple.displayObject.rotation = tupple.body.interpolatedAngle;
         });
+
     }
 
     private setup() {
@@ -107,12 +115,12 @@ export class InGameScene extends Scene {
         this.hero.addAnimations(new AnimationSequence("jumpup", "assets/images/hero_64x64.png", [1, 3, 4], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
         this.hero.addAnimations(new AnimationSequence("idle", "assets/images/hero_64x64.png", [25, 24, 40, 19, 19, 18, 19, 22, 30, 31, 1, 1, 1], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
         this.hero.Anchor = new PIXI.Point(0.5, 0.1);
-        this.heroPosition.set((Global.SCENE_WIDTH / 2) - (this.HERO_FRAME_SIZE / 2), 1);
+        this.heroPosition.set(/*(Global.SCENE_WIDTH / 2) - (this.HERO_FRAME_SIZE / 2)*/-170, 5);
         this.worldContainer.addChild(this.hero);
         this.hero.PlayAnimation("idle");
 
-        this.p2w = new PWorld(this.heroPosition);
-        this.jumpCtrl = new P2JumpController(this.p2w.player);
+        this.wp2 = new WorldP2(this.heroPosition);
+        this.jumpCtrl = new JumpControllerP2(this.wp2, this.wp2.player);
 
         //-----------------------------
         //  setup backgrounds
@@ -266,15 +274,17 @@ export class InGameScene extends Scene {
             var text: PIXI.Texture;
             var position: PIXI.Point = new PIXI.Point;
             var rotation: number;
-
+            var scale: number;
             if (x % 2 == 0) {
                 text = textureEven;
                 position.set(128 + (x * 512), 64);
                 rotation = x * Math.PI / 2;
+                scale = 2;
             } else {
                 text = textureOdd;
                 position.set(128 + (x * 512), 160);
                 rotation = x * Math.PI / 4;
+                scale = 1;
             }
 
             spr = new PIXI.Sprite(text);
@@ -282,6 +292,7 @@ export class InGameScene extends Scene {
             spr.rotation = rotation;
             spr.pivot.set(0.5);
             spr.anchor.set(0.5);
+            spr.scale.set(scale);
             this.worldContainer.addChild(spr);    
                     
             var shape = new p2.Box({ width: 128, height: 128 });
@@ -296,12 +307,11 @@ export class InGameScene extends Scene {
             spr.position.set(x * 256, 100);
             spr.pivot.set(0.5);
             spr.anchor.set(0.5);
-            spr.scale.set(0.5);
             this.worldContainer.addChild(spr);
 
             var body = new p2.Body({ mass: 100, position: [spr.x, spr.y] });
             body.addShape(new p2.Box({ width: 64, height: 64 }));
-            this.p2w.addBody(body);
+            this.wp2.addBody(body);
             this.entities.push(new PhysicsTuple(spr, body));
         }
     }
@@ -312,7 +322,7 @@ export class InGameScene extends Scene {
      * @param shape
      */
     private addStaticObject(options:p2.BodyOptions, shape?: p2.Shape) {       
-        this.p2w.addObject(options, shape);
+        this.wp2.addObject(options, shape);
     }
 }
 
