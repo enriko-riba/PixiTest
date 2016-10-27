@@ -78,7 +78,6 @@ export class InGameScene extends Scene {
         this.p2w.update(dt);
         this.hero.x = this.heroPosition.x;
         this.hero.y = this.heroPosition.y;
-        //this.worldContainer.x = -this.hero.x - (this.HERO_FRAME_SIZE/2) + this.SCENE_HALF_WIDTH;
         this.worldContainer.x = -this.hero.x + this.SCENE_HALF_WIDTH;
         this.worldContainer.y = Global.SCENE_HEIGHT-70;
         
@@ -256,19 +255,37 @@ export class InGameScene extends Scene {
     private addBoxes = () => {
         var textureEven: PIXI.Texture;
         var textureOdd: PIXI.Texture;
+
         textureEven = PIXI.loader.resources["assets/images/objects/box_01.png"].texture;
-        textureEven.rotate = 8;
         textureOdd = PIXI.loader.resources["assets/images/objects/box_03.png"].texture;
+        textureEven.rotate = 8;
         textureOdd.rotate = 8;
-        for (var x = 0; x < 10; x ++) {
-            var spr = new PIXI.Sprite(x % 2 == 0 ? textureEven:textureOdd);
+
+        for (var x = 0; x < 10; x++) {
+            var spr: PIXI.Sprite;
+            var text: PIXI.Texture;
+            var position: PIXI.Point = new PIXI.Point;
+            var rotation: number;
+
+            if (x % 2 == 0) {
+                text = textureEven;
+                position.set(128 + (x * 512), 64);
+                rotation = x * Math.PI / 2;
+            } else {
+                text = textureOdd;
+                position.set(128 + (x * 512), 160);
+                rotation = x * Math.PI / 4;
+            }
+
+            spr = new PIXI.Sprite(text);
+            spr.position = position;
+            spr.rotation = rotation;
             spr.pivot.set(0.5);
             spr.anchor.set(0.5);
-            spr.position.set(128 + (x * 512), x % 2 == 0 ? 64 : 160);
-            spr.rotation = x * Math.PI / 2
             this.worldContainer.addChild(spr);    
                     
-            this.addStaticObject(spr.position, new p2.Box({width:128, height:128}));
+            var shape = new p2.Box({ width: 128, height: 128 });
+            this.addStaticObject({ angle: spr.rotation, position: [spr.x, spr.y]}, shape);
         }
 
         var texture: PIXI.Texture;
@@ -294,10 +311,7 @@ export class InGameScene extends Scene {
      * @param pixiObject
      * @param shape
      */
-    private addStaticObject(position: PIXI.Point, shape?: p2.Shape) {
-        var options: p2.BodyOptions = {
-            position: [position.x, position.y]            
-        };
+    private addStaticObject(options:p2.BodyOptions, shape?: p2.Shape) {       
         this.p2w.addObject(options, shape);
     }
 }
