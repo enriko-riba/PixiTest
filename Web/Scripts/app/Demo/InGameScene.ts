@@ -157,10 +157,13 @@ export class InGameScene extends Scene {
     }
 
     private handleKeyboard = () => {
-        const LEFT: number = 65;
-        const RIGHT: number = 68;
-        const JUMP: number = 87;
-        const SHIFT: number = 16;
+        const KEY_A: number = 65;
+        const KEY_D: number = 68;
+        const KEY_W: number = 87;
+        const KEY_SHIFT: number = 16;
+        const KEY_LEFT: number = 37;
+        const KEY_RIGHT: number = 39;
+        const KEY_UP: number = 38;
 
         var newState: MovementState = MovementState.Idle;
 
@@ -170,16 +173,16 @@ export class InGameScene extends Scene {
 
         var kbd = Global.kbd;
         var newIsJumping: boolean = false;
-        var newIsRunning = kbd.IsKeyDown(SHIFT);
+        var newIsRunning = kbd.IsKeyDown(KEY_SHIFT);
 
-        if (kbd.IsKeyDown(LEFT)) {
+        if (kbd.IsKeyDown(KEY_A) || kbd.IsKeyDown(KEY_LEFT)) {
             newState = MovementState.Left;
-        } else if (kbd.IsKeyDown(RIGHT)) {
+        } else if (kbd.IsKeyDown(KEY_D) || kbd.IsKeyDown(KEY_RIGHT)) {
             newState = MovementState.Right;
         }
 
         //  check if jump is pressed
-        if (kbd.IsKeyDown(JUMP) && this.jumpCtrl.canJump) {
+        if ((kbd.IsKeyDown(KEY_W) || kbd.IsKeyDown(KEY_UP)) && this.jumpCtrl.canJump) {
             if (this.movementState === MovementState.Left) {
                 newState = MovementState.JumpLeft;
                 newIsRunning = false;

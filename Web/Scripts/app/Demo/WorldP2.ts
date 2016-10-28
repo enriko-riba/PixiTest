@@ -15,6 +15,7 @@ export class WorldP2 {
     private materials: Dictionary<p2.Material>;
 
     private contactPairs: Array<ContactPair> = [];
+    private contactWatch: Array<number> = [];
 
     private readonly fixedTimeStep = 1 / 60; // seconds
     constructor(playerPosition: PIXI.Point) {
@@ -91,6 +92,7 @@ export class WorldP2 {
 
     /**
      * returns all contact pairs for the given body.
+     * Note: the body must be in the contact watch list or an empty array will be returned.
      * @param body
     */
     public getContactsForBody(body: p2.Body): Array<ContactPair>{
@@ -103,9 +105,24 @@ export class WorldP2 {
         return foundPairs;
     }
 
+    /**
+     * Adds the body to the contact watch list.
+     * Only bodies in this list will be elected for contact pair updates - if in this list their contactpairs
+     * can be retrieved via the getContactsForBody() function.
+     * @param body
+     */
+    public addContactWatch(body: p2.Body) {
+        this.contactWatch.push(body.id);
+    }
+
     private beginContact = (evt: any) => {
-        var cp = new ContactPair(evt.bodyA, evt.bodyB);
-        this.contactPairs.push(cp);
+        var watchedItemFound = this.contactWatch.filter((bodyId, idx, arr) => {
+            return (bodyId === evt.bodyA.id || bodyId == evt.bodyB.id);
+        });
+        if (watchedItemFound && watchedItemFound.length > 0) {
+            var cp = new ContactPair(evt.bodyA, evt.bodyB);
+            this.contactPairs.push(cp);
+        }
     }
 
     private endContact = (evt: any) => {
