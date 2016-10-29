@@ -1,0 +1,48 @@
+﻿{
+  "Levels": [
+    {
+      "Level": 1,
+      "Name": "Intro",
+      "Parallax": [
+        {
+          "Index": 0,
+          "Name": "Far",
+          "ParallaxFactor":  0.5,
+          "y": 0,
+          "Tiles": [ "assets/images/background/Canyon.png" ]
+        },
+        {
+          "Index": 1,
+          "Name": "Near",
+          "ParallaxFactor": 0.8,
+          "y": 5,
+          "Tiles": [
+            "assets/images/background/trees01.png",
+            "assets/images/background/trees02.png",
+            "assets/images/background/trees03.png",
+            "assets/images/background/trees04.png",
+            "assets/images/background/trees05.png"
+          ]
+        },
+        {
+          "Index": 2,
+          "Name": "Ground",
+          "ParallaxFactor": 1,
+          "y": -90,
+          "Tiles": [ "assets/images/background/ground.png" ]
+        }
+      ],
+      "Map": {
+        "Object": [
+          {
+            "Type": "Box",
+            "xy": [ 200, 64 ],
+            "Texture": "assets/images/objects/box_01.png",
+            "Mass":  
+          }
+        ],
+        "NPC": []
+      }
+    }
+  ]
+}

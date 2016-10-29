@@ -31,6 +31,7 @@
     <Content Include="assets\Images\background\trees04_dbg.png" />
     <Content Include="assets\Images\background\trees05_dbg.png" />
     <Content Include="assets\Images\background\Wood_night.png" />
+    <Content Include="assets\Images\Effects\jump_smoke.png" />
     <Content Include="assets\Images\Flora\bush-1.png" />
     <Content Include="assets\Images\Flora\grass-1.png" />
     <Content Include="assets\Images\Flora\grass-2.png" />
@@ -114,6 +115,7 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Content\Site.scss" />
+    <Content Include="assets\Levels\levels.json" />
     <None Include="compilerconfig.json" />
     <None Include="compilerconfig.json.defaults">
       <DependentUpon>compilerconfig.json</DependentUpon>
