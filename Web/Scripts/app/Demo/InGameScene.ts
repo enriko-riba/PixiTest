@@ -6,13 +6,17 @@ import { PhysicsTuple } from "app/_engine/PhysicsConnector";
 import * as Global from "./Global";
 import { WorldP2 } from "./WorldP2";
 import { MovementState } from "./MovementState";
-import { InputController } from "./InputController";
+import { MovementController } from "./MovementController";
 
 
 /**
  *   Load in game scene.
  */
 export class InGameScene extends Scene {
+
+    private readonly HERO_FRAME_SIZE: number = 64;
+    private readonly SCENE_HALF_WIDTH: number = Global.SCENE_WIDTH / 2;
+
 
     private plxGround: Parallax;
     private plxNear: Parallax;
@@ -21,20 +25,11 @@ export class InGameScene extends Scene {
 
     private hero: AnimatedSprite;
     private heroPosition: PIXI.Point = new PIXI.Point();
-
     private entities: Array<PhysicsTuple<p2.Body>> = [];
-   
-    private readonly VELOCITY = 10;
-    
-   
-
-    private readonly HERO_FRAME_SIZE: number = 64;
-    private readonly SCENE_HALF_WIDTH: number = Global.SCENE_WIDTH / 2;
-
     
 
     private wp2: WorldP2;
-    private input: InputController;
+    private movementCtrl: MovementController;
     private hud = new Hud();
 
     /**
@@ -64,14 +59,7 @@ export class InGameScene extends Scene {
     *  Updates physics and handles user input
     */
     public onUpdate = (dt: number) => {
-        this.input.update(dt);
-
-        if (!this.input.IsJumping) {
-            //  calculate the horizontal velocity
-            var velocity = this.input.MovementDirection * this.VELOCITY * (this.input.IsRunning ? 2 : 1.0);;
-            this.wp2.player.velocity[0] = velocity;
-        }
-            
+        this.movementCtrl.update(dt);
         this.wp2.update(dt);
 
         //  hero position
@@ -112,7 +100,7 @@ export class InGameScene extends Scene {
         this.hero.PlayAnimation("idle");
 
         this.wp2 = new WorldP2(this.heroPosition);
-        this.input = new InputController(this.wp2, this.hero);
+        this.movementCtrl = new MovementController(this.wp2, this.hero);
         
         //-----------------------------
         //  setup backgrounds

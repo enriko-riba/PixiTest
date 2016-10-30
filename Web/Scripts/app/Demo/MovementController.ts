@@ -7,10 +7,12 @@ import { WorldP2 } from "./WorldP2";
 import { JumpControllerP2 } from "./JumpControllerP2";
 
 
-export class InputController {
+export class MovementController {
 
     private readonly ANIMATION_FPS = 10;
+    private readonly VELOCITY = 10;
 
+    private world: WorldP2;
     private hero: AnimatedSprite;
     private movementState: MovementState = -1;
     private kbd = new KeyboardMapper();
@@ -23,6 +25,7 @@ export class InputController {
     private jumpCtrl: JumpControllerP2;
 
     constructor(world: WorldP2, hero: AnimatedSprite) {
+        this.world = world;
         this.jumpCtrl = new JumpControllerP2(world, world.player);
         this.hero = hero;
     }
@@ -39,14 +42,16 @@ export class InputController {
         return this.movementState;
     }
 
-    public get MovementDirection() {
+    public MovementVelocity() : number {
         var direction = 0;
         if (this.movementState === MovementState.Left || this.movementState === MovementState.JumpLeft) {
             direction = -1;
         } else if (this.movementState === MovementState.Right || this.movementState === MovementState.JumpRight) {
             direction = 1;
         }
-        return direction;
+
+        var velocity = direction * this.VELOCITY * (this.IsRunning ? 2 : 1.0);
+        return velocity;
     }
 
     public update(dt: number) {
@@ -61,12 +66,23 @@ export class InputController {
 
         //  give the ctrl a chance to do stuff
         this.jumpCtrl.onUpdate(dt);
+        
 
+        if (!this.jumpCtrl.isJumping) {
+            //  add a small force in movement direction if jumping
+            //this.wp2.player.applyImpulse([v / 50, 0]);
+
+            //  calculate the horizontal velocity
+            var v = this.MovementVelocity();
+            this.world.player.velocity[0] = v;
+        } else {
+            return;
+        }
 
         var newState: MovementState = MovementState.Idle;
 
         //  no movement while jumping
-        if (this.jumpCtrl.isJumping) return;
+        //if (this.jumpCtrl.isJumping) return;
 
 
         var newIsJumping: boolean = false;

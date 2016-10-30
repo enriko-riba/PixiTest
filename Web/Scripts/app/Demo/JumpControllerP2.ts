@@ -31,18 +31,16 @@ export class JumpControllerP2 {
         if (direction == MovementState.JumpUp) {
             forceVector = [0, this.JUMP_FORCE];
         } else if (direction == MovementState.JumpLeft) {
-            forceVector = [-this.JUMP_FORCE/4, this.JUMP_FORCE];
+            forceVector = [-this.JUMP_FORCE/ 5, this.JUMP_FORCE];
         } else if (direction == MovementState.JumpRight) {
-            forceVector = [this.JUMP_FORCE / 4, this.JUMP_FORCE];
+            forceVector = [this.JUMP_FORCE / 5, this.JUMP_FORCE];
         }
         this.body.applyImpulse(forceVector);
-        this.nextJumpAllowed = performance.now() + 500;
-
+        this.nextJumpAllowed = performance.now() + 450;
     }
 
     private bodyContacts: Array<ContactPair>= [];
     public onUpdate = (dt: number) => {
         this.bodyContacts = this.world.getContactsForBody(this.body);
-        //console.log('found: ' + contacts.length + ' player body contacts');
     }
 }
