@@ -1,7 +1,7 @@
 ﻿{
   "Levels": [
     {
-      "Level": 1,
+      "Id": 1,
       "Name": "Intro",
       "Parallax": [
         {
@@ -36,7 +36,7 @@
           ]
         }
       ],
-      "LevelMap": {
+      "Map": {
         "Body": [
           {
             "Type": "Box",
@@ -44,7 +44,7 @@
               200,
               64
             ],
-            "Texture": "assets/images/objects/box_01.png",
+            "Texture": "assets/images/objects/box_64_01.png",
             "Mass": 80
           }
         ],
