@@ -1,5 +1,5 @@
 ﻿import { SceneManager } from "app/_engine/SceneManager";
-import { KeyboardMapper } from "app/_engine/KeyboardMapper";
+
 
 export var SCENE_WIDTH : number = 1366;
 export var SCENE_HEIGHT: number = 768;
@@ -31,14 +31,4 @@ export var TXT_STYLE: PIXI.ITextStyle =
     };
 
 export var sceneMngr: SceneManager;
-export var kbd = new KeyboardMapper();
 
-export enum MovementState {
-    Left,
-    Right,
-    Idle,
-    JumpLeft,
-    JumpRight,
-    JumpUp,
-    JumpDown,
-}

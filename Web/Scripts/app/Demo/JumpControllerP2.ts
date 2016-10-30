@@ -1,5 +1,5 @@
 ﻿import * as p2 from "p2";
-import { MovementState } from "app/Demo/Global";
+import { MovementState } from "./MovementState";
 import { WorldP2, ContactPair } from "./WorldP2";
 
 export class JumpControllerP2 {
