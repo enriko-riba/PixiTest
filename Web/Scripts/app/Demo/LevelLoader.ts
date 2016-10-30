@@ -81,7 +81,7 @@ export interface ILevelMap {
 }
 
 export interface ILevel {
-    Level: number;
+    Id: number;
     Name: string;
     Parallax: IParallax[];
     Map: ILevelMap;

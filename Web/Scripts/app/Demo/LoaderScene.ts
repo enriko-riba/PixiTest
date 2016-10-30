@@ -44,7 +44,7 @@ export class LoaderScene extends Scene {
 
         var assets = [
             "assets/images/hero.png",
-            "assets/images/hero_64x64.png",
+            "assets/images/hero_64.png",
 
             "assets/images/Gui/Button1.png",
             "assets/images/Gui/Listitem.png",
@@ -66,10 +66,18 @@ export class LoaderScene extends Scene {
             "assets/images/background/trees05.png",
             "assets/images/background/ground.png",
 
-            "assets/images/objects/box_01.png",
-            "assets/images/objects/box_02.png",
-            "assets/images/objects/box_03.png",
-            "assets/images/objects/box_dbg.png",
+            "assets/images/objects/box_64_01.png",
+            "assets/images/objects/box_64_02.png",
+            "assets/images/objects/box_64_03.png",
+
+            "assets/images/objects/box_128_01.png",
+            "assets/images/objects/box_128_02.png",
+            "assets/images/objects/box_128_03.png",
+
+            "assets/images/objects/bumper_01.png",
+
+            "assets/images/objects/chest_01.png",
+
 
             "assets/levels/levels.json",
         ];

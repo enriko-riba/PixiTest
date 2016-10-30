@@ -89,12 +89,12 @@ export class InGameScene extends Scene {
         //  setup hero
         //-----------------------------
         this.hero = new AnimatedSprite();
-        this.hero.addAnimations(new AnimationSequence("right", "assets/images/hero_64x64.png", [12, 13, 14, 15, 16, 17], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
-        this.hero.addAnimations(new AnimationSequence("left", "assets/images/hero_64x64.png", [6, 7, 8, 9, 10, 11], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
-        this.hero.addAnimations(new AnimationSequence("jumpleft", "assets/images/hero_64x64.png", [48, 49, 50, 51, 52, 53], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
-        this.hero.addAnimations(new AnimationSequence("jumpright", "assets/images/hero_64x64.png", [54, 55, 56, 57, 58, 59], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
-        this.hero.addAnimations(new AnimationSequence("jumpup", "assets/images/hero_64x64.png", [1, 3, 4], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
-        this.hero.addAnimations(new AnimationSequence("idle", "assets/images/hero_64x64.png", [25, 24, 40, 19, 19, 18, 19, 22, 30, 31, 1, 1, 1], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
+        this.hero.addAnimations(new AnimationSequence("right", "assets/images/hero_64.png", [12, 13, 14, 15, 16, 17], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
+        this.hero.addAnimations(new AnimationSequence("left", "assets/images/hero_64.png", [6, 7, 8, 9, 10, 11], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
+        this.hero.addAnimations(new AnimationSequence("jumpleft", "assets/images/hero_64.png", [48, 49, 50, 51, 52, 53], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
+        this.hero.addAnimations(new AnimationSequence("jumpright", "assets/images/hero_64.png", [54, 55, 56, 57, 58, 59], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
+        this.hero.addAnimations(new AnimationSequence("jumpup", "assets/images/hero_64.png", [1, 3, 4], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
+        this.hero.addAnimations(new AnimationSequence("idle", "assets/images/hero_64.png", [25, 24, 40, 19, 19, 18, 19, 22, 30, 31, 1, 1, 1], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
         this.hero.Anchor = new PIXI.Point(0.5, 0.1);
         this.heroPosition.set(-170, 5);
         this.worldContainer.addChild(this.hero);
@@ -119,8 +119,8 @@ export class InGameScene extends Scene {
         var textureEven: PIXI.Texture;
         var textureOdd: PIXI.Texture;
 
-        textureEven = PIXI.loader.resources["assets/images/objects/box_01.png"].texture;
-        textureOdd = PIXI.loader.resources["assets/images/objects/box_03.png"].texture;
+        textureEven = PIXI.loader.resources["assets/images/objects/box_128_01.png"].texture;
+        textureOdd = PIXI.loader.resources["assets/images/objects/box_128_03.png"].texture;
         textureEven.rotate = 8;
         textureOdd.rotate = 8;
 
@@ -129,17 +129,15 @@ export class InGameScene extends Scene {
             var text: PIXI.Texture;
             var position: PIXI.Point = new PIXI.Point;
             var rotation: number;
-            var scale: number;
+
             if (x % 2 == 0) {
                 text = textureEven;
                 position.set(128 + (x * 512), 64);
                 rotation = x * Math.PI / 2;
-                scale = 2;
             } else {
                 text = textureOdd;
                 position.set(128 + (x * 512), 160);
                 rotation = x * Math.PI / 4;
-                scale = 1;
             }
 
             spr = new PIXI.Sprite(text);
@@ -147,7 +145,6 @@ export class InGameScene extends Scene {
             spr.rotation = rotation;
             spr.pivot.set(0.5);
             spr.anchor.set(0.5);
-            spr.scale.set(scale);
             this.worldContainer.addChild(spr);
 
             var shape = new p2.Box({ width: 128, height: 128 });
@@ -155,7 +152,7 @@ export class InGameScene extends Scene {
         }
 
         var texture: PIXI.Texture;
-        texture = PIXI.loader.resources["assets/images/objects/box_02.png"].texture;
+        texture = PIXI.loader.resources["assets/images/objects/box_64_02.png"].texture;
         texture.rotate = 8;
         for (var x = 0; x < 20; x++) {
             var spr = new PIXI.Sprite(texture);
