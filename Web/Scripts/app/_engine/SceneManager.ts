@@ -43,6 +43,12 @@ export class SceneManager {
         }
         this.renderer = PIXI.autoDetectRenderer(width, height, options);
         this.renderer.autoResize = true;
+
+        //  textureGC is only used for web GL renderer
+        if ((this.render as any).textureGC) {   
+            (this.render as any).textureGC.mode = PIXI.GC_MODES.AUTO;
+        }
+
         window.removeEventListener('resize', this.resizeHandler);
         window.addEventListener('resize', this.resizeHandler, true);
         this.render(0);

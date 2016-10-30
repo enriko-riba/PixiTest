@@ -2,10 +2,12 @@
 import { Parallax } from "app/_engine/Parallax";
 import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
 import { PhysicsTuple } from "app/_engine/PhysicsConnector";
-import { JumpControllerP2 } from "./JumpControllerP2";
+
+import * as Global from "./Global";
 import { WorldP2 } from "./WorldP2";
-import { MovementState } from "app/Demo/Global";
-import * as Global from "app/Demo/Global";
+import { MovementState } from "./MovementState";
+import { InputController } from "./InputController";
+
 
 /**
  *   Load in game scene.
@@ -21,24 +23,18 @@ export class InGameScene extends Scene {
     private heroPosition: PIXI.Point = new PIXI.Point();
 
     private entities: Array<PhysicsTuple<p2.Body>> = [];
-
-    private movementState: MovementState = -1;
-    
+   
     private readonly VELOCITY = 10;
-    private readonly ANIMATION_FPS = 10;
-
-    private isRunning = false;
+    
+   
 
     private readonly HERO_FRAME_SIZE: number = 64;
     private readonly SCENE_HALF_WIDTH: number = Global.SCENE_WIDTH / 2;
 
-    /**
-    * holds current jump information.
-    */
-    private jumpCtrl: JumpControllerP2;
+    
 
     private wp2: WorldP2;
-
+    private input: InputController;
     private hud = new Hud();
 
     /**
@@ -68,10 +64,11 @@ export class InGameScene extends Scene {
     *  Updates physics and handles user input
     */
     public onUpdate = (dt: number) => {
-        this.handleKeyboard();
+        this.input.update(dt);
 
-        if (!this.jumpCtrl.isJumping) {
-            var velocity = this.calculateHorizontalVelocity();
+        if (!this.input.IsJumping) {
+            //  calculate the horizontal velocity
+            var velocity = this.input.MovementDirection * this.VELOCITY * (this.input.IsRunning ? 2 : 1.0);;
             this.wp2.player.velocity[0] = velocity;
         }
             
@@ -83,14 +80,9 @@ export class InGameScene extends Scene {
         this.setParallaxPositions(this.heroPosition.x);
         this.hud.txtPosition.text = `Position: (${this.heroPosition.x.toFixed(0)}, ${this.heroPosition.y.toFixed(0)})`;
 
-        //  give the ctrl a chance to do stuff
-        this.jumpCtrl.onUpdate(dt);
-
-
         //  world container position
         this.worldContainer.x = -this.hero.x + this.SCENE_HALF_WIDTH;
         this.worldContainer.y = Global.SCENE_HEIGHT-70;
-        
 
         //  entities position
         this.entities.forEach((tupple) => {
@@ -120,8 +112,8 @@ export class InGameScene extends Scene {
         this.hero.PlayAnimation("idle");
 
         this.wp2 = new WorldP2(this.heroPosition);
-        this.jumpCtrl = new JumpControllerP2(this.wp2, this.wp2.player);
-
+        this.input = new InputController(this.wp2, this.hero);
+        
         //-----------------------------
         //  setup backgrounds
         //-----------------------------
@@ -154,103 +146,6 @@ export class InGameScene extends Scene {
         this.setParallaxPositions(this.heroPosition.x);
 
         this.addBoxes();
-    }
-
-    private handleKeyboard = () => {
-        const KEY_A: number = 65;
-        const KEY_D: number = 68;
-        const KEY_W: number = 87;
-        const KEY_SHIFT: number = 16;
-        const KEY_LEFT: number = 37;
-        const KEY_RIGHT: number = 39;
-        const KEY_UP: number = 38;
-
-        var newState: MovementState = MovementState.Idle;
-
-        //  no movement while jumping
-        if (this.jumpCtrl.isJumping) return;
-
-
-        var kbd = Global.kbd;
-        var newIsJumping: boolean = false;
-        var newIsRunning = kbd.IsKeyDown(KEY_SHIFT);
-
-        if (kbd.IsKeyDown(KEY_A) || kbd.IsKeyDown(KEY_LEFT)) {
-            newState = MovementState.Left;
-        } else if (kbd.IsKeyDown(KEY_D) || kbd.IsKeyDown(KEY_RIGHT)) {
-            newState = MovementState.Right;
-        }
-
-        //  check if jump is pressed
-        if ((kbd.IsKeyDown(KEY_W) || kbd.IsKeyDown(KEY_UP)) && this.jumpCtrl.canJump) {
-            if (this.movementState === MovementState.Left) {
-                newState = MovementState.JumpLeft;
-                newIsRunning = false;
-            }
-            else if (this.movementState === MovementState.Right) {
-                newState = MovementState.JumpRight;
-                newIsRunning = false;
-            }
-            else if (this.movementState === MovementState.Idle) {
-                newState = MovementState.JumpUp;
-                newIsRunning = false;
-            }
-            //console.log('new state: ' + MovementState[newState]);
-        }
-
-        //  has state changed
-        if (newState !== this.movementState) {
-            console.log('state change: ' + MovementState[this.movementState] + ' -> ' + MovementState[newState]);
-
-            switch (newState) {
-                case MovementState.Idle:
-                    this.hero.PlayAnimation("idle");
-                    break;
-                case MovementState.Left:
-                    this.hero.PlayAnimation("left");
-                    break;
-                case MovementState.Right:
-                    this.hero.PlayAnimation("right");
-                    break;
-                case MovementState.JumpLeft:
-                    newIsJumping = true;
-                    this.hero.PlayAnimation("jumpleft");
-                    this.jumpCtrl.startJump(MovementState.JumpLeft);
-                    break;
-                case MovementState.JumpRight:
-                    newIsJumping = true;
-                    this.hero.PlayAnimation("jumpright");
-                    this.jumpCtrl.startJump(MovementState.JumpRight);
-                    break;
-                case MovementState.JumpUp:
-                    newIsJumping = true;
-                    this.hero.PlayAnimation("jumpup");
-                    this.jumpCtrl.startJump(MovementState.JumpUp);
-                    break;
-            }
-        }
-        
-        //  adjust animation FPS based on jump/idle/isrunning flags
-        var animationFPS = (newState === MovementState.Idle || newIsJumping) ? this.ANIMATION_FPS / 2 : (newIsRunning ? 2 : 1) * this.ANIMATION_FPS;
-        this.hero.Fps = animationFPS;
-
-        //  update new states
-        this.movementState = newState;
-        this.isRunning = newIsRunning;
-    }
-   
-    /**
-     * Calculates the horizontal velocity
-     */
-    private calculateHorizontalVelocity(): number {
-        var move = 0;
-        if (this.movementState === MovementState.Left || this.movementState === MovementState.JumpLeft) {
-            move = -1;
-        } else if (this.movementState === MovementState.Right || this.movementState === MovementState.JumpRight) {
-            move = 1;
-        }
-        var velocity = (move * this.VELOCITY) * (this.isRunning ? 2 : 1.0);
-        return velocity;
     }
 
     /**
@@ -299,7 +194,7 @@ export class InGameScene extends Scene {
             this.worldContainer.addChild(spr);    
                     
             var shape = new p2.Box({ width: 128, height: 128 });
-            this.addStaticObject({ angle: spr.rotation, position: [spr.x, spr.y]}, shape);
+            this.wp2.addObject({ angle: spr.rotation, position: [spr.x, spr.y] }, shape);
         }
 
         var texture: PIXI.Texture;
@@ -317,16 +212,7 @@ export class InGameScene extends Scene {
             this.wp2.addBody(body);
             this.entities.push(new PhysicsTuple(spr, body));
         }
-    }
-    
-    /**
-     * adds an static object to the scene and p2 world
-     * @param pixiObject
-     * @param shape
-     */
-    private addStaticObject(options:p2.BodyOptions, shape?: p2.Shape) {       
-        this.wp2.addObject(options, shape);
-    }
+    }    
 }
 
 

@@ -150,7 +150,6 @@ declare module PIXI {
         export var FILTER_RESOLUTION: number;
         export var DEFAULT_RENDER_OPTIONS: {
             view: HTMLCanvasElement;
-            resolution: number;
             antialias: boolean;
             forceFXAA: boolean;
             autoResize: boolean;
@@ -512,7 +511,7 @@ declare module PIXI {
         generateCanvasTexture(scaleMode?: number, resolution?: number): Texture;
         protected closePath(): Graphics;
         protected addHole(): Graphics;
-        destroy(): void;
+        destroy(options?: IDestroyOptions | boolean): void;
 
     }
     export class CanvasGraphicsRenderer {
@@ -1141,7 +1140,7 @@ declare module PIXI {
         fragmentSrc: string;
         protected uniformData: WebGLUniformLocation;
         uniforms: any;
-        glShaders: WebGLShader[];
+        glShaders: any;
         glShaderKey: string;
         padding: number;
         resolution: number;
@@ -1294,6 +1293,7 @@ declare module PIXI {
         padding?: number;
         stroke?: string | number;
         strokeThickness?: number;
+        styleID?: number;
         textBaseline?: string;
         wordWrap?: boolean;
         wordWrapWidth?: number;
@@ -1349,8 +1349,8 @@ declare module PIXI {
         resolution: number;
         scaleMode: number;
         hasLoaded: boolean;
-        protected _glRenderTargets: any;
-        protected _canvasRenderTarget: any;
+        protected _glRenderTargets: { [n: number]: WebGLTexture; };
+        protected _canvasRenderTarget: { [n: number]: WebGLTexture; };
         valid: boolean;
 
         resize(width: number, height: number): void;
@@ -1387,7 +1387,7 @@ declare module PIXI {
         protected isPowerOfTwo: boolean;
         mipmap: boolean;
         wrap: boolean;
-        protected _glTextures: WebGLTexture[];
+        protected _glTextures: any;
         protected _enabled: number;
         protected _id: number;
 
@@ -1702,8 +1702,8 @@ declare module PIXI {
             protected _onTextureUpdate(): void;
             protected _renderWebGL(renderer: WebGLRenderer): void;
             protected _renderCanvas(renderer: CanvasRenderer): void;
+            protected _calculateBounds(): void;
             getLocalBounds(rect?: Rectangle): Rectangle;
-            getBounds(): Rectangle;
             containsPoint(point: Point): boolean;
             destroy(): void;
 
@@ -2077,6 +2077,8 @@ declare module PIXI {
 
             protected _texture: Texture;
             uvs: Float32Array;
+            vertices: Float32Array;
+            indices: Uint16Array;
             dirty: boolean;
             indexDirty: boolean;
             dirtyVertex: boolean;
@@ -2086,20 +2088,14 @@ declare module PIXI {
             drawMode: number;
             texture: Texture;
             shader: glCore.GLShader;
-            protected _glDatas: any[];
-            isRaycastCheckingBounds: boolean;
-            isRaycastPossible: boolean;
-            vertices: Float32Array;
-            indices: Uint16Array;
-            protected _calculateBounds(): void;
+            tintRgb: Float32Array;
+            protected _glDatas: { [n: number]: any; };
             protected _renderWebGL(renderer: WebGLRenderer): void;
             protected _renderCanvas(renderer: CanvasRenderer): void;
-            protected _renderCanvasTriangleMesh(context: CanvasRenderingContext2D): void;
-            protected _renderCanvasTriangles(context: CanvasRenderingContext2D): void;
-            protected _renderCanvasDrawTriangle(context: CanvasRenderingContext2D, vertices: number[], uvs: number[], index0: number, index1: number, index2: number): void;
-            protected renderMeshFlat(Mesh: Mesh): void;
             protected _onTextureUpdate(): void;
-            containsLocalPoint(point: Point): boolean;
+            protected _calculateBounds(): void;
+            containsPoint(point: Point): boolean;
+            tint: number;
 
             static DRAW_MODES: {
                 TRIANGLE_MESH: number;
@@ -2107,6 +2103,33 @@ declare module PIXI {
             };
 
         }
+
+        export class CanvasMeshRenderer {
+
+            constructor(renderer: CanvasRenderer);
+
+            renderer: CanvasRenderer;
+
+            render(mesh: Mesh): void;
+            protected _renderTriangleMesh(mesh: Mesh): void;
+            protected _renderTriangles(mesh: Mesh): void;
+            protected _renderDrawTriangle(mesh: Mesh, index0: number, index1: number, index2: number): void;
+            protected renderMeshFlat(mesh: Mesh): void;
+
+            destroy(): void;
+
+        }
+
+        export class MeshRenderer extends ObjectRenderer {
+
+            constructor(renderer: WebGLRenderer);
+
+            shader: Shader;
+            onContextChange(): void;
+            render(mesh: Mesh): void;
+
+        }
+
         export class Plane extends Mesh {
 
             constructor(texture: Texture, verticesX?: number, verticesY?: number);
@@ -2162,9 +2185,6 @@ declare module PIXI {
             updateTransform(): void;
 
         }
-
-        export interface IMeshShader extends glCore.GLShader { }
-
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -2189,7 +2209,7 @@ declare module PIXI {
             protected _properties: boolean[];
             protected _maxSize: number;
             protected _batchSize: number;
-            protected _glBuffers: WebGLBuffer[];
+            protected _glBuffers: { [n: number]: WebGLBuffer; };
             protected _bufferToUpdate: number;
             interactiveChildren: boolean;
             blendMode: number;
@@ -2515,6 +2535,7 @@ declare module PIXI {
         export function decomposeDataUri(dataUri: string): IDecomposedDataUri;
         export function getUrlFileExtension(url: string): string;
         export function sayHello(type: string): void;
+        export function skipHello(): void;
         export function isWebGLSupported(): boolean;
         export function sign(n: number): number;
         export function removeItems<T>(arr: T[], startIdx: number, removeCount: number): void;
