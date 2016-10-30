@@ -120,7 +120,7 @@ export class InGameScene extends Scene {
         var textureOdd: PIXI.Texture;
 
         textureEven = PIXI.loader.resources["assets/images/objects/box_128_01.png"].texture;
-        textureOdd = PIXI.loader.resources["assets/images/objects/box_128_03.png"].texture;
+        textureOdd = PIXI.loader.resources["assets/images/objects/bumper_01.png"].texture;
         textureEven.rotate = 8;
         textureOdd.rotate = 8;
 
