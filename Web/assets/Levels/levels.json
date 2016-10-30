@@ -7,9 +7,11 @@
         {
           "Index": 0,
           "Name": "Far",
-          "ParallaxFactor":  0.5,
+          "ParallaxFactor": 0.5,
           "y": 0,
-          "Tiles": [ "assets/images/background/Canyon.png" ]
+          "Tiles": [
+            "assets/images/background/Canyon.png"
+          ]
         },
         {
           "Index": 1,
@@ -29,16 +31,21 @@
           "Name": "Ground",
           "ParallaxFactor": 1,
           "y": -90,
-          "Tiles": [ "assets/images/background/ground.png" ]
+          "Tiles": [
+            "assets/images/background/ground.png"
+          ]
         }
       ],
-      "Map": {
-        "Object": [
+      "LevelMap": {
+        "Body": [
           {
             "Type": "Box",
-            "xy": [ 200, 64 ],
+            "xy": [
+              200,
+              64
+            ],
             "Texture": "assets/images/objects/box_01.png",
-            "Mass":  
+            "Mass": 80
           }
         ],
         "NPC": []

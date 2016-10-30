@@ -9,19 +9,25 @@ export class Parallax extends PIXI.Container {
     private viewPortSize: PIXI.Point;
     private worldPosition: number = 0;
     private halfSizeX: number;
+    private parallaxFactor: number;
+
+    private startIDX: number;
+    private endIDX: number;
+    private spriteBuffer: Array<PIXI.Sprite> = [];
 
     /**
-    *   Creates a new ParalaxSprite instance.
-    */
-    constructor(size?: PIXI.Point) {
+     *   Creates a new ParalaxSprite instance.
+     */
+    constructor(size?: PIXI.Point, parallaxFactor?:number) {
         super();
         this.ViewPortSize = size || new PIXI.Point(100, 100);
+        this.parallaxFactor = parallaxFactor || 1;
     }
 
-    public SetViewPortX(newPositionX: number, parallaxFactor : number) {
+    public SetViewPortX(newPositionX: number) {
 
         if (this.worldPosition !== newPositionX) {            
-            this.recalculatePosition(newPositionX, parallaxFactor);
+            this.recalculatePosition(newPositionX);
         }
     }
 
@@ -32,12 +38,14 @@ export class Parallax extends PIXI.Container {
         this.viewPortSize = point;
         this.halfSizeX = this.viewPortSize.x / 2;
     }
+    public get ParallaxFactor() {
+        return this.parallaxFactor;
+    }
+    public set ParallaxFactor(factor: number) {
+        this.parallaxFactor = factor;
+    }
 
-    private startIDX: number;
-    private endIDX: number;
-    private spriteBuffer: Array<PIXI.Sprite> = [];
-
-    public setTextures(...textures: Array<string | PIXI.Texture>) {
+    public setTextures(textures: Array<string | PIXI.Texture>) {
         this.startIDX = 0;
         this.endIDX = 0;
 
@@ -68,12 +76,12 @@ export class Parallax extends PIXI.Container {
         }
     }
 
-    private recalculatePosition = (newPositionX: number, parallaxFactor:number) => {
+    private recalculatePosition = (newPositionX: number) => {
         var firstSpr: PIXI.Sprite = this.spriteBuffer[this.startIDX];
         var lastSpr: PIXI.Sprite = this.spriteBuffer[this.endIDX];
 
         var delta = this.worldPosition - newPositionX;
-        var parallaxDistance = delta * (1-parallaxFactor);
+        var parallaxDistance = delta * (1-this.parallaxFactor);
 
         //  update sprite positions       
         this.children.forEach((spr: PIXI.Sprite) => {
