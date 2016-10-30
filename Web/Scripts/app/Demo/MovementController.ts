@@ -63,28 +63,26 @@ export class MovementController {
         const KEY_LEFT: number = 37;
         const KEY_RIGHT: number = 39;
         const KEY_UP: number = 38;
+        const SPACE: number = 32;
 
         //  give the ctrl a chance to do stuff
         this.jumpCtrl.onUpdate(dt);
         
 
-        if (!this.jumpCtrl.isJumping) {
+        if (this.jumpCtrl.isJumping) {
+            //  no movement while jumping
+            return;
+        } else {
+
             //  add a small force in movement direction if jumping
             //this.wp2.player.applyImpulse([v / 50, 0]);
 
             //  calculate the horizontal velocity
             var v = this.MovementVelocity();
             this.world.player.velocity[0] = v;
-        } else {
-            return;
         }
 
         var newState: MovementState = MovementState.Idle;
-
-        //  no movement while jumping
-        //if (this.jumpCtrl.isJumping) return;
-
-
         var newIsJumping: boolean = false;
         var newIsRunning = this.kbd.IsKeyDown(KEY_SHIFT);
 
@@ -95,7 +93,7 @@ export class MovementController {
         }
 
         //  check if jump is pressed
-        if ((this.kbd.IsKeyDown(KEY_W) || this.kbd.IsKeyDown(KEY_UP)) && this.jumpCtrl.canJump) {
+        if ((this.kbd.IsKeyDown(KEY_W) || this.kbd.IsKeyDown(KEY_UP) || this.kbd.IsKeyDown(SPACE)) && this.jumpCtrl.canJump) {
             if (this.movementState === MovementState.Left) {
                 newState = MovementState.JumpLeft;
                 newIsRunning = false;

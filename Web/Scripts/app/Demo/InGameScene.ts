@@ -155,7 +155,7 @@ export class InGameScene extends Scene {
         textureEven.rotate = 8;
         textureOdd.rotate = 8;
 
-        for (var x = 0; x < 10; x++) {
+        for (var x = 0; x < 20; x++) {
             var spr: PIXI.Sprite;
             var text: PIXI.Texture;
             var position: PIXI.Point = new PIXI.Point;
@@ -188,7 +188,7 @@ export class InGameScene extends Scene {
         var texture: PIXI.Texture;
         texture = PIXI.loader.resources["assets/images/objects/box_02.png"].texture;
         texture.rotate = 8;
-        for (var x = 0; x < 10; x++) {            
+        for (var x = 0; x < 20; x++) {            
             var spr = new PIXI.Sprite(texture);
             spr.position.set(x * 256, 100);
             spr.pivot.set(0.5);
