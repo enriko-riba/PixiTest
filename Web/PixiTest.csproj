@@ -161,7 +161,7 @@
     <TypeScriptCompile Include="Scripts\app\Common\error-handler.ts" />
     <TypeScriptCompile Include="Scripts\app\Common\IOverlay.ts" />
     <TypeScriptCompile Include="Scripts\app\Common\overlay.ts" />
-    <TypeScriptCompile Include="Scripts\app\Demo\InputController.ts" />
+    <TypeScriptCompile Include="Scripts\app\Demo\MovementController.ts" />
     <TypeScriptCompile Include="Scripts\app\Demo\JumpControllerP2.ts" />
     <TypeScriptCompile Include="Scripts\app\Demo\JumpController.ts" />
     <TypeScriptCompile Include="Scripts\app\Demo\LevelLoader.ts" />
