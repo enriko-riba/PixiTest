@@ -59,7 +59,7 @@ export class WorldP2 {
     }
 
     public update(dt: number) {
-        this.world.step(this.fixedTimeStep, dt, 30);
+        this.world.step(this.fixedTimeStep, dt, 25);
         this.playerPosition.x = this.player.interpolatedPosition[0];
         this.playerPosition.y = this.player.interpolatedPosition[1];
     }
