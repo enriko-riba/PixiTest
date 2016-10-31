@@ -1,13 +1,14 @@
 ﻿import { Scene } from "app/_engine/Scene";
 import { Parallax } from "app/_engine/Parallax";
 import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
-import { PhysicsTuple } from "app/_engine/PhysicsConnector";
+import { PhysicsTuple, PhysicsConnector } from "app/_engine/PhysicsConnector";
+import { Button } from "app/_engine/Button";
 
 import * as Global from "./Global";
 import { WorldP2 } from "./WorldP2";
 import { MovementState } from "./MovementState";
 import { MovementController } from "./MovementController";
-import { LevelLoader } from "./LevelLoader";
+import { LevelLoader, ILevelMap, IBody } from "./LevelLoader";
 
 /**
  *   Load in game scene.
@@ -17,17 +18,17 @@ export class InGameScene extends Scene {
     private readonly HERO_FRAME_SIZE: number = 64;
     private readonly SCENE_HALF_WIDTH: number = Global.SCENE_WIDTH / 2;
 
-    private parallaxBackgrounds: Array<Parallax> = [];
     private worldContainer: PIXI.Container;
+    private parallaxBackgrounds: Array<Parallax> = [];
 
     private hero: AnimatedSprite;
     private heroPosition: PIXI.Point = new PIXI.Point();
-    private entities: Array<PhysicsTuple<p2.Body>> = [];
 
-
-    private wp2: WorldP2;
     private movementCtrl: MovementController;
     private hud = new Hud();
+
+    private p2Connector: PhysicsConnector<p2.Body>;
+    private wp2: WorldP2;
 
     /**
      *   Creates a new scene instance.
@@ -47,14 +48,15 @@ export class InGameScene extends Scene {
 
         this.worldContainer = new PIXI.Container();
         this.worldContainer.scale.y = -1;
+        this.addChild(this.worldContainer);
+
         this.HudOverlay = this.hud;
         this.setup();
-
     }
-
+    
     /**
-    *  Updates physics and handles user input
-    */
+     *  Updates physics and handles user input
+     */
     public onUpdate = (dt: number) => {
         this.movementCtrl.update(dt);
         this.wp2.update(dt);
@@ -75,10 +77,7 @@ export class InGameScene extends Scene {
         this.worldContainer.y = Global.SCENE_HEIGHT - 70;
 
         //  entities position
-        this.entities.forEach((tupple) => {
-            tupple.displayObject.position.set(tupple.body.interpolatedPosition[0], tupple.body.interpolatedPosition[1]);
-            tupple.displayObject.rotation = tupple.body.interpolatedAngle;
-        });
+        this.p2Connector.updateDisplayObjects();
     }
 
     private setup() {
@@ -100,9 +99,19 @@ export class InGameScene extends Scene {
         this.worldContainer.addChild(this.hero);
         this.hero.PlayAnimation("idle");
 
+        //--------------------------------------
+        //  setup physics subsystem
+        //--------------------------------------
         this.wp2 = new WorldP2(this.heroPosition);
         this.movementCtrl = new MovementController(this.wp2, this.hero);
+        this.p2Connector = new PhysicsConnector<p2.Body>((tuple) => {
+            tuple.displayObject.position.set(tuple.body.interpolatedPosition[0], tuple.body.interpolatedPosition[1]);
+            tuple.displayObject.rotation = tuple.body.interpolatedAngle;
+        }, null);
 
+        //--------------------------------------
+        //  load level from json (under construction)
+        //--------------------------------------
         var levelLoader = new LevelLoader("assets/levels/levels.json");
         var lvl = levelLoader.BuildLevel("Intro");
         this.parallaxBackgrounds = lvl.parallax;
@@ -110,8 +119,7 @@ export class InGameScene extends Scene {
             this.worldContainer.addChildAt(this.parallaxBackgrounds[i], i);
         }
         
-        this.addChild(this.worldContainer);
-
+        //  for testing purposes only
         this.addBoxes();
     }
     
@@ -164,8 +172,25 @@ export class InGameScene extends Scene {
             var body = new p2.Body({ mass: 100, position: [spr.x, spr.y] });
             body.addShape(new p2.Box({ width: 64, height: 64 }));
             this.wp2.addBody(body);
-            this.entities.push(new PhysicsTuple(spr, body));
+            this.p2Connector.addObjects(spr, body);
         }
+    }
+
+    public saveLevel() {
+        var map: ILevelMap = {
+            Body: [],
+            NPC: []
+        };
+        this.p2Connector.forEach((tuple) => {
+            var body: IBody = {
+                Type: "",
+                xy: tuple.body.interpolatedPosition,
+                Texture: (tuple.displayObject as PIXI.Sprite).texture.baseTexture.imageUrl,
+                Mass: tuple.body.mass,
+                Angle: tuple.body.interpolatedAngle
+            };
+            map.Body.push(body);
+        });
     }
 }
 
@@ -184,10 +209,23 @@ class Hud extends PIXI.Container {
         //bottomBar.position.set(Global.SCENE_WIDTH / 2, Global.SCENE_HEIGHT);
         //this.addChild(bottomBar);
 
+        //--------------------------------
+        //  btn for level editor support
+        //--------------------------------
+        var btnSave = new Button("assets/images/Gui/Button1.png",
+            Global.SCENE_WIDTH - Global.BTN_WIDTH - 10, 10,
+            Global.BTN_WIDTH, Global.BTN_HEIGHT);
+        btnSave.Text = new PIXI.Text("Save", Global.BTN_STYLE);
+        btnSave.onClick = () => {
+            var igs = Global.sceneMngr.CurrentScene as InGameScene;
+            igs.saveLevel();
+        };
+        this.addChild(btnSave);
+
         //  debug text
         this.txtPosition = new PIXI.Text("Position: (0, 0)", Global.TXT_STYLE);
         this.txtPosition.resolution = window.devicePixelRatio;
         this.addChild(this.txtPosition);
-    }
+    }    
 }
 

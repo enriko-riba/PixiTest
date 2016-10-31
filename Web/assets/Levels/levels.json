@@ -37,17 +37,21 @@
         }
       ],
       "Map": {
-        "Body": [
+        "Entities": [
           {
-            "Type": "Box",
-            "xy": [
-              200,
-              64
-            ],
-            "Texture": "assets/images/objects/box_64_01.png",
-            "Mass": 80
+            "Body": {
+              "Type": "Box",
+              "xy": [
+                200,
+                64
+              ],
+              "Texture": "assets/images/objects/box_64_01.png",
+              "Mass": 80
+            },
+            "DisplayObject": {}
           }
         ],
+
         "NPC": []
       }
     }
