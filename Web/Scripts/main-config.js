@@ -9,6 +9,7 @@ require.config({
         "bootstrap": "bootstrap.min",
         "koMapping": "knockout.mapping-latest",
         "pixi.js": "pixi.min",
+        "stats": "stats.min",
     },
     shim: {
         "bootstrap": { "deps": ["jquery"] },
@@ -16,13 +17,14 @@ require.config({
         "p2": { exports: "p2" }
     },
 });
-require(["knockout", "app/main", "koMapping", "pixi", "bootstrap", "knockout-amd-helpers", "text", "koBindings", "postbox"], function (ko, mainModule, koMapping, PIXI) {
+require(["knockout", "app/main", "koMapping", "pixi", "stats", "bootstrap", "knockout-amd-helpers", "text", "koBindings", "postbox"], function (ko, mainModule, koMapping, PIXI, stats) {
     //  set default folders and extension
     ko.bindingHandlers.module.baseDir = "app/_modules"; // note: currently not used
     ko.amdTemplateEngine.defaultPath = "app/_templates";
     ko.amdTemplateEngine.defaultSuffix = ".html";
     ko.mapping = koMapping;
     ko.applyBindings(mainModule.vm);
+    window.stats = new stats();
     /*
     *   This is a fix for bootstraps default navbar collapse behavior.
     *   It forces the navbar to hide the dropdown on menu link click.

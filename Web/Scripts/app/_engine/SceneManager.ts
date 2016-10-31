@@ -11,6 +11,8 @@ export enum State {
     CUSTOM5,
 }
 
+declare var stats: Stats;
+
 /**
 *   Handles multiple scenes, scene activation, rendering and updates.
 */
@@ -39,9 +41,10 @@ export class SceneManager {
         this.sceneResizer = resizer || new DefaultResizer(this.designWidth, this.designHeight);
            
         if (!options) {
-            options = { antialias: true, backgroundColor: 0x012135 };
+            options = { antialias: false, backgroundColor: 0x012135 };
         }
         this.renderer = PIXI.autoDetectRenderer(width, height, options);
+        //this.renderer = new PIXI.CanvasRenderer(width, height, options);
         this.renderer.autoResize = true;
 
         //  textureGC is only used for web GL renderer
@@ -51,8 +54,18 @@ export class SceneManager {
 
         window.removeEventListener('resize', this.resizeHandler);
         window.addEventListener('resize', this.resizeHandler, true);
-        this.render(0);
         
+        stats.showPanel(0); // 0 – use the FPS mode, 1 – use the milliseconds mode
+
+        // Position the meter in the top-left corner
+        stats.domElement.style.position = 'absolute';
+        stats.domElement.style.left = '0px';
+        stats.domElement.style.top = '52px';
+
+        // Append the meter to the body of your HTML5 document.
+        document.body.appendChild(stats.domElement);
+
+        this.render(0);
     }
 
     /**
@@ -143,6 +156,8 @@ export class SceneManager {
     }
 
     private render = (timestamp) => {
+        stats.begin();
+
         this.animationFrameHandle = requestAnimationFrame(this.render);
 
         //  exit if no scene or paused
@@ -160,6 +175,8 @@ export class SceneManager {
 
         this.startTime = timestamp;
         this.renderer.render(this.currentScene);
+
+        stats.end();
     }
 }
 

@@ -145,6 +145,7 @@
     <Content Include="Scripts\require.js" />
     <Content Include="Scripts\sammy-0.7.5.js" />
     <Content Include="Scripts\sammy-0.7.5.min.js" />
+    <Content Include="Scripts\stats.min.js" />
     <Content Include="Scripts\text.js" />
     <Content Include="web.config" />
   </ItemGroup>
@@ -205,6 +206,7 @@
     <TypeScriptCompile Include="Scripts\typings\pixi\pixi.js.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\requirejs\require.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\sammyjs\sammyjs.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\stats\stats.d.ts" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">12.0</VisualStudioVersion>
