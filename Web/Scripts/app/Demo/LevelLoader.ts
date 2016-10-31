@@ -73,11 +73,21 @@ export interface IBody {
     xy: number[];
     Texture: string;
     Mass: number;
+    Angle: number;
+}
+
+export interface IDisplayObject {
+}
+
+export interface IEntity {
+    DisplayObject: IDisplayObject;
+    Body: IBody;
 }
 
 export interface ILevelMap {
-    Body: IBody[];
-    NPC: any[];
+    Entities: IEntity[];
+    //Body: IBody[];
+    //NPC: any[];
 }
 
 export interface ILevel {

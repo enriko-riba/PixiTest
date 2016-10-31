@@ -1,10 +1,16 @@
 ﻿import * as p2 from "p2";
 import { Dictionary } from "app/_engine/Dictionary";
 
+/**
+ * Tuple of two physics bodies touching or penetrating each other.
+ */
 export class ContactPair {
     constructor(public BodyA: p2.Body, public BodyB: p2.Body) { }
 }
 
+/**
+ * Takes care of the physics simulations.
+ */
 export class WorldP2 {
     public player: p2.Body;
     private world: p2.World;
@@ -18,6 +24,8 @@ export class WorldP2 {
     private contactWatch: Array<number> = [];
 
     private readonly fixedTimeStep = 1 / 60; // seconds
+
+
     constructor(playerPosition: PIXI.Point) {
         this.world = new p2.World({
             gravity: [0, -9.0]
@@ -54,12 +62,12 @@ export class WorldP2 {
         this.world.on("endContact", this.endContact, this);
     }
 
-    public get World() {
-        return this.world;
-    }
-
+    /**
+     * advances the physics simulation for the given dt time
+     * @param dt the time in milliseconds since the last simulation step
+     */
     public update(dt: number) {
-        this.world.step(this.fixedTimeStep, dt, 25);
+        this.world.step(this.fixedTimeStep, dt, 30);
         this.playerPosition.x = this.player.interpolatedPosition[0];
         this.playerPosition.y = this.player.interpolatedPosition[1];
     }
@@ -107,7 +115,7 @@ export class WorldP2 {
 
     /**
      * Adds the body to the contact watch list.
-     * Only bodies in this list will be elected for contact pair updates - if in this list their contactpairs
+     * Only bodies in this list will be elected for contact pair updates - if in this list their contact pairs
      * can be retrieved via the getContactsForBody() function.
      * @param body
      */

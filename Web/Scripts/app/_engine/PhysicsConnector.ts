@@ -1,5 +1,5 @@
 ﻿/**
- * 
+ * Storage for pairs of display-physics object pairs.
  */
 export class PhysicsTuple<T> {
     constructor(
@@ -10,7 +10,9 @@ export class PhysicsTuple<T> {
 
 
 /**
- * 
+ *  Glue between a PIXI.DisplayObject and a physics object (body).
+ *  Stores all objects a pairs of a display object and body.
+ *  Supports iterating through tuples, updating display objects with custom callback, updating physics objects with custom callback. 
  */
 export class PhysicsConnector<T> {
 
@@ -22,6 +24,16 @@ export class PhysicsConnector<T> {
     constructor(updateDisplayObject: (tuple: PhysicsTuple<T>) => void, updatePhysicsObject: (tuple: PhysicsTuple<T>) => void) {
         this.updateDisplayObject = updateDisplayObject;
         this.updatePhysicsObject = updatePhysicsObject;
+    }
+
+    /**
+     * Iterates through each tuple and invokes the supplied callback function.
+     * @param cb
+     */
+    public forEach(cb: (tuple: PhysicsTuple<T>) => void) {
+        this.tuples.forEach((tuple) => {
+            cb(tuple);
+        });
     }
 
     public addObjects(displayObject: PIXI.DisplayObject, physicsObject: T):number {
