@@ -8,7 +8,7 @@ import * as Global from "./Global";
 import { WorldP2 } from "./WorldP2";
 import { MovementState } from "./MovementState";
 import { MovementController } from "./MovementController";
-import { LevelLoader, ILevelMap, IBody } from "./LevelLoader";
+import { LevelLoader, ILevelMap, IBody, IEntity , IDisplayObject} from "./LevelLoader";
 
 /**
  *   Load in game scene.
@@ -178,18 +178,28 @@ export class InGameScene extends Scene {
 
     public saveLevel() {
         var map: ILevelMap = {
-            Body: [],
-            NPC: []
+            Entities:[]
+            //Body: [],
+            //NPC: []
         };
         this.p2Connector.forEach((tuple) => {
+            var entity: IEntity = {
+                DisplayObject: null,
+                Body: null
+            };
             var body: IBody = {
-                Type: "",
+                Shape:"Box",
+                Type: tuple.body.type,
                 xy: tuple.body.interpolatedPosition,
-                Texture: (tuple.displayObject as PIXI.Sprite).texture.baseTexture.imageUrl,
                 Mass: tuple.body.mass,
                 Angle: tuple.body.interpolatedAngle
             };
-            map.Body.push(body);
+            var dispObj: IDisplayObject = {
+                Texture: (tuple.displayObject as PIXI.Sprite).texture.baseTexture.imageUrl,
+            }
+            entity.Body = body;
+            entity.DisplayObject = dispObj;
+            map.Entities.push(entity);
         });
     }
 }
