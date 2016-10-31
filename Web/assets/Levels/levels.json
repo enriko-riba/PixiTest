@@ -2,7 +2,7 @@
   "Levels": [
     {
       "Id": 1,
-      "Name": "Intro",
+      "Name": "Intro",  
       "Parallax": [
         {
           "Index": 0,
@@ -40,15 +40,16 @@
         "Entities": [
           {
             "Body": {
-              "Type": "Box",
-              "xy": [
-                200,
-                64
-              ],
-              "Texture": "assets/images/objects/box_64_01.png",
-              "Mass": 80
+              "Shape": "Box",
+              "Type": 1,
+              "xy": [ 200, 64 ],
+              "Mass": 80,
+              "Angle":  0
             },
-            "DisplayObject": {}
+            "DisplayObject": {
+              "Type": "",
+              "Texture": "assets/images/objects/box_64_01.png"
+            }
           }
         ],
 

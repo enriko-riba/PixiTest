@@ -50,8 +50,8 @@ export class LevelLoader {
             //--------------------------------------
             //  create physics objects
             //--------------------------------------
-            level.Map.Body.forEach((ibdy, idx, arr) => {
-            
+            level.Map.Entities.forEach((entity, idx, arr) => {
+                //  TODO: implement
             });
         }
 
@@ -69,14 +69,15 @@ export interface IParallax {
 }
 
 export interface IBody {
-    Type: string;
+    Shape: string,
+    Type: number;
     xy: number[];
-    Texture: string;
     Mass: number;
     Angle: number;
 }
 
 export interface IDisplayObject {
+    Texture: string;
 }
 
 export interface IEntity {
