@@ -119,57 +119,63 @@ export class InGameScene extends Scene {
         //  load level from json (under construction)
         //--------------------------------------
         var levelLoader = new LevelLoader("assets/levels/levels.json");
-        var lvl = levelLoader.BuildLevel("Intro", this.worldContainer);
-        this.parallaxBackgrounds = lvl.parallax;
+        var lvl = levelLoader.BuildLevel("Intro");
         this.p2Connector = lvl.physicsConnector;
         this.p2Connector.DisplayObjectUpdater = (displayObject: PIXI.DisplayObject, body: p2.Body) => {
             displayObject.position.set(body.interpolatedPosition[0], body.interpolatedPosition[1]);
             displayObject.rotation = body.interpolatedAngle;
         };
+        //  add all object pairs to renderer and physics world
+        this.p2Connector.forEach((dispObj, body) => {
+            this.worldContainer.addChild(dispObj);
+            this.wp2.addBody(body);
+        });
+        //  add parallax backgrounds
+        this.parallaxBackgrounds = lvl.parallax;
+        lvl.parallax.forEach((plx, idx, arr) => {
+            this.worldContainer.addChildAt(plx, idx);
+        });
 
-        
         //  for testing purposes only
         this.addBoxes();
     }
     
     private addBoxes = () => {
-        var textureEven: PIXI.Texture = PIXI.loader.resources["assets/images/objects/box_128_01.png"].texture;
-        textureEven.rotate = 8;
+        //var textureEven: PIXI.Texture = PIXI.loader.resources["assets/images/objects/box_128_01.png"].texture;
+        //textureEven.rotate = 8;
 
-        for (var x = 0; x < 20; x++) {
-            var spr: PIXI.Sprite;
-            var text: PIXI.Texture;
-            var position: PIXI.Point = new PIXI.Point;
-            var rotation: number;
+        //for (var x = 0; x < 20; x++) {
+        //    var spr: PIXI.Sprite;
+        //    var text: PIXI.Texture;
+        //    var position: PIXI.Point = new PIXI.Point;
+        //    var rotation: number;
 
-            if (x % 2 === 0) {
-                text = textureEven;
-                position.set(128 + (x * 512), 64);
-                rotation = x * Math.PI / 2;
-                spr = new PIXI.Sprite(text);
-            } else {
-                position.set(128 + (x * 512), 160);
-                rotation = x * Math.PI / 4;
-                spr = new Bumper();
-            }
+        //    if (x % 2 === 0) {
+        //        text = textureEven;
+        //        position.set(128 + (x * 512), 64);
+        //        rotation = x * Math.PI / 2;
+        //        spr = new PIXI.Sprite(text);
+        //    } else {
+        //        position.set(128 + (x * 512), 160);
+        //        rotation = x * Math.PI / 4;
+        //        spr = new Bumper();
+        //    }
+        //    spr.position = position;
+        //    spr.rotation = rotation;
+        //    spr.pivot.set(0.5);
+        //    spr.anchor.set(0.5);
+        //    this.worldContainer.addChild(spr);
 
-
-            spr.position = position;
-            spr.rotation = rotation;
-            spr.pivot.set(0.5);
-            spr.anchor.set(0.5);
-            this.worldContainer.addChild(spr);
-
-            var shape = new p2.Box({ width: 128, height: 128 });
-            this.wp2.addObject({ angle: spr.rotation, position: [spr.x, spr.y] }, shape);
-        }
+        //    var shape = new p2.Box({ width: 128, height: 128 });
+        //    this.wp2.addObject({ angle: spr.rotation, position: [spr.x, spr.y] }, shape);
+        //}
 
         var texture: PIXI.Texture;
         texture = PIXI.loader.resources["assets/images/objects/box_64_02.png"].texture;
         texture.rotate = 8;
         for (var x = 0; x < 20; x++) {
             var spr = new PIXI.Sprite(texture);
-            spr.position.set(x * 256, 100);
+            spr.position.set(x * 256, 32);
             spr.pivot.set(0.5);
             spr.anchor.set(0.5);
             this.worldContainer.addChild(spr);
@@ -183,35 +189,35 @@ export class InGameScene extends Scene {
 
     public saveLevel():void {
         var map: ILevelMap = {
-            Entities:[]
+            entities:[]
         };
         this.p2Connector.forEach((displayObject: PIXI.DisplayObject, body: p2.Body) => {
             var entity: IEntity = {
-                DisplayObject: null,
-                Body: null
+                displayObject: null,
+                body: null
             };
             var newBody: IBody = {
-                Shape:"Box",
-                Type: body.type,
+                shape:"Box",
+                type: body.type,
                 xy: body.interpolatedPosition,
-                Mass: body.mass,
-                Angle: body.interpolatedAngle
+                mass: body.mass,
+                angle: body.interpolatedAngle
             };
 
             //  parse display object
             var dispObj: IDisplayObject;
             if (displayObject instanceof PIXI.Sprite) {
                 dispObj = {
-                    Type: "Sprite",
-                    Texture: (displayObject as PIXI.Sprite).texture.baseTexture.imageUrl,
+                    type: "Sprite",
+                    texture: (displayObject as PIXI.Sprite).texture.baseTexture.imageUrl,
                 };
             }
 
             //  TODO: other display objects
 
-            entity.Body = newBody;
-            entity.DisplayObject = dispObj;
-            map.Entities.push(entity);
+            entity.body = newBody;
+            entity.displayObject = dispObj;
+            map.entities.push(entity);
         });
     }
 }

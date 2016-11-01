@@ -14,112 +14,180 @@ export class LevelLoader {
         } else {
             root = levelOrName as IRootObject;
         }
-        this.levels = root.Levels;
+        this.levels = root.levels;
     }
 
     public get Levels():ILevel[] {
         return this.levels;
     }
 
-    public BuildLevel(name: string, container: PIXI.Container):any {
-        var level: ILevel = undefined;
+    /**
+     * Loads the level and adds all display objects to the container.
+     * @param name
+     * @param container
+     */
+    public BuildLevel(name: string):any {
+        var levelDefinition: ILevel = undefined;
         for (var i = 0; i < this.levels.length; i++) {
-            if (this.levels[i].Name === name) {
-                level = this.levels[i];
+            if (this.levels[i].name === name) {
+                levelDefinition = this.levels[i];
                 break;
             }
         }
-
-        if (level) {
-            var result :any = {};
-            result.parallax = [];
-            result.physicsConnector = new PhysicsConnector<p2.Body>();
-
-            //--------------------------------------
-            //  create parallax objects
-            //--------------------------------------            
-            var vps = new PIXI.Point(Global.SCENE_WIDTH, Global.SCENE_HEIGHT);
-            level.Parallax.forEach((iplx, idx, arr) => {
-                var parallax = new Parallax(vps, iplx.ParallaxFactor);
-                parallax.setTextures(iplx.Tiles);
-                parallax.y = iplx.y;
-
-                //  save to result array
-                result.parallax.push(parallax);
-
-                //  add to container
-                container.addChildAt(parallax, idx);
-            });
-            
-
-            //--------------------------------------
-            //  create physics objects
-            //--------------------------------------
-            level.Map.Entities.forEach((entity, idx, arr) => {
-                var displayObjectDef = entity.DisplayObject;
-                var bodyDef = entity.Body;
-
-                switch (displayObjectDef.Type) {
-                    case "AnimatedSprite": break;
-                    case "Sprite": break;
-                //  TODO: implement
-                }
-
-                if (bodyDef) {
-                    switch (bodyDef.Type) {
-                        case 0: break;
-                        case 1: break;
-                        case 2: break;
-                        //  TODO: implement
-                    }
-                }
-            });
+        var result: any = {};
+        if (levelDefinition) {
+            if (levelDefinition.assets && levelDefinition.assets.length > 0) {
+                //  TODO: preload assets and start level loading
+            } else {
+                this.createLevel(levelDefinition, result);
+            }
         }
+        return result;
+    }
+
+    private createLevel(level : ILevel, result: any) {
+        result.parallax = [];
+        result.physicsConnector = new PhysicsConnector<p2.Body>();
+
+        //--------------------------------------
+        //  create parallax objects
+        //--------------------------------------            
+        var vps = new PIXI.Point(Global.SCENE_WIDTH, Global.SCENE_HEIGHT);
+        level.parallax.forEach((iplx, idx, arr) => {
+            var parallax = new Parallax(vps, iplx.parallaxFactor);
+            parallax.setTextures(iplx.tiles);
+            parallax.y = iplx.y;
+            result.parallax.push(parallax);            
+        });
+
+        //--------------------------------------
+        //  create display/physics object pairs
+        //--------------------------------------
+        level.map.entities.forEach((entity, idx, arr) => {
+            var dispObj: PIXI.DisplayObject = this.buildDisplayObject(entity.displayObject);
+            var p2body: p2.Body = this.buildPhysicsObject(entity.body, dispObj);
+            result.physicsConnector.addObjects(dispObj, p2body);
+        });
 
         return result;
+    }
+
+    private buildDisplayObject(definition: IDisplayObject): PIXI.DisplayObject {
+        var dispObj: PIXI.DisplayObject
+        switch (definition.type) {
+            case "AnimatedSprite":
+                //  TODO: implement
+                break;
+            case "Sprite":
+                var text = PIXI.loader.resources[definition.texture].texture;
+                dispObj = new PIXI.Sprite(text);
+                break;
+        }
+        dispObj.pivot.set(0.5);
+        if ((dispObj as any).anchor) {
+            (dispObj as any).anchor.set(0.5);
+        }
+        if (definition.xy) {
+            dispObj.position.set(definition.xy[0], definition.xy[1]);
+        }
+        if (definition.scale) {
+            dispObj.scale.set(definition.scale[0], definition.scale[1]);
+        }
+        dispObj.rotation = definition.rotation || 0;
+        return dispObj;
+    }
+
+    private buildPhysicsObject(definition: IBody, dispObj: PIXI.DisplayObject): p2.Body {
+        var body: p2.Body;
+        if (definition) {
+            var options: p2.BodyOptions = {
+                mass: definition.mass,
+                position: definition.xy ? definition.xy : [dispObj.x, dispObj.y],
+                angle: definition.angle || dispObj.rotation,
+                //angularVelocity?: number;
+                //force?: number[];
+                //angularForce?: number;
+                //velocity?: number[];
+                //fixedRotation?: boolean;
+            };
+            body = new p2.Body(options);
+            body.type = definition.type;
+
+            var shape: p2.Shape;
+            switch (definition.shape) {
+                case "Box":
+                    //  get the size
+                    var w, h;
+                    if (definition.size) {
+                        w = definition.size[0]; 
+                        h = definition.size[1];
+                    } else {
+                        var doAny = dispObj as any;
+                        if (doAny.width) {
+                            w = doAny.width;
+                            h = doAny.height;
+                        } else {
+                            //  TODO: check this - seems not to get correct bounds
+                            w = dispObj.scale.x * dispObj.getLocalBounds().width;
+                            h = dispObj.scale.y * dispObj.getLocalBounds().height;
+                        }
+                    }
+                    shape = new p2.Box({
+                        width:  w,
+                        height: h,
+                    });
+                    break;                
+                //  TODO: implement
+            }
+            body.addShape(shape);
+        }
+        return body;
     }
 }
 
 
 export interface IParallax {
-    Index: number;
-    Name: string;
-    ParallaxFactor: number;
+    index: number;
+    name: string;
+    parallaxFactor: number;
     y: number;
-    Tiles: string[];
+    tiles: string[];
 }
 
 export interface IBody {
-    Shape: string,
-    Type: number;
+    shape: string,
+    type: number;
     xy: number[];
-    Mass: number;
-    Angle: number;
+    size?: number[];
+    mass: number;
+    angle: number;
 }
 
 export interface IDisplayObject {
-    Type: string,
-    Texture: string;
-    Scale?: number;
+    type: string,
+    texture: string;
     xy?: number[];
+    scale?: number[];
+    rotation?: number;
 }
 
 export interface IEntity {
-    DisplayObject: IDisplayObject;
-    Body: IBody;
+    displayObject: IDisplayObject;
+    body: IBody;
 }
 
 export interface ILevelMap {
-    Entities: IEntity[];
+    entities: IEntity[];
 }
 
 export interface ILevel {
-    Id: number;
-    Name: string;
-    Parallax: IParallax[];
-    Map: ILevelMap;
+    id: number;
+    assets?: string[];
+    name: string;
+    parallax: IParallax[];
+    map: ILevelMap;
 }
 
 export interface IRootObject {
-    Levels: ILevel[];
+    levels: ILevel[];
 }
