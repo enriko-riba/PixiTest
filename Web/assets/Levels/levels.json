@@ -47,8 +47,10 @@
               "Angle":  0
             },
             "DisplayObject": {
-              "Type": "",
-              "Texture": "assets/images/objects/box_64_01.png"
+              "Type": "Sprite",
+              "Texture": "assets/images/objects/box_64_01.png",
+              "Scale": [ 1, 1 ],
+              "xy": [ 200, 64 ]
             }
           }
         ],

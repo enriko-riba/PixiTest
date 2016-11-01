@@ -179,8 +179,6 @@ export class InGameScene extends Scene {
     public saveLevel() {
         var map: ILevelMap = {
             Entities:[]
-            //Body: [],
-            //NPC: []
         };
         this.p2Connector.forEach((tuple) => {
             var entity: IEntity = {
@@ -194,9 +192,18 @@ export class InGameScene extends Scene {
                 Mass: tuple.body.mass,
                 Angle: tuple.body.interpolatedAngle
             };
-            var dispObj: IDisplayObject = {
-                Texture: (tuple.displayObject as PIXI.Sprite).texture.baseTexture.imageUrl,
+
+            //  parse display object
+            var dispObj: IDisplayObject;
+            if (tuple.displayObject instanceof PIXI.Sprite) {
+                dispObj = {
+                    Type: "Sprite",
+                    Texture: (tuple.displayObject as PIXI.Sprite).texture.baseTexture.imageUrl,
+                }
             }
+
+            //  TODO: other display objects
+
             entity.Body = body;
             entity.DisplayObject = dispObj;
             map.Entities.push(entity);
