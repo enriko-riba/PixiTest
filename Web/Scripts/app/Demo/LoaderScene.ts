@@ -10,7 +10,7 @@ export class LoaderScene extends Scene {
         this.BackGroundColor = 0x1099bb;
     }
 
-    public onActivate = ()=> {
+    public onActivate = () => {
         this.loadingMessage = new PIXI.Text("Loading", { fontSize: "52px", fontFamily: "Futura", fill: "white", align: "Left", dropShadow: true, stroke: "#44ff44", strokeThickness: 6 });
         this.loadingMessage.anchor.set(0, 0.5);
         this.loadingMessage.position.set(550, 350);
@@ -21,10 +21,10 @@ export class LoaderScene extends Scene {
         //------------------------------------------------------
         PIXI.loader.reset();
         PIXI.loader
-            .add('Assets/Images/loading.png')
+            .add("Assets/Images/loading.png")
             .load(() => {
                 //  once the loading image is downloaded start spinning it and invoke Initialize()
-                var loadingTexture = PIXI.Texture.fromImage('Assets/Images/loading.png');
+                var loadingTexture = PIXI.Texture.fromImage("Assets/Images/loading.png");
                 var romb = new PIXI.Sprite(loadingTexture);
                 romb.position.set(500, 350);
                 romb.anchor.set(0.5, 0.5);
@@ -32,17 +32,17 @@ export class LoaderScene extends Scene {
                 this.addChild(romb);
                 this.onUpdate = () => {
                     romb.rotation += 0.05;
-                }
+                };
                 this.downloadAssets();
-            });  
-    }
+            });
+    };
     
-    private downloadAssets() {
+    private downloadAssets():void {
         console.log("Initializing...");
 
         PIXI.loader.reset();
 
-        var assets = [
+        var assets:string[] = [
             //"assets/images/hero.png",
             "assets/images/hero_64.png",
 
@@ -92,7 +92,7 @@ export class LoaderScene extends Scene {
         var progress = loader.progress as number;
         console.log("progress: " + progress.toFixed(2) + "%, asset: " + resource.name);
         this.loadingMessage.text = "Loading " + progress.toFixed(2) + " %";
-    }
+    };
 
     private onAssetsLoaded = () => {
         console.log("onAssetsLoaded...");
@@ -106,5 +106,5 @@ export class LoaderScene extends Scene {
             this.removeChild(this.loadingMessage);
             Global.sceneMngr.ActivateScene(inGame);
         }, 800);
-    }
+    };
 }

@@ -1,6 +1,4 @@
-﻿import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
-
-const TEXTURE_BUMPER = "assets/images/objects/bumper_01.png";
+﻿const TEXTURE_BUMPER = "assets/images/objects/bumper_01.png";
 const TEXTURE_ROTOR = "assets/images/objects/bumper_rotor_01.png";
 const ROTATION = Math.PI / 8;
 
@@ -18,6 +16,6 @@ export class Bumper extends PIXI.Sprite {
     public onUpdate = (dt: number) => {
         var rot = this.rotor.rotation - (ROTATION * dt / 1000);
         this.rotor.rotation = rot % Math.PI;
-        //this.rotor.scale.set(0.5 + Math.sin(this.rotor.rotation));
-    }
+        // this.rotor.scale.set(0.5 + Math.sin(this.rotor.rotation));
+    };
 }

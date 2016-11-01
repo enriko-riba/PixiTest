@@ -1,4 +1,5 @@
-﻿/**
+﻿
+/**
  * Storage for pairs of display-physics object pairs.
  */
 export class PhysicsTuple<T> {
@@ -31,7 +32,7 @@ export class PhysicsConnector<T> {
      * Iterates through each tuple and invokes the supplied callback function.
      * @param cb callback to be invoked
      */
-    public forEach(cb: (displayObject: PIXI.DisplayObject, body: T) => void) {
+    public forEach(cb: (displayObject: PIXI.DisplayObject, body: T) => void): void {
         this.tuples.forEach((tuple) => {
             cb(tuple.displayObject, tuple.body);
         });
@@ -48,13 +49,13 @@ export class PhysicsConnector<T> {
         return this.tuples.push(new PhysicsTuple(displayObject, physicsObject));
     }
 
-    public updateDisplayObjects() {
+    public updateDisplayObjects(): void {
         this.tuples.forEach((tuple) => {
             this.updateDisplayObject(tuple.displayObject, tuple.body);
         });
     }
 
-    public updatePhysicsObjects() {
+    public updatePhysicsObjects(): void {
         this.tuples.forEach((tuple) => {
             this.updatePhysicsObject(tuple.displayObject, tuple.body);
         });

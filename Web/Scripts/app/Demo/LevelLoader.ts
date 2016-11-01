@@ -1,27 +1,27 @@
 ﻿import * as Global from "./Global";
 import { Parallax } from "app/_engine/Parallax";
-import { PhysicsTuple, PhysicsConnector } from "app/_engine/PhysicsConnector";
+import { PhysicsConnector } from "app/_engine/PhysicsConnector";
 
 
 export class LevelLoader {
 
     private levels: Array<ILevel> = [];
 
-    constructor(levelOrName: RootObject | string) {
-        var root: RootObject;
-        if (typeof levelOrName === "string")
-            root = PIXI.loader.resources[levelOrName as string].data as RootObject;
-        else
-            root = levelOrName as RootObject;
-
+    constructor(levelOrName: IRootObject | string) {
+        var root: IRootObject;
+        if (typeof levelOrName === "string") {
+            root = PIXI.loader.resources[levelOrName as string].data as IRootObject;
+        } else {
+            root = levelOrName as IRootObject;
+        }
         this.levels = root.Levels;
     }
 
-    public get Levels() {
+    public get Levels():ILevel[] {
         return this.levels;
     }
 
-    public BuildLevel(name: string, container: PIXI.Container) {
+    public BuildLevel(name: string, container: PIXI.Container):any {
         var level: ILevel = undefined;
         for (var i = 0; i < this.levels.length; i++) {
             if (this.levels[i].Name === name) {
@@ -56,13 +56,22 @@ export class LevelLoader {
             //  create physics objects
             //--------------------------------------
             level.Map.Entities.forEach((entity, idx, arr) => {
-                //  TODO: implement
                 var displayObjectDef = entity.DisplayObject;
                 var bodyDef = entity.Body;
 
                 switch (displayObjectDef.Type) {
                     case "AnimatedSprite": break;
                     case "Sprite": break;
+                //  TODO: implement
+                }
+
+                if (bodyDef) {
+                    switch (bodyDef.Type) {
+                        case 0: break;
+                        case 1: break;
+                        case 2: break;
+                        //  TODO: implement
+                    }
                 }
             });
         }
@@ -111,6 +120,6 @@ export interface ILevel {
     Map: ILevelMap;
 }
 
-export interface RootObject {
+export interface IRootObject {
     Levels: ILevel[];
 }

@@ -1,9 +1,9 @@
 ﻿import { SceneManager } from "./SceneManager";
 
 /**
-*   Represents a scene. 
-*   Only one scene at a time is rendered.
-*/
+ *   Represents a scene. 
+ *   Only one scene at a time is rendered.
+ */
 export class Scene extends PIXI.Container {
     private paused: boolean = false;
     private hudScene: PIXI.Container;
@@ -16,9 +16,9 @@ export class Scene extends PIXI.Container {
 
 
     /**
-    *   Creates a new scene instance.
-    *   @param name the scene name.
-    */
+     *   Creates a new scene instance.
+     *   @param name the scene name.
+     */
     constructor(name: string) {
         super();
         this.backgroundColor = 0x0;
@@ -27,14 +27,14 @@ export class Scene extends PIXI.Container {
 
     public Name: string;
 
-    public get BackGroundColor() {
+    public get BackGroundColor():number {
         return this.backgroundColor;
     }
     public set BackGroundColor(color: number) {
         this.backgroundColor = color;
     }
 
-    public get HudOverlay() {
+    public get HudOverlay(): PIXI.Container {
         return this.hudScene;
     }
     public set HudOverlay(hud: PIXI.Container) {
@@ -67,13 +67,13 @@ export class Scene extends PIXI.Container {
         return dispObj;
     }
 
-    public pause() {
+    public pause():void {
         this.paused = true;
     }
-    public resume() {
+    public resume():void {
         this.paused = false;
     }
-    public isPaused() {
+    public isPaused():boolean {
         return this.paused;
     }
 }
