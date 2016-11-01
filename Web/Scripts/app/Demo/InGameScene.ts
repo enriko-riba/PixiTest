@@ -10,6 +10,8 @@ import { MovementState } from "./MovementState";
 import { MovementController } from "./MovementController";
 import { LevelLoader, ILevelMap, IBody, IEntity , IDisplayObject} from "./LevelLoader";
 
+import { Bumper } from "./Bumper";
+
 /**
  *   Load in game scene.
  */
@@ -78,6 +80,14 @@ export class InGameScene extends Scene {
 
         //  entities position
         this.p2Connector.updateDisplayObjects();
+
+        //-------------------------------------------
+        //  invoke update on each updateable
+        //-------------------------------------------
+        this.worldContainer.children.forEach((child:any) => {
+            if (child.onUpdate)
+                child.onUpdate(dt);
+        });
     }
 
     private setup() {
@@ -103,21 +113,20 @@ export class InGameScene extends Scene {
         //  setup physics subsystem
         //--------------------------------------
         this.wp2 = new WorldP2(this.heroPosition);
-        this.movementCtrl = new MovementController(this.wp2, this.hero);
-        this.p2Connector = new PhysicsConnector<p2.Body>((tuple) => {
-            tuple.displayObject.position.set(tuple.body.interpolatedPosition[0], tuple.body.interpolatedPosition[1]);
-            tuple.displayObject.rotation = tuple.body.interpolatedAngle;
-        }, null);
+        this.movementCtrl = new MovementController(this.wp2, this.hero);        
 
         //--------------------------------------
         //  load level from json (under construction)
         //--------------------------------------
         var levelLoader = new LevelLoader("assets/levels/levels.json");
-        var lvl = levelLoader.BuildLevel("Intro");
+        var lvl = levelLoader.BuildLevel("Intro", this.worldContainer);
         this.parallaxBackgrounds = lvl.parallax;
-        for (var i = 0; i < this.parallaxBackgrounds.length; i++) {
-            this.worldContainer.addChildAt(this.parallaxBackgrounds[i], i);
-        }
+        this.p2Connector = lvl.physicsConnector;
+        this.p2Connector.DisplayObjectUpdater = (displayObject: PIXI.DisplayObject, body: p2.Body) => {
+            displayObject.position.set(body.interpolatedPosition[0], body.interpolatedPosition[1]);
+            displayObject.rotation = body.interpolatedAngle;
+        };
+
         
         //  for testing purposes only
         this.addBoxes();
@@ -128,9 +137,9 @@ export class InGameScene extends Scene {
         var textureOdd: PIXI.Texture;
 
         textureEven = PIXI.loader.resources["assets/images/objects/box_128_01.png"].texture;
-        textureOdd = PIXI.loader.resources["assets/images/objects/bumper_01.png"].texture;
+        //textureOdd = PIXI.loader.resources["assets/images/objects/bumper_01.png"].texture;
         textureEven.rotate = 8;
-        textureOdd.rotate = 8;
+        //textureOdd.rotate = 8;
 
         for (var x = 0; x < 20; x++) {
             var spr: PIXI.Sprite;
@@ -142,13 +151,14 @@ export class InGameScene extends Scene {
                 text = textureEven;
                 position.set(128 + (x * 512), 64);
                 rotation = x * Math.PI / 2;
+                spr = new PIXI.Sprite(text);
             } else {
-                text = textureOdd;
                 position.set(128 + (x * 512), 160);
                 rotation = x * Math.PI / 4;
+                spr = new Bumper();
             }
 
-            spr = new PIXI.Sprite(text);
+            
             spr.position = position;
             spr.rotation = rotation;
             spr.pivot.set(0.5);
@@ -180,31 +190,31 @@ export class InGameScene extends Scene {
         var map: ILevelMap = {
             Entities:[]
         };
-        this.p2Connector.forEach((tuple) => {
+        this.p2Connector.forEach((displayObject: PIXI.DisplayObject, body: p2.Body) => {
             var entity: IEntity = {
                 DisplayObject: null,
                 Body: null
             };
-            var body: IBody = {
+            var newBody: IBody = {
                 Shape:"Box",
-                Type: tuple.body.type,
-                xy: tuple.body.interpolatedPosition,
-                Mass: tuple.body.mass,
-                Angle: tuple.body.interpolatedAngle
+                Type: body.type,
+                xy: body.interpolatedPosition,
+                Mass: body.mass,
+                Angle: body.interpolatedAngle
             };
 
             //  parse display object
             var dispObj: IDisplayObject;
-            if (tuple.displayObject instanceof PIXI.Sprite) {
+            if (displayObject instanceof PIXI.Sprite) {
                 dispObj = {
                     Type: "Sprite",
-                    Texture: (tuple.displayObject as PIXI.Sprite).texture.baseTexture.imageUrl,
+                    Texture: (displayObject as PIXI.Sprite).texture.baseTexture.imageUrl,
                 }
             }
 
             //  TODO: other display objects
 
-            entity.Body = body;
+            entity.Body = newBody;
             entity.DisplayObject = dispObj;
             map.Entities.push(entity);
         });
