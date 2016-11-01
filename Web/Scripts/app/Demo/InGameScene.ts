@@ -1,12 +1,11 @@
 ﻿import { Scene } from "app/_engine/Scene";
 import { Parallax } from "app/_engine/Parallax";
 import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
-import { PhysicsTuple, PhysicsConnector } from "app/_engine/PhysicsConnector";
+import { PhysicsConnector } from "app/_engine/PhysicsConnector";
 import { Button } from "app/_engine/Button";
 
 import * as Global from "./Global";
 import { WorldP2 } from "./WorldP2";
-import { MovementState } from "./MovementState";
 import { MovementController } from "./MovementController";
 import { LevelLoader, ILevelMap, IBody, IEntity , IDisplayObject} from "./LevelLoader";
 
@@ -45,7 +44,7 @@ export class InGameScene extends Scene {
                 (performance as any).msNow ||
                 (performance as any).oNow ||
                 (performance as any).webkitNow ||
-                Date.now  /*none found - fallback to browser default */
+                Date.now;  /*none found - fallback to browser default */
         })();
 
         this.worldContainer = new PIXI.Container();
@@ -84,13 +83,14 @@ export class InGameScene extends Scene {
         //-------------------------------------------
         //  invoke update on each updateable
         //-------------------------------------------
-        this.worldContainer.children.forEach((child:any) => {
-            if (child.onUpdate)
+        this.worldContainer.children.forEach((child: any) => {
+            if (child.onUpdate) {
                 child.onUpdate(dt);
+            }
         });
-    }
+    };
 
-    private setup() {
+    private setup():void {
         this.BackGroundColor = 0x1099bb;
         PIXI.SCALE_MODES.DEFAULT = PIXI.SCALE_MODES.LINEAR;
 
@@ -133,13 +133,8 @@ export class InGameScene extends Scene {
     }
     
     private addBoxes = () => {
-        var textureEven: PIXI.Texture;
-        var textureOdd: PIXI.Texture;
-
-        textureEven = PIXI.loader.resources["assets/images/objects/box_128_01.png"].texture;
-        //textureOdd = PIXI.loader.resources["assets/images/objects/bumper_01.png"].texture;
+        var textureEven: PIXI.Texture = PIXI.loader.resources["assets/images/objects/box_128_01.png"].texture;
         textureEven.rotate = 8;
-        //textureOdd.rotate = 8;
 
         for (var x = 0; x < 20; x++) {
             var spr: PIXI.Sprite;
@@ -147,7 +142,7 @@ export class InGameScene extends Scene {
             var position: PIXI.Point = new PIXI.Point;
             var rotation: number;
 
-            if (x % 2 == 0) {
+            if (x % 2 === 0) {
                 text = textureEven;
                 position.set(128 + (x * 512), 64);
                 rotation = x * Math.PI / 2;
@@ -158,7 +153,7 @@ export class InGameScene extends Scene {
                 spr = new Bumper();
             }
 
-            
+
             spr.position = position;
             spr.rotation = rotation;
             spr.pivot.set(0.5);
@@ -184,9 +179,9 @@ export class InGameScene extends Scene {
             this.wp2.addBody(body);
             this.p2Connector.addObjects(spr, body);
         }
-    }
+    };
 
-    public saveLevel() {
+    public saveLevel():void {
         var map: ILevelMap = {
             Entities:[]
         };
@@ -209,7 +204,7 @@ export class InGameScene extends Scene {
                 dispObj = {
                     Type: "Sprite",
                     Texture: (displayObject as PIXI.Sprite).texture.baseTexture.imageUrl,
-                }
+                };
             }
 
             //  TODO: other display objects
@@ -230,7 +225,7 @@ class Hud extends PIXI.Container {
 
     public txtPosition: PIXI.Text;
 
-    private setup() {
+    private setup(): void {
         //var bottomBar = new PIXI.Sprite(PIXI.loader.resources["Assets/Images/bottom_bar_full.png"].texture);
         //bottomBar.anchor.set(0.5, 1);
         //bottomBar.position.set(Global.SCENE_WIDTH / 2, Global.SCENE_HEIGHT);

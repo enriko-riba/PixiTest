@@ -40,7 +40,7 @@ export class WorldP2 {
             mass: 0,
         });
         var shape = new p2.Plane();
-        shape.material = this.materials.get('ground_default');
+        shape.material = this.materials.get("ground_default");
         this.ground.addShape(shape);
         this.world.addBody(this.ground);
 
@@ -53,7 +53,7 @@ export class WorldP2 {
             length: 20,
             radius: 6,
         });
-        shape.material = this.materials.get('player');
+        shape.material = this.materials.get("player");
         this.player.addShape(shape);
         this.world.addBody(this.player);
 
@@ -66,7 +66,7 @@ export class WorldP2 {
      * advances the physics simulation for the given dt time
      * @param dt the time in milliseconds since the last simulation step
      */
-    public update(dt: number) {
+    public update(dt: number): void {
         this.world.step(this.fixedTimeStep, dt, 30);
         this.playerPosition.x = this.player.interpolatedPosition[0];
         this.playerPosition.y = this.player.interpolatedPosition[1];
@@ -76,14 +76,14 @@ export class WorldP2 {
      * adds an object to the p2 world
      * @param bodyOptions
      * @param shape
-    */
+     */
     public addObject(bodyOptions?: p2.BodyOptions, shape?: p2.Shape): p2.Body {
         var body = new p2.Body(bodyOptions);
         if (!shape) {
             shape = new p2.Box({ width: 64, height: 64 });
         }
         if (!shape.material) {
-            shape.material = this.materials.get('box_default');
+            shape.material = this.materials.get("box_default");
         }
         body.addShape(shape);
         this.world.addBody(body);
@@ -93,8 +93,8 @@ export class WorldP2 {
     /**
      * adds an object to the p2 world
      * @param body
-    */
-    public addBody(body: p2.Body) {
+     */
+    public addBody(body: p2.Body):void {
         this.world.addBody(body);
     }
 
@@ -102,11 +102,11 @@ export class WorldP2 {
      * returns all contact pairs for the given body.
      * Note: the body must be in the contact watch list or an empty array will be returned.
      * @param body
-    */
-    public getContactsForBody(body: p2.Body): Array<ContactPair>{
+     */
+    public getContactsForBody(body: p2.Body): Array<ContactPair> {
         var foundPairs : Array<ContactPair> = [];
         this.contactPairs.forEach((cp, idx, arr) => {
-            if (cp.BodyA == body || cp.BodyB == body) {
+            if (cp.BodyA === body || cp.BodyB === body) {
                 foundPairs.push(cp);
             }
         });
@@ -119,47 +119,50 @@ export class WorldP2 {
      * can be retrieved via the getContactsForBody() function.
      * @param body
      */
-    public addContactWatch(body: p2.Body) {
+    public addContactWatch(body: p2.Body): void {
         this.contactWatch.push(body.id);
     }
 
     private beginContact = (evt: any) => {
+
+        //  fire contact event if body supported
+
         var watchedItemFound = this.contactWatch.filter((bodyId, idx, arr) => {
-            return (bodyId === evt.bodyA.id || bodyId == evt.bodyB.id);
+            return (bodyId === evt.bodyA.id || bodyId === evt.bodyB.id);
         });
         if (watchedItemFound && watchedItemFound.length > 0) {
             var cp = new ContactPair(evt.bodyA, evt.bodyB);
             this.contactPairs.push(cp);
         }
-    }
+    };
 
     private endContact = (evt: any) => {
         var foundIdx: number = -1;
         for (var i = 0; i < this.contactPairs.length; i++) {
             var cp = this.contactPairs[i];
             if (
-                (cp.BodyA == evt.bodyA && cp.BodyB == evt.bodyB) ||
-                (cp.BodyA == evt.bodyB && cp.BodyB == evt.bodyA)) {
+                (cp.BodyA === evt.bodyA && cp.BodyB === evt.bodyB) ||
+                (cp.BodyA === evt.bodyB && cp.BodyB === evt.bodyA)) {
                 foundIdx = i;
                 break;
             }
-        }  
+        }
 
-        if (foundIdx >=0) {
+        if (foundIdx >= 0) {
             this.contactPairs.splice(foundIdx, 1);
-        }      
-    }  
-
-    private setupMaterials() {
+        }
+    };  
+    
+    private setupMaterials(): void {
         this.materials = new Dictionary<p2.Material>();
-        this.materials.set('player', new p2.Material(p2.Material.idCounter++));
-        this.materials.set('ground_default', new p2.Material(p2.Material.idCounter++));
-        this.materials.set('box_default', new p2.Material(p2.Material.idCounter++));
+        this.materials.set("player", new p2.Material(p2.Material.idCounter++));
+        this.materials.set("ground_default", new p2.Material(p2.Material.idCounter++));
+        this.materials.set("box_default", new p2.Material(p2.Material.idCounter++));
 
 
         var groundContactMaterial = new p2.ContactMaterial(
-            this.materials.get('player'),
-            this.materials.get('ground_default'),
+            this.materials.get("player"),
+            this.materials.get("ground_default"),
             {
                 friction: 0.4,
                 restitution: 0.2,
@@ -172,8 +175,8 @@ export class WorldP2 {
         this.world.addContactMaterial(groundContactMaterial);
 
         var boxContactMaterial = new p2.ContactMaterial(
-            this.materials.get('player'),
-            this.materials.get('box_default'),
+            this.materials.get("player"),
+            this.materials.get("box_default"),
             {
                 friction: 0.2,
                 restitution: 0.3,
