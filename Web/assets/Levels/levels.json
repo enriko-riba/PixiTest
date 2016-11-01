@@ -1,24 +1,24 @@
 ﻿{
-  "Levels": [
+  "levels": [
     {
-      "Id": 1,
-      "Name": "Intro",  
-      "Parallax": [
+      "id": 1,
+      "name": "Intro",
+      "parallax": [
         {
-          "Index": 0,
-          "Name": "Far",
-          "ParallaxFactor": 0.5,
+          "index": 0,
+          "name": "Far",
+          "parallaxFactor": 0.5,
           "y": 0,
-          "Tiles": [
+          "tiles": [
             "assets/images/background/Canyon.png"
           ]
         },
         {
-          "Index": 1,
-          "Name": "Near",
-          "ParallaxFactor": 0.8,
+          "index": 1,
+          "name": "Near",
+          "parallaxFactor": 0.8,
           "y": 5,
-          "Tiles": [
+          "tiles": [
             "assets/images/background/trees01.png",
             "assets/images/background/trees02.png",
             "assets/images/background/trees03.png",
@@ -27,32 +27,43 @@
           ]
         },
         {
-          "Index": 2,
-          "Name": "Ground",
-          "ParallaxFactor": 1,
+          "index": 2,
+          "name": "Ground",
+          "parallaxFactor": 1,
           "y": -90,
-          "Tiles": [
+          "tiles": [
             "assets/images/background/ground.png"
           ]
         }
       ],
-      "Map": {
-        "Entities": [
+      "map": {
+        "entities": [
           {
-            "Body": {
-              "Shape": "Box",
-              "Type": 1,
-              "xy": [ 200, 64 ],
-              "Mass": 80,
-              "Angle":  0
+            "displayObject": {
+              "type": "Sprite",
+              "texture": "assets/images/objects/box_64_01.png",
+              "scale": [ 2, 1 ],
+              "xy": [ -96, 64 ],
+              "rotation": 1.5707963267948966
             },
-            "DisplayObject": {
-              "Type": "Sprite",
-              "Texture": "assets/images/objects/box_64_01.png",
-              "Scale": [ 1, 1 ],
-              "xy": [ 200, 64 ]
+            "body": {
+              "shape": "Box",
+              "type": 1,
+              "mass": 80
+            }
+          },
+          {
+            "displayObject": {
+              "type": "Sprite",
+              "texture": "assets/images/objects/box_128_01.png",
+              "xy": [ 100, 64 ]
+            },
+            "body": {
+              "shape": "Box",
+              "type": 4
             }
           }
+
         ],
 
         "NPC": []
