@@ -16,24 +16,32 @@ export class PhysicsTuple<T> {
  */
 export class PhysicsConnector<T> {
 
-    private updateDisplayObject: (tuple: PhysicsTuple<T>) => void;
-    private updatePhysicsObject: (tuple: PhysicsTuple<T>) => void;
+    private updateDisplayObject: (displayObject: PIXI.DisplayObject, body: T) => void;
+    private updatePhysicsObject: (displayObject: PIXI.DisplayObject, body: T) => void;
 
     private tuples: Array<PhysicsTuple<T>> = [];
 
-    constructor(updateDisplayObject: (tuple: PhysicsTuple<T>) => void, updatePhysicsObject: (tuple: PhysicsTuple<T>) => void) {
+    constructor(updateDisplayObject?: (displayObject: PIXI.DisplayObject, body: T) => void,
+                updatePhysicsObject?: (displayObject: PIXI.DisplayObject, body: T) => void) {
         this.updateDisplayObject = updateDisplayObject;
         this.updatePhysicsObject = updatePhysicsObject;
     }
 
     /**
      * Iterates through each tuple and invokes the supplied callback function.
-     * @param cb
+     * @param cb callback to be invoked
      */
-    public forEach(cb: (tuple: PhysicsTuple<T>) => void) {
+    public forEach(cb: (displayObject: PIXI.DisplayObject, body: T) => void) {
         this.tuples.forEach((tuple) => {
-            cb(tuple);
+            cb(tuple.displayObject, tuple.body);
         });
+    }
+
+    public get DisplayObjectUpdater(): (displayObject: PIXI.DisplayObject, body: T)=> void {
+        return this.updateDisplayObject;
+    }
+    public set DisplayObjectUpdater(cb: (displayObject: PIXI.DisplayObject, body: T)=> void) {
+        this.updateDisplayObject = cb;
     }
 
     public addObjects(displayObject: PIXI.DisplayObject, physicsObject: T):number {
@@ -42,13 +50,13 @@ export class PhysicsConnector<T> {
 
     public updateDisplayObjects() {
         this.tuples.forEach((tuple) => {
-            this.updateDisplayObject(tuple);
+            this.updateDisplayObject(tuple.displayObject, tuple.body);
         });
     }
 
     public updatePhysicsObjects() {
         this.tuples.forEach((tuple) => {
-            this.updatePhysicsObject(tuple);
+            this.updatePhysicsObject(tuple.displayObject, tuple.body);
         });
     }
 }

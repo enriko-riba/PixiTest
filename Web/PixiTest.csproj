@@ -65,6 +65,7 @@
     <Content Include="assets\Images\Objects\Box_64_02.png" />
     <Content Include="assets\Images\Objects\Box_64_03.png" />
     <Content Include="assets\Images\Objects\Bumper_01.png" />
+    <Content Include="assets\Images\Objects\Bumper_rotor_01.png" />
     <Content Include="assets\Images\Objects\chest_01.png" />
     <Content Include="assets\Images\Gui\Button1.png" />
     <Content Include="assets\Images\Gui\ListItem.png" />
@@ -166,6 +167,7 @@
     <TypeScriptCompile Include="Scripts\app\Common\error-handler.ts" />
     <TypeScriptCompile Include="Scripts\app\Common\IOverlay.ts" />
     <TypeScriptCompile Include="Scripts\app\Common\overlay.ts" />
+    <TypeScriptCompile Include="Scripts\app\Demo\Bumper.ts" />
     <TypeScriptCompile Include="Scripts\app\Demo\MovementController.ts" />
     <TypeScriptCompile Include="Scripts\app\Demo\JumpControllerP2.ts" />
     <TypeScriptCompile Include="Scripts\app\Demo\JumpController.ts" />
