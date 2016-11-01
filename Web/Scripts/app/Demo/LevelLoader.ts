@@ -77,7 +77,10 @@ export interface IBody {
 }
 
 export interface IDisplayObject {
+    Type: string,
     Texture: string;
+    Scale?: number;
+    xy?: number[];
 }
 
 export interface IEntity {
@@ -87,8 +90,6 @@ export interface IEntity {
 
 export interface ILevelMap {
     Entities: IEntity[];
-    //Body: IBody[];
-    //NPC: any[];
 }
 
 export interface ILevel {
