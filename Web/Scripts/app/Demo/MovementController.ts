@@ -10,7 +10,7 @@ import { JumpControllerP2 } from "./JumpControllerP2";
 export class MovementController {
 
     private readonly ANIMATION_FPS = 10;
-    private readonly VELOCITY = 10;
+    private readonly VELOCITY = 150;
 
     private world: WorldP2;
     private hero: AnimatedSprite;
@@ -42,7 +42,7 @@ export class MovementController {
         return this.movementState;
     }
 
-    public MovementVelocity() : number {
+    public MovementVelocity(): number {
         var direction = 0;
         if (this.movementState === MovementState.Left || this.movementState === MovementState.JumpLeft) {
             direction = -1;
@@ -55,7 +55,7 @@ export class MovementController {
     }
 
     public update(dt: number) {
-    
+
         const KEY_A: number = 65;
         const KEY_D: number = 68;
         const KEY_W: number = 87;
@@ -67,10 +67,11 @@ export class MovementController {
 
         //  give the ctrl a chance to do stuff
         this.jumpCtrl.onUpdate(dt);
-        
 
+
+        //  no movement while jumping
         if (this.jumpCtrl.isJumping) {
-            //  no movement while jumping
+            console.log("isJumping!");
             return;
         } else {
 

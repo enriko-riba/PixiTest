@@ -62,6 +62,412 @@
               "shape": "Box",
               "type": 4
             }
+          },
+          {
+            "displayObject": {
+              "type": "Bumper",
+              "xy": [ 388, 160 ],
+              "rotation": 0.785398163397
+            },
+            "body": {
+              "shape": "Box",
+              "type": 4
+            }
+          },
+          {
+            "displayObject": {
+              "type": "Sprite",
+              "texture": "assets/images/objects/box_128_01.png",
+              "xy": [ 644, 64 ]
+            },
+            "body": {
+              "shape": "Box",
+              "type": 4
+            }
+          },
+          {
+            "displayObject": {
+              "type": "Bumper",
+              "xy": [ 900, 160 ],
+              "rotation": 2.3561944901923449288469825374596
+            },
+            "body": {
+              "shape": "Box",
+              "type": 4
+            }
+          },
+          {
+            "displayObject": {
+              "type": "Sprite",
+              "texture": "assets/images/objects/box_128_01.png",
+              "xy": [ 1156, 64 ]
+            },
+            "body": {
+              "shape": "Box",
+              "type": 4
+            }
+          },
+
+          {
+            "displayObject": {
+              "type": "Bumper",
+              "xy": [ 1412, 160 ],
+              "rotation": 3.9269908169867932384626433832795
+            },
+            "body": {
+              "shape": "Box",
+              "type": 4
+            }
+          },
+          {
+            "displayObject": {
+              "type": "Sprite",
+              "texture": "assets/images/objects/box_128_01.png",
+              "xy": [ 1668, 64 ]
+            },
+            "body": {
+              "shape": "Box",
+              "type": 4
+            }
+          },
+
+
+          {
+            "displayObject": {
+              "type": "Sprite",
+              "texture": "assets/images/objects/box_128_01.png"
+            },
+            "body": {
+              "shape": "Box",
+              "type": 4,
+              "xy": {
+                "0": 100,
+                "1": 64
+              },
+              "mass": 0,
+              "angle": 0
+            }
+          },
+
+          {
+            "displayObject": {
+              "type": "Sprite",
+              "texture": "assets/images/objects/box_64_02.png"
+            },
+            "body": {
+              "shape": "Box",
+              "type": 1,
+              "xy": {
+                "0": 0.006048880983144045,
+                "1": 31.994548797607422
+              },
+              "mass": 100,
+              "angle": 6.132008331260416e-8
+            }
+          },
+          {
+            "displayObject": {
+              "type": "Sprite",
+              "texture": "assets/images/objects/box_64_02.png"
+            },
+            "body": {
+              "shape": "Box",
+              "type": 1,
+              "xy": {
+                "0": 276.6315002441406,
+                "1": 31.994548797607422
+              },
+              "mass": 100,
+              "angle": 6.03666935371319e-8
+            }
+          },
+          {
+            "displayObject": {
+              "type": "Sprite",
+              "texture": "assets/images/objects/box_64_02.png"
+            },
+            "body": {
+              "shape": "Box",
+              "type": 1,
+              "xy": {
+                "0": 522.4747924804688,
+                "1": 31.994548797607422
+              },
+              "mass": 100,
+              "angle": 6.332893290678302e-8
+            }
+          },
+          {
+            "displayObject": {
+              "type": "Sprite",
+              "texture": "assets/images/objects/box_64_02.png"
+            },
+            "body": {
+              "shape": "Box",
+              "type": 1,
+              "xy": {
+                "0": 741.0306396484375,
+                "1": 31.99456214904785
+              },
+              "mass": 100,
+              "angle": 0.000001844279282723959
+            }
+          },
+          {
+            "displayObject": {
+              "type": "Sprite",
+              "texture": "assets/images/objects/box_64_02.png"
+            },
+            "body": {
+              "shape": "Box",
+              "type": 1,
+              "xy": {
+                "0": 1017.9024658203125,
+                "1": 31.994548797607422
+              },
+              "mass": 100,
+              "angle": 5.7509982425405924e-8
+            }
+          },
+          {
+            "displayObject": {
+              "type": "Sprite",
+              "texture": "assets/images/objects/box_64_02.png"
+            },
+            "body": {
+              "shape": "Box",
+              "type": 1,
+              "xy": {
+                "0": 1280,
+                "1": 31.994552612304688
+              },
+              "mass": 100,
+              "angle": 6.422816758481694e-8
+            }
+          },
+          {
+            "displayObject": {
+              "type": "Sprite",
+              "texture": "assets/images/objects/box_64_02.png"
+            },
+            "body": {
+              "shape": "Box",
+              "type": 1,
+              "xy": {
+                "0": 1536,
+                "1": 31.994552612304688
+              },
+              "mass": 100,
+              "angle": 6.422816758481694e-8
+            }
+          },
+          {
+            "displayObject": {
+              "type": "Sprite",
+              "texture": "assets/images/objects/box_64_02.png"
+            },
+            "body": {
+              "shape": "Box",
+              "type": 1,
+              "xy": {
+                "0": 1792,
+                "1": 31.994552612304688
+              },
+              "mass": 100,
+              "angle": 6.422816758481694e-8
+            }
+          },
+          {
+            "displayObject": {
+              "type": "Sprite",
+              "texture": "assets/images/objects/box_64_02.png"
+            },
+            "body": {
+              "shape": "Box",
+              "type": 1,
+              "xy": {
+                "0": 2048,
+                "1": 31.994552612304688
+              },
+              "mass": 100,
+              "angle": 6.422816758481694e-8
+            }
+          },
+          {
+            "displayObject": {
+              "type": "Sprite",
+              "texture": "assets/images/objects/box_64_02.png"
+            },
+            "body": {
+              "shape": "Box",
+              "type": 1,
+              "xy": {
+                "0": 2304,
+                "1": 31.994552612304688
+              },
+              "mass": 100,
+              "angle": 6.422816758481694e-8
+            }
+          },
+          {
+            "displayObject": {
+              "type": "Sprite",
+              "texture": "assets/images/objects/box_64_02.png"
+            },
+            "body": {
+              "shape": "Box",
+              "type": 1,
+              "xy": {
+                "0": 2560,
+                "1": 31.994552612304688
+              },
+              "mass": 100,
+              "angle": 6.422816758481694e-8
+            }
+          },
+          {
+            "displayObject": {
+              "type": "Sprite",
+              "texture": "assets/images/objects/box_64_02.png"
+            },
+            "body": {
+              "shape": "Box",
+              "type": 1,
+              "xy": {
+                "0": 2816,
+                "1": 31.994552612304688
+              },
+              "mass": 100,
+              "angle": 6.422816758481694e-8
+            }
+          },
+          {
+            "displayObject": {
+              "type": "Sprite",
+              "texture": "assets/images/objects/box_64_02.png"
+            },
+            "body": {
+              "shape": "Box",
+              "type": 1,
+              "xy": {
+                "0": 3072,
+                "1": 31.994552612304688
+              },
+              "mass": 100,
+              "angle": 6.422816758481694e-8
+            }
+          },
+          {
+            "displayObject": {
+              "type": "Sprite",
+              "texture": "assets/images/objects/box_64_02.png"
+            },
+            "body": {
+              "shape": "Box",
+              "type": 1,
+              "xy": {
+                "0": 3328,
+                "1": 31.994552612304688
+              },
+              "mass": 100,
+              "angle": 6.422816758481694e-8
+            }
+          },
+          {
+            "displayObject": {
+              "type": "Sprite",
+              "texture": "assets/images/objects/box_64_02.png"
+            },
+            "body": {
+              "shape": "Box",
+              "type": 1,
+              "xy": {
+                "0": 3584,
+                "1": 31.994552612304688
+              },
+              "mass": 100,
+              "angle": 6.422816758481694e-8
+            }
+          },
+          {
+            "displayObject": {
+              "type": "Sprite",
+              "texture": "assets/images/objects/box_64_02.png"
+            },
+            "body": {
+              "shape": "Box",
+              "type": 1,
+              "xy": {
+                "0": 3840,
+                "1": 31.994552612304688
+              },
+              "mass": 100,
+              "angle": 6.422816758481694e-8
+            }
+          },
+          {
+            "displayObject": {
+              "type": "Sprite",
+              "texture": "assets/images/objects/box_64_02.png"
+            },
+            "body": {
+              "shape": "Box",
+              "type": 1,
+              "xy": {
+                "0": 4096,
+                "1": 31.994552612304688
+              },
+              "mass": 100,
+              "angle": 6.422816758481694e-8
+            }
+          },
+          {
+            "displayObject": {
+              "type": "Sprite",
+              "texture": "assets/images/objects/box_64_02.png"
+            },
+            "body": {
+              "shape": "Box",
+              "type": 1,
+              "xy": {
+                "0": 4352,
+                "1": 31.994552612304688
+              },
+              "mass": 100,
+              "angle": 6.422816758481694e-8
+            }
+          },
+          {
+            "displayObject": {
+              "type": "Sprite",
+              "texture": "assets/images/objects/box_64_02.png"
+            },
+            "body": {
+              "shape": "Box",
+              "type": 1,
+              "xy": {
+                "0": 4608,
+                "1": 31.994552612304688
+              },
+              "mass": 100,
+              "angle": 6.422816758481694e-8
+            }
+          },
+          {
+            "displayObject": {
+              "type": "Sprite",
+              "texture": "assets/images/objects/box_64_02.png"
+            },
+            "body": {
+              "shape": "Box",
+              "type": 1,
+              "xy": {
+                "0": 4864,
+                "1": 31.994552612304688
+              },
+              "mass": 100,
+              "angle": 6.422816758481694e-8
+            }
           }
 
         ],

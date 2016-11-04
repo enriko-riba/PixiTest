@@ -90,6 +90,8 @@ export class InGameScene extends Scene {
         });
     };
 
+    private p2postStep() {
+    }
     private setup():void {
         this.BackGroundColor = 0x1099bb;
         PIXI.SCALE_MODES.DEFAULT = PIXI.SCALE_MODES.LINEAR;
@@ -113,6 +115,7 @@ export class InGameScene extends Scene {
         //  setup physics subsystem
         //--------------------------------------
         this.wp2 = new WorldP2(this.heroPosition);
+        this.wp2.on("", this.p2postStep);
         this.movementCtrl = new MovementController(this.wp2, this.hero);        
 
         //--------------------------------------
@@ -170,21 +173,21 @@ export class InGameScene extends Scene {
         //    this.wp2.addObject({ angle: spr.rotation, position: [spr.x, spr.y] }, shape);
         //}
 
-        var texture: PIXI.Texture;
-        texture = PIXI.loader.resources["assets/images/objects/box_64_02.png"].texture;
-        texture.rotate = 8;
-        for (var x = 0; x < 20; x++) {
-            var spr = new PIXI.Sprite(texture);
-            spr.position.set(x * 256, 32);
-            spr.pivot.set(0.5);
-            spr.anchor.set(0.5);
-            this.worldContainer.addChild(spr);
+        //var texture: PIXI.Texture;
+        //texture = PIXI.loader.resources["assets/images/objects/box_64_02.png"].texture;
+        //texture.rotate = 8;
+        //for (var x = 0; x < 20; x++) {
+        //    var spr = new PIXI.Sprite(texture);
+        //    spr.position.set(x * 256, 32);
+        //    spr.pivot.set(0.5);
+        //    spr.anchor.set(0.5);
+        //    this.worldContainer.addChild(spr);
 
-            var body = new p2.Body({ mass: 100, position: [spr.x, spr.y] });
-            body.addShape(new p2.Box({ width: 64, height: 64 }));
-            this.wp2.addBody(body);
-            this.p2Connector.addObjects(spr, body);
-        }
+        //    var body = new p2.Body({ mass: 100, position: [spr.x, spr.y] });
+        //    body.addShape(new p2.Box({ width: 64, height: 64 }));
+        //    this.wp2.addBody(body);
+        //    this.p2Connector.addObjects(spr, body);
+        //}
     };
 
     public saveLevel():void {

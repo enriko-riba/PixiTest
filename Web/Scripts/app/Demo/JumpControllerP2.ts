@@ -3,7 +3,7 @@ import { MovementState } from "./MovementState";
 import { WorldP2, ContactPair } from "./WorldP2";
 
 export class JumpControllerP2 {
-    private readonly JUMP_FORCE = 2500;
+    private readonly JUMP_FORCE = 18000;
     private nextJumpAllowed: number = 0;
     private onJumpEnd: () => void;
 
@@ -37,6 +37,7 @@ export class JumpControllerP2 {
         }
         this.body.applyImpulse(forceVector);
         this.nextJumpAllowed = performance.now() + 450;
+        this.world.clearContactsForBody(this.body);
     }
 
     private bodyContacts: Array<ContactPair>= [];
