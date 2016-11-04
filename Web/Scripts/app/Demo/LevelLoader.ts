@@ -2,6 +2,8 @@
 import { Parallax } from "app/_engine/Parallax";
 import { PhysicsConnector } from "app/_engine/PhysicsConnector";
 
+import { Bumper } from "./Bumper";
+import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
 
 export class LevelLoader {
 
@@ -72,15 +74,24 @@ export class LevelLoader {
         return result;
     }
 
+    /**
+     * Creates a display object from the definition.
+     * @param definition
+     */
     private buildDisplayObject(definition: IDisplayObject): PIXI.DisplayObject {
         var dispObj: PIXI.DisplayObject
         switch (definition.type) {
             case "AnimatedSprite":
                 //  TODO: implement
                 break;
+
             case "Sprite":
                 var text = PIXI.loader.resources[definition.texture].texture;
                 dispObj = new PIXI.Sprite(text);
+                break;
+
+            case "Bumper":
+                dispObj = new Bumper();
                 break;
         }
         dispObj.pivot.set(0.5);
@@ -97,6 +108,11 @@ export class LevelLoader {
         return dispObj;
     }
 
+    /**
+     * Creates a physics body and shape from the definition.
+     * @param definition
+     * @param dispObj the display object to retrieve the defaults from.
+     */
     private buildPhysicsObject(definition: IBody, dispObj: PIXI.DisplayObject): p2.Body {
         var body: p2.Body;
         if (definition) {

@@ -28,7 +28,7 @@ export class WorldP2 {
 
     constructor(playerPosition: PIXI.Point) {
         this.world = new p2.World({
-            gravity: [0, -9.0]
+            gravity: [0, -1500]
         });
         
         this.setupMaterials();
@@ -46,28 +46,39 @@ export class WorldP2 {
 
         //  player body
         this.player = new p2.Body({
-            mass: 40,
+            mass: 35,
             position: [playerPosition.x, playerPosition.y]            
         });
         shape = new p2.Capsule({
-            length: 20,
+            length: 15,
             radius: 6,
         });
         shape.material = this.materials.get("player");
         this.player.addShape(shape);
         this.world.addBody(this.player);
 
-
+        this.world.solver.iterations = 100;
+        this.world.solver.tolerance = 0.002;
         this.world.on("beginContact", this.beginContact, this);
         this.world.on("endContact", this.endContact, this);
     }
 
     /**
+     * Adds an event handler to the p2 world object.
+     * @param eventName
+     * @param handler
+     */
+    public on(eventName: string, handler: any) {
+        this.world.on(eventName, handler, this);
+    }
+     
+    /**
      * advances the physics simulation for the given dt time
-     * @param dt the time in milliseconds since the last simulation step
+     * @param dt the time in seconds since the last simulation step
      */
     public update(dt: number): void {
-        this.world.step(this.fixedTimeStep, dt, 30);
+        //console.log("worldp2 update() dt: " + dt/1000);
+        this.world.step(this.fixedTimeStep, dt/1000, 20);
         this.playerPosition.x = this.player.interpolatedPosition[0];
         this.playerPosition.y = this.player.interpolatedPosition[1];
     }
@@ -98,6 +109,23 @@ export class WorldP2 {
         this.world.addBody(body);
     }
 
+    public clearContactsForBody(body: p2.Body) {
+        var foundIdx: number = 0;
+        while (foundIdx > -1) {
+            foundIdx = -1;
+            for (var i = 0; i < this.contactPairs.length; i++) {
+                var cp = this.contactPairs[i];
+                if (cp.BodyA === body || cp.BodyB === body)  {
+                    foundIdx = i;
+                    break;
+                }
+            }
+
+            if (foundIdx >= 0) {
+                this.contactPairs.splice(foundIdx, 1);
+            }
+        }
+    }
     /**
      * returns all contact pairs for the given body.
      * Note: the body must be in the contact watch list or an empty array will be returned.
@@ -126,7 +154,7 @@ export class WorldP2 {
     private beginContact = (evt: any) => {
 
         //  fire contact event if body supported
-
+        console.log("beginContact: ", evt);
         var watchedItemFound = this.contactWatch.filter((bodyId, idx, arr) => {
             return (bodyId === evt.bodyA.id || bodyId === evt.bodyB.id);
         });
@@ -137,6 +165,7 @@ export class WorldP2 {
     };
 
     private endContact = (evt: any) => {
+        console.log("endContact: ", evt);
         var foundIdx: number = -1;
         for (var i = 0; i < this.contactPairs.length; i++) {
             var cp = this.contactPairs[i];

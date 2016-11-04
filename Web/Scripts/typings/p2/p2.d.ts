@@ -778,6 +778,8 @@ declare namespace p2 {
         removeEquation(eq: Equation): void;
         removeAllEquations(): void;
 
+        iterations: number;
+        tolerance: number;
     }
 
     export class GSSolver extends Solver {
