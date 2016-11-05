@@ -2,8 +2,8 @@
 
 export class AnimatedSprite extends PIXI.Container {
     constructor() {
-        super();
-       
+        super();        
+        this.pivot.set(0.5);
     }
 
     private animations = new Dictionary<AnimationSequence>();
@@ -18,8 +18,7 @@ export class AnimatedSprite extends PIXI.Container {
             if (!this.clip && idx === 0) {
                 this.createClip(seq);
             }
-        });
-        
+        });        
     }
 
     public PlayAnimation(name: string, fps?:number) {
@@ -32,6 +31,7 @@ export class AnimatedSprite extends PIXI.Container {
             this.clip.play();
         }
     } 
+
     public Stop() {
         this.clip.stop();
     }
@@ -58,6 +58,7 @@ export class AnimatedSprite extends PIXI.Container {
         if (!this.clip) {
             this.clip = new PIXI.extras.MovieClip(sequence.Textures);
             this.clip.anchor.set(0.5);
+            this.clip.pivot.set(0.5);
             this.addChild(this.clip);
         } else {
             this.clip.textures = this.currentSequence.Textures;

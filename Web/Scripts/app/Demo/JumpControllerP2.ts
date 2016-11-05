@@ -3,7 +3,7 @@ import { MovementState } from "./MovementState";
 import { WorldP2, ContactPair } from "./WorldP2";
 
 export class JumpControllerP2 {
-    private readonly JUMP_FORCE = 19500;
+    private readonly JUMP_FORCE = 16000;
     private nextJumpAllowed: number = 0;
     private onJumpEnd: () => void;
 
@@ -31,9 +31,9 @@ export class JumpControllerP2 {
         if (direction === MovementState.JumpUp) {
             forceVector = [0, this.JUMP_FORCE];
         } else if (direction === MovementState.JumpLeft) {
-            forceVector = [-this.JUMP_FORCE/ 5, this.JUMP_FORCE];
+            forceVector = [-this.JUMP_FORCE * 0.15, this.JUMP_FORCE];
         } else if (direction === MovementState.JumpRight) {
-            forceVector = [this.JUMP_FORCE / 5, this.JUMP_FORCE];
+            forceVector = [this.JUMP_FORCE * 0.15, this.JUMP_FORCE];
         }
         this.body.applyImpulse(forceVector);
         this.nextJumpAllowed = performance.now() + 450;

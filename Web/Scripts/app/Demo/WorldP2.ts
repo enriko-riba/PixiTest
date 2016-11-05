@@ -16,7 +16,6 @@ export class WorldP2 {
     private world: p2.World;
     private ground: p2.Body;
 
-
     private playerPosition: PIXI.Point;
     private materials: Dictionary<p2.Material>;
 
@@ -32,7 +31,6 @@ export class WorldP2 {
         });
         
         this.setupMaterials();
-
         this.playerPosition = playerPosition;
 
         // Create an infinite ground plane body
@@ -49,16 +47,24 @@ export class WorldP2 {
             mass: 40,
             position: [playerPosition.x, playerPosition.y]            
         });
-        shape = new p2.Capsule({
-            length: 20,
-            radius: 5,
+        //shape = new p2.Capsule({
+        //    length: 20,
+        //    radius: 5,
+        //});
+        shape = new p2.Circle({
+            radius: 26,
         });
+        //shape = new p2.Box({
+        //    width: 32,
+        //    height: 64            
+        //});
+        //shape.position = [0, 0];
         shape.material = this.materials.get("player");
         this.player.addShape(shape);
         this.world.addBody(this.player);
 
-        this.world.solver.iterations = 100;
-        this.world.solver.tolerance = 0.002;
+        this.world.solver.iterations = 25;
+        //this.world.solver.tolerance = 0.00002;
         this.world.on("beginContact", this.beginContact, this);
         this.world.on("endContact", this.endContact, this);
     }
@@ -193,9 +199,9 @@ export class WorldP2 {
             this.materials.get("player"),
             this.materials.get("ground_default"),
             {
-                friction: 0.4,
-                restitution: 0.2,
-                stiffness: p2.Equation.DEFAULT_STIFFNESS * 0.5,
+                friction: 0.5,
+                restitution: 0.15,
+                stiffness: p2.Equation.DEFAULT_STIFFNESS,
                 relaxation: p2.Equation.DEFAULT_RELAXATION,
                 frictionStiffness: p2.Equation.DEFAULT_STIFFNESS,
                 frictionRelaxation: p2.Equation.DEFAULT_RELAXATION,
@@ -207,9 +213,9 @@ export class WorldP2 {
             this.materials.get("player"),
             this.materials.get("box_default"),
             {
-                friction: 0.2,
-                restitution: 0.3,
-                stiffness: p2.Equation.DEFAULT_STIFFNESS * 0.5,
+                friction: 0.3,
+                restitution: 0.2,
+                stiffness: p2.Equation.DEFAULT_STIFFNESS,
                 relaxation: p2.Equation.DEFAULT_RELAXATION,
                 frictionStiffness: p2.Equation.DEFAULT_STIFFNESS,
                 frictionRelaxation: p2.Equation.DEFAULT_RELAXATION,
