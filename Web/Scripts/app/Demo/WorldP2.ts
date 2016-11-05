@@ -46,12 +46,12 @@ export class WorldP2 {
 
         //  player body
         this.player = new p2.Body({
-            mass: 35,
+            mass: 40,
             position: [playerPosition.x, playerPosition.y]            
         });
         shape = new p2.Capsule({
-            length: 15,
-            radius: 6,
+            length: 20,
+            radius: 5,
         });
         shape.material = this.materials.get("player");
         this.player.addShape(shape);

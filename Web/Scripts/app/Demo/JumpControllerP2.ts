@@ -3,7 +3,7 @@ import { MovementState } from "./MovementState";
 import { WorldP2, ContactPair } from "./WorldP2";
 
 export class JumpControllerP2 {
-    private readonly JUMP_FORCE = 18000;
+    private readonly JUMP_FORCE = 19500;
     private nextJumpAllowed: number = 0;
     private onJumpEnd: () => void;
 

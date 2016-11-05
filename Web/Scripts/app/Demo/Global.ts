@@ -23,11 +23,11 @@ export var TXT_STYLE: PIXI.ITextStyle =
     {
         align: "center",
         padding: 0,
-        fontSize: "18px",
+        fontSize: "20px",
         fontFamily: "Calibri",
-        fill: 0x901010,
-        strokeThickness: 1,
-        stroke: 0x901010
+        fill: 0x905b15,
+        strokeThickness: 3,
+        stroke: 0xcfbfbf
     };
 
 export var sceneMngr: SceneManager;

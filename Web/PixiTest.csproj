@@ -56,6 +56,8 @@
     <Content Include="assets\Images\Flora\tree-1.png" />
     <Content Include="assets\Images\Flora\tree-2.png" />
     <Content Include="assets\Images\Flora\tree-3.png" />
+    <Content Include="assets\Images\Gui\Panel_256x128.png" />
+    <Content Include="assets\Images\Gui\Panel_256x256.png" />
     <Content Include="assets\Images\Npcs\SQUIRELLY_01.png" />
     <Content Include="assets\Images\Npcs\SQUIRELLY_02.png" />
     <Content Include="assets\Images\Objects\Box_128_01.png" />
