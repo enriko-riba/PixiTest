@@ -40,15 +40,36 @@
         "entities": [
           {
             "displayObject": {
+              "type": "AnimatedSprite",
+              "xy": [ 100, 170 ],
+              "fps": 20,
+              "sequences": [
+                {
+                  "name": "spin",
+                  "texture": "assets/images/objects/coins.png",
+                  "frames": [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ],
+                  "framesize": [ 24, 24 ]
+                }
+              ]
+            },
+            "body": {
+              "shape": "Circle",
+              "type": 4,
+              "mass": 0,
+              "size": [ 20 ]
+            }
+          },
+          {
+            "displayObject": {
               "type": "Sprite",
               "texture": "assets/images/objects/box_64_01.png",
               "rotation": 1.389904312848712e-8,
               "xy": [ -132.7094268798828, 31.93499755859375 ],
-              "scale": [2,1]
+              "scale": [ 2, 1 ]
             },
             "body": {
               "shape": "Box",
-              "size": [128, 64],
+              "size": [ 128, 64 ],
               "type": 1,
               "xy": {
                 "0": -132.7094268798828,
@@ -225,13 +246,13 @@
               "type": "Sprite",
               "texture": "assets/images/objects/box_64_02.png",
               "rotation": 6.13954439931594e-8,
-              "xy": [ 396.6297912597656, 31.919998168945312 ]
+              "xy": [ 200.6297912597656, 31.919998168945312 ]
             },
             "body": {
               "shape": "Box",
               "type": 1,
               "xy": {
-                "0": 396.6297912597656,
+                "0": 200.6297912597656,
                 "1": 31.919998168945312
               },
               "mass": 100,

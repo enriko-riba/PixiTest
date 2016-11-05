@@ -82,29 +82,38 @@ export class LevelLoader {
         var dispObj: PIXI.DisplayObject
         switch (definition.type) {
             case "AnimatedSprite":
-                //  TODO: implement
+                var aspr = new AnimatedSprite();
+                definition.sequences.forEach((seq, idx, arr) => {
+                    var aseq = new AnimationSequence(seq.name, seq.texture, seq.frames, seq.framesize[0], seq.framesize[1]);
+                    aspr.addAnimations(aseq);
+                });
+                aspr.PlayAnimation(definition.sequences[0].name, definition.fps);
+                aspr.Anchor = new PIXI.Point(0.5,0.5);
+                dispObj = aspr;
                 break;
 
             case "Sprite":
                 var text = PIXI.loader.resources[definition.texture].texture;
-                dispObj = new PIXI.Sprite(text);
+                var spr = new PIXI.Sprite(text);
+                spr.anchor.set(0.5);
+                dispObj = spr;
                 break;
 
             case "Bumper":
-                dispObj = new Bumper();
+                var bmp = new Bumper();
+                bmp.anchor.set(0.5);
+                dispObj = bmp;
                 break;
         }
+
         dispObj.pivot.set(0.5);
-        if ((dispObj as any).anchor) {
-            (dispObj as any).anchor.set(0.5);
-        }
+        dispObj.rotation = definition.rotation || 0;
         if (definition.xy) {
             dispObj.position.set(definition.xy[0], definition.xy[1]);
         }
         if (definition.scale) {
             dispObj.scale.set(definition.scale[0], definition.scale[1]);
         }
-        dispObj.rotation = definition.rotation || 0;
         return dispObj;
     }
 
@@ -131,6 +140,9 @@ export class LevelLoader {
 
             var shape: p2.Shape;
             switch (definition.shape) {
+                case "Circle":                    
+                    shape = new p2.Circle({ radius: definition.size[0] });
+                    break;
                 case "Box":
                     //  get the size
                     var w, h;
@@ -179,12 +191,23 @@ export interface IBody {
     angle: number;
 }
 
+export interface ISequence {
+    name: string;
+    texture: string;
+    frames: number[];
+    framesize: number[];
+}
+
 export interface IDisplayObject {
     type: string,
     texture: string;
     xy?: number[];
     scale?: number[];
     rotation?: number;
+
+
+    fps?: number;
+    sequences?:ISequence[]
 }
 
 export interface IEntity {

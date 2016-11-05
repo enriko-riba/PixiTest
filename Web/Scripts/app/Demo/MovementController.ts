@@ -10,7 +10,7 @@ import { JumpControllerP2 } from "./JumpControllerP2";
 export class MovementController {
 
     private readonly ANIMATION_FPS = 10;
-    private readonly VELOCITY = 200;
+    private readonly VELOCITY = 150;
 
     private world: WorldP2;
     private hero: AnimatedSprite;

@@ -109,14 +109,14 @@ export class InGameScene extends Scene {
         this.hero.addAnimations(new AnimationSequence("jumpright", "assets/images/hero_64.png", [54, 55, 56, 57, 58, 59], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
         this.hero.addAnimations(new AnimationSequence("jumpup", "assets/images/hero_64.png", [1, 3, 4], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
         this.hero.addAnimations(new AnimationSequence("idle", "assets/images/hero_64.png", [25, 24, 40, 19, 19, 18, 19, 22, 30, 31, 1, 1, 1], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
-        this.hero.Anchor = new PIXI.Point(0.5, 0.1);
-        this.heroPosition.set(-250, 5);
+        this.hero.Anchor = new PIXI.Point(0.5, 0.5);
         this.worldContainer.addChild(this.hero);
         this.hero.PlayAnimation("idle");
 
         //--------------------------------------
         //  setup physics subsystem
         //--------------------------------------
+        this.heroPosition.set(-250, 36);
         this.wp2 = new WorldP2(this.heroPosition);
         this.wp2.on("", this.p2postStep);
         this.movementCtrl = new MovementController(this.wp2, this.hero);        
@@ -141,58 +141,11 @@ export class InGameScene extends Scene {
         lvl.parallax.forEach((plx, idx, arr) => {
             this.worldContainer.addChildAt(plx, idx);
         });
-
-        //  for testing purposes only
-        this.addBoxes();
     }
-    
-    private addBoxes = () => {
-        //var textureEven: PIXI.Texture = PIXI.loader.resources["assets/images/objects/box_128_01.png"].texture;
-        //textureEven.rotate = 8;
 
-        //for (var x = 0; x < 20; x++) {
-        //    var spr: PIXI.Sprite;
-        //    var text: PIXI.Texture;
-        //    var position: PIXI.Point = new PIXI.Point;
-        //    var rotation: number;
-
-        //    if (x % 2 === 0) {
-        //        text = textureEven;
-        //        position.set(128 + (x * 512), 64);
-        //        rotation = x * Math.PI / 2;
-        //        spr = new PIXI.Sprite(text);
-        //    } else {
-        //        position.set(128 + (x * 512), 160);
-        //        rotation = x * Math.PI / 4;
-        //        spr = new Bumper();
-        //    }
-        //    spr.position = position;
-        //    spr.rotation = rotation;
-        //    spr.pivot.set(0.5);
-        //    spr.anchor.set(0.5);
-        //    this.worldContainer.addChild(spr);
-
-        //    var shape = new p2.Box({ width: 128, height: 128 });
-        //    this.wp2.addObject({ angle: spr.rotation, position: [spr.x, spr.y] }, shape);
-        //}
-
-        //var texture: PIXI.Texture;
-        //texture = PIXI.loader.resources["assets/images/objects/box_64_02.png"].texture;
-        //texture.rotate = 8;
-        //for (var x = 0; x < 20; x++) {
-        //    var spr = new PIXI.Sprite(texture);
-        //    spr.position.set(x * 256, 32);
-        //    spr.pivot.set(0.5);
-        //    spr.anchor.set(0.5);
-        //    this.worldContainer.addChild(spr);
-
-        //    var body = new p2.Body({ mass: 100, position: [spr.x, spr.y] });
-        //    body.addShape(new p2.Box({ width: 64, height: 64 }));
-        //    this.wp2.addBody(body);
-        //    this.p2Connector.addObjects(spr, body);
-        //}
-    };
-
+    /**
+     * Saves the current level and dumps to console.
+     */
     public saveLevel():void {
         var map: ILevelMap = {
             entities:[]
