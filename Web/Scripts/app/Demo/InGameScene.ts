@@ -66,7 +66,7 @@ export class InGameScene extends Scene {
         this.hero.x = this.heroPosition.x;
         this.hero.y = this.heroPosition.y;
 
-        this.hud.txtPosition.text = `Position: (${this.heroPosition.x.toFixed(0)}, ${this.heroPosition.y.toFixed(0)})`;
+        
 
         //  update parallax
         for (var i = 0; i < this.parallaxBackgrounds.length; i++) {
@@ -88,6 +88,9 @@ export class InGameScene extends Scene {
                 child.onUpdate(dt);
             }
         });
+
+        this.hud.heroPosition = this.heroPosition;
+        this.hud.onUpdate(dt);
     };
 
     private p2postStep() {
@@ -107,7 +110,7 @@ export class InGameScene extends Scene {
         this.hero.addAnimations(new AnimationSequence("jumpup", "assets/images/hero_64.png", [1, 3, 4], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
         this.hero.addAnimations(new AnimationSequence("idle", "assets/images/hero_64.png", [25, 24, 40, 19, 19, 18, 19, 22, 30, 31, 1, 1, 1], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
         this.hero.Anchor = new PIXI.Point(0.5, 0.1);
-        this.heroPosition.set(-170, 5);
+        this.heroPosition.set(-250, 5);
         this.worldContainer.addChild(this.hero);
         this.hero.PlayAnimation("idle");
 
@@ -195,6 +198,16 @@ export class InGameScene extends Scene {
             entities:[]
         };
         this.p2Connector.forEach((displayObject: PIXI.DisplayObject, body: p2.Body) => {
+            var dumpDispObjProps = (dispObj : PIXI.Sprite) => {
+                return {
+                    type:"Sprite",
+                    texture: dispObj.texture.baseTexture.imageUrl,
+                    rotation: dispObj.rotation,
+                    xy: [dispObj.x, dispObj.y],
+                    scale: [dispObj.scale.x, dispObj.scale.y]
+                }
+            }
+
             var entity: IEntity = {
                 displayObject: null,
                 body: null
@@ -204,24 +217,24 @@ export class InGameScene extends Scene {
                 type: body.type,
                 xy: body.interpolatedPosition,
                 mass: body.mass,
-                angle: body.interpolatedAngle
+                angle: body.interpolatedAngle,
+
+                //  TODO: handle for other disp objects not inheriting from sprites
+                size: [(displayObject as PIXI.Sprite).width, (displayObject as PIXI.Sprite).height]
             };
 
-            //  parse display object
-            var dispObj: IDisplayObject;
-            if (displayObject instanceof PIXI.Sprite) {
-                dispObj = {
-                    type: "Sprite",
-                    texture: (displayObject as PIXI.Sprite).texture.baseTexture.imageUrl,
-                };
+            //  save display object
+            var dispObj: IDisplayObject = dumpDispObjProps(displayObject as PIXI.Sprite);
+            if (displayObject instanceof Bumper) {
+                dispObj.type = "Bumper";
             }
-
-            //  TODO: other display objects
+            //  TODO: other display object types
 
             entity.body = newBody;
             entity.displayObject = dispObj;
             map.entities.push(entity);
         });
+        console.log(JSON.stringify(map.entities));
     }
 }
 
@@ -232,14 +245,19 @@ class Hud extends PIXI.Container {
         this.setup();
     }
 
-    public txtPosition: PIXI.Text;
+    public heroLevel: string = "1";
+    public heroPosition: PIXI.Point;
+    public coins: number = 0;
+
+    private txtPosition: PIXI.Text;
+    private txtLevel: PIXI.Text;
+    private txtCoins: PIXI.Text;
 
     private setup(): void {
         //var bottomBar = new PIXI.Sprite(PIXI.loader.resources["Assets/Images/bottom_bar_full.png"].texture);
         //bottomBar.anchor.set(0.5, 1);
         //bottomBar.position.set(Global.SCENE_WIDTH / 2, Global.SCENE_HEIGHT);
         //this.addChild(bottomBar);
-
         //--------------------------------
         //  btn for level editor support
         //--------------------------------
@@ -251,12 +269,34 @@ class Hud extends PIXI.Container {
             var igs = Global.sceneMngr.CurrentScene as InGameScene;
             igs.saveLevel();
         };
+
         this.addChild(btnSave);
 
         //  debug text
-        this.txtPosition = new PIXI.Text("Position: (0, 0)", Global.TXT_STYLE);
+        var pnl = new PIXI.Sprite(PIXI.loader.resources["assets/images/Gui/Panel_256x128.png"].texture);
+        pnl.position.set(5, 5);
+        this.addChild(pnl);
+
+        this.txtLevel = new PIXI.Text("Level: 1", Global.TXT_STYLE);
+        this.txtLevel.resolution = window.devicePixelRatio;
+        this.txtLevel.position.set(20, 15);
+        pnl.addChild(this.txtLevel);
+
+        this.txtPosition = new PIXI.Text("Position: 0, 0", Global.TXT_STYLE);
         this.txtPosition.resolution = window.devicePixelRatio;
-        this.addChild(this.txtPosition);
-    }    
+        this.txtPosition.position.set(20, 85);
+        pnl.addChild(this.txtPosition);
+
+        this.txtCoins = new PIXI.Text("Coins: 0", Global.TXT_STYLE);
+        this.txtCoins.resolution = window.devicePixelRatio;
+        this.txtCoins.position.set(20, 50);
+        pnl.addChild(this.txtCoins);
+    }  
+
+    public onUpdate(dt: number) {
+        this.txtLevel.text = `Level:  ${this.heroLevel}`;
+        this.txtPosition.text = `Position:  ${this.heroPosition.x.toFixed(0)}, ${this.heroPosition.y.toFixed(0)}`;
+        this.txtCoins.text = `Coins:  ${this.coins}`;
+    }
 }
 
