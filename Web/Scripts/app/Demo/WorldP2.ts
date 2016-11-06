@@ -34,7 +34,8 @@ export class WorldP2 {
         this.world = new p2.World({
             gravity: [0, -1500]
         });
-        
+        this.world.sleepMode = p2.World.BODY_SLEEPING;
+
         this.setupMaterials();
         this.playerPosition = playerPosition;
 

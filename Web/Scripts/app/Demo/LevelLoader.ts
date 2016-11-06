@@ -170,6 +170,8 @@ export class LevelLoader {
                     break;                
                 //  TODO: implement
             }
+
+            shape.sensor = (dispObj as any).collectibleType;
             body.addShape(shape);
         }
         return body;

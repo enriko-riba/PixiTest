@@ -67,7 +67,6 @@ export class Parallax extends PIXI.Container {
 
                 //  if sprite is inside VP add & update last index
                 if (spr.x < this.viewPortSize.x) {
-                    //this.addChild(spr);
                     this.endIDX = index;
                 }
                 totalWidth += t.width;
