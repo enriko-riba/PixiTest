@@ -1,7 +1,5 @@
-﻿
-import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
+﻿import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
 import { KeyboardMapper } from "app/_engine/KeyboardMapper";
-
 import { MovementState } from "./MovementState";
 import { WorldP2 } from "./WorldP2";
 import { JumpControllerP2 } from "./JumpControllerP2";
@@ -66,18 +64,14 @@ export class MovementController {
         const SPACE: number = 32;
 
         //  give the ctrl a chance to do stuff
-        this.jumpCtrl.onUpdate(dt);
+        //this.jumpCtrl.onUpdate(dt);
 
 
         //  no movement while jumping
         if (this.jumpCtrl.isJumping) {
-            console.log("isJumping!");
+            //console.log("isJumping!");
             return;
         } else {
-
-            //  add a small force in movement direction if jumping
-            //this.wp2.player.applyImpulse([v / 50, 0]);
-
             //  calculate the horizontal velocity
             var v = this.MovementVelocity();
             this.world.player.velocity[0] = v;
@@ -107,7 +101,6 @@ export class MovementController {
                 newState = MovementState.JumpUp;
                 newIsRunning = false;
             }
-            //console.log('new state: ' + MovementState[newState]);
         }
 
         //  has state changed
