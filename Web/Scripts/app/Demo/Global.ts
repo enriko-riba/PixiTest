@@ -1,6 +1,5 @@
 ﻿import { SceneManager } from "app/_engine/SceneManager";
 
-
 export var SCENE_WIDTH : number = 1366;
 export var SCENE_HEIGHT: number = 768;
 export var BTN_WIDTH : number = 100;

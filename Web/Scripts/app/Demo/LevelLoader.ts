@@ -1,7 +1,5 @@
 ﻿import * as Global from "./Global";
 import { Parallax } from "app/_engine/Parallax";
-import { PhysicsConnector } from "app/_engine/PhysicsConnector";
-
 import { Bumper } from "./Bumper";
 import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
 
@@ -49,7 +47,7 @@ export class LevelLoader {
 
     private createLevel(level : ILevel, result: any) {
         result.parallax = [];
-        result.physicsConnector = new PhysicsConnector<p2.Body>();
+        result.entities = [];
 
         //--------------------------------------
         //  create parallax objects
@@ -68,7 +66,8 @@ export class LevelLoader {
         level.map.entities.forEach((entity, idx, arr) => {
             var dispObj: PIXI.DisplayObject = this.buildDisplayObject(entity.displayObject);
             var p2body: p2.Body = this.buildPhysicsObject(entity.body, dispObj);
-            result.physicsConnector.addObjects(dispObj, p2body);
+            (p2body as any).DisplayObject = dispObj;
+            result.entities.push(p2body);
         });
 
         return result;
@@ -114,6 +113,9 @@ export class LevelLoader {
         if (definition.scale) {
             dispObj.scale.set(definition.scale[0], definition.scale[1]);
         }
+        if (definition.collectibleType) {
+            (dispObj as any).collectibleType = definition.collectibleType;
+        }
         return dispObj;
     }
 
@@ -138,10 +140,12 @@ export class LevelLoader {
             body = new p2.Body(options);
             body.type = definition.type;
 
+            var doAny = dispObj as any;
             var shape: p2.Shape;
             switch (definition.shape) {
-                case "Circle":                    
-                    shape = new p2.Circle({ radius: definition.size[0] });
+                case "Circle":  
+                    var radius = definition.size ? definition.size[0] : doAny.width;            
+                    shape = new p2.Circle({ radius: radius });
                     break;
                 case "Box":
                     //  get the size
@@ -149,8 +153,7 @@ export class LevelLoader {
                     if (definition.size) {
                         w = definition.size[0]; 
                         h = definition.size[1];
-                    } else {
-                        var doAny = dispObj as any;
+                    } else {                        
                         if (doAny.width) {
                             w = doAny.width;
                             h = doAny.height;
@@ -204,7 +207,7 @@ export interface IDisplayObject {
     xy?: number[];
     scale?: number[];
     rotation?: number;
-
+    collectibleType?: number; 
 
     fps?: number;
     sequences?:ISequence[]

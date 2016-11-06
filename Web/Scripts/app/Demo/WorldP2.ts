@@ -22,6 +22,11 @@ export class WorldP2 {
     private contactPairs: Array<ContactPair> = [];
     private contactWatch: Array<number> = [];
 
+    /**
+     * We hold all player contacts separate (due to heavy usage).
+     */
+    private playerBodyContacts: Array<p2.Body> = [];
+
     private readonly fixedTimeStep = 1 / 60; // seconds
 
 
@@ -47,22 +52,20 @@ export class WorldP2 {
             mass: 40,
             position: [playerPosition.x, playerPosition.y]            
         });
+        shape = new p2.Circle({
+            radius: 26,
+        });
+
         //shape = new p2.Capsule({
         //    length: 20,
         //    radius: 5,
         //});
-        shape = new p2.Circle({
-            radius: 26,
-        });
-        //shape = new p2.Box({
-        //    width: 32,
-        //    height: 64            
-        //});
-        //shape.position = [0, 0];
+        
+        shape.position = [0, 0];
         shape.material = this.materials.get("player");
         this.player.addShape(shape);
         this.world.addBody(this.player);
-
+        
         this.world.solver.iterations = 25;
         //this.world.solver.tolerance = 0.00002;
         this.world.on("beginContact", this.beginContact, this);
@@ -87,6 +90,14 @@ export class WorldP2 {
         this.world.step(this.fixedTimeStep, dt/1000, 20);
         this.playerPosition.x = this.player.interpolatedPosition[0];
         this.playerPosition.y = this.player.interpolatedPosition[1];
+    }
+
+    /**
+     * Removes the body from world.
+     * @param body
+     */
+    public removeBody(body: p2.Body) {
+        this.world.removeBody(body);
     }
 
     /**
@@ -115,7 +126,16 @@ export class WorldP2 {
         this.world.addBody(body);
     }
 
+    /**
+     * Clears all saved contacts (from contactPairs) for the given body.
+     * @param body
+     */
     public clearContactsForBody(body: p2.Body) {
+        if (body === this.player) {
+            this.playerBodyContacts = [];
+            return;
+        }
+
         var foundIdx: number = 0;
         while (foundIdx > -1) {
             foundIdx = -1;
@@ -132,6 +152,7 @@ export class WorldP2 {
             }
         }
     }
+
     /**
      * returns all contact pairs for the given body.
      * Note: the body must be in the contact watch list or an empty array will be returned.
@@ -157,10 +178,24 @@ export class WorldP2 {
         this.contactWatch.push(body.id);
     }
 
+    public get playerContacts() : p2.Body[]{
+        return this.playerBodyContacts;
+    }
+
     private beginContact = (evt: any) => {
 
-        //  fire contact event if body supported
-        console.log("beginContact: ", evt);
+        //  check for player contacts (but only with dynamic bodies)
+        if (this.player === evt.bodyA) {
+            console.log("beginContact: ", evt);
+            this.playerBodyContacts.push(evt.bodyB);
+            return;
+        } else if (this.player === evt.bodyB) {
+            console.log("beginContact: ", evt);
+            this.playerBodyContacts.push(evt.bodyA);
+            return;
+        }
+
+        //  check for watched bodies and store pairs if match
         var watchedItemFound = this.contactWatch.filter((bodyId, idx, arr) => {
             return (bodyId === evt.bodyA.id || bodyId === evt.bodyB.id);
         });
@@ -171,6 +206,20 @@ export class WorldP2 {
     };
 
     private endContact = (evt: any) => {
+        //  check for player contacts 
+        if (this.player === evt.bodyA) {
+            console.log("endContact: ", evt);
+            var bodyIDX = this.playerBodyContacts.indexOf(evt.bodyB);
+            this.playerBodyContacts.splice(bodyIDX, 1);
+            return;
+        } else if (this.player === evt.bodyB) {
+            console.log("endContact: ", evt);
+            var bodyIDX = this.playerBodyContacts.indexOf(evt.bodyB);
+            this.playerBodyContacts.splice(bodyIDX, 1);
+            return;
+        }
+
+
         console.log("endContact: ", evt);
         var foundIdx: number = -1;
         for (var i = 0; i < this.contactPairs.length; i++) {

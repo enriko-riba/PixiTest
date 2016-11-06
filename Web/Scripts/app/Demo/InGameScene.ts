@@ -1,14 +1,12 @@
 ﻿import { Scene } from "app/_engine/Scene";
 import { Parallax } from "app/_engine/Parallax";
 import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
-import { PhysicsConnector } from "app/_engine/PhysicsConnector";
 import { Button } from "app/_engine/Button";
 
 import * as Global from "./Global";
 import { WorldP2 } from "./WorldP2";
 import { MovementController } from "./MovementController";
 import { LevelLoader, ILevelMap, IBody, IEntity , IDisplayObject} from "./LevelLoader";
-
 import { Bumper } from "./Bumper";
 
 /**
@@ -28,8 +26,9 @@ export class InGameScene extends Scene {
     private movementCtrl: MovementController;
     private hud = new Hud();
 
-    private p2Connector: PhysicsConnector<p2.Body>;
     private wp2: WorldP2;
+    private entities = [];
+
 
     /**
      *   Creates a new scene instance.
@@ -78,7 +77,11 @@ export class InGameScene extends Scene {
         this.worldContainer.y = Global.SCENE_HEIGHT - 70;
 
         //  entities position
-        this.p2Connector.updateDisplayObjects();
+        this.entities.forEach((body, idx, arr) => {
+            var displayObject: PIXI.DisplayObject = body.DisplayObject as PIXI.DisplayObject;
+            displayObject.position.set(body.interpolatedPosition[0], body.interpolatedPosition[1]);
+            displayObject.rotation = body.interpolatedAngle;
+        });
 
         //-------------------------------------------
         //  invoke update on each updateable
@@ -89,12 +92,34 @@ export class InGameScene extends Scene {
             }
         });
 
+        //  check for collisions with collectible items
+        var contacts = this.wp2.playerContacts;
+        if (contacts.length > 0) {
+            contacts.forEach((body : any, idx, arr) => {
+                if (body.DisplayObject && body.DisplayObject.collectibleType) {
+                    var dispObj: PIXI.DisplayObject = body.DisplayObject as PIXI.DisplayObject;
+                    var colType = body.DisplayObject.collectibleType;
+                    console.log(dispObj); // collectible 
+                    this.worldContainer.removeChild(dispObj);
+                    var bodyIdx = this.entities.indexOf(body);
+                    this.entities.splice(bodyIdx, 1);
+                    body.DisplayObject = null;
+                    this.wp2.removeBody(body);
+
+                    //  TODO: start collectible pickup animation
+                    //  TODO: update stats/inventory whatever
+                    switch (colType) {
+                        case 1: this.hud.coins += 1;
+                            break;
+                    }
+                }
+            });
+        }
+
         this.hud.heroPosition = this.heroPosition;
         this.hud.onUpdate(dt);
     };
 
-    private p2postStep() {
-    }
     private setup():void {
         this.BackGroundColor = 0x1099bb;
         PIXI.SCALE_MODES.DEFAULT = PIXI.SCALE_MODES.LINEAR;
@@ -118,7 +143,6 @@ export class InGameScene extends Scene {
         //--------------------------------------
         this.heroPosition.set(-250, 36);
         this.wp2 = new WorldP2(this.heroPosition);
-        this.wp2.on("", this.p2postStep);
         this.movementCtrl = new MovementController(this.wp2, this.hero);        
 
         //--------------------------------------
@@ -126,16 +150,14 @@ export class InGameScene extends Scene {
         //--------------------------------------
         var levelLoader = new LevelLoader("assets/levels/levels.json");
         var lvl = levelLoader.BuildLevel("Intro");
-        this.p2Connector = lvl.physicsConnector;
-        this.p2Connector.DisplayObjectUpdater = (displayObject: PIXI.DisplayObject, body: p2.Body) => {
-            displayObject.position.set(body.interpolatedPosition[0], body.interpolatedPosition[1]);
-            displayObject.rotation = body.interpolatedAngle;
-        };
+        this.entities = lvl.entities;
+
         //  add all object pairs to renderer and physics world
-        this.p2Connector.forEach((dispObj, body) => {
-            this.worldContainer.addChild(dispObj);
+        this.entities.forEach((body, idx, arr) => {
+            this.worldContainer.addChild(body.DisplayObject);
             this.wp2.addBody(body);
         });
+
         //  add parallax backgrounds
         this.parallaxBackgrounds = lvl.parallax;
         lvl.parallax.forEach((plx, idx, arr) => {
@@ -150,17 +172,19 @@ export class InGameScene extends Scene {
         var map: ILevelMap = {
             entities:[]
         };
-        this.p2Connector.forEach((displayObject: PIXI.DisplayObject, body: p2.Body) => {
-            var dumpDispObjProps = (dispObj : PIXI.Sprite) => {
-                return {
-                    type:"Sprite",
-                    texture: dispObj.texture.baseTexture.imageUrl,
-                    rotation: dispObj.rotation,
-                    xy: [dispObj.x, dispObj.y],
-                    scale: [dispObj.scale.x, dispObj.scale.y]
-                }
-            }
 
+        var fnDumpDispObjProps = (dispObj: PIXI.Sprite) => {
+            return {
+                type: "Sprite",
+                texture: dispObj.texture.baseTexture.imageUrl,
+                rotation: dispObj.rotation,
+                xy: [dispObj.x, dispObj.y],
+                scale: [dispObj.scale.x, dispObj.scale.y]
+            }
+        }
+
+        this.entities.forEach((body: p2.Body, idx, arr) => {
+            var displayObject: PIXI.DisplayObject = (body as any).DisplayObject as PIXI.DisplayObject;
             var entity: IEntity = {
                 displayObject: null,
                 body: null
@@ -177,7 +201,7 @@ export class InGameScene extends Scene {
             };
 
             //  save display object
-            var dispObj: IDisplayObject = dumpDispObjProps(displayObject as PIXI.Sprite);
+            var dispObj: IDisplayObject = fnDumpDispObjProps(displayObject as PIXI.Sprite);
             if (displayObject instanceof Bumper) {
                 dispObj.type = "Bumper";
             }

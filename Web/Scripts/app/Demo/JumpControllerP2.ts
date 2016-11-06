@@ -3,7 +3,7 @@ import { MovementState } from "./MovementState";
 import { WorldP2, ContactPair } from "./WorldP2";
 
 export class JumpControllerP2 {
-    private readonly JUMP_FORCE = 16000;
+    private readonly JUMP_FORCE = 17000;
     private nextJumpAllowed: number = 0;
     private onJumpEnd: () => void;
 
@@ -13,12 +13,11 @@ export class JumpControllerP2 {
     constructor(world: WorldP2, body: p2.Body, onJumpEndHandler?: () => void) {
         this.world = world;
         this.body = body;
-        this.world.addContactWatch(this.body);
         this.onJumpEnd = onJumpEndHandler;
     }
 
     public get isJumping(): boolean{
-        return Math.abs(this.body.velocity[1]) > 0.001 && this.bodyContacts.length === 0;
+        return Math.abs(this.body.velocity[1]) > 0.001 && this.world.playerContacts.length === 0;
     }
 
     public get canJump():boolean {
@@ -40,8 +39,8 @@ export class JumpControllerP2 {
         this.world.clearContactsForBody(this.body);
     }
 
-    private bodyContacts: Array<ContactPair>= [];
-    public onUpdate = (dt: number) => {
-        this.bodyContacts = this.world.getContactsForBody(this.body);
-    };
+    //private bodyContacts: Array<p2.Body>= [];
+    //public onUpdate = (dt: number) => {
+    //    this.bodyContacts = this.world.playerContacts;//this.world.getContactsForBody(this.body);
+    //};
 }
