@@ -55,15 +55,93 @@
             },
             "body": {
               "shape": "Circle",
-              "type": 4,
-              "mass": 0,
-              "size": [ 20 ]
+              "type": 4
             }
           },
           {
             "displayObject": {
               "type": "AnimatedSprite",
               "xy": [ 130, 170 ],
+              "fps": 20,
+              "collectibleType": 1,
+              "sequences": [
+                {
+                  "name": "spin",
+                  "texture": "assets/images/objects/coins.png",
+                  "frames": [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ],
+                  "framesize": [ 24, 24 ]
+                }
+              ]
+            },
+            "body": {
+              "shape": "Circle",
+              "type": 4
+            }
+          },
+          {
+            "displayObject": {
+              "type": "AnimatedSprite",
+              "xy": [ 1000, 350 ],
+              "fps": 20,
+              "collectibleType": 2,
+              "sequences": [
+                {
+                  "name": "spin",
+                  "texture": "assets/images/objects/coins.png",
+                  "frames": [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ],
+                  "framesize": [ 24, 24 ]
+                }
+              ]
+            },
+            "body": {
+              "shape": "Circle",
+              "type": 4
+            }
+          },
+          {
+            "displayObject": {
+              "type": "AnimatedSprite",
+              "xy": [ 1030, 340 ],
+              "fps": 20,
+              "collectibleType": 2,
+              "sequences": [
+                {
+                  "name": "spin",
+                  "texture": "assets/images/objects/coins.png",
+                  "frames": [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ],
+                  "framesize": [ 24, 24 ]
+                }
+              ]
+            },
+            "body": {
+              "shape": "Circle",
+              "type": 4
+            }
+          },
+          {
+            "displayObject": {
+              "type": "AnimatedSprite",
+              "xy": [ 1060, 330 ],
+              "fps": 20,
+              "collectibleType": 2,
+              "sequences": [
+                {
+                  "name": "spin",
+                  "texture": "assets/images/objects/coins.png",
+                  "frames": [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ],
+                  "framesize": [ 24, 24 ]
+                }
+              ]
+            },
+            "body": {
+              "shape": "Circle",
+              "type": 4
+            }
+          },
+          {
+            "displayObject": {
+              "type": "AnimatedSprite",
+              "xy": [ 160, 170 ],
               "fps": 20,
               "collectibleType": 1,
               "sequences": [

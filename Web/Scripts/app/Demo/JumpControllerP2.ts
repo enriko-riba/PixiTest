@@ -38,9 +38,4 @@ export class JumpControllerP2 {
         this.nextJumpAllowed = performance.now() + 450;
         this.world.clearContactsForBody(this.body);
     }
-
-    //private bodyContacts: Array<p2.Body>= [];
-    //public onUpdate = (dt: number) => {
-    //    this.bodyContacts = this.world.playerContacts;//this.world.getContactsForBody(this.body);
-    //};
 }

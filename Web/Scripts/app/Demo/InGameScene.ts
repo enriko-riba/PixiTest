@@ -111,6 +111,8 @@ export class InGameScene extends Scene {
                     switch (colType) {
                         case 1: this.hud.coins += 1;
                             break;
+                        case 2: this.hud.coins += 10;
+                            break;
                     }
                 }
             });
@@ -160,8 +162,11 @@ export class InGameScene extends Scene {
 
         //  add parallax backgrounds
         this.parallaxBackgrounds = lvl.parallax;
-        lvl.parallax.forEach((plx, idx, arr) => {
+        lvl.parallax.forEach((plx : Parallax, idx, arr) => {
             this.worldContainer.addChildAt(plx, idx);
+            //  TODO: there is a bug not initially calculating all viewport visible parallax textures so just move it in both directions to recalc all textures
+            plx.SetViewPortX(0);
+            plx.SetViewPortX(this.heroPosition.x + 1);
         });
     }
 
