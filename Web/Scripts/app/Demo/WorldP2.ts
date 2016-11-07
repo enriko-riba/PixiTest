@@ -187,11 +187,11 @@ export class WorldP2 {
 
         //  check for player contacts (but only with dynamic bodies)
         if (this.player === evt.bodyA) {
-            console.log("beginContact: ", evt);
+            //console.log("beginContact: ", evt);
             this.playerBodyContacts.push(evt.bodyB);
             return;
         } else if (this.player === evt.bodyB) {
-            console.log("beginContact: ", evt);
+            //console.log("beginContact: ", evt);
             this.playerBodyContacts.push(evt.bodyA);
             return;
         }
@@ -209,19 +209,19 @@ export class WorldP2 {
     private endContact = (evt: any) => {
         //  check for player contacts 
         if (this.player === evt.bodyA) {
-            console.log("endContact: ", evt);
+            //console.log("endContact: ", evt);
             var bodyIDX = this.playerBodyContacts.indexOf(evt.bodyB);
             this.playerBodyContacts.splice(bodyIDX, 1);
             return;
         } else if (this.player === evt.bodyB) {
-            console.log("endContact: ", evt);
+            //console.log("endContact: ", evt);
             var bodyIDX = this.playerBodyContacts.indexOf(evt.bodyB);
             this.playerBodyContacts.splice(bodyIDX, 1);
             return;
         }
 
 
-        console.log("endContact: ", evt);
+        //console.log("endContact: ", evt);
         var foundIdx: number = -1;
         for (var i = 0; i < this.contactPairs.length; i++) {
             var cp = this.contactPairs[i];

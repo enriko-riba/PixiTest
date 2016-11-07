@@ -9,6 +9,9 @@ import { MovementController } from "./MovementController";
 import { LevelLoader, ILevelMap, IBody, IEntity , IDisplayObject} from "./LevelLoader";
 import { Bumper } from "./Bumper";
 
+import * as TWEEN from "tween";
+
+
 /**
  *   Load in game scene.
  */
@@ -53,7 +56,7 @@ export class InGameScene extends Scene {
         this.HudOverlay = this.hud;
         this.setup();
     }
-    
+
     /**
      *  Updates physics and handles user input
      */
@@ -64,9 +67,7 @@ export class InGameScene extends Scene {
         //  hero position
         this.hero.x = this.heroPosition.x;
         this.hero.y = this.heroPosition.y;
-
         
-
         //  update parallax
         for (var i = 0; i < this.parallaxBackgrounds.length; i++) {
             this.parallaxBackgrounds[i].SetViewPortX(this.heroPosition.x);
@@ -78,7 +79,7 @@ export class InGameScene extends Scene {
 
         //  entities position
         this.entities.forEach((body, idx, arr) => {
-            var displayObject: PIXI.DisplayObject = body.DisplayObject as PIXI.DisplayObject;
+            var displayObject: PIXI.DisplayObject = body.DisplayObject as PIXI.DisplayObject;            
             displayObject.position.set(body.interpolatedPosition[0], body.interpolatedPosition[1]);
             displayObject.rotation = body.interpolatedAngle;
         });
@@ -97,19 +98,28 @@ export class InGameScene extends Scene {
         if (contacts.length > 0) {
             contacts.forEach((body : any, idx, arr) => {
                 if (body.DisplayObject && body.DisplayObject.collectibleType) {
-                    var dispObj: PIXI.DisplayObject = body.DisplayObject as PIXI.DisplayObject;
-                    var colType = body.DisplayObject.collectibleType;
-                    console.log(dispObj); // collectible 
-                    this.worldContainer.removeChild(dispObj);
+                    
+                    var dispObj: PIXI.DisplayObject = body.DisplayObject as PIXI.DisplayObject;                   
+                    console.log('collectible collision: ', dispObj);
+
                     var bodyIdx = this.entities.indexOf(body);
                     this.entities.splice(bodyIdx, 1);
-                    body.DisplayObject = null;
                     this.wp2.removeBody(body);
+                    body.DisplayObject = null;
 
                     //  TODO: start collectible pickup animation
                     //  TODO: update stats/inventory whatever
-                    switch (colType) {
+                    switch (dispObj.collectibleType) {
                         case 1: this.hud.coins += 1;
+                                new TWEEN.Tween(dispObj.position)
+                                    .to({ y: 600 }, 200)
+                                    .easing(TWEEN.Easing.Elastic.In)
+                                    .onUpdate((obj: any) => {
+                                        console.log(obj);
+                                    })
+                                .onComplete(() => {
+                                    this.worldContainer.removeChild(dispObj);
+                                }).start();
                             break;
                         case 2: this.hud.coins += 10;
                             break;
@@ -275,7 +285,7 @@ class Hud extends PIXI.Container {
         pnl.addChild(this.txtCoins);
     }  
 
-    public onUpdate(dt: number) {
+    public onUpdate(dt: number) {        
         this.txtLevel.text = `Level:  ${this.heroLevel}`;
         this.txtPosition.text = `Position:  ${this.heroPosition.x.toFixed(0)}, ${this.heroPosition.y.toFixed(0)}`;
         this.txtCoins.text = `Coins:  ${this.coins}`;
