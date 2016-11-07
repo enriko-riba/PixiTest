@@ -5,7 +5,7 @@ import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
 
 export class LevelLoader {
 
-    private levels: Array<ILevel> = [];
+    private levels: Array<ILevelDefinition> = [];
 
     constructor(levelOrName: IRootObject | string) {
         var root: IRootObject;
@@ -17,7 +17,7 @@ export class LevelLoader {
         this.levels = root.levels;
     }
 
-    public get Levels():ILevel[] {
+    public get Levels():ILevelDefinition[] {
         return this.levels;
     }
 
@@ -26,28 +26,30 @@ export class LevelLoader {
      * @param name
      * @param container
      */
-    public BuildLevel(name: string):any {
-        var levelDefinition: ILevel = undefined;
+    public BuildLevel(name: string): any {
+        var levelDefinition: ILevelDefinition = undefined;
         for (var i = 0; i < this.levels.length; i++) {
             if (this.levels[i].name === name) {
                 levelDefinition = this.levels[i];
                 break;
             }
         }
-        var result: any = {};
+        var result: ILevel;
         if (levelDefinition) {
             if (levelDefinition.assets && levelDefinition.assets.length > 0) {
                 //  TODO: preload assets and start level loading
             } else {
-                this.createLevel(levelDefinition, result);
+                result = this.createLevel(levelDefinition);
             }
         }
         return result;
     }
 
-    private createLevel(level : ILevel, result: any) {
-        result.parallax = [];
-        result.entities = [];
+    private createLevel(level: ILevelDefinition): ILevel {
+        var result: ILevel = {
+            parallax : [],
+            entities : []
+        };
 
         //--------------------------------------
         //  create parallax objects
@@ -77,7 +79,7 @@ export class LevelLoader {
      * Creates a display object from the definition.
      * @param definition
      */
-    private buildDisplayObject(definition: IDisplayObject): PIXI.DisplayObject {
+    private buildDisplayObject(definition: IDisplayObjectDefinition): PIXI.DisplayObject {
         var dispObj: PIXI.DisplayObject
         switch (definition.type) {
             case "AnimatedSprite":
@@ -124,7 +126,7 @@ export class LevelLoader {
      * @param definition
      * @param dispObj the display object to retrieve the defaults from.
      */
-    private buildPhysicsObject(definition: IBody, dispObj: PIXI.DisplayObject): p2.Body {
+    private buildPhysicsObject(definition: IBodyDefinition, dispObj: PIXI.DisplayObject): p2.Body {
         var body: p2.Body;
         if (definition) {
             var options: p2.BodyOptions = {
@@ -183,8 +185,12 @@ export class LevelLoader {
     }
 }
 
+export interface ILevel {
+    parallax: Parallax[];
+    entities: p2.Body[];
+}
 
-export interface IParallax {
+export interface IParallaxDefinition {
     index: number;
     name: string;
     parallaxFactor: number;
@@ -192,7 +198,7 @@ export interface IParallax {
     tiles: string[];
 }
 
-export interface IBody {
+export interface IBodyDefinition {
     shape: string,
     type: number;
     xy: number[];
@@ -201,14 +207,14 @@ export interface IBody {
     angle: number;
 }
 
-export interface ISequence {
+export interface IAnimationSequence {
     name: string;
     texture: string;
     frames: number[];
     framesize: number[];
 }
 
-export interface IDisplayObject {
+export interface IDisplayObjectDefinition {
     type: string,
     texture: string;
     xy?: number[];
@@ -217,26 +223,27 @@ export interface IDisplayObject {
     collectibleType?: number; 
 
     fps?: number;
-    sequences?:ISequence[]
+    sequences?:IAnimationSequence[]
 }
 
-export interface IEntity {
-    displayObject: IDisplayObject;
-    body: IBody;
+export interface IMapEntity {
+    displayObject: IDisplayObjectDefinition;
+    body: IBodyDefinition;
 }
 
 export interface ILevelMap {
-    entities: IEntity[];
+    entities: IMapEntity[];
+    NPC: any[];
 }
 
-export interface ILevel {
+export interface ILevelDefinition {
     id: number;
     assets?: string[];
     name: string;
-    parallax: IParallax[];
+    parallax: IParallaxDefinition[];
     map: ILevelMap;
 }
 
 export interface IRootObject {
-    levels: ILevel[];
+    levels: ILevelDefinition[];
 }

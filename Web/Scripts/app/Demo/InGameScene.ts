@@ -6,7 +6,7 @@ import { Button } from "app/_engine/Button";
 import * as Global from "./Global";
 import { WorldP2 } from "./WorldP2";
 import { MovementController } from "./MovementController";
-import { LevelLoader, ILevelMap, IBody, IEntity, IDisplayObject } from "./LevelLoader";
+import { LevelLoader, ILevelMap, IBodyDefinition, IMapEntity, IDisplayObjectDefinition } from "./LevelLoader";
 import { Bumper } from "./Bumper";
 
 import * as TWEEN from "tween";
@@ -61,28 +61,44 @@ export class InGameScene extends Scene {
      *  Updates physics and handles user input
      */
     public onUpdate = (dt: number) => {
+
         this.movementCtrl.update(dt);
         this.wp2.update(dt);
 
-        //  hero position
+        //-------------------------------------------
+        //  update hero & world container position
+        //-------------------------------------------
         this.hero.x = this.heroPosition.x;
         this.hero.y = this.heroPosition.y;
+        this.worldContainer.x = -this.hero.x + this.SCENE_HALF_WIDTH;
+        this.worldContainer.y = Global.SCENE_HEIGHT - 70;
 
+        //-------------------------------------------
         //  update parallax
+        //-------------------------------------------
         for (var i = 0; i < this.parallaxBackgrounds.length; i++) {
             this.parallaxBackgrounds[i].SetViewPortX(this.heroPosition.x);
         }
 
-        //  world container position
-        this.worldContainer.x = -this.hero.x + this.SCENE_HALF_WIDTH;
-        this.worldContainer.y = Global.SCENE_HEIGHT - 70;
-
-        //  entities position
+        //-------------------------------------------
+        //  update entities position
+        //-------------------------------------------
         this.entities.forEach((body, idx, arr) => {
             var displayObject: PIXI.DisplayObject = body.DisplayObject as PIXI.DisplayObject;
             displayObject.position.set(body.interpolatedPosition[0], body.interpolatedPosition[1]);
             displayObject.rotation = body.interpolatedAngle;
         });
+
+        //-------------------------------------------
+        //  collisions with collectible items
+        //-------------------------------------------
+        if (this.wp2.playerContacts.length > 0) {
+            this.wp2.playerContacts.forEach((body: any, idx, arr) => {
+                if (body.DisplayObject && body.DisplayObject.collectibleType) {
+                    this.handleCollectibleCollision(body);                    
+                }
+            });
+        }
 
         //-------------------------------------------
         //  invoke update on each updateable
@@ -93,57 +109,63 @@ export class InGameScene extends Scene {
             }
         });
 
-        //  check for collisions with collectible items
-        var contacts = this.wp2.playerContacts;
-        if (contacts.length > 0) {
-            contacts.forEach((body: any, idx, arr) => {
-                if (body.DisplayObject && body.DisplayObject.collectibleType) {
-
-                    var dispObj: PIXI.DisplayObject = body.DisplayObject as PIXI.DisplayObject;
-                    console.log('collectible collision: ', dispObj);
-
-                    var bodyIdx = this.entities.indexOf(body);
-                    this.entities.splice(bodyIdx, 1);
-                    this.wp2.removeBody(body);
-                    body.DisplayObject = null;
-
-                    //  TODO: start collectible pickup animation
-                    //  TODO: update stats/inventory whatever
-                    switch (dispObj.collectibleType) {
-                        case 1:
-                            this.hud.coins += 1;
-                            this.addCollectibleTween(dispObj);
-                            break;
-                        case 2:
-                            this.hud.coins += 10;
-                            this.addCollectibleTween(dispObj);
-                            break;
-                    }
-                }
-            });
-        }
-
+        //-------------------------------------------
+        //  finally update the hud
+        //-------------------------------------------
         this.hud.heroPosition = this.heroPosition;
         this.hud.onUpdate(dt);
     };
 
+    /**
+     * Handles player collision with collectibles.
+     * @param body
+     */
+    private handleCollectibleCollision(body: any) {
+        var bodyIdx = this.entities.indexOf(body);
+        this.entities.splice(bodyIdx, 1);
+        this.wp2.removeBody(body);
+
+        var dispObj: PIXI.DisplayObject = body.DisplayObject as PIXI.DisplayObject;
+        body.DisplayObject = null;
+
+        //  TODO: start collectible pickup animation
+        //  TODO: update stats/inventory whatever
+        switch (dispObj.collectibleType) {
+            case 1:
+                this.hud.coins += 1;
+                this.addCollectibleTween(dispObj);
+                break;
+            case 2:
+                this.hud.coins += 10;
+                this.addCollectibleTween(dispObj);
+                break;
+        }
+    }
+
+    /**
+     * Starts an animation tween and removes the display object from scene.
+     * @param dispObj
+     */
     private addCollectibleTween(dispObj: PIXI.DisplayObject) {
+        var upX = dispObj.position.x + 125;
+        var upY = dispObj.position.y + 100;
+
         var endX = dispObj.position.x - Global.SCENE_WIDTH / 2;
         var endY = Global.SCENE_HEIGHT;
 
         var moveUp = new TWEEN.Tween(dispObj.position)
-            .to({ y: dispObj.position.y + 200 }, 100);
-
-        var moveAway = new TWEEN.Tween(dispObj.position)
-            .to({ x: endX, y: endY }, 1000)
-            .easing(TWEEN.Easing.Back.InOut)
-            .onComplete(() => this.worldContainer.removeChild(dispObj));
+            .to({ x: upX, y: upY }, 250);
 
         var scale = new TWEEN.Tween(dispObj.scale)
-            .to({ x: 2, y: 2 }, 400)
-            .easing(TWEEN.Easing.Back.InOut);
+            .to({ x: 1.6, y: 1.6 }, 600)
+            .easing(TWEEN.Easing.Linear.None);
 
-        moveUp.chain(scale, moveAway).start();//.onComplete(() => this.worldContainer.removeChild(dispObj));
+        var moveAway = new TWEEN.Tween(dispObj.position)
+            .to({ x: endX, y: endY }, 2000)
+            .easing(TWEEN.Easing.Back.In)
+            .onComplete(() => this.worldContainer.removeChild(dispObj));
+
+        moveUp.chain(scale, moveAway).start();
     }
 
     private setup(): void {
@@ -179,7 +201,7 @@ export class InGameScene extends Scene {
         this.entities = lvl.entities;
 
         //  add all object pairs to renderer and physics world
-        this.entities.forEach((body, idx, arr) => {
+        lvl.entities.forEach((body, idx, arr) => {
             this.worldContainer.addChild(body.DisplayObject);
             this.wp2.addBody(body);
         });
@@ -199,7 +221,8 @@ export class InGameScene extends Scene {
      */
     public saveLevel(): void {
         var map: ILevelMap = {
-            entities: []
+            entities: [],
+            NPC:[]
         };
 
         var fnDumpDispObjProps = (dispObj: PIXI.Sprite) => {
@@ -214,11 +237,11 @@ export class InGameScene extends Scene {
 
         this.entities.forEach((body: p2.Body, idx, arr) => {
             var displayObject: PIXI.DisplayObject = (body as any).DisplayObject as PIXI.DisplayObject;
-            var entity: IEntity = {
+            var entity: IMapEntity = {
                 displayObject: null,
                 body: null
             };
-            var newBody: IBody = {
+            var newBody: IBodyDefinition = {
                 shape: "Box",
                 type: body.type,
                 xy: body.interpolatedPosition,
@@ -230,7 +253,7 @@ export class InGameScene extends Scene {
             };
 
             //  save display object
-            var dispObj: IDisplayObject = fnDumpDispObjProps(displayObject as PIXI.Sprite);
+            var dispObj: IDisplayObjectDefinition = fnDumpDispObjProps(displayObject as PIXI.Sprite);
             if (displayObject instanceof Bumper) {
                 dispObj.type = "Bumper";
             }
