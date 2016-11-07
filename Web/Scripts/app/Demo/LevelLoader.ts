@@ -114,7 +114,7 @@ export class LevelLoader {
             dispObj.scale.set(definition.scale[0], definition.scale[1]);
         }
         if (definition.collectibleType) {
-            (dispObj as any).collectibleType = definition.collectibleType;
+            dispObj.collectibleType = definition.collectibleType;
         }
         return dispObj;
     }
@@ -171,7 +171,7 @@ export class LevelLoader {
                 //  TODO: implement
             }
 
-            shape.sensor = (dispObj as any).collectibleType;
+            shape.sensor = !!dispObj.collectibleType;
             body.addShape(shape);
         }
         return body;

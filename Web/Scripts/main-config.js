@@ -10,11 +10,14 @@ require.config({
         "koMapping": "knockout.mapping-latest",
         "pixi.js": "pixi.min",
         "stats": "stats.min",
+        "tween": "Tween.min",
+        "shifty": "shifty.min",
     },
     shim: {
         "bootstrap": { "deps": ["jquery"] },
         "koMapping": { "deps": ["knockout"] },
-        "p2": { exports: "p2" }
+        "p2": { exports: "p2" },
+        "tween": { exports: "TWEEN" }
     },
 });
 require(["knockout", "app/main", "koMapping", "pixi", "stats", "bootstrap", "knockout-amd-helpers", "text", "koBindings", "postbox"], function (ko, mainModule, koMapping, PIXI, stats) {

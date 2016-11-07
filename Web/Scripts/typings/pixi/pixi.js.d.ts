@@ -255,6 +255,9 @@ declare module PIXI {
 
     }
     export class DisplayObject extends utils.EventEmitter implements interaction.InteractiveTarget {
+        //  HACK: added custom implementation
+        collectibleType?: number;
+        //  EOF custom implementation
 
         // begin extras.cacheAsBitmap
         protected _cacheAsBitmap: boolean;

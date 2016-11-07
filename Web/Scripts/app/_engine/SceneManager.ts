@@ -1,4 +1,5 @@
 ﻿import { Scene } from "./Scene";
+import * as TWEEN from "tween";
 
 export enum State {
     GLOBAL,
@@ -157,6 +158,8 @@ export class SceneManager {
 
     private render = (timestamp) => {
         stats.begin();
+        //  for tween support
+        TWEEN.update(timestamp);
 
         this.animationFrameHandle = requestAnimationFrame(this.render);
 
