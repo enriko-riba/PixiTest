@@ -98,7 +98,26 @@
               "type": 4
             }
           },
-
+          {
+            "displayObject": {
+              "type": "AnimatedSprite",
+              "xy": [ 970, 350 ],
+              "fps": 20,
+              "collectibleType": 2,
+              "sequences": [
+                {
+                  "name": "spin",
+                  "texture": "assets/images/objects/coins.png",
+                  "frames": [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ],
+                  "framesize": [ 24, 24 ]
+                }
+              ]
+            },
+            "body": {
+              "shape": "Circle",
+              "type": 4
+            }
+          },
           {
             "displayObject": {
               "type": "AnimatedSprite",

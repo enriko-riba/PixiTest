@@ -150,7 +150,7 @@
     <Content Include="Scripts\sammy-0.7.5.min.js" />
     <Content Include="Scripts\stats.min.js" />
     <Content Include="Scripts\text.js" />
-    <Content Include="Scripts\Tween.min.js" />
+    <Content Include="Scripts\Tween.js" />
     <Content Include="web.config" />
   </ItemGroup>
   <ItemGroup>

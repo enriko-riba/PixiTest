@@ -171,7 +171,12 @@ export class LevelLoader {
                 //  TODO: implement
             }
 
-            shape.sensor = !!dispObj.collectibleType;
+            if (!!dispObj.collectibleType) {
+                shape.sensor = true;
+                body.type = p2.Body.STATIC;
+                body.collisionResponse = false;
+                console.log("created collectible sensor", shape);
+            }
             body.addShape(shape);
         }
         return body;
