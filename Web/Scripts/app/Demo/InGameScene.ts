@@ -6,7 +6,7 @@ import { Button } from "app/_engine/Button";
 import * as Global from "./Global";
 import { WorldP2 } from "./WorldP2";
 import { MovementController } from "./MovementController";
-import { LevelLoader, ILevelMap, IBody, IEntity , IDisplayObject} from "./LevelLoader";
+import { LevelLoader, ILevelMap, IBody, IEntity, IDisplayObject } from "./LevelLoader";
 import { Bumper } from "./Bumper";
 
 import * as TWEEN from "tween";
@@ -67,7 +67,7 @@ export class InGameScene extends Scene {
         //  hero position
         this.hero.x = this.heroPosition.x;
         this.hero.y = this.heroPosition.y;
-        
+
         //  update parallax
         for (var i = 0; i < this.parallaxBackgrounds.length; i++) {
             this.parallaxBackgrounds[i].SetViewPortX(this.heroPosition.x);
@@ -79,7 +79,7 @@ export class InGameScene extends Scene {
 
         //  entities position
         this.entities.forEach((body, idx, arr) => {
-            var displayObject: PIXI.DisplayObject = body.DisplayObject as PIXI.DisplayObject;            
+            var displayObject: PIXI.DisplayObject = body.DisplayObject as PIXI.DisplayObject;
             displayObject.position.set(body.interpolatedPosition[0], body.interpolatedPosition[1]);
             displayObject.rotation = body.interpolatedAngle;
         });
@@ -96,10 +96,10 @@ export class InGameScene extends Scene {
         //  check for collisions with collectible items
         var contacts = this.wp2.playerContacts;
         if (contacts.length > 0) {
-            contacts.forEach((body : any, idx, arr) => {
+            contacts.forEach((body: any, idx, arr) => {
                 if (body.DisplayObject && body.DisplayObject.collectibleType) {
-                    
-                    var dispObj: PIXI.DisplayObject = body.DisplayObject as PIXI.DisplayObject;                   
+
+                    var dispObj: PIXI.DisplayObject = body.DisplayObject as PIXI.DisplayObject;
                     console.log('collectible collision: ', dispObj);
 
                     var bodyIdx = this.entities.indexOf(body);
@@ -110,18 +110,13 @@ export class InGameScene extends Scene {
                     //  TODO: start collectible pickup animation
                     //  TODO: update stats/inventory whatever
                     switch (dispObj.collectibleType) {
-                        case 1: this.hud.coins += 1;
-                                new TWEEN.Tween(dispObj.position)
-                                    .to({ y: 600 }, 200)
-                                    .easing(TWEEN.Easing.Elastic.In)
-                                    .onUpdate((obj: any) => {
-                                        console.log(obj);
-                                    })
-                                .onComplete(() => {
-                                    this.worldContainer.removeChild(dispObj);
-                                }).start();
+                        case 1:
+                            this.hud.coins += 1;
+                            this.addCollectibleTween(dispObj);
                             break;
-                        case 2: this.hud.coins += 10;
+                        case 2:
+                            this.hud.coins += 10;
+                            this.addCollectibleTween(dispObj);
                             break;
                     }
                 }
@@ -132,7 +127,26 @@ export class InGameScene extends Scene {
         this.hud.onUpdate(dt);
     };
 
-    private setup():void {
+    private addCollectibleTween(dispObj: PIXI.DisplayObject) {
+        var endX = dispObj.position.x - Global.SCENE_WIDTH / 2;
+        var endY = Global.SCENE_HEIGHT;
+
+        var moveUp = new TWEEN.Tween(dispObj.position)
+            .to({ y: dispObj.position.y + 200 }, 100);
+
+        var moveAway = new TWEEN.Tween(dispObj.position)
+            .to({ x: endX, y: endY }, 1000)
+            .easing(TWEEN.Easing.Back.InOut)
+            .onComplete(() => this.worldContainer.removeChild(dispObj));
+
+        var scale = new TWEEN.Tween(dispObj.scale)
+            .to({ x: 2, y: 2 }, 400)
+            .easing(TWEEN.Easing.Back.InOut);
+
+        moveUp.chain(scale, moveAway).start();//.onComplete(() => this.worldContainer.removeChild(dispObj));
+    }
+
+    private setup(): void {
         this.BackGroundColor = 0x1099bb;
         PIXI.SCALE_MODES.DEFAULT = PIXI.SCALE_MODES.LINEAR;
 
@@ -146,7 +160,7 @@ export class InGameScene extends Scene {
         this.hero.addAnimations(new AnimationSequence("jumpright", "assets/images/hero_64.png", [54, 55, 56, 57, 58, 59], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
         this.hero.addAnimations(new AnimationSequence("jumpup", "assets/images/hero_64.png", [1, 3, 4], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
         this.hero.addAnimations(new AnimationSequence("idle", "assets/images/hero_64.png", [25, 24, 40, 19, 19, 18, 19, 22, 30, 31, 1, 1, 1], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
-        this.hero.Anchor = new PIXI.Point(0.5, 0.5);
+        this.hero.Anchor = new PIXI.Point(0.5, 0.45);
         this.worldContainer.addChild(this.hero);
         this.hero.PlayAnimation("idle");
 
@@ -155,7 +169,7 @@ export class InGameScene extends Scene {
         //--------------------------------------
         this.heroPosition.set(-250, 36);
         this.wp2 = new WorldP2(this.heroPosition);
-        this.movementCtrl = new MovementController(this.wp2, this.hero);        
+        this.movementCtrl = new MovementController(this.wp2, this.hero);
 
         //--------------------------------------
         //  load level from json (under construction)
@@ -172,7 +186,7 @@ export class InGameScene extends Scene {
 
         //  add parallax backgrounds
         this.parallaxBackgrounds = lvl.parallax;
-        lvl.parallax.forEach((plx : Parallax, idx, arr) => {
+        lvl.parallax.forEach((plx: Parallax, idx, arr) => {
             this.worldContainer.addChildAt(plx, idx);
             //  TODO: there is a bug not initially calculating all viewport visible parallax textures so just move it in both directions to recalc all textures
             plx.SetViewPortX(0);
@@ -183,9 +197,9 @@ export class InGameScene extends Scene {
     /**
      * Saves the current level and dumps to console.
      */
-    public saveLevel():void {
+    public saveLevel(): void {
         var map: ILevelMap = {
-            entities:[]
+            entities: []
         };
 
         var fnDumpDispObjProps = (dispObj: PIXI.Sprite) => {
@@ -205,7 +219,7 @@ export class InGameScene extends Scene {
                 body: null
             };
             var newBody: IBody = {
-                shape:"Box",
+                shape: "Box",
                 type: body.type,
                 xy: body.interpolatedPosition,
                 mass: body.mass,
@@ -283,9 +297,9 @@ class Hud extends PIXI.Container {
         this.txtCoins.resolution = window.devicePixelRatio;
         this.txtCoins.position.set(20, 50);
         pnl.addChild(this.txtCoins);
-    }  
+    }
 
-    public onUpdate(dt: number) {        
+    public onUpdate(dt: number) {
         this.txtLevel.text = `Level:  ${this.heroLevel}`;
         this.txtPosition.text = `Position:  ${this.heroPosition.x.toFixed(0)}, ${this.heroPosition.y.toFixed(0)}`;
         this.txtCoins.text = `Coins:  ${this.coins}`;

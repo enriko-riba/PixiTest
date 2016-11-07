@@ -10,8 +10,7 @@ require.config({
         "koMapping": "knockout.mapping-latest",
         "pixi.js": "pixi.min",
         "stats": "stats.min",
-        "tween": "Tween.min",
-        "shifty": "shifty.min",
+        "tween": "Tween",
     },
     shim: {
         "bootstrap": { "deps": ["jquery"] },
