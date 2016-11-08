@@ -221,6 +221,7 @@ export class InGameScene extends Scene {
      */
     public saveLevel(): void {
         var map: ILevelMap = {
+            templates:[],
             entities: [],
             NPC:[]
         };
@@ -236,6 +237,7 @@ export class InGameScene extends Scene {
         }
 
         this.entities.forEach((body: p2.Body, idx, arr) => {
+            /*
             var displayObject: PIXI.DisplayObject = (body as any).DisplayObject as PIXI.DisplayObject;
             var entity: IMapEntity = {
                 displayObject: null,
@@ -262,6 +264,7 @@ export class InGameScene extends Scene {
             entity.body = newBody;
             entity.displayObject = dispObj;
             map.entities.push(entity);
+            */
         });
         console.log(JSON.stringify(map.entities));
     }

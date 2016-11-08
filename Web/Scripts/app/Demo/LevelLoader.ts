@@ -61,15 +61,23 @@ export class LevelLoader {
             parallax.y = iplx.y;
             result.parallax.push(parallax);            
         });
-
+       
         //--------------------------------------
         //  create display/physics object pairs
         //--------------------------------------
-        level.map.entities.forEach((entity, idx, arr) => {
-            var dispObj: PIXI.DisplayObject = this.buildDisplayObject(entity.displayObject);
-            var p2body: p2.Body = this.buildPhysicsObject(entity.body, dispObj);
-            (p2body as any).DisplayObject = dispObj;
-            result.entities.push(p2body);
+        level.map.entities.forEach((entity: IMapEntity, idx, arr) => {
+            var entityTemplate = level.map.templates.filter((item, idx, arr) => item.name === entity.template);
+            if (entityTemplate && entityTemplate.length > 0) {
+                var template = entityTemplate[0];
+                var displayObjectDefinition = $.extend(template.displayObject, entity);
+                var bodyDefinition = $.extend(template.body, entity);
+                var dispObj: PIXI.DisplayObject = this.buildDisplayObject(displayObjectDefinition);
+                var p2body: p2.Body = this.buildPhysicsObject(bodyDefinition, dispObj);
+                (p2body as any).DisplayObject = dispObj;
+                result.entities.push(p2body);
+            } else {
+                throw `Entity template: '${entity.template}' not found!`;
+            }
         });
 
         return result;
@@ -225,13 +233,22 @@ export interface IDisplayObjectDefinition {
     fps?: number;
     sequences?:IAnimationSequence[]
 }
-
-export interface IMapEntity {
+export interface ITemplate {
+    name: string;
     displayObject: IDisplayObjectDefinition;
     body: IBodyDefinition;
 }
 
+export interface IMapEntity {
+    template: string;
+    xy?: number[];
+    scale?: number[];
+    rotation?: number;
+    collectibleType?: number; 
+}
+
 export interface ILevelMap {
+    templates: ITemplate[];
     entities: IMapEntity[];
     NPC: any[];
 }
