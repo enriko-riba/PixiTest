@@ -185,6 +185,7 @@ export class LevelLoader {
                 shape.sensor = true;
                 body.type = p2.Body.STATIC;
                 body.collisionResponse = false;
+                body.setDensity(0); //   this is to prevent sensor impacts on player collide
                 console.log("created collectible sensor", shape);
             }
             body.addShape(shape);

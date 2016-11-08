@@ -147,17 +147,17 @@ export class InGameScene extends Scene {
      * @param dispObj
      */
     private addCollectibleTween(dispObj: PIXI.DisplayObject) {
-        var upX = dispObj.position.x + 125;
-        var upY = dispObj.position.y + 100;
+        var upX = dispObj.position.x + 45;
+        var upY = dispObj.position.y + 160;
 
         var endX = dispObj.position.x - Global.SCENE_WIDTH / 2;
         var endY = Global.SCENE_HEIGHT;
 
         var moveUp = new TWEEN.Tween(dispObj.position)
-            .to({ x: upX, y: upY }, 250);
+            .to({ x: upX, y: upY }, 150);
 
         var scale = new TWEEN.Tween(dispObj.scale)
-            .to({ x: 1.6, y: 1.6 }, 600)
+            .to({ x: 1.6, y: 1.6 }, 500)
             .easing(TWEEN.Easing.Linear.None);
 
         var moveAway = new TWEEN.Tween(dispObj.position)

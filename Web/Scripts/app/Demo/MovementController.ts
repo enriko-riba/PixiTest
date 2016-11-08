@@ -2,13 +2,14 @@
 import { KeyboardMapper } from "app/_engine/KeyboardMapper";
 import { MovementState } from "./MovementState";
 import { WorldP2 } from "./WorldP2";
-import { JumpControllerP2 } from "./JumpControllerP2";
 
 
 export class MovementController {
 
     private readonly ANIMATION_FPS = 10;
     private readonly VELOCITY = 150;
+    private readonly JUMP_FORCE = 17000;
+    private nextJumpAllowed: number = 0;
 
     private world: WorldP2;
     private hero: AnimatedSprite;
@@ -17,19 +18,17 @@ export class MovementController {
 
     private isRunning = false;
 
-    /**
-     * holds current jump information.
-    */
-    private jumpCtrl: JumpControllerP2;
-
     constructor(world: WorldP2, hero: AnimatedSprite) {
         this.world = world;
-        this.jumpCtrl = new JumpControllerP2(world, world.player);
         this.hero = hero;
     }
 
     public get IsJumping() {
-        return this.jumpCtrl.isJumping;
+        return Math.abs(this.world.player.velocity[1]) > 0.001 && this.world.playerContacts.length === 0;
+    }
+
+    public get CanJump(): boolean {
+        return !this.IsJumping && this.nextJumpAllowed < performance.now();
     }
 
     public get IsRunning() {
@@ -51,6 +50,22 @@ export class MovementController {
         var velocity = direction * this.VELOCITY * (this.IsRunning ? 2 : 1.0);
         return velocity;
     }
+    
+
+    public StartJump(direction: MovementState.JumpLeft | MovementState.JumpRight | MovementState.JumpUp): void {
+        var forceVector: Array<number>;
+
+        if (direction === MovementState.JumpUp) {
+            forceVector = [0, this.JUMP_FORCE];
+        } else if (direction === MovementState.JumpLeft) {
+            forceVector = [-this.JUMP_FORCE * 0.15, this.JUMP_FORCE];
+        } else if (direction === MovementState.JumpRight) {
+            forceVector = [this.JUMP_FORCE * 0.15, this.JUMP_FORCE];
+        }
+        this.world.player.applyImpulse(forceVector);
+        this.nextJumpAllowed = performance.now() + 450;
+        this.world.clearContactsForBody(this.world.player);
+    }
 
     public update(dt: number) {
 
@@ -63,18 +78,20 @@ export class MovementController {
         const KEY_UP: number = 38;
         const SPACE: number = 32;
 
-        //  give the ctrl a chance to do stuff
-        //this.jumpCtrl.onUpdate(dt);
-
 
         //  no movement while jumping
-        if (this.jumpCtrl.isJumping) {
+        if (this.IsJumping) {
             //console.log("isJumping!");
             return;
         } else {
             //  calculate the horizontal velocity
             var v = this.MovementVelocity();
             this.world.player.velocity[0] = v;
+
+            //  if we where jumping check if jump has ended
+            if (this.movementState > MovementState.Idle) {
+                console.log("jup end!");
+            }
         }
 
         var newState: MovementState = MovementState.Idle;
@@ -88,7 +105,7 @@ export class MovementController {
         }
 
         //  check if jump is pressed
-        if ((this.kbd.IsKeyDown(KEY_W) || this.kbd.IsKeyDown(KEY_UP) || this.kbd.IsKeyDown(SPACE)) && this.jumpCtrl.canJump) {
+        if ((this.kbd.IsKeyDown(KEY_W) || this.kbd.IsKeyDown(KEY_UP) || this.kbd.IsKeyDown(SPACE)) && this.CanJump) {
             if (this.movementState === MovementState.Left) {
                 newState = MovementState.JumpLeft;
                 newIsRunning = false;
@@ -120,17 +137,17 @@ export class MovementController {
                 case MovementState.JumpLeft:
                     newIsJumping = true;
                     this.hero.PlayAnimation("jumpleft");
-                    this.jumpCtrl.startJump(MovementState.JumpLeft);
+                    this.StartJump(MovementState.JumpLeft);
                     break;
                 case MovementState.JumpRight:
                     newIsJumping = true;
                     this.hero.PlayAnimation("jumpright");
-                    this.jumpCtrl.startJump(MovementState.JumpRight);
+                    this.StartJump(MovementState.JumpRight);
                     break;
                 case MovementState.JumpUp:
                     newIsJumping = true;
                     this.hero.PlayAnimation("jumpup");
-                    this.jumpCtrl.startJump(MovementState.JumpUp);
+                    this.StartJump(MovementState.JumpUp);
                     break;
             }
         }

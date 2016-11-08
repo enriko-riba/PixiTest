@@ -171,27 +171,31 @@ export class WorldP2 {
 
     /**
      * Adds the body to the contact watch list.
-     * Only bodies in this list will be elected for contact pair updates - if in this list their contact pairs
-     * can be retrieved via the getContactsForBody() function.
+     * Only bodies in this list can be retrieved via the getContactsForBody() function.
      * @param body
      */
     public addContactWatch(body: p2.Body): void {
         this.contactWatch.push(body.id);
     }
 
+    /**
+     * Returns all bodies the player has contact with.
+     */
     public get playerContacts() : p2.Body[]{
         return this.playerBodyContacts;
     }
 
     private beginContact = (evt: any) => {
-
+    
         //  check for player contacts (but only with dynamic bodies)
         if (this.player === evt.bodyA) {
-            //console.log("beginContact: ", evt);
+            //console.log("beginContact: ", evt.bodyB, this.player);
+            console.log("contact velocity: " + this.player.velocity[0] + ", " + this.player.velocity[1]);
             this.playerBodyContacts.push(evt.bodyB);
             return;
         } else if (this.player === evt.bodyB) {
-            //console.log("beginContact: ", evt);
+            //console.log("beginContact: ", evt.bodyA, this.player);
+            console.log("contact velocity: " + this.player.velocity[0] + ", " + this.player.velocity[1]);
             this.playerBodyContacts.push(evt.bodyA);
             return;
         }
@@ -210,11 +214,13 @@ export class WorldP2 {
         //  check for player contacts 
         if (this.player === evt.bodyA) {
             //console.log("endContact: ", evt);
+            //console.log("endcontact velocity: " + this.player.velocity[0] + ", " + this.player.velocity[1]);
             var bodyIDX = this.playerBodyContacts.indexOf(evt.bodyB);
             this.playerBodyContacts.splice(bodyIDX, 1);
             return;
         } else if (this.player === evt.bodyB) {
             //console.log("endContact: ", evt);
+            //console.log("endcontact velocity: " + this.player.velocity[0] + ", " + this.player.velocity[1]);
             var bodyIDX = this.playerBodyContacts.indexOf(evt.bodyB);
             this.playerBodyContacts.splice(bodyIDX, 1);
             return;
