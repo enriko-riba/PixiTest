@@ -191,6 +191,7 @@ export class InGameScene extends Scene {
         //--------------------------------------
         this.heroPosition.set(-250, 36);
         this.wp2 = new WorldP2(this.heroPosition);
+        this.wp2.on("playerContact", this.onPlayerContact, this);
         this.movementCtrl = new MovementController(this.wp2, this.hero);
 
         //--------------------------------------
@@ -214,6 +215,22 @@ export class InGameScene extends Scene {
             plx.SetViewPortX(0);
             plx.SetViewPortX(this.heroPosition.x + 1);
         });
+    }
+
+    private onPlayerContact(event: any) {
+        if (Math.abs(event.velocity[1]) > 425) {
+            var smoke = new AnimatedSprite();
+            smoke.addAnimations(new AnimationSequence("smoke", "assets/images/effects/jump_smoke.png", [0,1,2,3,4,5], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
+            smoke.Anchor = new PIXI.Point(0.5, 0.5);
+            smoke.x = this.heroPosition.x;
+            smoke.y = this.heroPosition.y - this.HERO_FRAME_SIZE/2;
+            smoke.Loop = false;
+            smoke.OnComplete = () => this.worldContainer.removeChild(smoke);
+            smoke.alpha = 0.7;
+            smoke.rotation = Math.random() * Math.PI;
+            this.worldContainer.addChild(smoke);
+            smoke.PlayAnimation("smoke", 5);
+        }
     }
 
     /**
