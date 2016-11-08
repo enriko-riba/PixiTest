@@ -37,670 +37,264 @@
         }
       ],
       "map": {
+        "templates": [
+          {
+            "name": "coin",
+            "displayObject": {
+              "type": "AnimatedSprite",
+              "fps": 24,
+              "sequences": [
+                {
+                  "name": "spin",
+                  "texture": "assets/images/objects/coins.png",
+                  "frames": [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ],
+                  "framesize": [ 24, 24 ]
+                }
+              ]
+            },
+            "body": {
+              "shape": "Circle"
+            }
+          },
+          {
+            "name": "bumper",
+            "displayObject": {
+              "type": "Bumper",
+              "texture": "assets/images/objects/bumper_01.png",
+              "rotation": 0.785398163397
+            },
+            "body": {
+              "shape": "Box",
+              "type": 4
+            }
+          },
+          {
+            "name": "box64a",
+            "displayObject": {
+              "type": "Sprite",
+              "texture": "assets/images/objects/box_64_01.png"
+            },
+            "body": {
+              "shape": "Box",
+              "type": 1,
+              "mass": 80
+            }
+          },
+          {
+            "name": "box64b",
+            "displayObject": {
+              "type": "Sprite",
+              "texture": "assets/images/objects/box_64_02.png"
+            },
+            "body": {
+              "shape": "Box",
+              "type": 1,
+              "mass": 100
+            }
+          },
+          {
+            "name": "box128",
+            "displayObject": {
+              "type": "Sprite",
+              "texture": "assets/images/objects/box_128_01.png"
+            },
+            "body": {
+              "shape": "Box",
+              "type": 4
+            }
+          }
+
+        ],
+
         "entities": [
           {
-            "displayObject": {
-              "type": "AnimatedSprite",
-              "xy": [ 100, 170 ],
-              "fps": 20,
-              "collectibleType": 1,
-              "sequences": [
-                {
-                  "name": "spin",
-                  "texture": "assets/images/objects/coins.png",
-                  "frames": [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ],
-                  "framesize": [ 24, 24 ]
-                }
-              ]
-            },
-            "body": {
-              "shape": "Circle",
-              "type": 4
-            }
+            "template": "bumper",
+            "xy": [ 388, 160 ]
           },
           {
-            "displayObject": {
-              "type": "AnimatedSprite",
-              "xy": [ 130, 170 ],
-              "fps": 20,
-              "collectibleType": 1,
-              "sequences": [
-                {
-                  "name": "spin",
-                  "texture": "assets/images/objects/coins.png",
-                  "frames": [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ],
-                  "framesize": [ 24, 24 ]
-                }
-              ]
-            },
-            "body": {
-              "shape": "Circle",
-              "type": 4
-            }
+            "template": "bumper",
+            "xy": [ 900, 160 ]
           },
           {
-            "displayObject": {
-              "type": "AnimatedSprite",
-              "xy": [ 160, 170 ],
-              "fps": 20,
-              "collectibleType": 1,
-              "sequences": [
-                {
-                  "name": "spin",
-                  "texture": "assets/images/objects/coins.png",
-                  "frames": [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ],
-                  "framesize": [ 24, 24 ]
-                }
-              ]
-            },
-            "body": {
-              "shape": "Circle",
-              "type": 4
-            }
+            "template": "bumper",
+            "xy": [ 1412, 160 ]
           },
           {
-            "displayObject": {
-              "type": "AnimatedSprite",
-              "xy": [ 970, 350 ],
-              "fps": 20,
-              "collectibleType": 2,
-              "sequences": [
-                {
-                  "name": "spin",
-                  "texture": "assets/images/objects/coins.png",
-                  "frames": [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ],
-                  "framesize": [ 24, 24 ]
-                }
-              ]
-            },
-            "body": {
-              "shape": "Circle",
-              "type": 4
-            }
+            "template": "coin",
+            "collectibleType": 1,
+            "xy": [ 100, 170 ]
           },
           {
-            "displayObject": {
-              "type": "AnimatedSprite",
-              "xy": [ 1000, 350 ],
-              "fps": 20,
-              "collectibleType": 2,
-              "sequences": [
-                {
-                  "name": "spin",
-                  "texture": "assets/images/objects/coins.png",
-                  "frames": [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ],
-                  "framesize": [ 24, 24 ]
-                }
-              ]
-            },
-            "body": {
-              "shape": "Circle",
-              "type": 4
-            }
+            "template": "coin",
+            "collectibleType": 1,
+            "xy": [ 130, 170 ]
           },
           {
-            "displayObject": {
-              "type": "AnimatedSprite",
-              "xy": [ 1030, 340 ],
-              "fps": 20,
-              "collectibleType": 2,
-              "sequences": [
-                {
-                  "name": "spin",
-                  "texture": "assets/images/objects/coins.png",
-                  "frames": [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ],
-                  "framesize": [ 24, 24 ]
-                }
-              ]
-            },
-            "body": {
-              "shape": "Circle",
-              "type": 4
-            }
+            "template": "coin",
+            "collectibleType": 1,
+            "xy": [ 160, 170 ]
+          },
+
+          {
+            "template": "coin",
+            "collectibleType": 2,
+            "xy": [ 940, 340 ]
           },
           {
-            "displayObject": {
-              "type": "AnimatedSprite",
-              "xy": [ 1060, 330 ],
-              "fps": 20,
-              "collectibleType": 2,
-              "sequences": [
-                {
-                  "name": "spin",
-                  "texture": "assets/images/objects/coins.png",
-                  "frames": [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ],
-                  "framesize": [ 24, 24 ]
-                }
-              ]
-            },
-            "body": {
-              "shape": "Circle",
-              "type": 4
-            }
+            "template": "coin",
+            "collectibleType": 2,
+            "xy": [ 970, 350 ]
           },
           {
-            "displayObject": {
-              "type": "Sprite",
-              "texture": "assets/images/objects/box_64_01.png",
-              "rotation": 1.389904312848712e-8,
-              "xy": [ -132.7094268798828, 31.93499755859375 ],
-              "scale": [ 2, 1 ]
-            },
-            "body": {
-              "shape": "Box",
-              "size": [ 128, 64 ],
-              "type": 1,
-              "xy": {
-                "0": -132.7094268798828,
-                "1": 31.93499755859375
-              },
-              "mass": 80,
-              "angle": 1.389904312848712e-8
-            }
+            "template": "coin",
+            "collectibleType": 2,
+            "xy": [ 1000, 350 ]
           },
           {
-            "displayObject": {
-              "type": "Sprite",
-              "texture": "assets/images/objects/box_128_01.png",
-              "rotation": 0,
-              "xy": [ 100, 64 ]
-            },
-            "body": {
-              "shape": "Box",
-              "type": 4,
-              "xy": {
-                "0": 100,
-                "1": 64
-              },
-              "mass": 1.7976931348623157e+308,
-              "angle": 0
-            }
+            "template": "coin",
+            "collectibleType": 2,
+            "xy": [ 1030, 340 ]
           },
           {
-            "displayObject": {
-              "type": "Bumper",
-              "texture": "assets/images/objects/bumper_01.png",
-              "rotation": 0.785398163397,
-              "xy": [ 388, 160 ]
-            },
-            "body": {
-              "shape": "Box",
-              "type": 4,
-              "xy": {
-                "0": 388,
-                "1": 160
-              },
-              "mass": 1.7976931348623157e+308,
-              "angle": 0.785398163397
-            }
+            "template": "coin",
+            "collectibleType": 2,
+            "xy": [ 1060, 330 ]
+          },
+
+          {
+            "template": "coin",
+            "collectibleType": 2,
+            "xy": [ 1452, 340 ]
           },
           {
-            "displayObject": {
-              "type": "Sprite",
-              "texture": "assets/images/objects/box_128_01.png",
-              "rotation": 0,
-              "xy": [ 644, 64 ]
-            },
-            "body": {
-              "shape": "Box",
-              "type": 4,
-              "xy": {
-                "0": 644,
-                "1": 64
-              },
-              "mass": 1.7976931348623157e+308,
-              "angle": 0
-            }
+            "template": "coin",
+            "collectibleType": 2,
+            "xy": [ 1482, 350 ]
           },
           {
-            "displayObject": {
-              "type": "Bumper",
-              "texture": "assets/images/objects/bumper_01.png",
-              "rotation": 2.356194490192345,
-              "xy": [ 900, 160 ]
-            },
-            "body": {
-              "shape": "Box",
-              "type": 4,
-              "xy": {
-                "0": 900,
-                "1": 160
-              },
-              "mass": 1.7976931348623157e+308,
-              "angle": 2.356194490192345
-            }
+            "template": "coin",
+            "collectibleType": 2,
+            "xy": [ 1512, 350 ]
           },
           {
-            "displayObject": {
-              "type": "Sprite",
-              "texture": "assets/images/objects/box_128_01.png",
-              "rotation": 0,
-              "xy": [ 1156, 64 ]
-            },
-            "body": {
-              "shape": "Box",
-              "type": 4,
-              "xy": {
-                "0": 1156,
-                "1": 64
-              },
-              "mass": 1.7976931348623157e+308,
-              "angle": 0
-            }
+            "template": "coin",
+            "collectibleType": 2,
+            "xy": [ 1542, 340 ]
           },
           {
-            "displayObject": {
-              "type": "Bumper",
-              "texture": "assets/images/objects/bumper_01.png",
-              "rotation": 3.9269908169867933,
-              "xy": [ 1412, 160 ]
-            },
-            "body": {
-              "shape": "Box",
-              "type": 4,
-              "xy": {
-                "0": 1412,
-                "1": 160
-              },
-              "mass": 1.7976931348623157e+308,
-              "angle": 3.9269908169867933
-            }
+            "template": "coin",
+            "collectibleType": 2,
+            "xy": [ 1572, 330 ]
+          },
+
+
+
+          {
+            "template": "box64a",
+            "xy": [ -132, 32 ],
+            "scale": [ 2, 1 ]
+          },
+
+          {
+            "template": "box128",
+            "xy": [ 100, 64 ]
           },
           {
-            "displayObject": {
-              "type": "Sprite",
-              "texture": "assets/images/objects/box_128_01.png",
-              "rotation": 0,
-              "xy": [ 1668, 64 ]
-            },
-            "body": {
-              "shape": "Box",
-              "type": 4,
-              "xy": {
-                "0": 1668,
-                "1": 64
-              },
-              "mass": 1.7976931348623157e+308,
-              "angle": 0
-            }
+            "template": "box128",
+            "xy": [ 644, 64 ]
           },
           {
-            "displayObject": {
-              "type": "Sprite",
-              "texture": "assets/images/objects/box_128_01.png",
-              "rotation": 0,
-              "xy": [ 100, 64 ]
-            },
-            "body": {
-              "shape": "Box",
-              "type": 4,
-              "xy": {
-                "0": 100,
-                "1": 64
-              },
-              "mass": 1.7976931348623157e+308,
-              "angle": 0
-            }
+            "template": "box128",
+            "xy": [ 1156, 64 ]
           },
           {
-            "displayObject": {
-              "type": "Sprite",
-              "texture": "assets/images/objects/box_64_02.png",
-              "rotation": 6.14538669709663e-8,
-              "xy": [ 3.994762897491455, 31.919998168945312 ]
-            },
-            "body": {
-              "shape": "Box",
-              "type": 1,
-              "xy": {
-                "0": 3.994762897491455,
-                "1": 31.919998168945312
-              },
-              "mass": 100,
-              "angle": 6.14538669709663e-8
-            }
+            "template": "box128",
+            "xy": [ 1668, 64 ]
           },
           {
-            "displayObject": {
-              "type": "Sprite",
-              "texture": "assets/images/objects/box_64_02.png",
-              "rotation": 6.13954439931594e-8,
-              "xy": [ 200.6297912597656, 31.919998168945312 ]
-            },
-            "body": {
-              "shape": "Box",
-              "type": 1,
-              "xy": {
-                "0": 200.6297912597656,
-                "1": 31.919998168945312
-              },
-              "mass": 100,
-              "angle": 6.13954439931594e-8
-            }
+            "template": "box128",
+            "xy": [ 1668, 64 ]
+          },
+
+          {
+            "template": "box64b",
+            "xy": [ 4, 32 ]
           },
           {
-            "displayObject": {
-              "type": "Sprite",
-              "texture": "assets/images/objects/box_64_02.png",
-              "rotation": 5.998732542977048e-8,
-              "xy": [ 522.4747924804688, 31.920001983642578 ]
-            },
-            "body": {
-              "shape": "Box",
-              "type": 1,
-              "xy": {
-                "0": 522.4747924804688,
-                "1": 31.920001983642578
-              },
-              "mass": 100,
-              "angle": 5.998732542977048e-8
-            }
+            "template": "box64b",
+            "xy": [ 200, 32 ]
           },
           {
-            "displayObject": {
-              "type": "Sprite",
-              "texture": "assets/images/objects/box_64_02.png",
-              "rotation": 6.523026130625684e-8,
-              "xy": [ 741.0306396484375, 31.920001983642578 ]
-            },
-            "body": {
-              "shape": "Box",
-              "type": 1,
-              "xy": {
-                "0": 741.0306396484375,
-                "1": 31.920001983642578
-              },
-              "mass": 100,
-              "angle": 6.523026130625684e-8
-            }
+            "template": "box64b",
+            "xy": [ 522, 32 ]
           },
           {
-            "displayObject": {
-              "type": "Sprite",
-              "texture": "assets/images/objects/box_64_02.png",
-              "rotation": 5.9165229368025556e-8,
-              "xy": [ 1017.9024658203125, 31.920001983642578 ]
-            },
-            "body": {
-              "shape": "Box",
-              "type": 1,
-              "xy": {
-                "0": 1017.9024658203125,
-                "1": 31.920001983642578
-              },
-              "mass": 100,
-              "angle": 5.9165229368025556e-8
-            }
+            "template": "box64b",
+            "xy": [ 742, 32 ]
           },
           {
-            "displayObject": {
-              "type": "Sprite",
-              "texture": "assets/images/objects/box_64_02.png",
-              "rotation": 5.726012427653574e-8,
-              "xy": [ 1280, 31.920001983642578 ]
-            },
-            "body": {
-              "shape": "Box",
-              "type": 1,
-              "xy": {
-                "0": 1280,
-                "1": 31.920001983642578
-              },
-              "mass": 100,
-              "angle": 5.726012427653574e-8
-            }
+            "template": "box64b",
+            "xy": [ 1018, 32 ]
           },
           {
-            "displayObject": {
-              "type": "Sprite",
-              "texture": "assets/images/objects/box_64_02.png",
-              "rotation": 5.726012427653574e-8,
-              "xy": [ 1536, 31.920001983642578 ]
-            },
-            "body": {
-              "shape": "Box",
-              "type": 1,
-              "xy": {
-                "0": 1536,
-                "1": 31.920001983642578
-              },
-              "mass": 100,
-              "angle": 5.726012427653574e-8
-            }
+            "template": "box64b",
+            "xy": [ 1280, 32 ]
           },
           {
-            "displayObject": {
-              "type": "Sprite",
-              "texture": "assets/images/objects/box_64_02.png",
-              "rotation": 5.726012427653574e-8,
-              "xy": [ 1792, 31.920001983642578 ]
-            },
-            "body": {
-              "shape": "Box",
-              "type": 1,
-              "xy": {
-                "0": 1792,
-                "1": 31.920001983642578
-              },
-              "mass": 100,
-              "angle": 5.726012427653574e-8
-            }
+            "template": "box64b",
+            "xy": [ 1536, 32 ]
           },
           {
-            "displayObject": {
-              "type": "Sprite",
-              "texture": "assets/images/objects/box_64_02.png",
-              "rotation": 5.726012427653574e-8,
-              "xy": [ 2048, 31.920001983642578 ]
-            },
-            "body": {
-              "shape": "Box",
-              "type": 1,
-              "xy": {
-                "0": 2048,
-                "1": 31.920001983642578
-              },
-              "mass": 100,
-              "angle": 5.726012427653574e-8
-            }
+            "template": "box64b",
+            "xy": [ 1792, 32 ]
           },
           {
-            "displayObject": {
-              "type": "Sprite",
-              "texture": "assets/images/objects/box_64_02.png",
-              "rotation": 5.726012427653574e-8,
-              "xy": [ 2304, 31.920001983642578 ]
-            },
-            "body": {
-              "shape": "Box",
-              "type": 1,
-              "xy": {
-                "0": 2304,
-                "1": 31.920001983642578
-              },
-              "mass": 100,
-              "angle": 5.726012427653574e-8
-            }
+            "template": "box64b",
+            "xy": [ 2048, 32 ]
           },
           {
-            "displayObject": {
-              "type": "Sprite",
-              "texture": "assets/images/objects/box_64_02.png",
-              "rotation": 5.726012427653574e-8,
-              "xy": [ 2560, 31.920001983642578 ]
-            },
-            "body": {
-              "shape": "Box",
-              "type": 1,
-              "xy": {
-                "0": 2560,
-                "1": 31.920001983642578
-              },
-              "mass": 100,
-              "angle": 5.726012427653574e-8
-            }
+            "template": "box64b",
+            "xy": [ 2304, 32 ]
           },
           {
-            "displayObject": {
-              "type": "Sprite",
-              "texture": "assets/images/objects/box_64_02.png",
-              "rotation": 5.726012427653574e-8,
-              "xy": [ 2816, 31.920001983642578 ]
-            },
-            "body": {
-              "shape": "Box",
-              "type": 1,
-              "xy": {
-                "0": 2816,
-                "1": 31.920001983642578
-              },
-              "mass": 100,
-              "angle": 5.726012427653574e-8
-            }
+            "template": "box64b",
+            "xy": [ 2560, 32 ]
           },
           {
-            "displayObject": {
-              "type": "Sprite",
-              "texture": "assets/images/objects/box_64_02.png",
-              "rotation": 5.726012427653574e-8,
-              "xy": [ 3072, 31.920001983642578 ]
-            },
-            "body": {
-              "shape": "Box",
-              "type": 1,
-              "xy": {
-                "0": 3072,
-                "1": 31.920001983642578
-              },
-              "mass": 100,
-              "angle": 5.726012427653574e-8
-            }
+            "template": "box64b",
+            "xy": [ 2816, 32 ]
           },
           {
-            "displayObject": {
-              "type": "Sprite",
-              "texture": "assets/images/objects/box_64_02.png",
-              "rotation": 5.726012427653574e-8,
-              "xy": [ 3328, 31.920001983642578 ]
-            },
-            "body": {
-              "shape": "Box",
-              "type": 1,
-              "xy": {
-                "0": 3328,
-                "1": 31.920001983642578
-              },
-              "mass": 100,
-              "angle": 5.726012427653574e-8
-            }
+            "template": "box64b",
+            "xy": [ 3072, 32 ]
           },
           {
-            "displayObject": {
-              "type": "Sprite",
-              "texture": "assets/images/objects/box_64_02.png",
-              "rotation": 5.726012427653574e-8,
-              "xy": [ 3584, 31.920001983642578 ]
-            },
-            "body": {
-              "shape": "Box",
-              "type": 1,
-              "xy": {
-                "0": 3584,
-                "1": 31.920001983642578
-              },
-              "mass": 100,
-              "angle": 5.726012427653574e-8
-            }
+            "template": "box64b",
+            "xy": [ 3328, 32 ]
           },
           {
-            "displayObject": {
-              "type": "Sprite",
-              "texture": "assets/images/objects/box_64_02.png",
-              "rotation": 5.726012427653574e-8,
-              "xy": [ 3840, 31.920001983642578 ]
-            },
-            "body": {
-              "shape": "Box",
-              "type": 1,
-              "xy": {
-                "0": 3840,
-                "1": 31.920001983642578
-              },
-              "mass": 100,
-              "angle": 5.726012427653574e-8
-            }
+            "template": "box64b",
+            "xy": [ 3584, 32 ]
           },
           {
-            "displayObject": {
-              "type": "Sprite",
-              "texture": "assets/images/objects/box_64_02.png",
-              "rotation": 5.726012427653574e-8,
-              "xy": [ 4096, 31.920001983642578 ]
-            },
-            "body": {
-              "shape": "Box",
-              "type": 1,
-              "xy": {
-                "0": 4096,
-                "1": 31.920001983642578
-              },
-              "mass": 100,
-              "angle": 5.726012427653574e-8
-            }
+            "template": "box64b",
+            "xy": [ 3840, 32 ]
           },
           {
-            "displayObject": {
-              "type": "Sprite",
-              "texture": "assets/images/objects/box_64_02.png",
-              "rotation": 5.726012427653574e-8,
-              "xy": [ 4352, 31.920001983642578 ]
-            },
-            "body": {
-              "shape": "Box",
-              "type": 1,
-              "xy": {
-                "0": 4352,
-                "1": 31.920001983642578
-              },
-              "mass": 100,
-              "angle": 5.726012427653574e-8
-            }
+            "template": "box64b",
+            "xy": [ 4096, 32 ]
           },
           {
-            "displayObject": {
-              "type": "Sprite",
-              "texture": "assets/images/objects/box_64_02.png",
-              "rotation": 5.726012427653574e-8,
-              "xy": [ 4608, 31.920001983642578 ]
-            },
-            "body": {
-              "shape": "Box",
-              "type": 1,
-              "xy": {
-                "0": 4608,
-                "1": 31.920001983642578
-              },
-              "mass": 100,
-              "angle": 5.726012427653574e-8
-            }
+            "template": "box64b",
+            "xy": [ 4352, 32 ]
           },
           {
-            "displayObject": {
-              "type": "Sprite",
-              "texture": "assets/images/objects/box_64_02.png",
-              "rotation": 5.726012427653574e-8,
-              "xy": [ 4864, 31.920001983642578 ]
-            },
-            "body": {
-              "shape": "Box",
-              "type": 1,
-              "xy": {
-                "0": 4864,
-                "1": 31.920001983642578
-              },
-              "mass": 100,
-              "angle": 5.726012427653574e-8
-            }
+            "template": "box64b",
+            "xy": [ 4608, 32 ]
+          },
+          {
+            "template": "box64b",
+            "xy": [ 4864, 32 ]
           }
         ],
 
