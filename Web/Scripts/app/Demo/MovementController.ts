@@ -1,4 +1,4 @@
-﻿import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
+﻿import { AnimatedSprite } from "app/_engine/AnimatedSprite";
 import { KeyboardMapper } from "app/_engine/KeyboardMapper";
 import { MovementState } from "./MovementState";
 import { WorldP2 } from "./WorldP2";
@@ -8,7 +8,7 @@ export class MovementController {
 
     private readonly ANIMATION_FPS = 10;
     private readonly VELOCITY = 150;
-    private readonly JUMP_FORCE = 17000;
+    private readonly JUMP_FORCE = 16000;
     private nextJumpAllowed: number = 0;
 
     private world: WorldP2;
@@ -17,6 +17,7 @@ export class MovementController {
     private kbd = new KeyboardMapper();
 
     private isRunning = false;
+    private isJumping = false;
 
     constructor(world: WorldP2, hero: AnimatedSprite) {
         this.world = world;
@@ -24,11 +25,11 @@ export class MovementController {
     }
 
     public get IsJumping() {
-        return Math.abs(this.world.player.velocity[1]) > 0.001 && this.world.playerContacts.length === 0;
+        return this.isJumping;
     }
 
     public get CanJump(): boolean {
-        return !this.IsJumping && this.nextJumpAllowed < performance.now();
+        return !this.isJumping && this.nextJumpAllowed < performance.now();
     }
 
     public get IsRunning() {
@@ -39,28 +40,15 @@ export class MovementController {
         return this.movementState;
     }
 
-    public MovementVelocity(): number {
-        var direction = 0;
-        if (this.movementState === MovementState.Left || this.movementState === MovementState.JumpLeft) {
-            direction = -1;
-        } else if (this.movementState === MovementState.Right || this.movementState === MovementState.JumpRight) {
-            direction = 1;
-        }
-
-        var velocity = direction * this.VELOCITY * (this.IsRunning ? 2 : 1.0);
-        return velocity;
-    }
-    
-
     public StartJump(direction: MovementState.JumpLeft | MovementState.JumpRight | MovementState.JumpUp): void {
         var forceVector: Array<number>;
 
         if (direction === MovementState.JumpUp) {
             forceVector = [0, this.JUMP_FORCE];
         } else if (direction === MovementState.JumpLeft) {
-            forceVector = [-this.JUMP_FORCE * 0.15, this.JUMP_FORCE];
+            forceVector = [-this.JUMP_FORCE * 0.125, this.JUMP_FORCE];
         } else if (direction === MovementState.JumpRight) {
-            forceVector = [this.JUMP_FORCE * 0.15, this.JUMP_FORCE];
+            forceVector = [this.JUMP_FORCE * 0.125, this.JUMP_FORCE];
         }
         this.world.player.applyImpulse(forceVector);
         this.nextJumpAllowed = performance.now() + 450;
@@ -78,20 +66,16 @@ export class MovementController {
         const KEY_UP: number = 38;
         const SPACE: number = 32;
 
+        this.isJumping = Math.abs(this.world.player.velocity[1]) > 0.001 && this.world.playerContacts.length === 0;
 
         //  no movement while jumping
-        if (this.IsJumping) {
+        if (this.isJumping) {
             //console.log("isJumping!");
             return;
         } else {
             //  calculate the horizontal velocity
-            var v = this.MovementVelocity();
+            var v = this.calcMovementVelocity();
             this.world.player.velocity[0] = v;
-
-            //  if we where jumping check if jump has ended
-            if (this.movementState > MovementState.Idle) {
-                console.log("jup end!");
-            }
         }
 
         var newState: MovementState = MovementState.Idle;
@@ -159,5 +143,17 @@ export class MovementController {
         //  update new states
         this.movementState = newState;
         this.isRunning = newIsRunning;
+    }
+
+    private calcMovementVelocity(): number {
+        var direction = 0;
+        if (this.movementState === MovementState.Left || this.movementState === MovementState.JumpLeft) {
+            direction = -1;
+        } else if (this.movementState === MovementState.Right || this.movementState === MovementState.JumpRight) {
+            direction = 1;
+        }
+
+        var velocity = direction * this.VELOCITY * (this.IsRunning ? 2 : 1.0);
+        return velocity;
     }
 }

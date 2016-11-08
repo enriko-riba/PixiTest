@@ -70,7 +70,7 @@ export class WorldP2 {
         this.world.solver.iterations = 25;
         //this.world.solver.tolerance = 0.00002;
         this.world.on("beginContact", this.beginContact, this);
-        this.world.on("endContact", this.endContact, this);
+        this.world.on("endContact", this.endContact, this);        
     }
 
     /**
@@ -78,8 +78,9 @@ export class WorldP2 {
      * @param eventName
      * @param handler
      */
-    public on(eventName: string, handler: any) {
-        this.world.on(eventName, handler, this);
+    public on(eventName: string, handler: any, context?: any) {
+        context = context || this;
+        this.world.on(eventName, handler, context);
     }
      
     /**
@@ -190,13 +191,15 @@ export class WorldP2 {
         //  check for player contacts (but only with dynamic bodies)
         if (this.player === evt.bodyA) {
             //console.log("beginContact: ", evt.bodyB, this.player);
-            console.log("contact velocity: " + this.player.velocity[0] + ", " + this.player.velocity[1]);
+            //console.log("contact velocity: " + this.player.velocity[0] + ", " + this.player.velocity[1]);
             this.playerBodyContacts.push(evt.bodyB);
+            this.world.emit({ type: "playerContact", velocity: this.player.velocity, body: evt.bodyB });
             return;
         } else if (this.player === evt.bodyB) {
             //console.log("beginContact: ", evt.bodyA, this.player);
-            console.log("contact velocity: " + this.player.velocity[0] + ", " + this.player.velocity[1]);
+            //console.log("contact velocity: " + this.player.velocity[0] + ", " + this.player.velocity[1]);
             this.playerBodyContacts.push(evt.bodyA);
+            this.world.emit({ type: "playerContact", velocity: this.player.velocity, body: evt.bodyB });
             return;
         }
 

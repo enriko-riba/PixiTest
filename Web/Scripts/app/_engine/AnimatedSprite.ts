@@ -28,9 +28,17 @@ export class AnimatedSprite extends PIXI.Container {
             this.createClip(this.currentSequence);
             
             this.Fps = fps || this.Fps;
-            this.clip.play();
+            this.clip.play();            
         }
     } 
+
+    public set OnComplete(cb: () => void) {
+        this.clip.onComplete = cb;
+    }
+
+    public get OnComplete(): () => void {
+        return this.clip.onComplete;
+    }
 
     public Stop() {
         this.clip.stop();
@@ -50,6 +58,13 @@ export class AnimatedSprite extends PIXI.Container {
     public set Anchor(p:PIXI.Point) {
         this.clip.anchor.set(p.x, p.y);
     }
+    public set Loop(isLooping: boolean) {
+        this.clip.loop = isLooping;
+    }
+    public get Loop(): boolean {
+        return this.clip.loop;
+    }
+
     private resetAnimation() {
         if(this.clip)
             this.clip.stop();        
