@@ -22,7 +22,7 @@ export var TXT_STYLE: PIXI.ITextStyle =
     {
         align: "center",
         padding: 0,
-        fontSize: "20px",
+        fontSize: "26px",
         fontFamily: "Calibri",
         fill: 0x905b15,
         strokeThickness: 3,

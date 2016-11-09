@@ -230,7 +230,7 @@ export class InGameScene extends Scene {
             smoke.rotation = Math.random() * Math.PI;
             this.worldContainer.addChild(smoke);
             smoke.PlayAnimation("smoke", 5);
-        }
+        } 
     }
 
     /**
@@ -322,30 +322,33 @@ class Hud extends PIXI.Container {
         this.addChild(btnSave);
 
         //  debug text
-        var pnl = new PIXI.Sprite(PIXI.loader.resources["assets/images/Gui/Panel_256x128.png"].texture);
+        var pnl = new PIXI.Sprite(PIXI.loader.resources["assets/images/Gui/TestHUD.png"].texture);
         pnl.position.set(5, 5);
         this.addChild(pnl);
 
-        this.txtLevel = new PIXI.Text("Level: 1", Global.TXT_STYLE);
+        this.txtLevel = new PIXI.Text("1", Global.TXT_STYLE);
+        //this.txtLevel = new PIXI.Text("Level: 1", Global.TXT_STYLE);
         this.txtLevel.resolution = window.devicePixelRatio;
-        this.txtLevel.position.set(20, 15);
+        //this.txtLevel.position.set(20, 15);
+
+        this.txtLevel.position.set(70, 20);
         pnl.addChild(this.txtLevel);
 
-        this.txtPosition = new PIXI.Text("Position: 0, 0", Global.TXT_STYLE);
+        this.txtPosition = new PIXI.Text("", Global.TXT_STYLE);
         this.txtPosition.resolution = window.devicePixelRatio;
-        this.txtPosition.position.set(20, 85);
+        this.txtPosition.position.set(15, 215);
         pnl.addChild(this.txtPosition);
 
-        this.txtCoins = new PIXI.Text("Coins: 0", Global.TXT_STYLE);
+        this.txtCoins = new PIXI.Text("0", Global.TXT_STYLE);
         this.txtCoins.resolution = window.devicePixelRatio;
-        this.txtCoins.position.set(20, 50);
+        this.txtCoins.position.set(70, 125);
         pnl.addChild(this.txtCoins);
     }
 
     public onUpdate(dt: number) {
-        this.txtLevel.text = `Level:  ${this.heroLevel}`;
-        this.txtPosition.text = `Position:  ${this.heroPosition.x.toFixed(0)}, ${this.heroPosition.y.toFixed(0)}`;
-        this.txtCoins.text = `Coins:  ${this.coins}`;
+        this.txtLevel.text = this.heroLevel.toString();//`Level:  ${this.heroLevel}`;
+        this.txtCoins.text = this.coins.toString();//`Coins:  ${this.coins}`;
+        this.txtPosition.text = `${this.heroPosition.x.toFixed(0)}, ${this.heroPosition.y.toFixed(0)}`;
     }
 }
 
