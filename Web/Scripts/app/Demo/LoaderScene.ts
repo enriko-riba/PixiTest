@@ -50,6 +50,7 @@ export class LoaderScene extends Scene {
             "assets/images/Gui/Listitem.png",
             "assets/images/Gui/Panel_256x128.png",
             "assets/images/Gui/Panel_256x256.png",
+            "assets/images/Gui/TestHUD.png",
 
             "assets/images/effects/jump_smoke.png",
 
