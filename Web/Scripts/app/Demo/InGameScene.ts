@@ -139,6 +139,11 @@ export class InGameScene extends Scene {
                 this.hud.coins += 10;
                 this.addCollectibleTween(dispObj);
                 break;
+            case 3:
+                this.hud.coins += 100;
+                this.addCollectibleTween(dispObj);
+                this.addCollectibleInfo(dispObj.position, "+100 coins");
+                break;
         }
     }
 
@@ -166,6 +171,29 @@ export class InGameScene extends Scene {
             .onComplete(() => this.worldContainer.removeChild(dispObj));
 
         moveUp.chain(scale, moveAway).start();
+    }
+
+    /**
+     * Starts an animation tween with informational text moving upwards from the given position.
+     * @param dispObj
+     */
+    private addCollectibleInfo(position: PIXI.Point, info: string) {
+        var txtInfo = new PIXI.Text(info, Global.TXT_STYLE);
+        txtInfo.position.set(position.x, position.y);
+        txtInfo.scale.set(1, -1);//  scale invert since everything is upside down due to coordinate system
+
+        this.worldContainer.addChild(txtInfo);
+
+        var upY = position.y + 200;
+        var moveUp = new TWEEN.Tween(txtInfo.position)
+            .to({ y: upY }, 2000);
+        var scale = new TWEEN.Tween(txtInfo.scale)
+            .to({ x: 1.6, y: -1.6 }, 2200)
+            .easing(TWEEN.Easing.Linear.None)
+            .onComplete(() => this.worldContainer.removeChild(txtInfo));
+
+        moveUp.start();
+        scale.chain(scale).start();
     }
 
     private setup(): void {

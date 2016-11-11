@@ -60,6 +60,7 @@
     <Content Include="assets\Images\Gui\heart.png" />
     <Content Include="assets\Images\Gui\Panel_256x128.png" />
     <Content Include="assets\Images\Gui\Panel_256x256.png" />
+    <Content Include="assets\Images\Gui\TestHUD.png" />
     <Content Include="assets\Images\Npcs\SQUIRELLY_01.png" />
     <Content Include="assets\Images\Npcs\SQUIRELLY_02.png" />
     <Content Include="assets\Images\Objects\Box_128_01.png" />
@@ -86,6 +87,9 @@
     <Content Include="assets\Images\background\trees03.png" />
     <Content Include="assets\Images\background\trees04.png" />
     <Content Include="assets\Images\background\trees05.png" />
+    <Content Include="assets\Images\Objects\gem.png" />
+    <Content Include="assets\Images\Objects\gem32.png" />
+    <Content Include="assets\Images\Objects\gem64.png" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
@@ -124,12 +128,17 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Content\Site.scss" />
-    <Content Include="assets\Levels\levels.json" />
+    <Content Include="assets\Levels\levels.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="assets\Images\Gui\TestHUD.pdn" />
     <None Include="compilerconfig.json" />
     <None Include="compilerconfig.json.defaults">
       <DependentUpon>compilerconfig.json</DependentUpon>
     </None>
     <None Include="Content\Stage.scss" />
+    <None Include="pp2-platform - FTP.pubxml" />
+    <None Include="pp2-platform - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.1.1.js" />
     <Content Include="Scripts\jquery-3.1.1.min.js" />
@@ -185,7 +194,6 @@
     <TypeScriptCompile Include="Scripts\app\Demo\Global.ts" />
     <TypeScriptCompile Include="Scripts\app\Demo\InGameScene.ts" />
     <TypeScriptCompile Include="Scripts\app\_engine\KeyboardMapper.ts" />
-    <TypeScriptCompile Include="Scripts\app\Demo\LoadMenuScene.ts" />
     <TypeScriptCompile Include="Scripts\app\Demo\LoaderScene.ts" />
     <TypeScriptCompile Include="Scripts\app\Demo\MainMenuScene.ts" />
     <TypeScriptCompile Include="Scripts\app\_engine\LinkedList.ts" />

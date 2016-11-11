@@ -56,9 +56,9 @@ export class LevelLoader {
         //--------------------------------------            
         var vps = new PIXI.Point(Global.SCENE_WIDTH, Global.SCENE_HEIGHT);
         level.parallax.forEach((iplx, idx, arr) => {
-            var parallax = new Parallax(vps, iplx.parallaxFactor);
+            var parallax = new Parallax(vps, iplx.parallaxFactor, iplx.scale);
+            parallax.y = iplx.y;           
             parallax.setTextures(iplx.tiles);
-            parallax.y = iplx.y;
             result.parallax.push(parallax);            
         });
        
@@ -97,7 +97,8 @@ export class LevelLoader {
                     aspr.addAnimations(aseq);
                 });
                 aspr.PlayAnimation(definition.sequences[0].name, definition.fps);
-                aspr.Anchor = new PIXI.Point(0.5,0.5);
+                aspr.Anchor = new PIXI.Point(0.5, 0.5);
+                
                 dispObj = aspr;
                 break;
 
@@ -105,7 +106,7 @@ export class LevelLoader {
                 var text = PIXI.loader.resources[definition.texture].texture;
                 var spr = new PIXI.Sprite(text);
                 spr.anchor.set(0.5);
-                dispObj = spr;
+                dispObj = spr;                
                 break;
 
             case "Bumper":
@@ -114,7 +115,7 @@ export class LevelLoader {
                 dispObj = bmp;
                 break;
         }
-
+        
         dispObj.pivot.set(0.5);
         dispObj.rotation = definition.rotation || 0;
         if (definition.xy) {
@@ -126,6 +127,11 @@ export class LevelLoader {
         if (definition.collectibleType) {
             dispObj.collectibleType = definition.collectibleType;
         }
+        //if (definition.tint) {
+        //    if (typeof definition.tint === "string") definition.tint = parseInt(definition.tint, 16);
+        //    if ((dispObj as any).tint) (dispObj as any).tint = definition.tint;
+        //    if ((dispObj as any).Tint) (dispObj as any).Tint = definition.tint;
+        //}
         return dispObj;
     }
 
@@ -205,6 +211,7 @@ export interface IParallaxDefinition {
     parallaxFactor: number;
     y: number;
     tiles: string[];
+    scale?: number;
 }
 
 export interface IBodyDefinition {
@@ -230,7 +237,7 @@ export interface IDisplayObjectDefinition {
     scale?: number[];
     rotation?: number;
     collectibleType?: number; 
-
+    tint?: number;
     fps?: number;
     sequences?:IAnimationSequence[]
 }

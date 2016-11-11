@@ -18,10 +18,11 @@ export class Parallax extends PIXI.Container {
     /**
      *   Creates a new ParalaxSprite instance.
      */
-    constructor(size?: PIXI.Point, parallaxFactor?:number) {
+    constructor(size?: PIXI.Point, parallaxFactor?:number, private textureScale?:number) {
         super();
         this.ViewPortSize = size || new PIXI.Point(100, 100);
         this.parallaxFactor = parallaxFactor || 1;
+        this.textureScale = this.textureScale || 1;
     }
 
     public SetViewPortX(newPositionX: number) {
@@ -62,6 +63,7 @@ export class Parallax extends PIXI.Container {
                 t.rotate = 8;
                 var spr = new PIXI.Sprite(t);
                 spr.x = totalWidth;
+                spr.scale.set(this.textureScale, this.textureScale);
                 this.spriteBuffer.push(spr);
                 this.addChild(spr);
 

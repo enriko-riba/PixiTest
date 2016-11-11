@@ -1,6 +1,6 @@
 ﻿import { Scene } from "app/_engine/Scene";
 import { Button } from "app/_engine/Button";
-import { LoadMenuScene } from "app/Demo/LoadMenuScene";
+//import { LoadMenuScene } from "app/Demo/LoadMenuScene";
 import { InGameScene } from "app/Demo/InGameScene";
 import * as Global from "app/Demo/Global";
 
@@ -19,9 +19,9 @@ export class MainMenuScene extends Scene {
 
     private setup = () => {
 
-        var loadScene = new LoadMenuScene();
+        //var loadScene = new LoadMenuScene();
         var inGame = new InGameScene();
-        Global.sceneMngr.AddScene(loadScene);
+        //Global.sceneMngr.AddScene(loadScene);
         Global.sceneMngr.AddScene(inGame);
 
         var x = (Global.SCENE_WIDTH - Global.BTN_WIDTH) / 2;

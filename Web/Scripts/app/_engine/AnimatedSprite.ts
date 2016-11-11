@@ -64,7 +64,12 @@ export class AnimatedSprite extends PIXI.Container {
     public get Loop(): boolean {
         return this.clip.loop;
     }
-
+    //public set Tint(value: number) {
+    //    this.clip.tint = value;
+    //}
+    //public get Tint(): number {
+    //    return this.clip.tint;
+    //}
     private resetAnimation() {
         if(this.clip)
             this.clip.stop();        
@@ -74,7 +79,7 @@ export class AnimatedSprite extends PIXI.Container {
             this.clip = new PIXI.extras.MovieClip(sequence.Textures);
             this.clip.anchor.set(0.5);
             this.clip.pivot.set(0.5);
-            this.addChild(this.clip);
+            this.addChild(this.clip);            
         } else {
             this.clip.textures = this.currentSequence.Textures;
         }
