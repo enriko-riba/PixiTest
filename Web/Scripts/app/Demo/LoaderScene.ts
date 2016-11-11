@@ -83,6 +83,8 @@ export class LoaderScene extends Scene {
             "assets/images/objects/bumper_rotor_01.png",
             "assets/images/objects/chest_01.png",
             "assets/images/objects/coins.png",
+            "assets/images/objects/gem32.png",
+            "assets/images/objects/gem64.png",
 
             "assets/levels/levels.json",
         ];
