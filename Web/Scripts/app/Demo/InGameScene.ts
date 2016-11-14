@@ -6,11 +6,12 @@ import { Button } from "app/_engine/Button";
 import * as Global from "./Global";
 import { WorldP2 } from "./WorldP2";
 import { MovementController } from "./MovementController";
+import { MovementState } from "./MovementState";
 import { LevelLoader, ILevelMap, IBodyDefinition, IMapEntity, IDisplayObjectDefinition } from "./LevelLoader";
 import { Bumper } from "./Bumper";
 
 import * as TWEEN from "tween";
-
+import "pixi-particles";
 
 /**
  *   Load in game scene.
@@ -32,6 +33,7 @@ export class InGameScene extends Scene {
     private wp2: WorldP2;
     private entities = [];
 
+    private emitter: PIXI.particles.Emitter;
 
     /**
      *   Creates a new scene instance.
@@ -64,6 +66,26 @@ export class InGameScene extends Scene {
 
         this.movementCtrl.update(dt);
         this.wp2.update(dt);
+
+        this.emitter.update(dt * 0.001);
+        this.emitter.ownerPos = this.heroPosition;
+        switch (this.movementCtrl.MovementState) {
+            case MovementState.Idle:
+                this.emitter.emit = false;
+                break;
+            case MovementState.Left:
+            case MovementState.JumpLeft:
+                this.emitter.emit = true;
+                this.emitter.minStartRotation = -25;
+                this.emitter.maxStartRotation = 25;
+                break;
+            case MovementState.Right:
+            case MovementState.JumpRight:
+                this.emitter.emit = true;
+                this.emitter.minStartRotation = 155;
+                this.emitter.maxStartRotation = 205;
+                break;
+        }
 
         //-------------------------------------------
         //  update hero & world container position
@@ -219,8 +241,8 @@ export class InGameScene extends Scene {
         this.hero.Anchor = new PIXI.Point(0.5, 0.45);
         this.worldContainer.addChild(this.hero);
         this.hero.PlayAnimation("idle");
-
-        var pr = new PIXI.particles.ParticleRenderer(Global.sceneMngr.Renderer as PIXI.WebGLRenderer);
+        this.emitter = this.createParticleEmitter(this.worldContainer);
+        this.emitter.emit = true;
 
         //--------------------------------------
         //  setup physics subsystem
@@ -253,6 +275,63 @@ export class InGameScene extends Scene {
         });
     }
 
+    private createParticleEmitter(container: PIXI.Container): PIXI.particles.Emitter {
+        var emitter = new PIXI.particles.Emitter(
+
+            // The PIXI.Container to put the emitter in
+            // if using blend modes, it's important to put this
+            // on top of a bitmap, and not use the root stage Container
+            container,
+
+            // The collection of particle images to use
+            [PIXI.Texture.fromImage("assets/images/objects/star.png")],
+
+            // Emitter configuration, edit this to change the look
+            // of the emitter
+            {
+                "alpha": {
+                    "start": 0.91,
+                    "end": 0.05
+                },
+                "scale": {
+                    "start": 0.1,
+                    "end": 0.6,
+                    "minimumScaleMultiplier": 1
+                },                
+                "speed": {
+                    "start": 30,
+                    "end": 5,
+                    "minimumSpeedMultiplier": 1
+                },
+                "acceleration": new PIXI.Point(),
+                "startRotation": {
+                    "min": -25,
+                    "max": 25
+                },
+                "rotationSpeed": {
+                    "min": 1,
+                    "max":10
+                },
+                "lifetime": {
+                    "min": 0.5,
+                    "max": 1.5
+                },
+                "blendMode": "normal",
+                "frequency": 0.01,
+                "emitterLifetime": -1,
+                "maxParticles": 500,
+                "pos": new PIXI.Point(0,-24),
+                "addAtBack": false,
+                "spawnType": "circle",
+                "spawnCircle": {
+                    "x": 0,
+                    "y": 0,
+                    "r": 10
+                }
+            }
+        );
+        return emitter;
+    }
     /**
      * Checks if the player jumped on something with a higher velocity and adds some smoke.
      * @param event
