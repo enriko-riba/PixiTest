@@ -295,7 +295,7 @@ export class InGameScene extends Scene {
                 },
                 "scale": {
                     "start": 0.1,
-                    "end": 0.6,
+                    "end": 0.4,
                     "minimumScaleMultiplier": 1
                 },                
                 "speed": {
@@ -316,7 +316,7 @@ export class InGameScene extends Scene {
                     "min": 0.5,
                     "max": 1.5
                 },
-                "blendMode": "normal",
+                "blendMode": "add",
                 "frequency": 0.01,
                 "emitterLifetime": -1,
                 "maxParticles": 500,
