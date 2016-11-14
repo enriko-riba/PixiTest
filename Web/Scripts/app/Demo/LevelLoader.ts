@@ -72,6 +72,7 @@ export class LevelLoader {
                 var displayObjectDefinition = $.extend(template.displayObject, entity);
                 var bodyDefinition = $.extend(template.body, entity);
                 var dispObj: PIXI.DisplayObject = this.buildDisplayObject(displayObjectDefinition);
+                (dispObj as any).templateName = template.name;
                 var p2body: p2.Body = this.buildPhysicsObject(bodyDefinition, dispObj);
                 (p2body as any).DisplayObject = dispObj;
                 result.entities.push(p2body);
@@ -184,14 +185,14 @@ export class LevelLoader {
                         height: h,
                     });
                     break;                
-                //  TODO: implement
+                //  TODO: implement other shapes if needed
             }
 
             if (!!dispObj.collectibleType) {
                 shape.sensor = true;
                 body.type = p2.Body.STATIC;
                 body.collisionResponse = false;
-                body.setDensity(0); //   this is to prevent sensor impacts on player collide
+                body.setDensity(0); //   this is to prevent body impacts on player collide (makes no sense as it is a sensor, bug maybe?)
                 console.log("created collectible sensor", shape);
             }
             body.addShape(shape);
@@ -252,6 +253,7 @@ export interface IMapEntity {
     xy?: number[];
     scale?: number[];
     rotation?: number;
+    texture?: string;
     collectibleType?: number; 
 }
 

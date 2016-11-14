@@ -137,8 +137,6 @@
       <DependentUpon>compilerconfig.json</DependentUpon>
     </None>
     <None Include="Content\Stage.scss" />
-    <None Include="pp2-platform - FTP.pubxml" />
-    <None Include="pp2-platform - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.1.1.js" />
     <Content Include="Scripts\jquery-3.1.1.min.js" />
@@ -153,6 +151,7 @@
     <Content Include="Scripts\knockout.mapping-latest.debug.js" />
     <Content Include="Scripts\knockout.mapping-latest.js" />
     <Content Include="Scripts\p2.js" />
+    <Content Include="Scripts\pixi-particles.js" />
     <Content Include="Scripts\pixi.js" />
     <Content Include="Scripts\pixi.min.js" />
     <Content Include="Scripts\r.js" />
@@ -216,6 +215,7 @@
     <TypeScriptCompile Include="Scripts\typings\knockout\tests\jasmine.extensions.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\p2\p2.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\pixi\pixi-filters.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\pixi\pixi-particles.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\pixi\pixi.js.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\requirejs\require.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\sammyjs\sammyjs.d.ts" />
