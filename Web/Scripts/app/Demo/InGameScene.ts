@@ -187,15 +187,21 @@ export class InGameScene extends Scene {
         var upY = position.y + 200;
         var moveUp = new TWEEN.Tween(txtInfo.position)
             .to({ y: upY }, 2000);
+        moveUp.start();
+
         var scale = new TWEEN.Tween(txtInfo.scale)
             .to({ x: 1.6, y: -1.6 }, 2200)
-            .easing(TWEEN.Easing.Linear.None)
-            .onComplete(() => this.worldContainer.removeChild(txtInfo));
+            .easing(TWEEN.Easing.Linear.None);            
 
-        moveUp.start();
-        scale.chain(scale).start();
+        var fade = new TWEEN.Tween(txtInfo)
+            .to({alpha: 0}, 3000)
+            .onComplete(() => this.worldContainer.removeChild(txtInfo));;
+        scale.chain(fade).start();
     }
 
+    /**
+     * Sets up the scene.
+     */
     private setup(): void {
         this.BackGroundColor = 0x1099bb;
         PIXI.SCALE_MODES.DEFAULT = PIXI.SCALE_MODES.LINEAR;
@@ -213,6 +219,8 @@ export class InGameScene extends Scene {
         this.hero.Anchor = new PIXI.Point(0.5, 0.45);
         this.worldContainer.addChild(this.hero);
         this.hero.PlayAnimation("idle");
+
+        var pr = new PIXI.particles.ParticleRenderer(Global.sceneMngr.Renderer as PIXI.WebGLRenderer);
 
         //--------------------------------------
         //  setup physics subsystem
@@ -245,6 +253,10 @@ export class InGameScene extends Scene {
         });
     }
 
+    /**
+     * Checks if the player jumped on something with a higher velocity and adds some smoke.
+     * @param event
+     */
     private onPlayerContact(event: any) {
         if (Math.abs(event.velocity[1]) > 425) {
             var smoke = new AnimatedSprite();
@@ -271,45 +283,48 @@ export class InGameScene extends Scene {
             NPC:[]
         };
 
-        var fnDumpDispObjProps = (dispObj: PIXI.Sprite) => {
-            return {
-                type: "Sprite",
-                texture: dispObj.texture.baseTexture.imageUrl,
-                rotation: dispObj.rotation,
-                xy: [dispObj.x, dispObj.y],
-                scale: [dispObj.scale.x, dispObj.scale.y]
-            }
-        }
+        //var fnDumpDispObjProps = (dispObj: PIXI.Sprite) => {
+        //    return {
+        //        type: "Sprite",
+        //        texture: dispObj.texture.baseTexture.imageUrl,
+        //        rotation: dispObj.rotation,
+        //        xy: [dispObj.x, dispObj.y],
+        //        scale: [dispObj.scale.x, dispObj.scale.y]
+        //    }
+        //}
 
         this.entities.forEach((body: p2.Body, idx, arr) => {
-            /*
+            
             var displayObject: PIXI.DisplayObject = (body as any).DisplayObject as PIXI.DisplayObject;
             var entity: IMapEntity = {
-                displayObject: null,
-                body: null
+                template: (displayObject as any).tmeplateName,
+                xy: [displayObject.x, displayObject.y],
+                rotation: displayObject.rotation,
+                scale: [displayObject.scale.x, displayObject.scale.y],
+                collectibleType: displayObject.collectibleType
             };
-            var newBody: IBodyDefinition = {
-                shape: "Box",
-                type: body.type,
-                xy: body.interpolatedPosition,
-                mass: body.mass,
-                angle: body.interpolatedAngle,
+            //var newBody: IBodyDefinition = {
+            //    shape: "Box",
+            //    type: body.type,
+            //    xy: body.interpolatedPosition,fnDumpDispObjProps
+            //    mass: body.mass,
+            //    angle: body.interpolatedAngle,
 
-                //  TODO: handle for other disp objects not inheriting from sprites
-                size: [(displayObject as PIXI.Sprite).width, (displayObject as PIXI.Sprite).height]
-            };
+            //    //  TODO: handle for other disp objects not inheriting from sprites
+            //    size: [(displayObject as PIXI.Sprite).width, (displayObject as PIXI.Sprite).height]
+            //};
 
             //  save display object
-            var dispObj: IDisplayObjectDefinition = fnDumpDispObjProps(displayObject as PIXI.Sprite);
-            if (displayObject instanceof Bumper) {
-                dispObj.type = "Bumper";
-            }
+            //var dispObj: IDisplayObjectDefinition = (displayObject as PIXI.Sprite);
+            //if (displayObject instanceof Bumper) {
+             //   dispObj.type = "Bumper";
+            //}
             //  TODO: other display object types
 
-            entity.body = newBody;
-            entity.displayObject = dispObj;
+            //entity.body = newBody;
+            //entity.displayObject = dispObj;
             map.entities.push(entity);
-            */
+            
         });
         console.log(JSON.stringify(map.entities));
     }
@@ -355,10 +370,7 @@ class Hud extends PIXI.Container {
         this.addChild(pnl);
 
         this.txtLevel = new PIXI.Text("1", Global.TXT_STYLE);
-        //this.txtLevel = new PIXI.Text("Level: 1", Global.TXT_STYLE);
         this.txtLevel.resolution = window.devicePixelRatio;
-        //this.txtLevel.position.set(20, 15);
-
         this.txtLevel.position.set(70, 20);
         pnl.addChild(this.txtLevel);
 
@@ -379,4 +391,3 @@ class Hud extends PIXI.Container {
         this.txtPosition.text = `${this.heroPosition.x.toFixed(0)}, ${this.heroPosition.y.toFixed(0)}`;
     }
 }
-
