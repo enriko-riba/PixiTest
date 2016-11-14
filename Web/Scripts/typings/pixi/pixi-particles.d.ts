@@ -17,6 +17,7 @@ declare module PIXI {
             speed?: {
                 start?: number;
                 end?: number;
+                minimumSpeedMultiplier?: number;
             };
             acceleration?: PIXI.Point;
             scale?: {
@@ -25,8 +26,8 @@ declare module PIXI {
                 minimumScaleMultiplier?: number;
             };
             color?: {
-                start?: number;
-                end?: number;
+                start?: string;
+                end?: string;
             };
             startRotation?: {
                 min?: number;
@@ -40,7 +41,7 @@ declare module PIXI {
                 min?: number;
                 max?: number;
             };
-            blendMode?: number;
+            blendMode?: string;
             ease?: (time: number) => void;
             extraData?: any;
             spawnType?: string;
@@ -49,7 +50,7 @@ declare module PIXI {
             maxParticles?: number;
             addAtBack?: boolean;
             pos?: PIXI.Point;
-
+            spawnCircle?: any;
         }
 
         export class Emitter {
@@ -94,7 +95,7 @@ declare module PIXI {
             protected _prevPosIsValid: boolean;
             protected _posChanged: boolean;
             protected _parentIsPC: boolean;
-            protected _parent: PIXI.DisplayObject | PIXI.ParticleContainer;
+            protected _parent: PIXI.DisplayObject | PIXI.particles.ParticleContainer;
             addAtBack: boolean;
             particleCount: number;
             protected _emit: boolean;
