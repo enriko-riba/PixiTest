@@ -156,12 +156,11 @@ export class LevelLoader {
             };
             body = new p2.Body(options);
             body.type = definition.type;
-
-            var doAny = dispObj as any;
+            var dispObjAsAny:any = dispObj as any;
             var shape: p2.Shape;
             switch (definition.shape) {
                 case "Circle":  
-                    var radius = definition.size ? definition.size[0] : doAny.width;            
+                    var radius = definition.size ? definition.size[0] : dispObjAsAny.width;            
                     shape = new p2.Circle({ radius: radius });
                     break;
                 case "Box":
@@ -171,9 +170,9 @@ export class LevelLoader {
                         w = definition.size[0]; 
                         h = definition.size[1];
                     } else {                        
-                        if (doAny.width) {
-                            w = doAny.width;
-                            h = doAny.height;
+                        if (dispObjAsAny.width) {
+                            w = dispObjAsAny.width;
+                            h = dispObjAsAny.height;
                         } else {
                             //  TODO: check this - seems not to get correct bounds
                             w = dispObj.scale.x * dispObj.getLocalBounds().width;
@@ -186,6 +185,10 @@ export class LevelLoader {
                     });
                     break;                
                 //  TODO: implement other shapes if needed
+            }
+
+            if (definition.material) {
+                (shape as any).materialName = definition.material;                
             }
 
             if (!!dispObj.collectibleType) {
@@ -222,6 +225,7 @@ export interface IBodyDefinition {
     size?: number[];
     mass: number;
     angle: number;
+    material?: string;
 }
 
 export interface IAnimationSequence {
