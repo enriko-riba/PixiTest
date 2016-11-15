@@ -85,6 +85,12 @@ export class InGameScene extends Scene {
                 this.emitter.minStartRotation = 155;
                 this.emitter.maxStartRotation = 205;
                 break;
+
+            case MovementState.JumpUp:
+                this.emitter.emit = true;
+                this.emitter.minStartRotation = 245;
+                this.emitter.maxStartRotation = 295;
+                break;
         }
 
         //-------------------------------------------
@@ -231,6 +237,8 @@ export class InGameScene extends Scene {
         //-----------------------------
         //  setup hero
         //-----------------------------
+        this.emitter = this.createParticleEmitter(this.worldContainer);
+        this.emitter.emit = true;
         this.hero = new AnimatedSprite();
         this.hero.addAnimations(new AnimationSequence("right", "assets/images/hero_64.png", [12, 13, 14, 15, 16, 17], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
         this.hero.addAnimations(new AnimationSequence("left", "assets/images/hero_64.png", [6, 7, 8, 9, 10, 11], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
@@ -241,8 +249,7 @@ export class InGameScene extends Scene {
         this.hero.Anchor = new PIXI.Point(0.5, 0.45);
         this.worldContainer.addChild(this.hero);
         this.hero.PlayAnimation("idle");
-        this.emitter = this.createParticleEmitter(this.worldContainer);
-        this.emitter.emit = true;
+        
 
         //--------------------------------------
         //  setup physics subsystem
@@ -290,16 +297,20 @@ export class InGameScene extends Scene {
             // of the emitter
             {
                 "alpha": {
-                    "start": 0.91,
+                    "start": 0.8,
                     "end": 0.05
                 },
+                "color": {
+                    start: "#dcff09",
+                    end: "#9f1f1f"
+                    },
                 "scale": {
                     "start": 0.1,
                     "end": 0.6,
                     "minimumScaleMultiplier": 1
                 },                
                 "speed": {
-                    "start": 30,
+                    "start": 40,
                     "end": 5,
                     "minimumSpeedMultiplier": 1
                 },
@@ -309,12 +320,12 @@ export class InGameScene extends Scene {
                     "max": 25
                 },
                 "rotationSpeed": {
-                    "min": 1,
-                    "max":10
+                    "min": 5,
+                    "max":20
                 },
                 "lifetime": {
                     "min": 0.5,
-                    "max": 1.5
+                    "max": 1.0
                 },
                 "blendMode": "normal",
                 "frequency": 0.01,
