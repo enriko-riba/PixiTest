@@ -92,7 +92,7 @@
             "name": "box64a",
             "displayObject": {
               "type": "Sprite",
-              "texture": "assets/images/objects/box_64_01.png"
+              "texture": "assets/images/objects/box_64_03.png"
             },
             "body": {
               "shape": "Box",

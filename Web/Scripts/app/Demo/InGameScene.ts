@@ -111,31 +111,32 @@ export class InGameScene extends Scene {
         //-------------------------------------------
         //  update entities position
         //-------------------------------------------
-        this.entities.forEach((body, idx, arr) => {
-            var displayObject: PIXI.DisplayObject = body.DisplayObject as PIXI.DisplayObject;
+        for (var i = 0, len = this.entities.length; i < len; i++) {
+            let body = this.entities[i];
+            let displayObject: PIXI.DisplayObject = body.DisplayObject as PIXI.DisplayObject;
             displayObject.position.set(body.interpolatedPosition[0], body.interpolatedPosition[1]);
             displayObject.rotation = body.interpolatedAngle;
-        });
-
+        }
+        
         //-------------------------------------------
         //  collisions with collectible items
-        //-------------------------------------------
-        if (this.wp2.playerContacts.length > 0) {
-            this.wp2.playerContacts.forEach((body: any, idx, arr) => {
-                if (body.DisplayObject && body.DisplayObject.collectibleType) {
-                    this.handleCollectibleCollision(body);                    
-                }
-            });
+        //-------------------------------------------arr
+        for (var i = 0, len = this.wp2.playerContacts.length; i < len; i++) {
+            let body: any = this.wp2.playerContacts[i];
+            if (body.DisplayObject && body.DisplayObject.collectibleType) {
+                this.handleCollectibleCollision(body);
+            }
         }
 
         //-------------------------------------------
         //  invoke update on each updateable
         //-------------------------------------------
-        this.worldContainer.children.forEach((child: any) => {
+        for (var i = 0, len = this.worldContainer.children.length; i < len; i++) {
+            let child:any = this.worldContainer.children[i];
             if (child.onUpdate) {
                 child.onUpdate(dt);
             }
-        });
+        };
 
         //-------------------------------------------
         //  finally update the hud
@@ -343,6 +344,7 @@ export class InGameScene extends Scene {
         );
         return emitter;
     }
+
     /**
      * Checks if the player jumped on something with a higher velocity and adds some smoke.
      * @param event
@@ -387,7 +389,7 @@ export class InGameScene extends Scene {
             
             var displayObject: PIXI.DisplayObject = (body as any).DisplayObject as PIXI.DisplayObject;
             var entity: IMapEntity = {
-                template: (displayObject as any).tmeplateName,
+                template: (displayObject as any).templateName,
                 xy: [displayObject.x, displayObject.y],
                 rotation: displayObject.rotation,
                 scale: [displayObject.scale.x, displayObject.scale.y],
