@@ -39,7 +39,7 @@ export class WorldP2 {
         this.setupMaterials();
         this.playerPosition = playerPosition;
 
-        // Create an infinite ground plane body
+        // create an infinite ground plane body
         this.ground = new p2.Body({
             mass: 0,
         });
@@ -51,7 +51,7 @@ export class WorldP2 {
         //  player body
         this.player = new p2.Body({
             mass: 40,
-            position: [playerPosition.x, playerPosition.y]            
+            position: [playerPosition.x, playerPosition.y]
         });
         shape = new p2.Circle({
             radius: 26,
@@ -61,16 +61,15 @@ export class WorldP2 {
         //    length: 20,
         //    radius: 5,
         //});
-        
+
         shape.position = [0, 0];
         shape.material = this.materials.get("player");
         this.player.addShape(shape);
         this.world.addBody(this.player);
-        
+
         this.world.solver.iterations = 25;
-        //this.world.solver.tolerance = 0.00002;
         this.world.on("beginContact", this.beginContact, this);
-        this.world.on("endContact", this.endContact, this);        
+        this.world.on("endContact", this.endContact, this);
     }
 
     /**
@@ -78,11 +77,11 @@ export class WorldP2 {
      * @param eventName
      * @param handler
      */
-    public on(eventName: string, handler: any, context?: any) {
+    public on(eventName: string, handler: any, context?: any): void {
         context = context || this;
         this.world.on(eventName, handler, context);
     }
-     
+
     /**
      * advances the physics simulation for the given dt time
      * @param dt the time in seconds since the last simulation step
@@ -98,7 +97,7 @@ export class WorldP2 {
      * Removes the body from world.
      * @param body
      */
-    public removeBody(body: p2.Body) {
+    public removeBody(body: p2.Body): void {
         this.world.removeBody(body);
     }
 
@@ -132,7 +131,7 @@ export class WorldP2 {
      * Clears all saved contacts (from contactPairs) for the given body.
      * @param body
      */
-    public clearContactsForBody(body: p2.Body) {
+    public clearContactsForBody(body: p2.Body):void {
         if (body === this.player) {
             this.playerBodyContacts = [];
             return;
@@ -142,7 +141,7 @@ export class WorldP2 {
         while (foundIdx > -1) {
             foundIdx = -1;
             for (var i = 0; i < this.contactPairs.length; i++) {
-                var cp = this.contactPairs[i];
+                let cp:ContactPair = this.contactPairs[i];
                 if (cp.BodyA === body || cp.BodyB === body)  {
                     foundIdx = i;
                     break;
@@ -162,7 +161,7 @@ export class WorldP2 {
      */
     public getContactsForBody(body: p2.Body): Array<ContactPair> {
         var foundPairs : Array<ContactPair> = [];
-        this.contactPairs.forEach((cp, idx, arr) => {
+        this.contactPairs.forEach((cp:ContactPair) => {
             if (cp.BodyA === body || cp.BodyB === body) {
                 foundPairs.push(cp);
             }
@@ -182,12 +181,12 @@ export class WorldP2 {
     /**
      * Returns all bodies the player has contact with.
      */
-    public get playerContacts() : p2.Body[]{
+    public get playerContacts(): p2.Body[]{
         return this.playerBodyContacts;
     }
 
     private beginContact = (evt: any) => {
-    
+
         //  check for player contacts (but only with dynamic bodies)
         if (this.player === evt.bodyA) {
             //console.log("beginContact: ", evt.bodyB, this.player);
@@ -204,11 +203,11 @@ export class WorldP2 {
         }
 
         //  check for watched bodies and store pairs if match
-        var watchedItemFound = this.contactWatch.filter((bodyId, idx, arr) => {
+        var watchedItemFound = this.contactWatch.filter((bodyId) => {
             return (bodyId === evt.bodyA.id || bodyId === evt.bodyB.id);
         });
         if (watchedItemFound && watchedItemFound.length > 0) {
-            var cp = new ContactPair(evt.bodyA, evt.bodyB);
+            let cp: ContactPair = new ContactPair(evt.bodyA, evt.bodyB);
             this.contactPairs.push(cp);
         }
     };
@@ -233,7 +232,7 @@ export class WorldP2 {
         //console.log("endContact: ", evt);
         var foundIdx: number = -1;
         for (var i = 0; i < this.contactPairs.length; i++) {
-            var cp = this.contactPairs[i];
+            let cp: ContactPair = this.contactPairs[i];
             if (
                 (cp.BodyA === evt.bodyA && cp.BodyB === evt.bodyB) ||
                 (cp.BodyA === evt.bodyB && cp.BodyB === evt.bodyA)) {
@@ -245,8 +244,8 @@ export class WorldP2 {
         if (foundIdx >= 0) {
             this.contactPairs.splice(foundIdx, 1);
         }
-    };  
-    
+    };
+
     private setupMaterials(): void {
         this.materials = new Dictionary<p2.Material>();
         this.materials.set("player", new p2.Material(p2.Material.idCounter++));
@@ -281,5 +280,19 @@ export class WorldP2 {
                 surfaceVelocity: 0
             });
         this.world.addContactMaterial(boxContactMaterial);
+
+        var boxGroundContactMaterial = new p2.ContactMaterial(
+            this.materials.get("box_default"),
+            this.materials.get("ground_default"),
+            {
+                friction: 0.6,
+                restitution: 0.2,
+                stiffness: p2.Equation.DEFAULT_STIFFNESS,
+                relaxation: p2.Equation.DEFAULT_RELAXATION,
+                frictionStiffness: p2.Equation.DEFAULT_STIFFNESS,
+                frictionRelaxation: p2.Equation.DEFAULT_RELAXATION,
+                surfaceVelocity: 0
+            });
+        this.world.addContactMaterial(boxGroundContactMaterial);
     }
 }

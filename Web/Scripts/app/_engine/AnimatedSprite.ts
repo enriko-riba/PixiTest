@@ -2,35 +2,35 @@
 
 export class AnimatedSprite extends PIXI.Container {
     constructor() {
-        super();        
+        super();
         this.pivot.set(0.5);
     }
 
     private animations = new Dictionary<AnimationSequence>();
     private currentSequence: AnimationSequence;
-    private clip: PIXI.extras.MovieClip = null;  
+    private clip: PIXI.extras.MovieClip = null;
 
-    public addAnimations(...sequences: Array<AnimationSequence>) {
-        sequences.forEach((seq, idx, arr) => {
+    public addAnimations(...sequences: Array<AnimationSequence>):void {
+        sequences.forEach((seq: AnimationSequence, idx:number) => {
             this.animations.set(seq.sequenceName, seq);
 
             //  if no clip exists create it from first animation sequence
             if (!this.clip && idx === 0) {
                 this.createClip(seq);
             }
-        });        
+        });
     }
 
-    public PlayAnimation(name: string, fps?:number) {
+    public PlayAnimation(name: string, fps?: number): void {
         if (!this.currentSequence || this.currentSequence.sequenceName !== name) {
             this.currentSequence = this.animations.get(name);
             this.resetAnimation();
             this.createClip(this.currentSequence);
-            
+
             this.Fps = fps || this.Fps;
-            this.clip.play();            
+            this.clip.play();
         }
-    } 
+    }
 
     public set OnComplete(cb: () => void) {
         this.clip.onComplete = cb;
@@ -40,18 +40,18 @@ export class AnimatedSprite extends PIXI.Container {
         return this.clip.onComplete;
     }
 
-    public Stop() {
+    public Stop():void {
         this.clip.stop();
     }
-    public get Fps() {
+    public get Fps():number {
         return this.clip.animationSpeed * 60;
     }
     public set Fps(fps: number) {
-        var animationSpeed = fps / 60;
+        let animationSpeed = fps / 60;
         this.clip.animationSpeed = animationSpeed;
     }
-    public get Anchor() {
-        var p = new PIXI.Point;
+    public get Anchor(): PIXI.Point {
+        let p = new PIXI.Point;
         this.clip.anchor.copy(p);
         return p;
     }
@@ -64,22 +64,18 @@ export class AnimatedSprite extends PIXI.Container {
     public get Loop(): boolean {
         return this.clip.loop;
     }
-    //public set Tint(value: number) {
-    //    this.clip.tint = value;
-    //}
-    //public get Tint(): number {
-    //    return this.clip.tint;
-    //}
-    private resetAnimation() {
-        if(this.clip)
-            this.clip.stop();        
+    
+    private resetAnimation():void {
+        if (this.clip) {
+            this.clip.stop();
+        }
     }
-    private createClip(sequence: AnimationSequence) {
+    private createClip(sequence: AnimationSequence):void {
         if (!this.clip) {
             this.clip = new PIXI.extras.MovieClip(sequence.Textures);
             this.clip.anchor.set(0.5);
             this.clip.pivot.set(0.5);
-            this.addChild(this.clip);            
+            this.addChild(this.clip);
         } else {
             this.clip.textures = this.currentSequence.Textures;
         }
@@ -94,22 +90,22 @@ export class AnimationSequence  {
     constructor(public sequenceName: string, textureAtlasName:string, frames: Array<number> = [], frameWidth : number, frameHeight : number) {
         var base: PIXI.BaseTexture = PIXI.utils.TextureCache[textureAtlasName];
         var xFrames = Math.floor(base.width / frameWidth);
-        var yFrames = Math.floor(base.height / frameHeight);
-       
-        frames.forEach((frame, idx, arr) => {
-            var texture = new PIXI.Texture(base);  
-            var y = Math.floor(frame / xFrames);
-            var x = frame % xFrames;            
-            var rect = new PIXI.Rectangle(x * frameWidth, y * frameHeight, frameWidth, frameHeight);
+        //var yFrames = Math.floor(base.height / frameHeight);
+
+        frames.forEach((frame:number) => {
+            let texture = new PIXI.Texture(base);
+            let y = Math.floor(frame / xFrames);
+            let x = frame % xFrames;
+            let rect = new PIXI.Rectangle(x * frameWidth, y * frameHeight, frameWidth, frameHeight);
             texture.frame = rect;
-            texture.rotate = 8;          
+            texture.rotate = 8;
             this.textures.push(texture);
         });
     }
-    public get Textures() {
+    public get Textures(): PIXI.Texture[] {
         return this.textures;
     }
-    public get FrameCount() {
+    public get FrameCount(): number {
         return this.textures.length;
     }
 }
