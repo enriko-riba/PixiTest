@@ -97,7 +97,8 @@
             "body": {
               "shape": "Box",
               "type": 1,
-              "mass": 80
+              "mass": 80,
+              "material": "box_default"
             }
           },
           {
@@ -109,7 +110,8 @@
             "body": {
               "shape": "Box",
               "type": 1,
-              "mass": 100
+              "mass": 100,
+              "material": "box_default"
             }
           },
           {
@@ -120,7 +122,8 @@
             },
             "body": {
               "shape": "Box",
-              "type": 4
+              "type": 4,
+              "material": "box_default"
             }
           }
         ],

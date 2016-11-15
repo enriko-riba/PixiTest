@@ -123,7 +123,14 @@ export class WorldP2 {
      * adds an object to the p2 world
      * @param body
      */
-    public addBody(body: p2.Body):void {
+    public addBody(body: p2.Body): void {
+        // HACK: loader specific implementation stores the material name in shape.materialName
+        if (body.shapes && body.shapes.length > 0) {
+            let shape:any = body.shapes[0];
+            if (shape.materialName) {
+                shape.material = this.materials.get(shape.materialName);
+            }
+        }
         this.world.addBody(body);
     }
 
@@ -285,7 +292,7 @@ export class WorldP2 {
             this.materials.get("box_default"),
             this.materials.get("ground_default"),
             {
-                friction: 0.6,
+                friction: 0.9,
                 restitution: 0.2,
                 stiffness: p2.Equation.DEFAULT_STIFFNESS,
                 relaxation: p2.Equation.DEFAULT_RELAXATION,
