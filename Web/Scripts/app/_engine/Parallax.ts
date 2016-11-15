@@ -1,9 +1,6 @@
-﻿import * as Global from "app/Demo/Global";
-import { LinkedListNode, LinkedList } from "./LinkedList";
-
-/**
-*   Represents a parallax background with textures that tile inside the viewport. 
-*/
+﻿/**
+ *   Represents a parallax background with textures that tile inside the viewport. 
+ */
 export class Parallax extends PIXI.Container {
 
     private viewPortSize: PIXI.Point;
@@ -25,28 +22,28 @@ export class Parallax extends PIXI.Container {
         this.textureScale = this.textureScale || 1;
     }
 
-    public SetViewPortX(newPositionX: number) {
+    public SetViewPortX(newPositionX: number): void {
 
-        if (this.worldPosition !== newPositionX) {            
+        if (this.worldPosition !== newPositionX) {
             this.recalculatePosition(newPositionX);
         }
     }
 
-    public get ViewPortSize() {
+    public get ViewPortSize(): PIXI.Point {
         return this.viewPortSize;
     }
     public set ViewPortSize(point: PIXI.Point) {
         this.viewPortSize = point;
         this.halfSizeX = this.viewPortSize.x / 2;
     }
-    public get ParallaxFactor() {
+    public get ParallaxFactor(): number {
         return this.parallaxFactor;
     }
     public set ParallaxFactor(factor: number) {
         this.parallaxFactor = factor;
     }
 
-    public setTextures(textures: Array<string | PIXI.Texture>) {
+    public setTextures(textures: Array<string | PIXI.Texture>): void {
         this.startIDX = 0;
         this.endIDX = 0;
 
@@ -81,22 +78,22 @@ export class Parallax extends PIXI.Container {
         var firstSpr: PIXI.Sprite = this.spriteBuffer[this.startIDX];
         var lastSpr: PIXI.Sprite = this.spriteBuffer[this.endIDX];
 
-        var delta = this.worldPosition - newPositionX;
-        var parallaxDistance = delta * (1-this.parallaxFactor);
+        var delta: number = this.worldPosition - newPositionX;
+        var parallaxDistance: number = delta * (1 - this.parallaxFactor);
 
         //  update sprite positions    
         for (var i = 0, len = this.children.length; i < len; i++) {
             let spr: PIXI.Sprite = this.children[i] as PIXI.Sprite;
             spr.x -= parallaxDistance;
         }
-        
+
 
         //-------------------------------------
         //  remove sprites outside viewport
         //-------------------------------------
         if (delta < 0) {
             //  check for removals from left side
-            if (firstSpr.x + firstSpr.width < ( this.worldPosition - this.halfSizeX)) {
+            if (firstSpr.x + firstSpr.width < (this.worldPosition - this.halfSizeX)) {
                 firstSpr.visible = false;
                 this.startIDX++;
                 if (this.startIDX >= this.spriteBuffer.length) {
@@ -158,6 +155,6 @@ export class Parallax extends PIXI.Container {
                 newSpr.visible = true;
             }
         }
-    }
+    };
 }
 

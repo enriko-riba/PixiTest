@@ -7,8 +7,7 @@ import * as Global from "./Global";
 import { WorldP2 } from "./WorldP2";
 import { MovementController } from "./MovementController";
 import { MovementState } from "./MovementState";
-import { LevelLoader, ILevelMap, IBodyDefinition, IMapEntity, IDisplayObjectDefinition } from "./LevelLoader";
-import { Bumper } from "./Bumper";
+import { LevelLoader, ILevelMap, IMapEntity } from "./LevelLoader";
 
 import * as TWEEN from "tween";
 import "pixi-particles";
@@ -117,10 +116,10 @@ export class InGameScene extends Scene {
             displayObject.position.set(body.interpolatedPosition[0], body.interpolatedPosition[1]);
             displayObject.rotation = body.interpolatedAngle;
         }
-        
+
         //-------------------------------------------
         //  collisions with collectible items
-        //-------------------------------------------arr
+        //-------------------------------------------
         for (var i = 0, len = this.wp2.playerContacts.length; i < len; i++) {
             let body: any = this.wp2.playerContacts[i];
             if (body.DisplayObject && body.DisplayObject.collectibleType) {
@@ -149,7 +148,7 @@ export class InGameScene extends Scene {
      * Handles player collision with collectibles.
      * @param body
      */
-    private handleCollectibleCollision(body: any) {
+    private handleCollectibleCollision(body: any): void {
         var bodyIdx = this.entities.indexOf(body);
         this.entities.splice(bodyIdx, 1);
         this.wp2.removeBody(body);
@@ -157,16 +156,16 @@ export class InGameScene extends Scene {
         var dispObj: PIXI.DisplayObject = body.DisplayObject as PIXI.DisplayObject;
         body.DisplayObject = null;
 
-        //  TODO: start collectible pickup animation
-        //  TODO: update stats/inventory whatever
         switch (dispObj.collectibleType) {
             case 1:
                 this.hud.coins += 1;
                 this.addCollectibleTween(dispObj);
+                this.addCollectibleInfo(dispObj.position, "+1 coin");
                 break;
             case 2:
                 this.hud.coins += 10;
                 this.addCollectibleTween(dispObj);
+                this.addCollectibleInfo(dispObj.position, "+10 coins");
                 break;
             case 3:
                 this.hud.coins += 100;
@@ -180,7 +179,7 @@ export class InGameScene extends Scene {
      * Starts an animation tween and removes the display object from scene.
      * @param dispObj
      */
-    private addCollectibleTween(dispObj: PIXI.DisplayObject) {
+    private addCollectibleTween(dispObj: PIXI.DisplayObject):void {
         var upX = dispObj.position.x + 45;
         var upY = dispObj.position.y + 160;
 
@@ -206,7 +205,7 @@ export class InGameScene extends Scene {
      * Starts an animation tween with informational text moving upwards from the given position.
      * @param dispObj
      */
-    private addCollectibleInfo(position: PIXI.Point, info: string) {
+    private addCollectibleInfo(position: PIXI.Point, info: string):void {
         var txtInfo = new PIXI.Text(info, Global.TXT_STYLE);
         txtInfo.position.set(position.x, position.y);
         txtInfo.scale.set(1, -1);//  scale invert since everything is upside down due to coordinate system
@@ -220,7 +219,7 @@ export class InGameScene extends Scene {
 
         var scale = new TWEEN.Tween(txtInfo.scale)
             .to({ x: 1.6, y: -1.6 }, 2200)
-            .easing(TWEEN.Easing.Linear.None);            
+            .easing(TWEEN.Easing.Linear.None);
 
         var fade = new TWEEN.Tween(txtInfo)
             .to({alpha: 0}, 3000)
@@ -250,7 +249,7 @@ export class InGameScene extends Scene {
         this.hero.Anchor = new PIXI.Point(0.5, 0.45);
         this.worldContainer.addChild(this.hero);
         this.hero.PlayAnimation("idle");
-        
+
 
         //--------------------------------------
         //  setup physics subsystem
@@ -268,14 +267,14 @@ export class InGameScene extends Scene {
         this.entities = lvl.entities;
 
         //  add all object pairs to renderer and physics world
-        lvl.entities.forEach((body, idx, arr) => {
+        lvl.entities.forEach((body:any) => {
             this.worldContainer.addChild(body.DisplayObject);
             this.wp2.addBody(body);
         });
 
         //  add parallax backgrounds
         this.parallaxBackgrounds = lvl.parallax;
-        lvl.parallax.forEach((plx: Parallax, idx, arr) => {
+        lvl.parallax.forEach((plx: Parallax, idx:number) => {
             this.worldContainer.addChildAt(plx, idx);
             //  TODO: there is a bug not initially calculating all viewport visible parallax textures so just move it in both directions to recalc all textures
             plx.SetViewPortX(0);
@@ -309,7 +308,7 @@ export class InGameScene extends Scene {
                     "start": 0.1,
                     "end": 0.4,
                     "minimumScaleMultiplier": 1
-                },                
+                },
                 "speed": {
                     "start": 40,
                     "end": 5,
@@ -349,7 +348,7 @@ export class InGameScene extends Scene {
      * Checks if the player jumped on something with a higher velocity and adds some smoke.
      * @param event
      */
-    private onPlayerContact(event: any) {
+    private onPlayerContact(event: any): void {
         if (Math.abs(event.velocity[1]) > 425) {
             var smoke = new AnimatedSprite();
             smoke.addAnimations(new AnimationSequence("smoke", "assets/images/effects/jump_smoke.png", [0,1,2,3,4,5], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
@@ -362,7 +361,7 @@ export class InGameScene extends Scene {
             smoke.rotation = Math.random() * Math.PI;
             this.worldContainer.addChild(smoke);
             smoke.PlayAnimation("smoke", 5);
-        } 
+        }
     }
 
     /**
@@ -385,8 +384,8 @@ export class InGameScene extends Scene {
         //    }
         //}
 
-        this.entities.forEach((body: p2.Body, idx, arr) => {
-            
+        this.entities.forEach((body: p2.Body) => {
+
             var displayObject: PIXI.DisplayObject = (body as any).DisplayObject as PIXI.DisplayObject;
             var entity: IMapEntity = {
                 template: (displayObject as any).templateName,
@@ -416,7 +415,7 @@ export class InGameScene extends Scene {
             //entity.body = newBody;
             //entity.displayObject = dispObj;
             map.entities.push(entity);
-            
+
         });
         console.log(JSON.stringify(map.entities));
     }
@@ -477,7 +476,7 @@ class Hud extends PIXI.Container {
         pnl.addChild(this.txtCoins);
     }
 
-    public onUpdate(dt: number) {
+    public onUpdate(dt: number): void {
         this.txtLevel.text = this.heroLevel.toString();//`Level:  ${this.heroLevel}`;
         this.txtCoins.text = this.coins.toString();//`Coins:  ${this.coins}`;
         this.txtPosition.text = `${this.heroPosition.x.toFixed(0)}, ${this.heroPosition.y.toFixed(0)}`;
