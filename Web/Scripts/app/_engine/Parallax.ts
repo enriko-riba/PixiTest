@@ -84,10 +84,12 @@ export class Parallax extends PIXI.Container {
         var delta = this.worldPosition - newPositionX;
         var parallaxDistance = delta * (1-this.parallaxFactor);
 
-        //  update sprite positions       
-        this.children.forEach((spr: PIXI.Sprite) => {
+        //  update sprite positions    
+        for (var i = 0, len = this.children.length; i < len; i++) {
+            let spr: PIXI.Sprite = this.children[i] as PIXI.Sprite;
             spr.x -= parallaxDistance;
-        });
+        }
+        
 
         //-------------------------------------
         //  remove sprites outside viewport
