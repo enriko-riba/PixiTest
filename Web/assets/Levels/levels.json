@@ -85,7 +85,10 @@
             },
             "body": {
               "shape": "Box",
-              "type": 4
+              "type": 4,
+              "damping": 0, 
+              "angularDamping": 0,
+              "material": "bumper"
             }
           },
           {

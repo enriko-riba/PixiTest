@@ -148,11 +148,9 @@ export class LevelLoader {
                 mass: definition.mass,
                 position: definition.xy ? definition.xy : [dispObj.x, dispObj.y],
                 angle: definition.angle || dispObj.rotation,
-                //angularVelocity?: number;
-                //force?: number[];
-                //angularForce?: number;
-                //velocity?: number[];
-                //fixedRotation?: boolean;
+                fixedRotation: definition.fixedRotation || false,
+                angularDamping: definition.angularDamping || 0.1,
+                damping: definition.damping || 0.1, 
             };
             body = new p2.Body(options);
             body.type = definition.type;
@@ -195,7 +193,7 @@ export class LevelLoader {
                 shape.sensor = true;
                 body.type = p2.Body.STATIC;
                 body.collisionResponse = false;
-                body.setDensity(0); //   this is to prevent body impacts on player collide (makes no sense as it is a sensor, bug maybe?)
+                body.setDensity(0.0); //   this is to prevent body impacts on player collide (makes no sense as it is a sensor, bug maybe?)
                 console.log("created collectible sensor", shape);
             }
             body.addShape(shape);
@@ -226,6 +224,9 @@ export interface IBodyDefinition {
     mass: number;
     angle: number;
     material?: string;
+    damping?: number; 
+    angularDamping?: number;
+    fixedRotation?: boolean;
 }
 
 export interface IAnimationSequence {

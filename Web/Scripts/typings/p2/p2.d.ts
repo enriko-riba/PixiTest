@@ -450,7 +450,8 @@ declare namespace p2 {
         force?: number[];
         angularForce?: number;
         fixedRotation?: boolean;
-
+        angularDamping?: number;
+        damping?: number;
     }
 
     export class Body extends EventEmitter {

@@ -12,7 +12,7 @@ export class ContactPair {
  * Takes care of the physics simulations.
  */
 export class WorldP2 {
-    public player: p2.Body;
+    public playerBody: p2.Body;
     private world: p2.World;
     private ground: p2.Body;
 
@@ -49,23 +49,17 @@ export class WorldP2 {
         this.world.addBody(this.ground);
 
         //  player body
-        this.player = new p2.Body({
+        this.playerBody = new p2.Body({
             mass: 40,
-            position: [playerPosition.x, playerPosition.y]
+            position: [playerPosition.x, playerPosition.y],
+            fixedRotation: true,
         });
         shape = new p2.Circle({
-            radius: 26,
+            radius: 24,
         });
-
-        //shape = new p2.Capsule({
-        //    length: 20,
-        //    radius: 5,
-        //});
-
-        shape.position = [0, 0];
         shape.material = this.materials.get("player");
-        this.player.addShape(shape);
-        this.world.addBody(this.player);
+        this.playerBody.addShape(shape);
+        this.world.addBody(this.playerBody);
 
         this.world.solver.iterations = 25;
         this.world.on("beginContact", this.beginContact, this);
@@ -89,8 +83,8 @@ export class WorldP2 {
     public update(dt: number): void {
         //console.log("worldp2 update() dt: " + dt/1000);
         this.world.step(this.fixedTimeStep, dt/1000, 20);
-        this.playerPosition.x = this.player.interpolatedPosition[0];
-        this.playerPosition.y = this.player.interpolatedPosition[1];
+        this.playerPosition.x = this.playerBody.interpolatedPosition[0];
+        this.playerPosition.y = this.playerBody.interpolatedPosition[1];
     }
 
     /**
@@ -106,18 +100,18 @@ export class WorldP2 {
      * @param bodyOptions
      * @param shape
      */
-    public addObject(bodyOptions?: p2.BodyOptions, shape?: p2.Shape): p2.Body {
-        var body = new p2.Body(bodyOptions);
-        if (!shape) {
-            shape = new p2.Box({ width: 64, height: 64 });
-        }
-        if (!shape.material) {
-            shape.material = this.materials.get("box_default");
-        }
-        body.addShape(shape);
-        this.world.addBody(body);
-        return body;
-    }
+    //public addObject(bodyOptions?: p2.BodyOptions, shape?: p2.Shape): p2.Body {
+    //    var body = new p2.Body(bodyOptions);
+    //    if (!shape) {
+    //        shape = new p2.Box({ width: 64, height: 64 });
+    //    }
+    //    if (!shape.material) {
+    //        shape.material = this.materials.get("box_default");
+    //    }
+    //    body.addShape(shape);
+    //    this.world.addBody(body);
+    //    return body;
+    //}
 
     /**
      * adds an object to the p2 world
@@ -126,10 +120,12 @@ export class WorldP2 {
     public addBody(body: p2.Body): void {
         // HACK: loader specific implementation stores the material name in shape.materialName
         if (body.shapes && body.shapes.length > 0) {
-            let shape:any = body.shapes[0];
-            if (shape.materialName) {
-                shape.material = this.materials.get(shape.materialName);
-            }
+            for (var i = 0, len = body.shapes.length; i < len; i++) {
+                let shape: any = body.shapes[i];
+                if (shape.materialName && !shape.material) {
+                    shape.material = this.materials.get(shape.materialName);
+                }
+            }            
         }
         this.world.addBody(body);
     }
@@ -139,7 +135,7 @@ export class WorldP2 {
      * @param body
      */
     public clearContactsForBody(body: p2.Body):void {
-        if (body === this.player) {
+        if (body === this.playerBody) {
             this.playerBodyContacts = [];
             return;
         }
@@ -167,12 +163,13 @@ export class WorldP2 {
      * @param body
      */
     public getContactsForBody(body: p2.Body): Array<ContactPair> {
-        var foundPairs : Array<ContactPair> = [];
-        this.contactPairs.forEach((cp:ContactPair) => {
+        var foundPairs: Array<ContactPair> = [];
+        for (var i = 0, len = this.contactPairs.length; i < len; i++) {
+            let cp: ContactPair = this.contactPairs[i];        
             if (cp.BodyA === body || cp.BodyB === body) {
                 foundPairs.push(cp);
             }
-        });
+        };
         return foundPairs;
     }
 
@@ -195,17 +192,17 @@ export class WorldP2 {
     private beginContact = (evt: any) => {
 
         //  check for player contacts (but only with dynamic bodies)
-        if (this.player === evt.bodyA) {
+        if (this.playerBody === evt.bodyA) {
             //console.log("beginContact: ", evt.bodyB, this.player);
             //console.log("contact velocity: " + this.player.velocity[0] + ", " + this.player.velocity[1]);
             this.playerBodyContacts.push(evt.bodyB);
-            this.world.emit({ type: "playerContact", velocity: this.player.velocity, body: evt.bodyB });
+            this.world.emit({ type: "playerContact", velocity: this.playerBody.velocity, body: evt.bodyB });
             return;
-        } else if (this.player === evt.bodyB) {
+        } else if (this.playerBody === evt.bodyB) {
             //console.log("beginContact: ", evt.bodyA, this.player);
             //console.log("contact velocity: " + this.player.velocity[0] + ", " + this.player.velocity[1]);
             this.playerBodyContacts.push(evt.bodyA);
-            this.world.emit({ type: "playerContact", velocity: this.player.velocity, body: evt.bodyB });
+            this.world.emit({ type: "playerContact", velocity: this.playerBody.velocity, body: evt.bodyB });
             return;
         }
 
@@ -221,13 +218,13 @@ export class WorldP2 {
 
     private endContact = (evt: any) => {
         //  check for player contacts 
-        if (this.player === evt.bodyA) {
+        if (this.playerBody === evt.bodyA) {
             //console.log("endContact: ", evt);
             //console.log("endcontact velocity: " + this.player.velocity[0] + ", " + this.player.velocity[1]);
             var bodyIDX = this.playerBodyContacts.indexOf(evt.bodyB);
             this.playerBodyContacts.splice(bodyIDX, 1);
             return;
-        } else if (this.player === evt.bodyB) {
+        } else if (this.playerBody === evt.bodyB) {
             //console.log("endContact: ", evt);
             //console.log("endcontact velocity: " + this.player.velocity[0] + ", " + this.player.velocity[1]);
             var bodyIDX = this.playerBodyContacts.indexOf(evt.bodyB);
@@ -258,42 +255,57 @@ export class WorldP2 {
         this.materials.set("player", new p2.Material(p2.Material.idCounter++));
         this.materials.set("ground_default", new p2.Material(p2.Material.idCounter++));
         this.materials.set("box_default", new p2.Material(p2.Material.idCounter++));
+        this.materials.set("bumper", new p2.Material(p2.Material.idCounter++));
 
 
-        var groundContactMaterial = new p2.ContactMaterial(
+        var playerGroundContactMaterial = new p2.ContactMaterial(
             this.materials.get("player"),
             this.materials.get("ground_default"),
             {
-                friction: 0.5,
-                restitution: 0.15,
+                friction: 0.8,
+                restitution: 0.1,
                 stiffness: p2.Equation.DEFAULT_STIFFNESS,
                 relaxation: p2.Equation.DEFAULT_RELAXATION,
                 frictionStiffness: p2.Equation.DEFAULT_STIFFNESS,
                 frictionRelaxation: p2.Equation.DEFAULT_RELAXATION,
                 surfaceVelocity:0
             });
-        this.world.addContactMaterial(groundContactMaterial);
+        this.world.addContactMaterial(playerGroundContactMaterial);
 
-        var boxContactMaterial = new p2.ContactMaterial(
+        var playerBoxContactMaterial = new p2.ContactMaterial(
             this.materials.get("player"),
             this.materials.get("box_default"),
             {
-                friction: 0.3,
-                restitution: 0.2,
+                friction: 0.6,
+                restitution: 0.15,
                 stiffness: p2.Equation.DEFAULT_STIFFNESS,
                 relaxation: p2.Equation.DEFAULT_RELAXATION,
                 frictionStiffness: p2.Equation.DEFAULT_STIFFNESS,
                 frictionRelaxation: p2.Equation.DEFAULT_RELAXATION,
                 surfaceVelocity: 0
             });
-        this.world.addContactMaterial(boxContactMaterial);
+        this.world.addContactMaterial(playerBoxContactMaterial);
+
+        var playerBumperContactMaterial = new p2.ContactMaterial(
+            this.materials.get("player"),
+            this.materials.get("bumper"),
+            {
+                friction: 0.90,
+                restitution: 0.5,
+                stiffness: Number.MAX_VALUE,
+                relaxation: p2.Equation.DEFAULT_RELAXATION,
+                frictionStiffness: Number.MAX_VALUE,
+                frictionRelaxation: p2.Equation.DEFAULT_RELAXATION,
+                surfaceVelocity: 0
+            });
+        this.world.addContactMaterial(playerBumperContactMaterial);
 
         var boxGroundContactMaterial = new p2.ContactMaterial(
             this.materials.get("box_default"),
             this.materials.get("ground_default"),
             {
                 friction: 0.9,
-                restitution: 0.2,
+                restitution: 0.1,
                 stiffness: p2.Equation.DEFAULT_STIFFNESS,
                 relaxation: p2.Equation.DEFAULT_RELAXATION,
                 frictionStiffness: p2.Equation.DEFAULT_STIFFNESS,
