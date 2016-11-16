@@ -8,7 +8,7 @@ export class MovementController {
 
     private readonly ANIMATION_FPS = 10;
     private readonly VELOCITY = 150;
-    private readonly JUMP_FORCE = 16000;
+    private readonly JUMP_FORCE = 16500;
     private nextJumpAllowed: number = 0;
 
     private world: WorldP2;
@@ -50,9 +50,9 @@ export class MovementController {
         } else if (direction === MovementState.JumpRight) {
             forceVector = [this.JUMP_FORCE * 0.125, this.JUMP_FORCE];
         }
-        this.world.player.applyImpulse(forceVector);
+        this.world.playerBody.applyImpulse(forceVector);
         this.nextJumpAllowed = performance.now() + 450;
-        this.world.clearContactsForBody(this.world.player);
+        this.world.clearContactsForBody(this.world.playerBody);
     }
 
     public update(dt: number) {
@@ -66,7 +66,7 @@ export class MovementController {
         const KEY_UP: number = 38;
         const SPACE: number = 32;
 
-        this.isJumping = Math.abs(this.world.player.velocity[1]) > 0.001 && this.world.playerContacts.length === 0;
+        this.isJumping = Math.abs(this.world.playerBody.velocity[1]) > 0.001 && this.world.playerContacts.length === 0;
 
         //  no movement while jumping
         if (this.isJumping) {
@@ -75,7 +75,7 @@ export class MovementController {
         } else {
             //  calculate the horizontal velocity
             var v = this.calcMovementVelocity();
-            this.world.player.velocity[0] = v;
+            this.world.playerBody.velocity[0] = v;
         }
 
         var newState: MovementState = MovementState.Idle;
