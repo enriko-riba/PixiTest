@@ -9,8 +9,72 @@ import { MovementController } from "./MovementController";
 import { MovementState } from "./MovementState";
 import { LevelLoader, ILevelMap, IMapEntity } from "./LevelLoader";
 
+import { Hud } from "./Hud";
+
 import * as TWEEN from "tween";
 import "pixi-particles";
+
+export function createParticleEmitter(container: PIXI.Container): PIXI.particles.Emitter {
+    var emitter = new PIXI.particles.Emitter(
+
+        // The PIXI.Container to put the emitter in
+        // if using blend modes, it's important to put this
+        // on top of a bitmap, and not use the root stage Container
+        container,
+
+        // The collection of particle images to use
+        [PIXI.Texture.fromImage("assets/images/objects/star.png")],
+
+        // Emitter configuration, edit this to change the look
+        // of the emitter
+        {
+            "alpha": {
+                "start": 0.8,
+                "end": 0.05
+            },
+            "color": {
+                start: "#dcff09",
+                end: "#9f1f1f"
+            },
+            "scale": {
+                "start": 0.1,
+                "end": 0.4,
+                "minimumScaleMultiplier": 1
+            },
+            "speed": {
+                "start": 40,
+                "end": 5,
+                "minimumSpeedMultiplier": 1
+            },
+            "acceleration": new PIXI.Point(),
+            "startRotation": {
+                "min": 0,
+                "max": 360
+            },
+            "rotationSpeed": {
+                "min": 5,
+                "max": 20
+            },
+            "lifetime": {
+                "min": 0.5,
+                "max": 1.0
+            },
+            "blendMode": "add",
+            "frequency": 0.01,
+            "emitterLifetime": -1,
+            "maxParticles": 500,
+            "pos": new PIXI.Point(0, -24),
+            "addAtBack": false,
+            "spawnType": "circle",
+            "spawnCircle": {
+                "x": 0,
+                "y": 0,
+                "r": 10
+            }
+        }
+    );
+    return emitter;
+}
 
 /**
  *   Load in game scene.
@@ -237,7 +301,7 @@ export class InGameScene extends Scene {
         //-----------------------------
         //  setup hero
         //-----------------------------
-        this.emitter = this.createParticleEmitter(this.worldContainer);
+        this.emitter = createParticleEmitter(this.worldContainer);
         this.emitter.emit = true;
         this.hero = new AnimatedSprite();
         this.hero.addAnimations(new AnimationSequence("right", "assets/images/hero_64.png", [12, 13, 14, 15, 16, 17], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
@@ -282,68 +346,6 @@ export class InGameScene extends Scene {
         });
     }
 
-    private createParticleEmitter(container: PIXI.Container): PIXI.particles.Emitter {
-        var emitter = new PIXI.particles.Emitter(
-
-            // The PIXI.Container to put the emitter in
-            // if using blend modes, it's important to put this
-            // on top of a bitmap, and not use the root stage Container
-            container,
-
-            // The collection of particle images to use
-            [PIXI.Texture.fromImage("assets/images/objects/star.png")],
-
-            // Emitter configuration, edit this to change the look
-            // of the emitter
-            {
-                "alpha": {
-                    "start": 0.8,
-                    "end": 0.05
-                },
-                "color": {
-                    start: "#dcff09",
-                    end: "#9f1f1f"
-                    },
-                "scale": {
-                    "start": 0.1,
-                    "end": 0.4,
-                    "minimumScaleMultiplier": 1
-                },
-                "speed": {
-                    "start": 40,
-                    "end": 5,
-                    "minimumSpeedMultiplier": 1
-                },
-                "acceleration": new PIXI.Point(),
-                "startRotation": {
-                    "min": -25,
-                    "max": 25
-                },
-                "rotationSpeed": {
-                    "min": 5,
-                    "max":20
-                },
-                "lifetime": {
-                    "min": 0.5,
-                    "max": 1.0
-                },
-                "blendMode": "add",
-                "frequency": 0.01,
-                "emitterLifetime": -1,
-                "maxParticles": 500,
-                "pos": new PIXI.Point(0,-24),
-                "addAtBack": false,
-                "spawnType": "circle",
-                "spawnCircle": {
-                    "x": 0,
-                    "y": 0,
-                    "r": 10
-                }
-            }
-        );
-        return emitter;
-    }
-
     /**
      * Checks if the player jumped on something with a higher velocity and adds some smoke.
      * @param event
@@ -386,67 +388,5 @@ export class InGameScene extends Scene {
             map.entities.push(entity);
         });
         console.log(JSON.stringify(map.entities));
-    }
-}
-
-
-class Hud extends PIXI.Container {
-    constructor() {
-        super();
-        this.setup();
-    }
-
-    public heroLevel: string = "1";
-    public heroPosition: PIXI.Point;
-    public coins: number = 0;
-
-    private txtPosition: PIXI.Text;
-    private txtLevel: PIXI.Text;
-    private txtCoins: PIXI.Text;
-
-    private setup(): void {
-        //var bottomBar = new PIXI.Sprite(PIXI.loader.resources["Assets/Images/bottom_bar_full.png"].texture);
-        //bottomBar.anchor.set(0.5, 1);
-        //bottomBar.position.set(Global.SCENE_WIDTH / 2, Global.SCENE_HEIGHT);
-        //this.addChild(bottomBar);
-        //--------------------------------
-        //  btn for level editor support
-        //--------------------------------
-        var btnSave = new Button("assets/images/Gui/Button1.png",
-            Global.SCENE_WIDTH - Global.BTN_WIDTH - 10, 10,
-            Global.BTN_WIDTH, Global.BTN_HEIGHT);
-        btnSave.Text = new PIXI.Text("Save", Global.BTN_STYLE);
-        btnSave.onClick = () => {
-            var igs = Global.sceneMngr.CurrentScene as InGameScene;
-            igs.saveLevel();
-        };
-
-        this.addChild(btnSave);
-
-        //  debug text
-        var pnl = new PIXI.Sprite(PIXI.loader.resources["assets/images/Gui/TestHUD.png"].texture);
-        pnl.position.set(5, 5);
-        this.addChild(pnl);
-
-        this.txtLevel = new PIXI.Text("1", Global.TXT_STYLE);
-        this.txtLevel.resolution = window.devicePixelRatio;
-        this.txtLevel.position.set(70, 20);
-        pnl.addChild(this.txtLevel);
-
-        this.txtPosition = new PIXI.Text("", Global.TXT_STYLE);
-        this.txtPosition.resolution = window.devicePixelRatio;
-        this.txtPosition.position.set(15, 215);
-        pnl.addChild(this.txtPosition);
-
-        this.txtCoins = new PIXI.Text("0", Global.TXT_STYLE);
-        this.txtCoins.resolution = window.devicePixelRatio;
-        this.txtCoins.position.set(70, 125);
-        pnl.addChild(this.txtCoins);
-    }
-
-    public onUpdate(dt: number): void {
-        this.txtLevel.text = this.heroLevel.toString();//`Level:  ${this.heroLevel}`;
-        this.txtCoins.text = this.coins.toString();//`Coins:  ${this.coins}`;
-        this.txtPosition.text = `${this.heroPosition.x.toFixed(0)}, ${this.heroPosition.y.toFixed(0)}`;
     }
 }
