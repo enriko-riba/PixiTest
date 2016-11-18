@@ -61,6 +61,7 @@
     <Content Include="assets\Images\Gui\heart.png" />
     <Content Include="assets\Images\Gui\Panel_256x128.png" />
     <Content Include="assets\Images\Gui\Panel_256x256.png" />
+    <Content Include="assets\Images\Gui\stat_panel.png" />
     <Content Include="assets\Images\Gui\TestHUD.png" />
     <Content Include="assets\Images\Npcs\SQUIRELLY_01.png" />
     <Content Include="assets\Images\Npcs\SQUIRELLY_02.png" />
@@ -187,6 +188,7 @@
     <TypeScriptCompile Include="Scripts\app\Common\IOverlay.ts" />
     <TypeScriptCompile Include="Scripts\app\Common\overlay.ts" />
     <TypeScriptCompile Include="Scripts\app\Demo\Bumper.ts" />
+    <TypeScriptCompile Include="Scripts\app\Demo\Hud.ts" />
     <TypeScriptCompile Include="Scripts\app\Demo\MovementController.ts" />
     <TypeScriptCompile Include="Scripts\app\Demo\JumpController.ts" />
     <TypeScriptCompile Include="Scripts\app\Demo\LevelLoader.ts" />
