@@ -42,7 +42,7 @@
           {
             "name": "coin",
             "displayObject": {
-              "type": "AnimatedSprite",
+              "typeName": "AnimatedSprite",
               "fps": 24,
               "sequences": [
                 {
@@ -60,14 +60,14 @@
           {
             "name": "gem",
             "displayObject": {
-              "type": "AnimatedSprite",
+              "typeName": "AnimatedSprite",
               "fps": 8,
-             
+
               "sequences": [
                 {
                   "name": "spin",
                   "texture": "assets/images/objects/gem32.png",
-                  "frames": [ 0, 1, 2, 3, 4, 5, 6],
+                  "frames": [ 0, 1, 2, 3, 4, 5, 6 ],
                   "framesize": [ 32, 32 ]
                 }
               ]
@@ -79,7 +79,7 @@
           {
             "name": "bumper",
             "displayObject": {
-              "type": "Bumper",
+              "typeName": "Bumper",
               "texture": "assets/images/objects/bumper_01.png",
               "rotation": 0.785398163397
             },
@@ -94,7 +94,7 @@
           {
             "name": "box64a",
             "displayObject": {
-              "type": "Sprite",
+              "typeName": "Sprite",
               "texture": "assets/images/objects/box_64_03.png"
             },
             "body": {
@@ -107,7 +107,7 @@
           {
             "name": "box64b",
             "displayObject": {
-              "type": "Sprite",
+              "typeName": "Sprite",
               "texture": "assets/images/objects/box_64_02.png"
             },
             "body": {
@@ -120,7 +120,7 @@
           {
             "name": "box128",
             "displayObject": {
-              "type": "Sprite",
+              "typeName": "Sprite",
               "texture": "assets/images/objects/box_128_01.png"
             },
             "body": {
@@ -147,16 +147,19 @@
           {
             "template": "coin",
             "collectibleType": 1,
+            "scale": [0.7,0.7],
             "xy": [ 100, 170 ]
           },
           {
             "template": "coin",
             "collectibleType": 1,
+            "scale": [ 0.7, 0.7 ],
             "xy": [ 130, 170 ]
           },
           {
             "template": "coin",
             "collectibleType": 1,
+            "scale": [ 0.7, 0.7 ],
             "xy": [ 160, 170 ]
           },
 
