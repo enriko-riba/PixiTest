@@ -69,8 +69,8 @@ export class LevelLoader {
             var entityTemplate = level.map.templates.filter((item, idx, arr) => item.name === entity.template);
             if (entityTemplate && entityTemplate.length > 0) {
                 var template = entityTemplate[0];
-                var displayObjectDefinition = $.extend(template.displayObject, entity);
-                var bodyDefinition = $.extend(template.body, entity);
+                var displayObjectDefinition = $.extend(entity, template.displayObject);
+                var bodyDefinition = $.extend(entity, template.body);
                 var dispObj: PIXI.DisplayObject = this.buildDisplayObject(displayObjectDefinition);
                 (dispObj as any).templateName = template.name;
                 var p2body: p2.Body = this.buildPhysicsObject(bodyDefinition, dispObj);
@@ -90,7 +90,7 @@ export class LevelLoader {
      */
     private buildDisplayObject(definition: IDisplayObjectDefinition): PIXI.DisplayObject {
         var dispObj: PIXI.DisplayObject
-        switch (definition.type) {
+        switch (definition.typeName) {
             case "AnimatedSprite":
                 var aspr = new AnimatedSprite();
                 definition.sequences.forEach((seq, idx, arr) => {
@@ -128,11 +128,7 @@ export class LevelLoader {
         if (definition.collectibleType) {
             dispObj.collectibleType = definition.collectibleType;
         }
-        //if (definition.tint) {
-        //    if (typeof definition.tint === "string") definition.tint = parseInt(definition.tint, 16);
-        //    if ((dispObj as any).tint) (dispObj as any).tint = definition.tint;
-        //    if ((dispObj as any).Tint) (dispObj as any).Tint = definition.tint;
-        //}
+        
         return dispObj;
     }
 
@@ -237,7 +233,7 @@ export interface IAnimationSequence {
 }
 
 export interface IDisplayObjectDefinition {
-    type: string,
+    typeName: string,
     texture: string;
     xy?: number[];
     scale?: number[];

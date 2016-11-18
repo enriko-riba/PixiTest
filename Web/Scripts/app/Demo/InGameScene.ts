@@ -374,18 +374,7 @@ export class InGameScene extends Scene {
             NPC:[]
         };
 
-        //var fnDumpDispObjProps = (dispObj: PIXI.Sprite) => {
-        //    return {
-        //        type: "Sprite",
-        //        texture: dispObj.texture.baseTexture.imageUrl,
-        //        rotation: dispObj.rotation,
-        //        xy: [dispObj.x, dispObj.y],
-        //        scale: [dispObj.scale.x, dispObj.scale.y]
-        //    }
-        //}
-
         this.entities.forEach((body: p2.Body) => {
-
             var displayObject: PIXI.DisplayObject = (body as any).DisplayObject as PIXI.DisplayObject;
             var entity: IMapEntity = {
                 template: (displayObject as any).templateName,
@@ -393,29 +382,8 @@ export class InGameScene extends Scene {
                 rotation: displayObject.rotation,
                 scale: [displayObject.scale.x, displayObject.scale.y],
                 collectibleType: displayObject.collectibleType
-            };
-            //var newBody: IBodyDefinition = {
-            //    shape: "Box",
-            //    type: body.type,
-            //    xy: body.interpolatedPosition,fnDumpDispObjProps
-            //    mass: body.mass,
-            //    angle: body.interpolatedAngle,
-
-            //    //  TODO: handle for other disp objects not inheriting from sprites
-            //    size: [(displayObject as PIXI.Sprite).width, (displayObject as PIXI.Sprite).height]
-            //};
-
-            //  save display object
-            //var dispObj: IDisplayObjectDefinition = (displayObject as PIXI.Sprite);
-            //if (displayObject instanceof Bumper) {
-             //   dispObj.type = "Bumper";
-            //}
-            //  TODO: other display object types
-
-            //entity.body = newBody;
-            //entity.displayObject = dispObj;
+            };            
             map.entities.push(entity);
-
         });
         console.log(JSON.stringify(map.entities));
     }
