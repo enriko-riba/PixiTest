@@ -3,15 +3,14 @@ import * as ko from "knockout";
 
 import { Button } from "app/_engine/Button";
 import { InGameScene, createParticleEmitter } from "./InGameScene";
-import { STATCHANGE_TOPIC, StatChangeEvent, StatType } from "./Stats";
+import { STATCHANGE_TOPIC, IStatChangeEvent, StatType } from "./Stats";
 
 export class Hud extends PIXI.Container {
     constructor() {
         super();
         this.setup();
-        ko.postbox.subscribe<StatChangeEvent>(STATCHANGE_TOPIC, this.handleStatChange);
     }
-    
+
     public heroLevel: string = "1";
     public heroPosition: PIXI.Point;
 
@@ -24,7 +23,9 @@ export class Hud extends PIXI.Container {
     private emitter: PIXI.particles.Emitter;
 
     private setup(): void {
-        
+
+        ko.postbox.subscribe<IStatChangeEvent>(STATCHANGE_TOPIC, this.handleStatChange);
+
         //--------------------------------
         //  btn for level editor support
         //--------------------------------
@@ -86,19 +87,19 @@ export class Hud extends PIXI.Container {
             this.addChild(pnl);
         }
 
+        //  TODO: remove or make a hud for lvl, position
         this.txtLevel = new PIXI.Text("1", Global.TXT_STYLE);
         this.txtLevel.resolution = window.devicePixelRatio;
-
         this.txtPlayerPosition = new PIXI.Text("", Global.TXT_STYLE);
         this.txtPlayerPosition.resolution = window.devicePixelRatio;
     }
 
-    private handleStatChange = (event: StatChangeEvent) => {
+    private handleStatChange = (event: IStatChangeEvent) => {
         switch (event.Type) {
             case StatType.Coins:
                 this.txtCoins.text = event.NewValue.toString();
                 break;
-            case StatType.Dust: 
+            case StatType.Dust:
                 this.txtDust.text = `${event.NewValue} / ${event.Stats[StatType.MaxDust]}`;
                 break;
             case StatType.MaxDust:
@@ -111,7 +112,7 @@ export class Hud extends PIXI.Container {
                 this.txtHP.text = `${event.Stats[StatType.HP]} / ${event.NewValue}`;
                 break;
         }
-    }
+    };
 
     public onUpdate(dt: number): void {
         this.txtPlayerPosition.text = `${this.heroPosition.x.toFixed(0)}, ${this.heroPosition.y.toFixed(0)}`;

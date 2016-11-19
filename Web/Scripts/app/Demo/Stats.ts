@@ -8,7 +8,7 @@ export enum StatType {
     Coins
 }
 
-export interface StatChangeEvent {
+export interface IStatChangeEvent {
     Type: StatType;
     OldValue: number;
     NewValue: number;
@@ -32,7 +32,7 @@ export class Stats {
 
     /**
      *  Updates stats that recover over time
-    */
+     */
     public onUpdate = (dt: number) => {
         this.accumulator += dt;
         if (this.accumulator > 1000) {
@@ -48,16 +48,16 @@ export class Stats {
                 this.increaseStat(StatType.HP, 0.5);
             }
         }
-    }
+    };
 
     public setStat(type: StatType, value: number) {
         this.updateEvent(type, value);
-        ko.postbox.publish<StatChangeEvent>(STATCHANGE_TOPIC, this.scevent);
+        ko.postbox.publish<IStatChangeEvent>(STATCHANGE_TOPIC, this.scevent);
         this.stats[type] = value;
     }
     public increaseStat(type: StatType, value: number) {
         this.updateEvent(type, this.stats[type] + value);
-        ko.postbox.publish<StatChangeEvent>(STATCHANGE_TOPIC, this.scevent);
+        ko.postbox.publish<IStatChangeEvent>(STATCHANGE_TOPIC, this.scevent);
         this.stats[type] += value;
     }
 
@@ -65,7 +65,7 @@ export class Stats {
         return this.stats[type];
     }
 
-    private scevent: StatChangeEvent = {
+    private scevent: IStatChangeEvent = {
         Type: StatType.Coins,
         OldValue: 0,
         NewValue: 0,
@@ -78,6 +78,4 @@ export class Stats {
         this.scevent.NewValue = newValue;
         this.scevent.Stats = this.stats;
     }
-
-    
 }

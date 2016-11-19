@@ -1,7 +1,6 @@
 ﻿import { Scene } from "app/_engine/Scene";
 import { Parallax } from "app/_engine/Parallax";
 import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
-import { Button } from "app/_engine/Button";
 
 import * as Global from "./Global";
 import { WorldP2 } from "./WorldP2";
@@ -16,6 +15,7 @@ import * as TWEEN from "tween";
 import "pixi-particles";
 
 export function createParticleEmitter(container: PIXI.Container): PIXI.particles.Emitter {
+    "use strict";
     var emitter = new PIXI.particles.Emitter(
 
         // The PIXI.Container to put the emitter in
@@ -395,7 +395,7 @@ export class InGameScene extends Scene {
                 rotation: displayObject.rotation,
                 scale: [displayObject.scale.x, displayObject.scale.y],
                 collectibleType: displayObject.collectibleType
-            };            
+            };           
             map.entities.push(entity);
         });
         console.log(JSON.stringify(map.entities));
