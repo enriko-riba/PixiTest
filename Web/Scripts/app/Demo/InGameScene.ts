@@ -132,6 +132,7 @@ export class InGameScene extends Scene {
 
         this.movementCtrl.update(dt);
         this.wp2.update(dt);
+        this.playerStats.onUpdate(dt);
 
         this.emitter.update(dt * 0.001);
         this.emitter.ownerPos = this.heroPosition;
@@ -141,19 +142,19 @@ export class InGameScene extends Scene {
                 break;
             case MovementState.Left:
             case MovementState.JumpLeft:
-                this.emitter.emit = true;
+                this.emitter.emit = this.movementCtrl.IsRunning;
                 this.emitter.minStartRotation = -25;
                 this.emitter.maxStartRotation = 25;
                 break;
             case MovementState.Right:
             case MovementState.JumpRight:
-                this.emitter.emit = true;
+                this.emitter.emit = this.movementCtrl.IsRunning;
                 this.emitter.minStartRotation = 155;
                 this.emitter.maxStartRotation = 205;
                 break;
 
             case MovementState.JumpUp:
-                this.emitter.emit = true;
+                this.emitter.emit = this.movementCtrl.IsRunning;
                 this.emitter.minStartRotation = 245;
                 this.emitter.maxStartRotation = 295;
                 break;
@@ -351,7 +352,7 @@ export class InGameScene extends Scene {
         //  TODO: load initial settings
         this.playerStats.setStat(StatType.Coins, 0);
         this.playerStats.setStat(StatType.MaxHP, 100);
-        this.playerStats.setStat(StatType.HP, 100);
+        this.playerStats.setStat(StatType.HP, 80);
         this.playerStats.setStat(StatType.MaxDust, 1000);
         this.playerStats.setStat(StatType.Dust, 100);
     }
