@@ -92,11 +92,11 @@ export class MovementController {
         if ((this.kbd.IsKeyDown(KEY_W) || this.kbd.IsKeyDown(KEY_UP) || this.kbd.IsKeyDown(SPACE)) && this.CanJump) {
             if (this.movementState === MovementState.Left) {
                 newState = MovementState.JumpLeft;
-                newIsRunning = false;
+                //newIsRunning = false;
             }
             else if (this.movementState === MovementState.Right) {
                 newState = MovementState.JumpRight;
-                newIsRunning = false;
+                //newIsRunning = false;
             }
             else if (this.movementState === MovementState.Idle) {
                 newState = MovementState.JumpUp;
