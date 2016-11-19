@@ -193,6 +193,7 @@
     <TypeScriptCompile Include="Scripts\app\Demo\JumpController.ts" />
     <TypeScriptCompile Include="Scripts\app\Demo\LevelLoader.ts" />
     <TypeScriptCompile Include="Scripts\app\Demo\MovementState.ts" />
+    <TypeScriptCompile Include="Scripts\app\Demo\Stats.ts" />
     <TypeScriptCompile Include="Scripts\app\Demo\WorldP2.ts" />
     <TypeScriptCompile Include="Scripts\app\_engine\AnimatedSprite.ts" />
     <TypeScriptCompile Include="Scripts\app\_engine\Button.ts" />

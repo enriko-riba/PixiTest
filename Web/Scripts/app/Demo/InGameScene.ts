@@ -10,6 +10,7 @@ import { MovementState } from "./MovementState";
 import { LevelLoader, ILevelMap, IMapEntity } from "./LevelLoader";
 
 import { Hud } from "./Hud";
+import { Stats, StatType } from "./Stats";
 
 import * as TWEEN from "tween";
 import "pixi-particles";
@@ -83,6 +84,8 @@ export class InGameScene extends Scene {
 
     private readonly HERO_FRAME_SIZE: number = 64;
     private readonly SCENE_HALF_WIDTH: number = Global.SCENE_WIDTH / 2;
+
+    private readonly playerStats = new Stats();
 
     private worldContainer: PIXI.Container;
     private parallaxBackgrounds: Array<Parallax> = [];
@@ -222,17 +225,17 @@ export class InGameScene extends Scene {
 
         switch (dispObj.collectibleType) {
             case 1:
-                this.hud.coins += 1;
+                this.playerStats.increaseStat(StatType.Coins, 1);
                 this.addCollectibleTween(dispObj);
                 this.addCollectibleInfo(dispObj.position, "+1 coin");
                 break;
             case 2:
-                this.hud.coins += 10;
+                this.playerStats.increaseStat(StatType.Coins, 10);
                 this.addCollectibleTween(dispObj);
                 this.addCollectibleInfo(dispObj.position, "+10 coins");
                 break;
             case 3:
-                this.hud.coins += 100;
+                this.playerStats.increaseStat(StatType.Coins, 100);
                 this.addCollectibleTween(dispObj);
                 this.addCollectibleInfo(dispObj.position, "+100 coins");
                 break;
@@ -344,6 +347,13 @@ export class InGameScene extends Scene {
             plx.SetViewPortX(0);
             plx.SetViewPortX(this.heroPosition.x + 1);
         });
+
+        //  TODO: load initial settings
+        this.playerStats.setStat(StatType.Coins, 0);
+        this.playerStats.setStat(StatType.MaxHP, 100);
+        this.playerStats.setStat(StatType.HP, 100);
+        this.playerStats.setStat(StatType.MaxDust, 1000);
+        this.playerStats.setStat(StatType.Dust, 100);
     }
 
     /**

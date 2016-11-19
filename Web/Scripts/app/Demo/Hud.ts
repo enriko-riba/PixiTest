@@ -1,20 +1,25 @@
 ﻿import * as Global from "./Global";
-import { InGameScene, createParticleEmitter } from "./InGameScene";
+import * as ko from "knockout";
+
 import { Button } from "app/_engine/Button";
+import { InGameScene, createParticleEmitter } from "./InGameScene";
+import { STATCHANGE_TOPIC, StatChangeEvent, StatType } from "./Stats";
 
 export class Hud extends PIXI.Container {
     constructor() {
         super();
         this.setup();
+        ko.postbox.subscribe<StatChangeEvent>(STATCHANGE_TOPIC, this.handleStatChange);
     }
-
+    
     public heroLevel: string = "1";
     public heroPosition: PIXI.Point;
-    public coins: number = 0;
 
-    private txtPosition: PIXI.Text;
+    private txtPlayerPosition: PIXI.Text;
     private txtLevel: PIXI.Text;
     private txtCoins: PIXI.Text;
+    private txtDust: PIXI.Text;
+    private txtHP: PIXI.Text;
 
     private emitter: PIXI.particles.Emitter;
 
@@ -31,35 +36,38 @@ export class Hud extends PIXI.Container {
             var igs = Global.sceneMngr.CurrentScene as InGameScene;
             igs.saveLevel();
         };
-
         this.addChild(btnSave);
 
-        //var pnl = new PIXI.Sprite(PIXI.loader.resources["assets/images/Gui/TestHUD.png"].texture);
-        //pnl.position.set(5, 5);
-        //this.addChild(pnl);
-
-
+        let txtPosition = new PIXI.Point(70, 18);
         //  HP
         {
+            this.txtHP = new PIXI.Text("0", Global.TXT_STYLE);
+            this.txtHP.resolution = window.devicePixelRatio;
+            this.txtHP.position = txtPosition;
             let pnl = new PIXI.Sprite(PIXI.loader.resources["assets/images/Gui/stat_panel.png"].texture);
             let spr = new PIXI.Sprite(PIXI.loader.resources["assets/images/Gui/heart.png"].texture);
-            spr.position.set(15, 15);
+            spr.position.set(16, 18);
             spr.scale.set(0.5);
             pnl.position.set(5, 5);
             pnl.addChild(spr);
+            pnl.addChild(this.txtHP);
             this.addChild(pnl);
         }
 
         //  pixi dust
         {
+            this.txtDust = new PIXI.Text("0", Global.TXT_STYLE);
+            this.txtDust.resolution = window.devicePixelRatio;
+            this.txtDust.position = txtPosition;
             let pnl = new PIXI.Sprite(PIXI.loader.resources["assets/images/Gui/stat_panel.png"].texture);
             this.emitter = createParticleEmitter(pnl);
-            this.emitter.ownerPos.set(30, 55);
+            this.emitter.ownerPos.set(32, 58);
             this.emitter.startSpeed = 15;
             this.emitter.maxLifetime = 0.6;
             this.emitter.maxParticles = 50;
             this.emitter.emit = true;
             pnl.position.set(5, 90);
+            pnl.addChild(this.txtDust);
             this.addChild(pnl);
         }
 
@@ -67,10 +75,10 @@ export class Hud extends PIXI.Container {
         {
             this.txtCoins = new PIXI.Text("0", Global.TXT_STYLE);
             this.txtCoins.resolution = window.devicePixelRatio;
-            this.txtCoins.position.set(70, 17);
+            this.txtCoins.position = txtPosition;
             let pnl = new PIXI.Sprite(PIXI.loader.resources["assets/images/Gui/stat_panel.png"].texture);
             let spr = new PIXI.Sprite(PIXI.loader.resources["assets/images/Gui/coin.png"].texture);
-            spr.position.set(15, 15);
+            spr.position.set(16, 18);
             spr.scale.set(0.5);
             pnl.position.set(5, 170);
             pnl.addChild(spr);
@@ -80,20 +88,33 @@ export class Hud extends PIXI.Container {
 
         this.txtLevel = new PIXI.Text("1", Global.TXT_STYLE);
         this.txtLevel.resolution = window.devicePixelRatio;
-        //this.txtLevel.position.set(70, 20);
-        //pnl.addChild(this.txtLevel);
 
-        this.txtPosition = new PIXI.Text("", Global.TXT_STYLE);
-        this.txtPosition.resolution = window.devicePixelRatio;
-        //this.txtPosition.position.set(15, 215);
-        //pnl.addChild(this.txtPosition);
+        this.txtPlayerPosition = new PIXI.Text("", Global.TXT_STYLE);
+        this.txtPlayerPosition.resolution = window.devicePixelRatio;
+    }
 
+    private handleStatChange = (event: StatChangeEvent) => {
+        switch (event.Type) {
+            case StatType.Coins:
+                this.txtCoins.text = event.NewValue.toString();
+                break;
+            case StatType.Dust: 
+                this.txtDust.text = `${event.NewValue} / ${event.Stats[StatType.MaxDust]}`;
+                break;
+            case StatType.MaxDust:
+                this.txtDust.text = `${event.Stats[StatType.Dust]} / ${event.NewValue}`;
+                break;
+            case StatType.HP:
+                this.txtHP.text = `${event.NewValue} / ${event.Stats[StatType.MaxHP]}`;
+                break;
+            case StatType.MaxHP:
+                this.txtHP.text = `${event.Stats[StatType.HP]} / ${event.NewValue}`;
+                break;
+        }
     }
 
     public onUpdate(dt: number): void {
-        this.txtLevel.text = this.heroLevel.toString();//`Level:  ${this.heroLevel}`;
-        this.txtCoins.text = this.coins.toString();//`Coins:  ${this.coins}`;
-        this.txtPosition.text = `${this.heroPosition.x.toFixed(0)}, ${this.heroPosition.y.toFixed(0)}`;
+        this.txtPlayerPosition.text = `${this.heroPosition.x.toFixed(0)}, ${this.heroPosition.y.toFixed(0)}`;
         this.emitter.update(dt * 0.001);
     }
 }
