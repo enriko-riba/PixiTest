@@ -93,12 +93,10 @@ export class MovementController {
             if (this.movementState === MovementState.Left) {
                 newState = MovementState.JumpLeft;
                 //newIsRunning = false;
-            }
-            else if (this.movementState === MovementState.Right) {
+            }else if (this.movementState === MovementState.Right) {
                 newState = MovementState.JumpRight;
                 //newIsRunning = false;
-            }
-            else if (this.movementState === MovementState.Idle) {
+            }else if (this.movementState === MovementState.Idle) {
                 newState = MovementState.JumpUp;
                 newIsRunning = false;
             }
