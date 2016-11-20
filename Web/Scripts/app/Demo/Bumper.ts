@@ -16,6 +16,5 @@ export class Bumper extends PIXI.Sprite {
     public onUpdate = (dt: number) => {
         var rot = this.rotor.rotation - (ROTATION * dt / 1000);
         this.rotor.rotation = rot % Math.PI;
-        // this.rotor.scale.set(0.5 + Math.sin(this.rotor.rotation));
     };
 }
