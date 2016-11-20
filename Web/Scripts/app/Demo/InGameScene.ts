@@ -395,7 +395,7 @@ export class InGameScene extends Scene {
                 rotation: displayObject.rotation,
                 scale: [displayObject.scale.x, displayObject.scale.y],
                 collectibleType: displayObject.collectibleType
-            };           
+            };          
             map.entities.push(entity);
         });
         console.log(JSON.stringify(map.entities));
