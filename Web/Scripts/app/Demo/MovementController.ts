@@ -70,7 +70,7 @@ export class MovementController {
 
         //  no movement while jumping
         if (this.isJumping) {
-            //console.log("isJumping!");
+            // console.log("isJumping!");
             return;
         } else {
             //  calculate the horizontal velocity
@@ -80,7 +80,7 @@ export class MovementController {
 
         var newState: MovementState = MovementState.Idle;
         var newIsJumping: boolean = false;
-        var newIsRunning = this.kbd.IsKeyDown(KEY_SHIFT);
+        var newIsRunning: boolean = this.kbd.IsKeyDown(KEY_SHIFT);
 
         if (this.kbd.IsKeyDown(KEY_A) || this.kbd.IsKeyDown(KEY_LEFT)) {
             newState = MovementState.Left;
@@ -92,10 +92,8 @@ export class MovementController {
         if ((this.kbd.IsKeyDown(KEY_W) || this.kbd.IsKeyDown(KEY_UP) || this.kbd.IsKeyDown(SPACE)) && this.CanJump) {
             if (this.movementState === MovementState.Left) {
                 newState = MovementState.JumpLeft;
-                //newIsRunning = false;
             }else if (this.movementState === MovementState.Right) {
                 newState = MovementState.JumpRight;
-                //newIsRunning = false;
             }else if (this.movementState === MovementState.Idle) {
                 newState = MovementState.JumpUp;
                 newIsRunning = false;
@@ -135,7 +133,7 @@ export class MovementController {
         }
 
         //  adjust animation FPS based on jump/idle/isrunning flags
-        var animationFPS = (newState === MovementState.Idle || newIsJumping) ? this.ANIMATION_FPS / 2 : (newIsRunning ? 2 : 1) * this.ANIMATION_FPS;
+        var animationFPS:number = (newState === MovementState.Idle || newIsJumping) ? this.ANIMATION_FPS / 2 : (newIsRunning ? 2 : 1) * this.ANIMATION_FPS;
         this.hero.Fps = animationFPS;
 
         //  update new states
@@ -144,7 +142,7 @@ export class MovementController {
     }
 
     private calcMovementVelocity(): number {
-        var direction = 0;
+        var direction:number = 0;
         if (this.movementState === MovementState.Left || this.movementState === MovementState.JumpLeft) {
             direction = -1;
         } else if (this.movementState === MovementState.Right || this.movementState === MovementState.JumpRight) {
