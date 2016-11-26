@@ -1,16 +1,15 @@
-﻿import { Scene } from "app/_engine/Scene";
+﻿import * as Global from "./Global";
+import * as TWEEN from "tween";
+
+import { Scene } from "app/_engine/Scene";
 import { Parallax } from "app/_engine/Parallax";
 import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
-
-import * as Global from "./Global";
 import { WorldP2 } from "./WorldP2";
 import { LevelLoader, ILevelMap, IMapEntity } from "./LevelLoader";
-
 import { Hud } from "./Hud";
 import { Stats, StatType } from "./Stats";
 import { HeroCharacter } from "./HeroCharacter";
 
-import * as TWEEN from "tween";
 import "pixi-particles";
 
 export function createParticleEmitter(container: PIXI.Container): PIXI.particles.Emitter {
@@ -84,13 +83,11 @@ export class InGameScene extends Scene {
     private readonly HERO_FRAME_SIZE: number = 64;
     private readonly SCENE_HALF_WIDTH: number = Global.SCENE_WIDTH / 2;
 
-    private readonly playerStats = new Stats();
+    private playerStats: Stats;
 
     private worldContainer: PIXI.Container;
     private parallaxBackgrounds: Array<Parallax> = [];
-
     private hud = new Hud();
-
     private wp2: WorldP2;
     private entities = [];
     private hero: HeroCharacter;
@@ -119,12 +116,14 @@ export class InGameScene extends Scene {
         this.setup();
     }
 
+    
     /**
-     *  Updates physics and handles user input
+     * Updates physics and handles player collisions.
+     * @param dt elapsed time in milliseconds
      */
     public onUpdate = (dt: number) => {
         this.wp2.update(dt);
-        this.hero.onUpdate(dt);
+        this.hero.update(dt);
         this.playerStats.onUpdate(dt);
 
         //-------------------------------------------
@@ -164,9 +163,8 @@ export class InGameScene extends Scene {
         //  invoke update on each updateable
         //-------------------------------------------
         for (var i = 0, len = this.worldContainer.children.length; i < len; i++) {
-            let child: any = this.worldContainer.children[i];
-           
-            if (child &&child.onUpdate) {
+            let child: any = this.worldContainer.children[i];           
+            if (child && child.onUpdate) {
                 child.onUpdate(dt);
             }
         };
@@ -260,7 +258,7 @@ export class InGameScene extends Scene {
             .onComplete(() => this.worldContainer.removeChild(txtInfo));;
         scale.chain(fade).start();
     }
-
+    
     /**
      * Sets up the scene.
      */
@@ -289,7 +287,7 @@ export class InGameScene extends Scene {
         this.hero.Anchor = new PIXI.Point(0.5, 0.45);
         this.worldContainer.addChild(this.hero);
         this.hero.PlayAnimation("idle");
-
+        this.playerStats = this.hero.PlayerStats;
 
         //--------------------------------------
         //  load level from json (under construction)
@@ -308,12 +306,15 @@ export class InGameScene extends Scene {
         this.parallaxBackgrounds = lvl.parallax;
         lvl.parallax.forEach((plx: Parallax, idx:number) => {
             this.worldContainer.addChildAt(plx, idx);
-            //  TODO: there is a bug not initially calculating all viewport visible parallax textures so just move it in both directions to recalc all textures
+            //  TODO: there is a bug not initially calculating all viewport  
+            //        visible parallax textures. So just move it in both 
+            //        directions to trigger textures recalculation
             plx.SetViewPortX(0);
             plx.SetViewPortX(this.hero.position.x + 1);
         });
 
         //  TODO: load initial settings
+        var playerStats = this.hero.PlayerStats;
         this.playerStats.setStat(StatType.Coins, 0);
         this.playerStats.setStat(StatType.MaxHP, 100);
         this.playerStats.setStat(StatType.HP, 80);
