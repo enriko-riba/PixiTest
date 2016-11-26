@@ -3,10 +3,12 @@ import { WorldP2 } from "./WorldP2";
 import { MovementController } from "./MovementController";
 import { MovementState } from "./MovementState";
 import { createParticleEmitter } from "./InGameScene";
+import { Stats, StatType } from "./Stats";
 
 export class HeroCharacter extends AnimatedSprite {
-
     private readonly HERO_FRAME_SIZE: number = 64;
+    private readonly playerStats = new Stats();
+
     private emitter: PIXI.particles.Emitter;
     private movementCtrl: MovementController;
     private wp2: WorldP2;
@@ -23,9 +25,24 @@ export class HeroCharacter extends AnimatedSprite {
     }
 
     /**
-     *  Updates the hero
+     * Returns the player statistics object.
      */
-    public onUpdate = (dt: number) => {
+    public get PlayerStats():Stats {
+        return this.playerStats;
+    }
+
+    /**
+     * Returns if the player attributes allow running.
+     */
+    public get CanRun(): boolean {
+        return this.playerStats.getStat(StatType.Dust) > 1;
+    }
+
+    /**
+     * Checks if the player jumped on something with a higher velocity and adds some smoke.
+     * @param dt elapsed time in milliseconds
+     */
+    public update = (dt: number) => {
         this.position.x = this.wp2.playerX;
         this.position.y = this.wp2.playerY;
 
@@ -57,16 +74,25 @@ export class HeroCharacter extends AnimatedSprite {
 
         this.emitter.update(dt * 0.001);
         this.emitter.ownerPos = this.position;
+
+        //  use pixi dust
+        if (this.movementCtrl.IsRunning && this.movementCtrl.MovementState != MovementState.Idle) {
+            this.playerStats.increaseStat(StatType.Dust, -dt * 0.005);   //  5/sec
+        }
     };
 
     /**
-     * Checks if the player jumped on something with a higher velocity and adds some smoke.
+     * Checks if the player jumped on something with a high velocity and adds some smoke.
      * @param event
      */
     private onPlayerContact(event: any): void {
-        if (Math.abs(event.velocity[1]) > 425) {
+        const SMOKE_VELOCITY: number = 425;
+
+        if (Math.abs(event.velocity[1]) > SMOKE_VELOCITY) {
             var smoke:AnimatedSprite = new AnimatedSprite();
-            smoke.addAnimations(new AnimationSequence("smoke", "assets/images/effects/jump_smoke.png", [0, 1, 2, 3, 4, 5], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
+            smoke.addAnimations(new AnimationSequence("smoke", "assets/images/effects/jump_smoke.png",
+                [0, 1, 2, 3, 4, 5],
+                this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
             smoke.Anchor = new PIXI.Point(0.5, 0.5);
             smoke.x = this.x;
             smoke.y = this.y - this.HERO_FRAME_SIZE / 2;

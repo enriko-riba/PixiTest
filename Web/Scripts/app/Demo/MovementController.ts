@@ -2,7 +2,7 @@
 import { KeyboardMapper } from "app/_engine/KeyboardMapper";
 import { MovementState } from "./MovementState";
 import { WorldP2 } from "./WorldP2";
-
+import { HeroCharacter } from "./HeroCharacter";
 
 export class MovementController {
 
@@ -12,14 +12,14 @@ export class MovementController {
     private nextJumpAllowed: number = 0;
 
     private world: WorldP2;
-    private hero: AnimatedSprite;
+    private hero: HeroCharacter;
     private movementState: MovementState = -1;
     private kbd = new KeyboardMapper();
 
     private isRunning = false;
     private isJumping = false;
 
-    constructor(world: WorldP2, hero: AnimatedSprite) {
+    constructor(world: WorldP2, hero: HeroCharacter) {
         this.world = world;
         this.hero = hero;
     }
@@ -66,11 +66,10 @@ export class MovementController {
         const KEY_UP: number = 38;
         const SPACE: number = 32;
 
-        this.isJumping = Math.abs(this.world.playerBody.velocity[1]) > 0.001 && this.world.playerContacts.length === 0;
+        this.isJumping = Math.abs(this.world.playerBody.velocity[1]) > 0.01 && this.world.playerContacts.length === 0;
 
         //  no movement while jumping
         if (this.isJumping) {
-            // console.log("isJumping!");
             return;
         } else {
             //  calculate the horizontal velocity
@@ -80,7 +79,7 @@ export class MovementController {
 
         var newState: MovementState = MovementState.Idle;
         var newIsJumping: boolean = false;
-        var newIsRunning: boolean = this.kbd.IsKeyDown(KEY_SHIFT);
+        var newIsRunning: boolean = this.kbd.IsKeyDown(KEY_SHIFT) && this.hero.CanRun;
 
         if (this.kbd.IsKeyDown(KEY_A) || this.kbd.IsKeyDown(KEY_LEFT)) {
             newState = MovementState.Left;
