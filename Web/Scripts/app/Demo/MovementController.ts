@@ -24,7 +24,7 @@ export class MovementController {
         this.hero = hero;
     }
 
-    public get IsJumping() {
+    public get IsJumping():boolean {
         return this.isJumping;
     }
 
@@ -32,11 +32,11 @@ export class MovementController {
         return !this.isJumping && this.nextJumpAllowed < performance.now();
     }
 
-    public get IsRunning() {
+    public get IsRunning(): boolean {
         return this.isRunning;
     }
 
-    public get MovementState() {
+    public get MovementState(): MovementState {
         return this.movementState;
     }
 
@@ -55,7 +55,7 @@ export class MovementController {
         this.world.clearContactsForBody(this.world.playerBody);
     }
 
-    public update(dt: number) {
+    public update(dt: number):void {
 
         const KEY_A: number = 65;
         const KEY_D: number = 68;
@@ -74,7 +74,7 @@ export class MovementController {
             return;
         } else {
             //  calculate the horizontal velocity
-            var v = this.calcMovementVelocity();
+            var v : number = this.calcMovementVelocity();
             this.world.playerBody.velocity[0] = v;
         }
 
@@ -104,7 +104,7 @@ export class MovementController {
 
         //  has state changed
         if (newState !== this.movementState) {
-            console.log('state change: ' + MovementState[this.movementState] + ' -> ' + MovementState[newState]);
+            console.log("state change: " + MovementState[this.movementState] + " -> " + MovementState[newState]);
 
             switch (newState) {
                 case MovementState.Idle:
@@ -151,7 +151,7 @@ export class MovementController {
             direction = 1;
         }
 
-        var velocity = direction * this.VELOCITY * (this.IsRunning ? 2 : 1.0);
+        var velocity : number = direction * this.VELOCITY * (this.IsRunning ? 2 : 1.0);
         return velocity;
     }
 }

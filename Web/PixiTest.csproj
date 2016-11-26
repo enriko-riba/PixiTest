@@ -188,6 +188,7 @@
     <TypeScriptCompile Include="Scripts\app\Common\IOverlay.ts" />
     <TypeScriptCompile Include="Scripts\app\Common\overlay.ts" />
     <TypeScriptCompile Include="Scripts\app\Demo\Bumper.ts" />
+    <TypeScriptCompile Include="Scripts\app\Demo\HeroCharacter.ts" />
     <TypeScriptCompile Include="Scripts\app\Demo\Hud.ts" />
     <TypeScriptCompile Include="Scripts\app\Demo\MovementController.ts" />
     <TypeScriptCompile Include="Scripts\app\Demo\JumpController.ts" />
