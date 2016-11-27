@@ -3,7 +3,6 @@ import * as TWEEN from "tween";
 
 import { Scene } from "app/_engine/Scene";
 import { Parallax } from "app/_engine/Parallax";
-import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
 import { WorldP2 } from "./WorldP2";
 import { LevelLoader, ILevelMap, IMapEntity } from "./LevelLoader";
 import { Hud } from "./Hud";
@@ -83,8 +82,6 @@ export class InGameScene extends Scene {
     private readonly HERO_FRAME_SIZE: number = 64;
     private readonly SCENE_HALF_WIDTH: number = Global.SCENE_WIDTH / 2;
 
-    private playerStats: Stats;
-
     private worldContainer: PIXI.Container;
     private parallaxBackgrounds: Array<Parallax> = [];
     private hud = new Hud();
@@ -124,7 +121,6 @@ export class InGameScene extends Scene {
     public onUpdate = (dt: number) => {
         this.wp2.update(dt);
         this.hero.update(dt);
-        this.playerStats.onUpdate(dt);
 
         //-------------------------------------------
         //  update world container position
@@ -185,22 +181,23 @@ export class InGameScene extends Scene {
         this.entities.splice(bodyIdx, 1);
         this.wp2.removeBody(body);
 
+        var playerStats = this.hero.PlayerStats;
+
         var dispObj: PIXI.DisplayObject = body.DisplayObject as PIXI.DisplayObject;
         body.DisplayObject = null;
-
         switch (dispObj.collectibleType) {
             case 1:
-                this.playerStats.increaseStat(StatType.Coins, 1);
+                playerStats.increaseStat(StatType.Coins, 1);
                 this.addCollectibleTween(dispObj);
                 this.addCollectibleInfo(dispObj.position, "+1 coin");
                 break;
             case 2:
-                this.playerStats.increaseStat(StatType.Coins, 10);
+                playerStats.increaseStat(StatType.Coins, 10);
                 this.addCollectibleTween(dispObj);
                 this.addCollectibleInfo(dispObj.position, "+10 coins");
                 break;
             case 3:
-                this.playerStats.increaseStat(StatType.Coins, 100);
+                playerStats.increaseStat(StatType.Coins, 100);
                 this.addCollectibleTween(dispObj);
                 this.addCollectibleInfo(dispObj.position, "+100 coins");
                 break;
@@ -278,17 +275,8 @@ export class InGameScene extends Scene {
         //-----------------------------        
         this.hero = new HeroCharacter(this.wp2, this.worldContainer);
         this.hero.position = startPosition;
-        this.hero.addAnimations(new AnimationSequence("right", "assets/images/hero_64.png", [12, 13, 14, 15, 16, 17], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
-        this.hero.addAnimations(new AnimationSequence("left", "assets/images/hero_64.png", [6, 7, 8, 9, 10, 11], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
-        this.hero.addAnimations(new AnimationSequence("jumpleft", "assets/images/hero_64.png", [48, 49, 50, 51, 52, 53], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
-        this.hero.addAnimations(new AnimationSequence("jumpright", "assets/images/hero_64.png", [54, 55, 56, 57, 58, 59], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
-        this.hero.addAnimations(new AnimationSequence("jumpup", "assets/images/hero_64.png", [1, 3, 4], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
-        this.hero.addAnimations(new AnimationSequence("idle", "assets/images/hero_64.png", [25, 24, 40, 19, 19, 18, 19, 22, 30, 31, 1, 1, 1], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
-        this.hero.Anchor = new PIXI.Point(0.5, 0.45);
-        this.worldContainer.addChild(this.hero);
-        this.hero.PlayAnimation("idle");
-        this.playerStats = this.hero.PlayerStats;
-
+        this.worldContainer.addChild(this.hero);        
+        
         //--------------------------------------
         //  load level from json (under construction)
         //--------------------------------------
@@ -315,11 +303,11 @@ export class InGameScene extends Scene {
 
         //  TODO: load initial settings
         var playerStats = this.hero.PlayerStats;
-        this.playerStats.setStat(StatType.Coins, 0);
-        this.playerStats.setStat(StatType.MaxHP, 100);
-        this.playerStats.setStat(StatType.HP, 80);
-        this.playerStats.setStat(StatType.MaxDust, 1000);
-        this.playerStats.setStat(StatType.Dust, 100);
+        playerStats.setStat(StatType.Coins, 0);
+        playerStats.setStat(StatType.MaxHP, 100);
+        playerStats.setStat(StatType.HP, 80);
+        playerStats.setStat(StatType.MaxDust, 1000);
+        playerStats.setStat(StatType.Dust, 100);
     }
 
     /**

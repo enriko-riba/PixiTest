@@ -22,6 +22,15 @@ export class HeroCharacter extends AnimatedSprite {
         this.emitter = createParticleEmitter(container);
 
         this.wp2.on("playerContact", this.onPlayerContact, this);
+
+        this.addAnimations(new AnimationSequence("right", "assets/images/hero_64.png", [12, 13, 14, 15, 16, 17], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
+        this.addAnimations(new AnimationSequence("left", "assets/images/hero_64.png", [6, 7, 8, 9, 10, 11], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
+        this.addAnimations(new AnimationSequence("jumpleft", "assets/images/hero_64.png", [48, 49, 50, 51, 52, 53], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
+        this.addAnimations(new AnimationSequence("jumpright", "assets/images/hero_64.png", [54, 55, 56, 57, 58, 59], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
+        this.addAnimations(new AnimationSequence("jumpup", "assets/images/hero_64.png", [1, 3, 4], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
+        this.addAnimations(new AnimationSequence("idle", "assets/images/hero_64.png", [25, 24, 40, 19, 19, 18, 19, 22, 30, 31, 1, 1, 1], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
+        this.Anchor = new PIXI.Point(0.5, 0.45);
+        this.PlayAnimation("idle");
     }
 
     /**
@@ -76,7 +85,7 @@ export class HeroCharacter extends AnimatedSprite {
         this.emitter.ownerPos = this.position;
 
         //  use pixi dust
-        if (this.movementCtrl.IsRunning && this.movementCtrl.MovementState != MovementState.Idle) {
+        if (this.movementCtrl.IsRunning && this.movementCtrl.MovementState !== MovementState.Idle) {
             this.playerStats.increaseStat(StatType.Dust, -dt * 0.005);   //  5/sec
         }
     };
