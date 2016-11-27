@@ -1,5 +1,4 @@
-﻿import { AnimatedSprite } from "app/_engine/AnimatedSprite";
-import { KeyboardMapper } from "app/_engine/KeyboardMapper";
+﻿import { KeyboardMapper } from "app/_engine/KeyboardMapper";
 import { MovementState } from "./MovementState";
 import { WorldP2 } from "./WorldP2";
 import { HeroCharacter } from "./HeroCharacter";

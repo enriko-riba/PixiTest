@@ -150,7 +150,7 @@ export class InGameScene extends Scene {
         //-------------------------------------------
         for (var i = 0, len = this.wp2.playerContacts.length; i < len; i++) {
             let body: any = this.wp2.playerContacts[i];
-            if (body.DisplayObject && body.DisplayObject.collectibleType) {
+            if (body.DisplayObject && body.DisplayObject.interactionType) {
                 this.handleCollectibleCollision(body);
             }
         }
@@ -177,31 +177,43 @@ export class InGameScene extends Scene {
      * @param body
      */
     private handleCollectibleCollision(body: any): void {
-        var bodyIdx = this.entities.indexOf(body);
-        this.entities.splice(bodyIdx, 1);
-        this.wp2.removeBody(body);
-
         var playerStats = this.hero.PlayerStats;
-
         var dispObj: PIXI.DisplayObject = body.DisplayObject as PIXI.DisplayObject;
-        body.DisplayObject = null;
-        switch (dispObj.collectibleType) {
+        switch (dispObj.interactionType) {
             case 1:
                 playerStats.increaseStat(StatType.Coins, 1);
                 this.addCollectibleTween(dispObj);
-                this.addCollectibleInfo(dispObj.position, "+1 coin");
+                this.addInfoMessage(dispObj.position, "+1 coin");
+                this.removeEntity(body);
                 break;
             case 2:
                 playerStats.increaseStat(StatType.Coins, 10);
                 this.addCollectibleTween(dispObj);
-                this.addCollectibleInfo(dispObj.position, "+10 coins");
+                this.addInfoMessage(dispObj.position, "+10 coins");
+                this.removeEntity(body);
                 break;
             case 3:
                 playerStats.increaseStat(StatType.Coins, 100);
                 this.addCollectibleTween(dispObj);
-                this.addCollectibleInfo(dispObj.position, "+100 coins");
+                this.addInfoMessage(dispObj.position, "+100 coins");
+                this.removeEntity(body);
+                break;
+
+            case 1000:
+                this.decreaseHP(0.1);
                 break;
         }
+    }
+
+    /**
+     * Removes an entity from the stage.
+     * @param body
+     */
+    private removeEntity(body: any): void {
+        var bodyIdx = this.entities.indexOf(body);
+        this.entities.splice(bodyIdx, 1);
+        this.wp2.removeBody(body);
+        body.DisplayObject = null;
     }
 
     /**
@@ -232,12 +244,15 @@ export class InGameScene extends Scene {
 
     /**
      * Starts an animation tween with informational text moving upwards from the given position.
-     * @param dispObj
+     * @param position the start position of the message
+     * @param message the message to be added
+     * @param style optional PIXI.ITextStyle
      */
-    private addCollectibleInfo(position: PIXI.Point, info: string):void {
-        var txtInfo = new PIXI.Text(info, Global.TXT_STYLE);
+    private addInfoMessage(position: PIXI.Point, message: string, style?: PIXI.ITextStyle): void {
+        var stl = style || Global.TXT_STYLE;
+        var txtInfo = new PIXI.Text(message, stl);
         txtInfo.position.set(position.x, position.y);
-        txtInfo.scale.set(1, -1);//  scale invert since everything is upside down due to coordinate system
+        txtInfo.scale.set(1, -1);   //  scale invert since everything is upside down due to coordinate system
 
         this.worldContainer.addChild(txtInfo);
 
@@ -255,7 +270,21 @@ export class InGameScene extends Scene {
             .onComplete(() => this.worldContainer.removeChild(txtInfo));;
         scale.chain(fade).start();
     }
-    
+
+    /**
+     * Decreases the HP for the given amount and displays a message with the total integer amount.
+     * @param amount the positive amount to decrease the HP
+     */
+    private decreaseHP(amount: number) {
+        var playerStats = this.hero.PlayerStats;
+        var oldHP = Math.floor(playerStats.getStat(StatType.HP));
+        playerStats.increaseStat(StatType.HP, -amount);
+        var newHP = Math.floor(playerStats.getStat(StatType.HP));
+        if (newHP < oldHP) {
+            this.addInfoMessage(this.hero.position, `-${oldHP-newHP} HP`);
+        }
+    }
+
     /**
      * Sets up the scene.
      */
@@ -327,7 +356,7 @@ export class InGameScene extends Scene {
                 xy: [displayObject.x, displayObject.y],
                 rotation: displayObject.rotation,
                 scale: [displayObject.scale.x, displayObject.scale.y],
-                collectibleType: displayObject.collectibleType
+                interactionType: displayObject.interactionType
             };
             map.entities.push(entity);
         });

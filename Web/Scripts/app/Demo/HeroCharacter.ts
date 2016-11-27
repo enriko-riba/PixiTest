@@ -88,6 +88,8 @@ export class HeroCharacter extends AnimatedSprite {
         if (this.movementCtrl.IsRunning && this.movementCtrl.MovementState !== MovementState.Idle) {
             this.playerStats.increaseStat(StatType.Dust, -dt * 0.005);   //  5/sec
         }
+
+        this.playerStats.onUpdate(dt);
     };
 
     /**

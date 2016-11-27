@@ -92,6 +92,7 @@
     <Content Include="assets\Images\Objects\gem.png" />
     <Content Include="assets\Images\Objects\gem32.png" />
     <Content Include="assets\Images\Objects\gem64.png" />
+    <Content Include="assets\Images\Objects\Lava.png" />
     <Content Include="assets\Images\Objects\star.png" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
@@ -190,6 +191,7 @@
     <TypeScriptCompile Include="Scripts\app\Demo\Bumper.ts" />
     <TypeScriptCompile Include="Scripts\app\Demo\HeroCharacter.ts" />
     <TypeScriptCompile Include="Scripts\app\Demo\Hud.ts" />
+    <TypeScriptCompile Include="Scripts\app\Demo\Lava.ts" />
     <TypeScriptCompile Include="Scripts\app\Demo\MovementController.ts" />
     <TypeScriptCompile Include="Scripts\app\Demo\JumpController.ts" />
     <TypeScriptCompile Include="Scripts\app\Demo\LevelLoader.ts" />
