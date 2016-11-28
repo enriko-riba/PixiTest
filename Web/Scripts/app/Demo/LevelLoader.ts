@@ -118,7 +118,7 @@ export class LevelLoader {
                 break;
 
             case "Lava":
-                var lv = new Lava();                
+                var lv = new Lava(definition.texture);                
                 dispObj = lv;
                 break;
         }

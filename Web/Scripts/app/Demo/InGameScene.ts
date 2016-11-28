@@ -180,27 +180,30 @@ export class InGameScene extends Scene {
         var playerStats = this.hero.PlayerStats;
         var dispObj: PIXI.DisplayObject = body.DisplayObject as PIXI.DisplayObject;
         switch (dispObj.interactionType) {
-            case 1:
+            case 1: //  small coin
                 playerStats.increaseStat(StatType.Coins, 1);
                 this.addCollectibleTween(dispObj);
                 this.addInfoMessage(dispObj.position, "+1 coin");
                 this.removeEntity(body);
                 break;
-            case 2:
+            case 2: //  coin
                 playerStats.increaseStat(StatType.Coins, 10);
                 this.addCollectibleTween(dispObj);
                 this.addInfoMessage(dispObj.position, "+10 coins");
                 this.removeEntity(body);
                 break;
-            case 3:
+            case 3: //  blue gem
                 playerStats.increaseStat(StatType.Coins, 100);
                 this.addCollectibleTween(dispObj);
                 this.addInfoMessage(dispObj.position, "+100 coins");
                 this.removeEntity(body);
                 break;
 
-            case 1000:
-                this.decreaseHP(0.1);
+            case 1000:  //   border lava
+                this.decreaseHP(0.3);
+                break;
+            case 1001:  //  lava
+                this.decreaseHP(2.5);
                 break;
         }
     }
@@ -277,9 +280,9 @@ export class InGameScene extends Scene {
      */
     private decreaseHP(amount: number) {
         var playerStats = this.hero.PlayerStats;
-        var oldHP = Math.floor(playerStats.getStat(StatType.HP));
+        var oldHP = Math.round(playerStats.getStat(StatType.HP));
         playerStats.increaseStat(StatType.HP, -amount);
-        var newHP = Math.floor(playerStats.getStat(StatType.HP));
+        var newHP = Math.round(playerStats.getStat(StatType.HP));
         if (newHP < oldHP) {
             this.addInfoMessage(this.hero.position, `-${oldHP-newHP} HP`);
         }
