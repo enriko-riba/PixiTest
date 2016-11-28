@@ -106,10 +106,10 @@ export class Hud extends PIXI.Container {
                 this.txtDust.text = `${Math.floor(event.Stats[StatType.Dust])} / ${event.NewValue.toFixed(0)}`;
                 break;
             case StatType.HP:
-                this.txtHP.text = `${Math.floor(event.NewValue)} / ${event.Stats[StatType.MaxHP]}`;
+                this.txtHP.text = `${Math.round(event.NewValue)} / ${event.Stats[StatType.MaxHP]}`;
                 break;
             case StatType.MaxHP:
-                this.txtHP.text = `${event.Stats[StatType.HP]} / ${event.NewValue}`;
+                this.txtHP.text = `${Math.round(event.Stats[StatType.HP])} / ${event.NewValue}`;
                 break;
         }
     };

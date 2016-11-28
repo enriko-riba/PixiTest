@@ -1,14 +1,16 @@
 ﻿import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
 
 export class Lava extends AnimatedSprite {
-    private readonly FRAME_SIZE: number = 64;
+    private readonly FRAME_SIZE_X: number = 64;
+    private readonly FRAME_SIZE_Y: number = 128;
 
-    constructor() {
+    constructor(textureName?: string) {
         super();
 
-        this.addAnimations(new AnimationSequence("lava", "assets/images/objects/lava.png", [0, 1, 2, 3], this.FRAME_SIZE, this.FRAME_SIZE));
-        this.scale.set(1, 2);
-        this.Anchor = new PIXI.Point(0.5, 0.25);
+        textureName = textureName || "assets/images/objects/lava.png";
+        this.addAnimations(new AnimationSequence("lava", textureName, [0, 1, 2, 3], this.FRAME_SIZE_X, this.FRAME_SIZE_Y));
+        //this.scale.set(1, 2);
+        this.Anchor = new PIXI.Point(0.5, 0.30);
         this.PlayAnimation("lava", 4);
     }
 }

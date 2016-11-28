@@ -308,14 +308,6 @@
           },
           {
             "template": "box64b",
-            "xy": [ 2560, 32 ]
-          },
-          {
-            "template": "box64b",
-            "xy": [ 2816, 32 ]
-          },
-          {
-            "template": "box64b",
             "xy": [ 3072, 32 ]
           },
           {
@@ -348,18 +340,42 @@
           },
           {
             "template": "lava",
+            "texture": "assets/images/objects/lava-border-l.png",
             "interactionType": 1000,
-            "xy": [ 1950, -40 ]
+            "xy": [ 1950, -60 ]
           },
           {
             "template": "lava",
-            "interactionType": 1000,
-            "xy": [ 2014, -40 ]
+            "interactionType": 1001,
+            "xy": [ 2014, -60 ]
           },
           {
             "template": "lava",
+            "interactionType": 1001,
+            "xy": [ 2078, -60 ]
+          },
+          {
+            "template": "lava",
+            "texture": "assets/images/objects/lava-border-r.png",
             "interactionType": 1000,
-            "xy": [ 2078, -40 ]
+            "xy": [ 2142, -60 ]
+          },
+          {
+            "template": "lava",
+            "texture": "assets/images/objects/lava-border-l.png",
+            "interactionType": 1000,
+            "xy": [ 2560, -60 ]
+          },
+          {
+            "template": "lava",
+            "interactionType": 1001,
+            "xy": [ 2624, -60 ]
+          },
+          {
+            "template": "lava",
+            "texture": "assets/images/objects/lava-border-r.png",
+            "interactionType": 1000,
+            "xy": [ 2688, -60 ]
           }
         ],
 
