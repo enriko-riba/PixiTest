@@ -93,6 +93,7 @@
     <Content Include="assets\Images\Objects\gem32.png" />
     <Content Include="assets\Images\Objects\gem64.png" />
     <Content Include="assets\Images\Objects\Lava-border-l.png" />
+    <Content Include="assets\Images\Objects\Lava-border-r.png" />
     <Content Include="assets\Images\Objects\Lava.png" />
     <Content Include="assets\Images\Objects\star.png" />
     <Content Include="Content\bootstrap-theme.css" />
