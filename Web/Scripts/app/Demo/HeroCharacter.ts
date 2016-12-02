@@ -91,6 +91,7 @@ export class HeroCharacter extends AnimatedSprite {
 
         this.playerStats.onUpdate(dt);
     };
+   
 
     /**
      * Checks if the player jumped on something with a high velocity and adds some smoke.
@@ -102,8 +103,7 @@ export class HeroCharacter extends AnimatedSprite {
         if (Math.abs(event.velocity[1]) > SMOKE_VELOCITY) {
             var smoke:AnimatedSprite = new AnimatedSprite();
             smoke.addAnimations(new AnimationSequence("smoke", "assets/images/effects/jump_smoke.png",
-                [0, 1, 2, 3, 4, 5],
-                this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
+                [0, 1, 2, 3, 4, 5], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
             smoke.Anchor = new PIXI.Point(0.5, 0.5);
             smoke.x = this.x;
             smoke.y = this.y - this.HERO_FRAME_SIZE / 2;

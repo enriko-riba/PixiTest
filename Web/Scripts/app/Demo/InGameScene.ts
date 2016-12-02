@@ -1,12 +1,13 @@
 ﻿import * as Global from "./Global";
 import * as TWEEN from "tween";
+import * as ko from "knockout";
 
 import { Scene } from "app/_engine/Scene";
 import { Parallax } from "app/_engine/Parallax";
 import { WorldP2 } from "./WorldP2";
-import { LevelLoader, ILevelMap, IMapEntity } from "./LevelLoader";
 import { Hud } from "./Hud";
-import { Stats, StatType } from "./Stats";
+import { LevelLoader, ILevelMap, IMapEntity } from "./LevelLoader";
+import { DPS_TOPIC, IDpsChangeEvent, IStatChangeEvent, Stats, StatType } from "./Stats";
 import { HeroCharacter } from "./HeroCharacter";
 
 import "pixi-particles";
@@ -86,7 +87,6 @@ export class InGameScene extends Scene {
     private parallaxBackgrounds: Array<Parallax> = [];
     private hud = new Hud();
     private wp2: WorldP2;
-    private entities = [];
     private hero: HeroCharacter;
 
     /**
@@ -138,11 +138,14 @@ export class InGameScene extends Scene {
         //-------------------------------------------
         //  update entities position
         //-------------------------------------------
-        for (var i = 0, len = this.entities.length; i < len; i++) {
-            let body = this.entities[i];
-            let displayObject: PIXI.DisplayObject = body.DisplayObject as PIXI.DisplayObject;
-            displayObject.position.set(body.interpolatedPosition[0], body.interpolatedPosition[1]);
-            displayObject.rotation = body.interpolatedAngle;
+        var bodies = this.wp2.bodies;
+        for (var i = 0, len = bodies.length; i < len; i++) {
+            let body = bodies[i];
+            let displayObject: PIXI.DisplayObject = (body as any).DisplayObject as PIXI.DisplayObject;
+            if (displayObject) {
+                displayObject.position.set(body.interpolatedPosition[0], body.interpolatedPosition[1]);
+                displayObject.rotation = body.interpolatedAngle;
+            }
         }
 
         //-------------------------------------------
@@ -151,7 +154,7 @@ export class InGameScene extends Scene {
         for (var i = 0, len = this.wp2.playerContacts.length; i < len; i++) {
             let body: any = this.wp2.playerContacts[i];
             if (body.DisplayObject && body.DisplayObject.interactionType) {
-                this.handleCollectibleCollision(body);
+                this.handleInteractiveCollision(body);
             }
         }
 
@@ -173,10 +176,10 @@ export class InGameScene extends Scene {
     };
 
     /**
-     * Handles player collision with collectibles.
+     * Handles player collision with interactive objects.
      * @param body
      */
-    private handleCollectibleCollision(body: any): void {
+    private handleInteractiveCollision(body: any): void {
         var playerStats = this.hero.PlayerStats;
         var dispObj: PIXI.DisplayObject = body.DisplayObject as PIXI.DisplayObject;
         switch (dispObj.interactionType) {
@@ -199,11 +202,21 @@ export class InGameScene extends Scene {
                 this.removeEntity(body);
                 break;
 
-            case 1000:  //   border lava
-                this.decreaseHP(0.3);
+            case 1000:  //   border lava                
+                if (!playerStats.IsInDpsType[1000]) {
+                    this.decreaseHP(1);
+                }
+                playerStats.IsInDpsType[1000] = true;
+                //playerStats.startDPS(1000, 0.4);
                 break;
+
             case 1001:  //  lava
-                this.decreaseHP(2.5);
+                //this.decreaseHP(2.5);
+                //playerStats.startDPS(1001, 2.4);
+                if (!playerStats.IsInDpsType[1001]) {
+                    this.decreaseHP(3);
+                }
+                playerStats.IsInDpsType[1001] = true;
                 break;
         }
     }
@@ -213,8 +226,6 @@ export class InGameScene extends Scene {
      * @param body
      */
     private removeEntity(body: any): void {
-        var bodyIdx = this.entities.indexOf(body);
-        this.entities.splice(bodyIdx, 1);
         this.wp2.removeBody(body);
         body.DisplayObject = null;
     }
@@ -314,7 +325,6 @@ export class InGameScene extends Scene {
         //--------------------------------------
         var levelLoader = new LevelLoader("assets/levels/levels.json");
         var lvl = levelLoader.BuildLevel("Intro");
-        this.entities = lvl.entities;
 
         //  add all object pairs to renderer and physics world
         lvl.entities.forEach((body:any) => {
@@ -340,6 +350,12 @@ export class InGameScene extends Scene {
         playerStats.setStat(StatType.HP, 80);
         playerStats.setStat(StatType.MaxDust, 1000);
         playerStats.setStat(StatType.Dust, 100);
+
+        ko.postbox.subscribe<IDpsChangeEvent>(DPS_TOPIC, this.handleDpsChange);
+    }
+
+    private handleDpsChange = (event: IDpsChangeEvent) => {
+        this.addInfoMessage(this.hero.position, `${event.Amount} HP`);
     }
 
     /**
@@ -352,8 +368,8 @@ export class InGameScene extends Scene {
             NPC:[]
         };
 
-        this.entities.forEach((body: p2.Body) => {
-            var displayObject: PIXI.DisplayObject = (body as any).DisplayObject as PIXI.DisplayObject;
+        this.wp2.bodies.forEach((body: any) => {
+            var displayObject: PIXI.DisplayObject = body.DisplayObject as PIXI.DisplayObject;
             var entity: IMapEntity = {
                 template: (displayObject as any).templateName,
                 xy: [displayObject.x, displayObject.y],

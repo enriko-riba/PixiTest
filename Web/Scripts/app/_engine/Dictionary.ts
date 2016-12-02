@@ -1,24 +1,34 @@
 export class Dictionary<T> {
-    private values: { [key: string]: T; } = {};
+    private _values: { [key: string]: T; } = {};
+    private _keys: string[] = [];
 
     public get(key: string): T {
-        return this.values[key];        
+        return this._values[key];        
     }
 
     public contains(key: string): boolean {
-        return key in this.values;
+        return key in this._values;
     }
 
     public remove(key: string) {
-        delete this.values[key];
+        var index = this._keys.indexOf(key, 0);
+        this._keys.splice(index, 1);
+        delete this._values[key];
     }
 
     public set(key: string, value: T) {
-        this.values[key] = value;
+        if (!(key in this._values)) {
+            this._keys.push(key);
+        }
+        this._values[key] = value;
+    }
+
+    public get keys(): string[] {
+        return this._keys;
     }
 
     public getAll(): { [key: string]: T; } {
-        return this.values;
+        return this._values;
     }
 
     public getSet(key: string, valueGetter: () => T): T;
