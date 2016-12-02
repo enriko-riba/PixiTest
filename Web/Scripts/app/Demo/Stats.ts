@@ -1,11 +1,17 @@
 ﻿import * as ko from "knockout";
+import { Dictionary } from "app/_engine/Dictionary";
 
 export enum StatType {
     MaxHP,
     HP,
     MaxDust,
     Dust,
-    Coins
+    Coins,
+}
+
+export enum DpsType {
+    LavaBorder,
+    Lava,
 }
 
 export interface IStatChangeEvent {
@@ -15,12 +21,19 @@ export interface IStatChangeEvent {
     Stats: Array<number>;
 }
 
+export interface IDpsChangeEvent {
+    OldValue: number;
+    Amount: number;
+}
+
 export var STATCHANGE_TOPIC = "stat_changed";
+export var DPS_TOPIC = "dps_changed";
 
 export class Stats {
     private stats: Array<number> = [];
 
     private accumulator: number = 0.0;
+    private dpsDecreaseAmount: number = 0;
 
     constructor() {
         this.stats[StatType.Coins] = 0;
@@ -31,9 +44,29 @@ export class Stats {
     }
 
     /**
-     *  Updates stats that recover over time
+     *  Updates stats that increase/decrease over time.
+     *  The update is calculated in a second interval.
      */
     public onUpdate = (dt: number) => {
+
+        //  accumulate dps
+        for (let i = 1000, len = this.IsInDpsType.length; i < len; i++){
+            if (this.IsInDpsType[i]) {
+                let dps = 0;
+                switch (i) {
+                    case 1000:  // lava border
+                        dps = 0.6;
+                        break;
+                    case 1000:  // lava
+                        dps = 2.4;
+                        break;
+                }
+                let dmg = dt * 0.001 * dps;
+                this.dpsDecreaseAmount += dmg;
+            }
+        }
+
+        //  handle once per second ticks
         this.accumulator += dt;
         if (this.accumulator > 1000) {
             this.accumulator -= 1000;
@@ -46,6 +79,18 @@ export class Stats {
             //  hp
             if (this.stats[StatType.HP] < this.stats[StatType.MaxHP]) {
                 this.increaseStat(StatType.HP, 0.5);
+            }
+
+            //  dps
+            if (this.dpsDecreaseAmount >= 1) {
+                var amount = Math.floor(this.dpsDecreaseAmount);
+                let event = {
+                    OldValue: this.stats[StatType.HP],
+                    Amount: -amount
+                };               
+                ko.postbox.publish<IDpsChangeEvent>(DPS_TOPIC, event);
+                this.increaseStat(StatType.HP, -amount);
+                this.dpsDecreaseAmount -= amount;
             }
         }
     };
@@ -60,10 +105,11 @@ export class Stats {
         ko.postbox.publish<IStatChangeEvent>(STATCHANGE_TOPIC, this.scevent);
         this.stats[type] += value;
     }
-
     public getStat(type: StatType): number {
         return this.stats[type];
     }
+
+    public IsInDpsType: Array<boolean> = [];
 
     private scevent: IStatChangeEvent = {
         Type: StatType.Coins,
