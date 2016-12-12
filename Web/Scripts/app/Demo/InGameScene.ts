@@ -1,21 +1,19 @@
-﻿import { Scene } from "app/_engine/Scene";
-import { Parallax } from "app/_engine/Parallax";
-import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
-import { Button } from "app/_engine/Button";
-
-import * as Global from "./Global";
-import { WorldP2 } from "./WorldP2";
-import { MovementController } from "./MovementController";
-import { MovementState } from "./MovementState";
-import { LevelLoader, ILevelMap, IMapEntity } from "./LevelLoader";
-
-import { Hud } from "./Hud";
-import { Stats, StatType } from "./Stats";
-
+﻿import * as Global from "./Global";
 import * as TWEEN from "tween";
+import * as ko from "knockout";
+
+import { Scene } from "app/_engine/Scene";
+import { Parallax } from "app/_engine/Parallax";
+import { WorldP2 } from "./WorldP2";
+import { Hud } from "./Hud";
+import { LevelLoader, ILevelMap, IMapEntity } from "./LevelLoader";
+import { DPS_TOPIC, IDpsChangeEvent, IStatChangeEvent, Stats, StatType } from "./Stats";
+import { HeroCharacter } from "./HeroCharacter";
+
 import "pixi-particles";
 
 export function createParticleEmitter(container: PIXI.Container): PIXI.particles.Emitter {
+    "use strict";
     var emitter = new PIXI.particles.Emitter(
 
         // The PIXI.Container to put the emitter in
@@ -31,7 +29,7 @@ export function createParticleEmitter(container: PIXI.Container): PIXI.particles
         {
             "alpha": {
                 "start": 0.8,
-                "end": 0.05
+                "end": 0.03
             },
             "color": {
                 start: "#dcff09",
@@ -44,7 +42,7 @@ export function createParticleEmitter(container: PIXI.Container): PIXI.particles
             },
             "speed": {
                 "start": 40,
-                "end": 5,
+                "end": 3,
                 "minimumSpeedMultiplier": 1
             },
             "acceleration": new PIXI.Point(),
@@ -57,13 +55,13 @@ export function createParticleEmitter(container: PIXI.Container): PIXI.particles
                 "max": 20
             },
             "lifetime": {
-                "min": 0.5,
+                "min": 0.4,
                 "max": 1.0
             },
             "blendMode": "add",
             "frequency": 0.01,
             "emitterLifetime": -1,
-            "maxParticles": 500,
+            "maxParticles": 200,
             "pos": new PIXI.Point(0, -24),
             "addAtBack": false,
             "spawnType": "circle",
@@ -85,21 +83,11 @@ export class InGameScene extends Scene {
     private readonly HERO_FRAME_SIZE: number = 64;
     private readonly SCENE_HALF_WIDTH: number = Global.SCENE_WIDTH / 2;
 
-    private readonly playerStats = new Stats();
-
     private worldContainer: PIXI.Container;
     private parallaxBackgrounds: Array<Parallax> = [];
-
-    private hero: AnimatedSprite;
-    private heroPosition: PIXI.Point = new PIXI.Point();
-
-    private movementCtrl: MovementController;
     private hud = new Hud();
-
     private wp2: WorldP2;
-    private entities = [];
-
-    private emitter: PIXI.particles.Emitter;
+    private hero: HeroCharacter;
 
     /**
      *   Creates a new scene instance.
@@ -125,46 +113,18 @@ export class InGameScene extends Scene {
         this.setup();
     }
 
+    
     /**
-     *  Updates physics and handles user input
+     * Updates physics and handles player collisions.
+     * @param dt elapsed time in milliseconds
      */
     public onUpdate = (dt: number) => {
-
-        this.movementCtrl.update(dt);
         this.wp2.update(dt);
-        this.playerStats.onUpdate(dt);
-
-        this.emitter.update(dt * 0.001);
-        this.emitter.ownerPos = this.heroPosition;
-        switch (this.movementCtrl.MovementState) {
-            case MovementState.Idle:
-                this.emitter.emit = false;
-                break;
-            case MovementState.Left:
-            case MovementState.JumpLeft:
-                this.emitter.emit = this.movementCtrl.IsRunning;
-                this.emitter.minStartRotation = -25;
-                this.emitter.maxStartRotation = 25;
-                break;
-            case MovementState.Right:
-            case MovementState.JumpRight:
-                this.emitter.emit = this.movementCtrl.IsRunning;
-                this.emitter.minStartRotation = 155;
-                this.emitter.maxStartRotation = 205;
-                break;
-
-            case MovementState.JumpUp:
-                this.emitter.emit = this.movementCtrl.IsRunning;
-                this.emitter.minStartRotation = 245;
-                this.emitter.maxStartRotation = 295;
-                break;
-        }
+        this.hero.update(dt);
 
         //-------------------------------------------
-        //  update hero & world container position
-        //-------------------------------------------
-        this.hero.x = this.heroPosition.x;
-        this.hero.y = this.heroPosition.y;
+        //  update world container position
+        //-------------------------------------------        
         this.worldContainer.x = -this.hero.x + this.SCENE_HALF_WIDTH;
         this.worldContainer.y = Global.SCENE_HEIGHT - 70;
 
@@ -172,17 +132,20 @@ export class InGameScene extends Scene {
         //  update parallax
         //-------------------------------------------
         for (var i = 0; i < this.parallaxBackgrounds.length; i++) {
-            this.parallaxBackgrounds[i].SetViewPortX(this.heroPosition.x);
+            this.parallaxBackgrounds[i].SetViewPortX(this.hero.x);
         }
 
         //-------------------------------------------
         //  update entities position
         //-------------------------------------------
-        for (var i = 0, len = this.entities.length; i < len; i++) {
-            let body = this.entities[i];
-            let displayObject: PIXI.DisplayObject = body.DisplayObject as PIXI.DisplayObject;
-            displayObject.position.set(body.interpolatedPosition[0], body.interpolatedPosition[1]);
-            displayObject.rotation = body.interpolatedAngle;
+        var bodies = this.wp2.bodies;
+        for (var i = 0, len = bodies.length; i < len; i++) {
+            let body = bodies[i];
+            let displayObject: PIXI.DisplayObject = (body as any).DisplayObject as PIXI.DisplayObject;
+            if (displayObject) {
+                displayObject.position.set(body.interpolatedPosition[0], body.interpolatedPosition[1]);
+                displayObject.rotation = body.interpolatedAngle;
+            }
         }
 
         //-------------------------------------------
@@ -190,8 +153,8 @@ export class InGameScene extends Scene {
         //-------------------------------------------
         for (var i = 0, len = this.wp2.playerContacts.length; i < len; i++) {
             let body: any = this.wp2.playerContacts[i];
-            if (body.DisplayObject && body.DisplayObject.collectibleType) {
-                this.handleCollectibleCollision(body);
+            if (body.DisplayObject && body.DisplayObject.interactionType) {
+                this.handleInteractiveCollision(body);
             }
         }
 
@@ -199,8 +162,8 @@ export class InGameScene extends Scene {
         //  invoke update on each updateable
         //-------------------------------------------
         for (var i = 0, len = this.worldContainer.children.length; i < len; i++) {
-            let child:any = this.worldContainer.children[i];
-            if (child.onUpdate) {
+            let child: any = this.worldContainer.children[i];           
+            if (child && child.onUpdate) {
                 child.onUpdate(dt);
             }
         };
@@ -208,39 +171,63 @@ export class InGameScene extends Scene {
         //-------------------------------------------
         //  finally update the hud
         //-------------------------------------------
-        this.hud.heroPosition = this.heroPosition;
+        this.hud.heroPosition = this.hero.position;
         this.hud.onUpdate(dt);
     };
 
     /**
-     * Handles player collision with collectibles.
+     * Handles player collision with interactive objects.
      * @param body
      */
-    private handleCollectibleCollision(body: any): void {
-        var bodyIdx = this.entities.indexOf(body);
-        this.entities.splice(bodyIdx, 1);
-        this.wp2.removeBody(body);
-
+    private handleInteractiveCollision(body: any): void {
+        var playerStats = this.hero.PlayerStats;
         var dispObj: PIXI.DisplayObject = body.DisplayObject as PIXI.DisplayObject;
-        body.DisplayObject = null;
+        switch (dispObj.interactionType) {
+            case 1: //  small coin
+                playerStats.increaseStat(StatType.Coins, 1);
+                this.addCollectibleTween(dispObj);
+                this.addInfoMessage(dispObj.position, "+1 coin");
+                this.removeEntity(body);
+                break;
+            case 2: //  coin
+                playerStats.increaseStat(StatType.Coins, 10);
+                this.addCollectibleTween(dispObj);
+                this.addInfoMessage(dispObj.position, "+10 coins");
+                this.removeEntity(body);
+                break;
+            case 3: //  blue gem
+                playerStats.increaseStat(StatType.Coins, 100);
+                this.addCollectibleTween(dispObj);
+                this.addInfoMessage(dispObj.position, "+100 coins");
+                this.removeEntity(body);
+                break;
 
-        switch (dispObj.collectibleType) {
-            case 1:
-                this.playerStats.increaseStat(StatType.Coins, 1);
-                this.addCollectibleTween(dispObj);
-                this.addCollectibleInfo(dispObj.position, "+1 coin");
+            case 1000:  //   border lava                
+                if (!playerStats.IsInDpsType[1000]) {
+                    this.decreaseHP(1);
+                }
+                playerStats.IsInDpsType[1000] = true;
+                //playerStats.startDPS(1000, 0.4);
                 break;
-            case 2:
-                this.playerStats.increaseStat(StatType.Coins, 10);
-                this.addCollectibleTween(dispObj);
-                this.addCollectibleInfo(dispObj.position, "+10 coins");
-                break;
-            case 3:
-                this.playerStats.increaseStat(StatType.Coins, 100);
-                this.addCollectibleTween(dispObj);
-                this.addCollectibleInfo(dispObj.position, "+100 coins");
+
+            case 1001:  //  lava
+                //this.decreaseHP(2.5);
+                //playerStats.startDPS(1001, 2.4);
+                if (!playerStats.IsInDpsType[1001]) {
+                    this.decreaseHP(3);
+                }
+                playerStats.IsInDpsType[1001] = true;
                 break;
         }
+    }
+
+    /**
+     * Removes an entity from the stage.
+     * @param body
+     */
+    private removeEntity(body: any): void {
+        this.wp2.removeBody(body);
+        body.DisplayObject = null;
     }
 
     /**
@@ -271,12 +258,15 @@ export class InGameScene extends Scene {
 
     /**
      * Starts an animation tween with informational text moving upwards from the given position.
-     * @param dispObj
+     * @param position the start position of the message
+     * @param message the message to be added
+     * @param style optional PIXI.ITextStyle
      */
-    private addCollectibleInfo(position: PIXI.Point, info: string):void {
-        var txtInfo = new PIXI.Text(info, Global.TXT_STYLE);
+    private addInfoMessage(position: PIXI.Point, message: string, style?: PIXI.ITextStyle): void {
+        var stl = style || Global.TXT_STYLE;
+        var txtInfo = new PIXI.Text(message, stl);
         txtInfo.position.set(position.x, position.y);
-        txtInfo.scale.set(1, -1);//  scale invert since everything is upside down due to coordinate system
+        txtInfo.scale.set(1, -1);   //  scale invert since everything is upside down due to coordinate system
 
         this.worldContainer.addChild(txtInfo);
 
@@ -296,43 +286,45 @@ export class InGameScene extends Scene {
     }
 
     /**
+     * Decreases the HP for the given amount and displays a message with the total integer amount.
+     * @param amount the positive amount to decrease the HP
+     */
+    private decreaseHP(amount: number) {
+        var playerStats = this.hero.PlayerStats;
+        var oldHP = Math.round(playerStats.getStat(StatType.HP));
+        playerStats.increaseStat(StatType.HP, -amount);
+        var newHP = Math.round(playerStats.getStat(StatType.HP));
+        if (newHP < oldHP) {
+            this.addInfoMessage(this.hero.position, `-${oldHP-newHP} HP`);
+        }
+    }
+
+    /**
      * Sets up the scene.
      */
     private setup(): void {
         this.BackGroundColor = 0x1099bb;
         PIXI.SCALE_MODES.DEFAULT = PIXI.SCALE_MODES.LINEAR;
 
-        //-----------------------------
-        //  setup hero
-        //-----------------------------
-        this.emitter = createParticleEmitter(this.worldContainer);
-        this.emitter.emit = true;
-        this.hero = new AnimatedSprite();
-        this.hero.addAnimations(new AnimationSequence("right", "assets/images/hero_64.png", [12, 13, 14, 15, 16, 17], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
-        this.hero.addAnimations(new AnimationSequence("left", "assets/images/hero_64.png", [6, 7, 8, 9, 10, 11], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
-        this.hero.addAnimations(new AnimationSequence("jumpleft", "assets/images/hero_64.png", [48, 49, 50, 51, 52, 53], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
-        this.hero.addAnimations(new AnimationSequence("jumpright", "assets/images/hero_64.png", [54, 55, 56, 57, 58, 59], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
-        this.hero.addAnimations(new AnimationSequence("jumpup", "assets/images/hero_64.png", [1, 3, 4], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
-        this.hero.addAnimations(new AnimationSequence("idle", "assets/images/hero_64.png", [25, 24, 40, 19, 19, 18, 19, 22, 30, 31, 1, 1, 1], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
-        this.hero.Anchor = new PIXI.Point(0.5, 0.45);
-        this.worldContainer.addChild(this.hero);
-        this.hero.PlayAnimation("idle");
-
-
         //--------------------------------------
         //  setup physics subsystem
         //--------------------------------------
-        this.heroPosition.set(-250, 36);
-        this.wp2 = new WorldP2(this.heroPosition);
-        this.wp2.on("playerContact", this.onPlayerContact, this);
-        this.movementCtrl = new MovementController(this.wp2, this.hero);
+        var startPosition = new PIXI.Point(-350, 36);
+        this.wp2 = new WorldP2(startPosition);
+        
 
+        //-----------------------------
+        //  setup hero
+        //-----------------------------        
+        this.hero = new HeroCharacter(this.wp2, this.worldContainer);
+        this.hero.position = startPosition;
+        this.worldContainer.addChild(this.hero);        
+        
         //--------------------------------------
         //  load level from json (under construction)
         //--------------------------------------
         var levelLoader = new LevelLoader("assets/levels/levels.json");
         var lvl = levelLoader.BuildLevel("Intro");
-        this.entities = lvl.entities;
 
         //  add all object pairs to renderer and physics world
         lvl.entities.forEach((body:any) => {
@@ -344,37 +336,26 @@ export class InGameScene extends Scene {
         this.parallaxBackgrounds = lvl.parallax;
         lvl.parallax.forEach((plx: Parallax, idx:number) => {
             this.worldContainer.addChildAt(plx, idx);
-            //  TODO: there is a bug not initially calculating all viewport visible parallax textures so just move it in both directions to recalc all textures
+            //  TODO: there is a bug not initially calculating all viewport  
+            //        visible parallax textures. So just move it in both 
+            //        directions to trigger textures recalculation
             plx.SetViewPortX(0);
-            plx.SetViewPortX(this.heroPosition.x + 1);
+            plx.SetViewPortX(this.hero.position.x + 1);
         });
 
         //  TODO: load initial settings
-        this.playerStats.setStat(StatType.Coins, 0);
-        this.playerStats.setStat(StatType.MaxHP, 100);
-        this.playerStats.setStat(StatType.HP, 80);
-        this.playerStats.setStat(StatType.MaxDust, 1000);
-        this.playerStats.setStat(StatType.Dust, 100);
+        var playerStats = this.hero.PlayerStats;
+        playerStats.setStat(StatType.Coins, 0);
+        playerStats.setStat(StatType.MaxHP, 100);
+        playerStats.setStat(StatType.HP, 80);
+        playerStats.setStat(StatType.MaxDust, 1000);
+        playerStats.setStat(StatType.Dust, 100);
+
+        ko.postbox.subscribe<IDpsChangeEvent>(DPS_TOPIC, this.handleDpsChange);
     }
 
-    /**
-     * Checks if the player jumped on something with a higher velocity and adds some smoke.
-     * @param event
-     */
-    private onPlayerContact(event: any): void {
-        if (Math.abs(event.velocity[1]) > 425) {
-            var smoke = new AnimatedSprite();
-            smoke.addAnimations(new AnimationSequence("smoke", "assets/images/effects/jump_smoke.png", [0,1,2,3,4,5], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
-            smoke.Anchor = new PIXI.Point(0.5, 0.5);
-            smoke.x = this.heroPosition.x;
-            smoke.y = this.heroPosition.y - this.HERO_FRAME_SIZE/2;
-            smoke.Loop = false;
-            smoke.OnComplete = () => this.worldContainer.removeChild(smoke);
-            smoke.alpha = 0.7;
-            smoke.rotation = Math.random() * Math.PI;
-            this.worldContainer.addChild(smoke);
-            smoke.PlayAnimation("smoke", 5);
-        }
+    private handleDpsChange = (event: IDpsChangeEvent) => {
+        this.addInfoMessage(this.hero.position, `${event.Amount} HP`);
     }
 
     /**
@@ -387,15 +368,15 @@ export class InGameScene extends Scene {
             NPC:[]
         };
 
-        this.entities.forEach((body: p2.Body) => {
-            var displayObject: PIXI.DisplayObject = (body as any).DisplayObject as PIXI.DisplayObject;
+        this.wp2.bodies.forEach((body: any) => {
+            var displayObject: PIXI.DisplayObject = body.DisplayObject as PIXI.DisplayObject;
             var entity: IMapEntity = {
                 template: (displayObject as any).templateName,
                 xy: [displayObject.x, displayObject.y],
                 rotation: displayObject.rotation,
                 scale: [displayObject.scale.x, displayObject.scale.y],
-                collectibleType: displayObject.collectibleType
-            };            
+                interactionType: displayObject.interactionType
+            };
             map.entities.push(entity);
         });
         console.log(JSON.stringify(map.entities));

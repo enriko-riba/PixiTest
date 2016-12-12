@@ -67,6 +67,13 @@ export class WorldP2 {
     }
 
     /**
+     * Returns the world bodies.
+     */
+    public get bodies(): Array<p2.Body> {
+        return this.world.bodies;
+    }
+
+    /**
      * Adds an event handler to the p2 world object.
      * @param eventName
      * @param handler
@@ -189,18 +196,27 @@ export class WorldP2 {
         return this.playerBodyContacts;
     }
 
+    /**
+     * Returns the players x position.
+     */
+    public get playerX(): number {
+        return this.playerPosition.x;
+    }
+    /**
+     * Returns the players x position.
+     */
+    public get playerY(): number {
+        return this.playerPosition.y;
+    }
+
     private beginContact = (evt: any) => {
 
         //  check for player contacts (but only with dynamic bodies)
         if (this.playerBody === evt.bodyA) {
-            //console.log("beginContact: ", evt.bodyB, this.player);
-            //console.log("contact velocity: " + this.player.velocity[0] + ", " + this.player.velocity[1]);
             this.playerBodyContacts.push(evt.bodyB);
             this.world.emit({ type: "playerContact", velocity: this.playerBody.velocity, body: evt.bodyB });
             return;
         } else if (this.playerBody === evt.bodyB) {
-            //console.log("beginContact: ", evt.bodyA, this.player);
-            //console.log("contact velocity: " + this.player.velocity[0] + ", " + this.player.velocity[1]);
             this.playerBodyContacts.push(evt.bodyA);
             this.world.emit({ type: "playerContact", velocity: this.playerBody.velocity, body: evt.bodyB });
             return;
@@ -217,18 +233,18 @@ export class WorldP2 {
     };
 
     private endContact = (evt: any) => {
-        //  check for player contacts 
+        //  if it is a player contact remove the foreign body from the playerBodyContacts list
         if (this.playerBody === evt.bodyA) {
-            //console.log("endContact: ", evt);
-            //console.log("endcontact velocity: " + this.player.velocity[0] + ", " + this.player.velocity[1]);
             var bodyIDX = this.playerBodyContacts.indexOf(evt.bodyB);
             this.playerBodyContacts.splice(bodyIDX, 1);
+            this.world.emit({ type: "playerContactEnd", velocity: this.playerBody.velocity, body: evt.bodyB });
+            //console.log("endContact",evt.bodyB);
             return;
         } else if (this.playerBody === evt.bodyB) {
-            //console.log("endContact: ", evt);
-            //console.log("endcontact velocity: " + this.player.velocity[0] + ", " + this.player.velocity[1]);
             var bodyIDX = this.playerBodyContacts.indexOf(evt.bodyB);
             this.playerBodyContacts.splice(bodyIDX, 1);
+            this.world.emit({ type: "playerContactEnd", velocity: this.playerBody.velocity, body: evt.bodyA });
+            //console.log("endContact", evt.bodyA);
             return;
         }
 

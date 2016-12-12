@@ -88,6 +88,9 @@ export class LoaderScene extends Scene {
             "assets/images/objects/gem32.png",
             "assets/images/objects/gem64.png",
             "assets/images/objects/star.png",
+            "assets/images/objects/lava.png",
+            "assets/images/objects/lava-border-l.png",
+            "assets/images/objects/lava-border-r.png",
 
             "assets/levels/levels.json",
         ];

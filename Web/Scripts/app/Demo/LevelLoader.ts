@@ -1,6 +1,7 @@
 ﻿import * as Global from "./Global";
 import { Parallax } from "app/_engine/Parallax";
 import { Bumper } from "./Bumper";
+import { Lava } from "./Lava";
 import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
 
 export class LevelLoader {
@@ -115,6 +116,11 @@ export class LevelLoader {
                 bmp.anchor.set(0.5);
                 dispObj = bmp;
                 break;
+
+            case "Lava":
+                var lv = new Lava(definition.texture);                
+                dispObj = lv;
+                break;
         }
         
         dispObj.pivot.set(0.5);
@@ -125,8 +131,8 @@ export class LevelLoader {
         if (definition.scale) {
             dispObj.scale.set(definition.scale[0], definition.scale[1]);
         }
-        if (definition.collectibleType) {
-            dispObj.collectibleType = definition.collectibleType;
+        if (definition.interactionType) {
+            dispObj.interactionType = definition.interactionType;
         }
         
         return dispObj;
@@ -185,7 +191,7 @@ export class LevelLoader {
                 (shape as any).materialName = definition.material;                
             }
 
-            if (!!dispObj.collectibleType) {
+            if (!!dispObj.interactionType) {
                 shape.sensor = true;
                 body.type = p2.Body.STATIC;
                 body.collisionResponse = false;
@@ -238,7 +244,7 @@ export interface IDisplayObjectDefinition {
     xy?: number[];
     scale?: number[];
     rotation?: number;
-    collectibleType?: number; 
+    interactionType?: number; 
     tint?: number;
     fps?: number;
     sequences?:IAnimationSequence[]
@@ -255,7 +261,7 @@ export interface IMapEntity {
     scale?: number[];
     rotation?: number;
     texture?: string;
-    collectibleType?: number; 
+    interactionType?: number; 
 }
 
 export interface ILevelMap {
