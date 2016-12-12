@@ -86,9 +86,23 @@
             "body": {
               "shape": "Box",
               "type": 4,
-              "damping": 0, 
+              "damping": 0,
               "angularDamping": 0,
               "material": "bumper"
+            }
+          },
+          {
+            "name": "lava",
+            "displayObject": {
+              "typeName": "Lava",
+              "rotation": 0
+            },
+            "body": {
+              "shape": "Box",
+              "type": 4,
+              "damping": 0,
+              "angularDamping": 0,
+              "material": "lava"
             }
           },
           {
@@ -146,85 +160,85 @@
           },
           {
             "template": "coin",
-            "collectibleType": 1,
-            "scale": [0.7,0.7],
+            "interactionType": 1,
+            "scale": [ 0.7, 0.7 ],
             "xy": [ 100, 170 ]
           },
           {
             "template": "coin",
-            "collectibleType": 1,
+            "interactionType": 1,
             "scale": [ 0.7, 0.7 ],
             "xy": [ 130, 170 ]
           },
           {
             "template": "coin",
-            "collectibleType": 1,
+            "interactionType": 1,
             "scale": [ 0.7, 0.7 ],
             "xy": [ 160, 170 ]
           },
 
           {
             "template": "gem",
-            "collectibleType": 3,
+            "interactionType": 3,
             "xy": [ 200, 350 ]
           },
 
 
           {
             "template": "coin",
-            "collectibleType": 2,
+            "interactionType": 2,
             "xy": [ 940, 340 ]
           },
           {
             "template": "coin",
-            "collectibleType": 2,
+            "interactionType": 2,
             "xy": [ 970, 350 ]
           },
           {
             "template": "coin",
-            "collectibleType": 2,
+            "interactionType": 2,
             "xy": [ 1000, 350 ]
           },
           {
             "template": "coin",
-            "collectibleType": 2,
+            "interactionType": 2,
             "xy": [ 1030, 340 ]
           },
           {
             "template": "coin",
-            "collectibleType": 2,
+            "interactionType": 2,
             "xy": [ 1060, 330 ]
           },
 
           {
             "template": "coin",
-            "collectibleType": 2,
+            "interactionType": 2,
             "xy": [ 1452, 340 ]
           },
           {
             "template": "coin",
-            "collectibleType": 2,
+            "interactionType": 2,
             "xy": [ 1482, 350 ]
           },
           {
             "template": "coin",
-            "collectibleType": 2,
+            "interactionType": 2,
             "xy": [ 1512, 350 ]
           },
           {
             "template": "coin",
-            "collectibleType": 2,
+            "interactionType": 2,
             "xy": [ 1542, 340 ]
           },
           {
             "template": "coin",
-            "collectibleType": 2,
+            "interactionType": 2,
             "xy": [ 1572, 330 ]
           },
 
           {
             "template": "gem",
-            "collectibleType": 3,
+            "interactionType": 3,
             "xy": [ 1632, 370 ]
           },
 
@@ -287,21 +301,10 @@
             "template": "box64b",
             "xy": [ 1792, 32 ]
           },
-          {
-            "template": "box64b",
-            "xy": [ 2048, 32 ]
-          },
+
           {
             "template": "box64b",
             "xy": [ 2304, 32 ]
-          },
-          {
-            "template": "box64b",
-            "xy": [ 2560, 32 ]
-          },
-          {
-            "template": "box64b",
-            "xy": [ 2816, 32 ]
           },
           {
             "template": "box64b",
@@ -334,6 +337,45 @@
           {
             "template": "box64b",
             "xy": [ 4864, 32 ]
+          },
+          {
+            "template": "lava",
+            "texture": "assets/images/objects/lava-border-l.png",
+            "interactionType": 1000,
+            "xy": [ 1950, -60 ]
+          },
+          {
+            "template": "lava",
+            "interactionType": 1001,
+            "xy": [ 2014, -60 ]
+          },
+          {
+            "template": "lava",
+            "interactionType": 1001,
+            "xy": [ 2078, -60 ]
+          },
+          {
+            "template": "lava",
+            "texture": "assets/images/objects/lava-border-r.png",
+            "interactionType": 1000,
+            "xy": [ 2142, -60 ]
+          },
+          {
+            "template": "lava",
+            "texture": "assets/images/objects/lava-border-l.png",
+            "interactionType": 1000,
+            "xy": [ 2560, -60 ]
+          },
+          {
+            "template": "lava",
+            "interactionType": 1001,
+            "xy": [ 2624, -60 ]
+          },
+          {
+            "template": "lava",
+            "texture": "assets/images/objects/lava-border-r.png",
+            "interactionType": 1000,
+            "xy": [ 2688, -60 ]
           }
         ],
 
