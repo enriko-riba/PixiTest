@@ -262,7 +262,7 @@ export class InGameScene extends Scene {
      * @param message the message to be added
      * @param style optional PIXI.ITextStyle
      */
-    private addInfoMessage(position: PIXI.Point, message: string, style?: PIXI.ITextStyle): void {
+    private addInfoMessage(position: PIXI.Point, message: string, style?: PIXI.ITextStyleStyle): void {
         var stl = style || Global.TXT_STYLE;
         var txtInfo = new PIXI.Text(message, stl);
         txtInfo.position.set(position.x, position.y);
@@ -304,7 +304,7 @@ export class InGameScene extends Scene {
      */
     private setup(): void {
         this.BackGroundColor = 0x1099bb;
-        PIXI.SCALE_MODES.DEFAULT = PIXI.SCALE_MODES.LINEAR;
+        PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.LINEAR;
 
         //--------------------------------------
         //  setup physics subsystem
