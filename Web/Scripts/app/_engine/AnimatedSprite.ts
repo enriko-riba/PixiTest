@@ -8,7 +8,7 @@ export class AnimatedSprite extends PIXI.Container {
 
     private animations = new Dictionary<AnimationSequence>();
     private currentSequence: AnimationSequence;
-    private clip: PIXI.extras.MovieClip = null;
+    private clip: PIXI.extras.AnimatedSprite = null;
 
     public addAnimations(...sequences: Array<AnimationSequence>):void {
         sequences.forEach((seq: AnimationSequence, idx:number) => {
@@ -72,7 +72,7 @@ export class AnimatedSprite extends PIXI.Container {
     }
     private createClip(sequence: AnimationSequence):void {
         if (!this.clip) {
-            this.clip = new PIXI.extras.MovieClip(sequence.Textures);
+            this.clip = new PIXI.extras.AnimatedSprite(sequence.Textures);
             this.clip.anchor.set(0.5);
             this.clip.pivot.set(0.5);
             this.addChild(this.clip);

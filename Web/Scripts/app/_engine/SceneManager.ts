@@ -128,7 +128,7 @@ export class SceneManager {
             scene.onActivate();
         }
 
-        PIXI.RESOLUTION = window.devicePixelRatio;
+        PIXI.settings.RESOLUTION = window.devicePixelRatio;
     }
 
     /**
