@@ -204,11 +204,11 @@ export class InGameScene extends Scene {
                 break;
 
             case 1000:  //   border lava                
-                playerStats.Buffs[1000] = this.secondsFromNow(2);
+                playerStats.Buffs[1000] = this.secondsFromNow(1);
                 break;
 
             case 1001:  //  lava
-                playerStats.Buffs[1001] = this.secondsFromNow(5);
+                playerStats.Buffs[1001] = this.secondsFromNow(3);
                 break;
         }
     }
