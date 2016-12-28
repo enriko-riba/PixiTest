@@ -45,10 +45,11 @@ export class Stats {
 
     /**
      *  Updates stats that increase/decrease over time.
-     *  The update is calculated in a second interval.
+     *  The update is calculated in a half second interval.
      */
     public onUpdate = (dt: number) => {
 
+        let INTERVAL = 500;
         var now = Date.now() / 1000;
 
         //  accumulate dps
@@ -57,10 +58,10 @@ export class Stats {
                 let dps = 0;
                 switch (i) {
                     case 1000:  // lava border
-                        dps = 10;
+                        dps = 5;
                         break;
-                    case 1000:  // lava
-                        dps = 24;
+                    case 1001:  // lava
+                        dps = 15;
                         break;
                 }
                 let dmg = dt * 0.001 * dps;
@@ -68,10 +69,10 @@ export class Stats {
             }
         }
 
-        //  handle once per second ticks
+        //  handle once per interval ticks
         this.accumulator += dt;
-        if (this.accumulator > 1000) {
-            this.accumulator -= 1000;
+        if (this.accumulator > INTERVAL) {
+            this.accumulator -= INTERVAL;
 
             //  dust
             if (this.stats[StatType.Dust] < this.stats[StatType.MaxDust]) {
@@ -112,7 +113,7 @@ export class Stats {
     }
 
     /**
-     *   Stores timestamps (unix timestamps in seconds with fractions) when the buff elapses.
+     *   Stores timestamps (Unix timestamps in seconds with fractions) when the buff elapses.
      */
     public Buffs: Array<number> = [];
 

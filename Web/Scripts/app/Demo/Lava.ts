@@ -9,8 +9,7 @@ export class Lava extends AnimatedSprite {
 
         textureName = textureName || "assets/images/objects/lava.png";
         this.addAnimations(new AnimationSequence("lava", textureName, [0, 1, 2, 3], this.FRAME_SIZE_X, this.FRAME_SIZE_Y));
-        //this.scale.set(1, 2);
         this.Anchor = new PIXI.Point(0.5, 0.30);
-        this.PlayAnimation("lava", 4);
+        this.PlayAnimation("lava", 3);
     }
 }
