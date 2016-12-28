@@ -182,6 +182,7 @@ export class InGameScene extends Scene {
     private handleInteractiveCollision(body: any): void {
         var playerStats = this.hero.PlayerStats;
         var dispObj: PIXI.DisplayObject = body.DisplayObject as PIXI.DisplayObject;
+        
         switch (dispObj.interactionType) {
             case 1: //  small coin
                 playerStats.increaseStat(StatType.Coins, 1);
@@ -203,20 +204,11 @@ export class InGameScene extends Scene {
                 break;
 
             case 1000:  //   border lava                
-                if (!playerStats.IsInDpsType[1000]) {
-                    this.decreaseHP(1);
-                }
-                playerStats.IsInDpsType[1000] = true;
-                //playerStats.startDPS(1000, 0.4);
+                playerStats.Buffs[1000] = this.secondsFromNow(2);
                 break;
 
             case 1001:  //  lava
-                //this.decreaseHP(2.5);
-                //playerStats.startDPS(1001, 2.4);
-                if (!playerStats.IsInDpsType[1001]) {
-                    this.decreaseHP(3);
-                }
-                playerStats.IsInDpsType[1001] = true;
+                playerStats.Buffs[1001] = this.secondsFromNow(5);
                 break;
         }
     }
@@ -356,6 +348,18 @@ export class InGameScene extends Scene {
 
     private handleDpsChange = (event: IDpsChangeEvent) => {
         this.addInfoMessage(this.hero.position, `${event.Amount} HP`);
+    }
+
+    /**
+     * Returns a date instance with added seconds from now.
+     * @param seconds
+     */
+    private secondsFromNow(seconds: number): number {
+        var now = Date.now() / 1000;
+        console.log("secondsFromNow()  start:", now);
+        now += seconds;
+        console.log("secondsFromNow() result:", now);
+        return now;
     }
 
     /**
