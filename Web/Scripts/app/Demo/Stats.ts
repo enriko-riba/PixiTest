@@ -49,16 +49,18 @@ export class Stats {
      */
     public onUpdate = (dt: number) => {
 
+        var now = Date.now() / 1000;
+
         //  accumulate dps
-        for (let i = 1000, len = this.IsInDpsType.length; i < len; i++){
-            if (this.IsInDpsType[i]) {
+        for (let i = 1000, len = this.Buffs.length; i < len; i++){
+            if (this.Buffs[i] && this.Buffs[i] > now) {
                 let dps = 0;
                 switch (i) {
                     case 1000:  // lava border
-                        dps = 0.6;
+                        dps = 10;
                         break;
                     case 1000:  // lava
-                        dps = 2.4;
+                        dps = 24;
                         break;
                 }
                 let dmg = dt * 0.001 * dps;
@@ -109,7 +111,10 @@ export class Stats {
         return this.stats[type];
     }
 
-    public IsInDpsType: Array<boolean> = [];
+    /**
+     *   Stores timestamps (unix timestamps in seconds with fractions) when the buff elapses.
+     */
+    public Buffs: Array<number> = [];
 
     private scevent: IStatChangeEvent = {
         Type: StatType.Coins,

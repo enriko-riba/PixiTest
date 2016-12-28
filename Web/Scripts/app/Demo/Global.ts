@@ -5,7 +5,7 @@ export var SCENE_HEIGHT: number = 768;
 export var BTN_WIDTH : number = 100;
 export var BTN_HEIGHT: number = 48;
 
-export var BTN_STYLE: PIXI.ITextStyle =
+export var BTN_STYLE: PIXI.ITextStyleStyle =
     {
         align: "center",
         padding: 0,
@@ -18,7 +18,7 @@ export var BTN_STYLE: PIXI.ITextStyle =
         strokeThickness: 1,
         stroke: 0xCC5010
     };
-export var TXT_STYLE: PIXI.ITextStyle =
+export var TXT_STYLE: PIXI.ITextStyleStyle =
     {
         align: "center",
         padding: 0,
