@@ -142,7 +142,7 @@ export class InGameScene extends Scene {
         for (var i = 0, len = bodies.length; i < len; i++) {
             let body = bodies[i];
             let displayObject: PIXI.DisplayObject = (body as any).DisplayObject as PIXI.DisplayObject;
-            if (displayObject) {
+            if (displayObject && body.type !== p2.Body.STATIC) {
                 displayObject.position.set(body.interpolatedPosition[0], body.interpolatedPosition[1]);
                 displayObject.rotation = body.interpolatedAngle;
             }
@@ -203,7 +203,7 @@ export class InGameScene extends Scene {
                 this.removeEntity(body);
                 break;
 
-            case 1000:  //   border lava                
+            case 1000:  //  border lava                
                 playerStats.Buffs[1000] = this.secondsFromNow(1);
                 break;
 
@@ -310,7 +310,6 @@ export class InGameScene extends Scene {
         //-----------------------------        
         this.hero = new HeroCharacter(this.wp2, this.worldContainer);
         this.hero.position = startPosition;
-        this.worldContainer.addChild(this.hero);        
         
         //--------------------------------------
         //  load level from json (under construction)
@@ -335,13 +334,15 @@ export class InGameScene extends Scene {
             plx.SetViewPortX(this.hero.position.x + 1);
         });
 
+        this.worldContainer.addChild(this.hero);        
+
         //  TODO: load initial settings
         var playerStats = this.hero.PlayerStats;
         playerStats.setStat(StatType.Coins, 0);
         playerStats.setStat(StatType.MaxHP, 100);
-        playerStats.setStat(StatType.HP, 80);
+        playerStats.setStat(StatType.HP, 90);
         playerStats.setStat(StatType.MaxDust, 1000);
-        playerStats.setStat(StatType.Dust, 100);
+        playerStats.setStat(StatType.Dust, 150);
 
         ko.postbox.subscribe<IDpsChangeEvent>(DPS_TOPIC, this.handleDpsChange);
     }
