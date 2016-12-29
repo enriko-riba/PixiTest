@@ -22,7 +22,7 @@ export function createParticleEmitter(container: PIXI.Container): PIXI.particles
         container,
 
         // The collection of particle images to use
-        [PIXI.Texture.fromImage("assets/images/objects/star.png")],
+        [PIXI.Texture.fromImage("assets/_distribute/star.png")],
 
         // Emitter configuration, edit this to change the look
         // of the emitter
@@ -374,14 +374,16 @@ export class InGameScene extends Scene {
 
         this.wp2.bodies.forEach((body: any) => {
             var displayObject: PIXI.DisplayObject = body.DisplayObject as PIXI.DisplayObject;
-            var entity: IMapEntity = {
-                template: (displayObject as any).templateName,
-                xy: [displayObject.x, displayObject.y],
-                rotation: displayObject.rotation,
-                scale: [displayObject.scale.x, displayObject.scale.y],
-                interactionType: displayObject.interactionType
-            };
-            map.entities.push(entity);
+            if (displayObject) {
+                var entity: IMapEntity = {
+                    template: (displayObject as any).templateName,
+                    xy: [displayObject.x, displayObject.y],
+                    rotation: displayObject.rotation,
+                    scale: [displayObject.scale.x, displayObject.scale.y],
+                    interactionType: displayObject.interactionType
+                };
+                map.entities.push(entity);
+            }
         });
         console.log(JSON.stringify(map.entities));
     }

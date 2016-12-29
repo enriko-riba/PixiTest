@@ -21,10 +21,10 @@ export class LoaderScene extends Scene {
         //------------------------------------------------------
         PIXI.loader.reset();
         PIXI.loader
-            .add("Assets/Images/loading.png")
+            .add("assets/_distribute/loading.png")
             .load(() => {
                 //  once the loading image is downloaded start spinning it and invoke Initialize()
-                var loadingTexture = PIXI.Texture.fromImage("Assets/Images/loading.png");
+                var loadingTexture = PIXI.Texture.fromImage("assets/_distribute/loading.png");
                 var romb = new PIXI.Sprite(loadingTexture);
                 romb.position.set(500, 350);
                 romb.anchor.set(0.5, 0.5);
@@ -43,54 +43,55 @@ export class LoaderScene extends Scene {
         PIXI.loader.reset();
 
         var assets:string[] = [
-            "assets/images/hero_64.png",
+            "assets/_distribute/hero_64.png",
 
-            "assets/images/Gui/Button1.png",
-            "assets/images/Gui/Listitem.png",
-            "assets/images/Gui/Panel_256x128.png",
-            "assets/images/Gui/Panel_256x256.png",
-            "assets/images/Gui/TestHUD.png",
-            "assets/images/Gui/heart.png",
-            "assets/images/Gui/coin.png",
-            "assets/images/Gui/stat_panel.png",
+            "assets/_distribute/Button1.png",
+            "assets/_distribute/Listitem.png",
+            "assets/_distribute/Panel_256x128.png",
+            "assets/_distribute/Panel_256x256.png",
+            "assets/_distribute/TestHUD.png",
+            "assets/_distribute/heart.png",
+            "assets/_distribute/coin.png",
+            "assets/_distribute/stat_panel.png",
 
-            "assets/images/effects/jump_smoke.png",
+            "assets/_distribute/jump_smoke.png",
 
-            "assets/images/Npcs/bahamut.png",
-            "assets/images/Npcs/barrissoffee.png",
-            "assets/images/Npcs/ifrit.png",
-            "assets/images/Npcs/leviathan.png",
-            "assets/images/Npcs/phoenix.png",
-            "assets/images/Npcs/tonberry.png",
+            "assets/_distribute/bahamut.png",
+            "assets/_distribute/barrissoffee.png",
+            "assets/_distribute/ifrit.png",
+            "assets/_distribute/leviathan.png",
+            "assets/_distribute/phoenix.png",
+            "assets/_distribute/tonberry.png",
 
-            "assets/images/background/Canyon.png",
-            "assets/images/background/Mountains.png",
-            "assets/images/background/Wood_night.png",
-            "assets/images/background/trees01.png",
-            "assets/images/background/trees02.png",
-            "assets/images/background/trees03.png",
-            "assets/images/background/trees04.png",
-            "assets/images/background/trees05.png",
-            "assets/images/background/ground.png",
+            "assets/_distribute/IceSnow.png",
+            "assets/_distribute/Canyon.png",
+            "assets/_distribute/Mountains.png",
+            "assets/_distribute/Wood_night.png",
+            "assets/_distribute/trees01.png",
+            "assets/_distribute/trees02.png",
+            "assets/_distribute/trees03.png",
+            "assets/_distribute/trees04.png",
+            "assets/_distribute/trees05.png",
+            "assets/_distribute/ground.png",
 
-            "assets/images/objects/box_64_01.png",
-            "assets/images/objects/box_64_02.png",
-            "assets/images/objects/box_64_03.png",
+            "assets/_distribute/box_64_01.png",
+            "assets/_distribute/box_64_02.png",
+            "assets/_distribute/box_64_03.png",
 
-            "assets/images/objects/box_128_01.png",
-            "assets/images/objects/box_128_02.png",
-            "assets/images/objects/box_128_03.png",
+            "assets/_distribute/box_128_01.png",
+            "assets/_distribute/box_128_02.png",
+            "assets/_distribute/box_128_03.png",
 
-            "assets/images/objects/bumper_01.png",
-            "assets/images/objects/bumper_rotor_01.png",
-            "assets/images/objects/chest_01.png",
-            "assets/images/objects/coins.png",
-            "assets/images/objects/gem32.png",
-            "assets/images/objects/gem64.png",
-            "assets/images/objects/star.png",
-            "assets/images/objects/lava.png",
-            "assets/images/objects/lava-border-l.png",
-            "assets/images/objects/lava-border-r.png",
+            "assets/_distribute/bumper_01.png",
+            "assets/_distribute/bumper_rotor_01.png",
+            "assets/_distribute/chest_01.png",
+            "assets/_distribute/coins.png",
+            "assets/_distribute/gem32.png",
+            "assets/_distribute/gem64.png",
+            "assets/_distribute/star.png",
+            "assets/_distribute/lava.png",
+            "assets/_distribute/lava-border-l.png",
+            "assets/_distribute/lava-border-r.png",
 
             "assets/levels/levels.json",
         ];
