@@ -2,6 +2,7 @@
 import { Parallax } from "app/_engine/Parallax";
 import { Bumper } from "./Bumper";
 import { Lava } from "./Lava";
+import { Platform } from "./Platform";
 import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
 
 export class LevelLoader {
@@ -105,7 +106,7 @@ export class LevelLoader {
                 break;
 
             case "Sprite":
-                var text = PIXI.loader.resources[definition.texture].texture;
+                var text = PIXI.loader.resources[definition.texture as string].texture;
                 var spr = new PIXI.Sprite(text);
                 spr.anchor.set(0.5);
                 dispObj = spr;                
@@ -118,9 +119,18 @@ export class LevelLoader {
                 break;
 
             case "Lava":
-                var lv = new Lava(definition.texture);                
+                var lv = new Lava(definition.texture as string);                
                 dispObj = lv;
                 break;
+
+            case "Platform":
+                let pl: Platform = null;
+                if (typeof definition.texture === "string") {
+                    pl = new Platform(definition.texture);
+                } else {
+                    pl = new Platform(definition.texture[0], definition.tiles || 1, definition.texture[1], definition.texture[2]);
+                }
+                dispObj = pl;
         }
         
         dispObj.pivot.set(0.5);
@@ -163,6 +173,26 @@ export class LevelLoader {
                     var radius = definition.size ? definition.size[0] : dispObjAsAny.width;            
                     shape = new p2.Circle({ radius: radius });
                     break;
+
+                case "Platform":
+                    var w, h;
+                    if (definition.size) {
+                        w = definition.size[0];
+                        h = definition.size[1];
+                    } else {
+                        w = Math.abs(dispObjAsAny.width);
+                        h = Math.abs(dispObjAsAny.height);
+                    }
+                    shape = new p2.Box({
+                        width: w,
+                        height: h,
+                    });
+
+                    //  the position is centered but we need it to be left top aligned
+                    body.position[0] = body.position[0] + w / 2;
+                    body.position[1] = body.position[1] - h / 2;
+                    break; 
+
                 case "Box":
                     //  get the size
                     var w, h;
@@ -171,8 +201,8 @@ export class LevelLoader {
                         h = definition.size[1];
                     } else {                        
                         if (dispObjAsAny.width) {
-                            w = dispObjAsAny.width;
-                            h = dispObjAsAny.height;
+                            w = Math.abs(dispObjAsAny.width);
+                            h = Math.abs(dispObjAsAny.height);
                         } else {
                             //  TODO: check this - seems not to get correct bounds
                             w = dispObj.scale.x * dispObj.getLocalBounds().width;
@@ -240,7 +270,8 @@ export interface IAnimationSequence {
 
 export interface IDisplayObjectDefinition {
     typeName: string,
-    texture: string;
+    texture: string | string[];
+    tiles?: number,
     xy?: number[];
     scale?: number[];
     rotation?: number;

@@ -10,7 +10,7 @@
           "parallaxFactor": 0.5,
           "y": 0,
           "tiles": [
-            "assets/_distribute/IceSnow.png"
+            "assets/_distribute/Canyon.png"
           ]
         },
         {
@@ -103,6 +103,30 @@
               "damping": 0,
               "angularDamping": 0,
               "material": "lava"
+            }
+          },
+          {
+            "name": "platform",
+            "displayObject": {
+              "typeName": "Platform",
+              "texture": [ "assets/_distribute/plat-des-mid.png", "assets/_distribute/plat-des-border-l.png", "assets/_distribute/plat-des-border-r.png" ]
+            },
+            "body": {
+              "shape": "Platform",
+              "type": 2,
+              "material": "box_default"
+            }
+          },
+          {
+            "name": "platform1",
+            "displayObject": {
+              "typeName": "Platform",
+              "texture": "assets/_distribute/plat-des-single.png"
+            },
+            "body": {
+              "shape": "Platform",
+              "type": 2,
+              "material": "box_default"
             }
           },
           {
@@ -240,6 +264,26 @@
             "template": "gem",
             "interactionType": 3,
             "xy": [ 1632, 370 ]
+          },
+
+          {
+            "template": "platform",
+            "xy": [ 1850, 185 ],
+            "tiles": 2
+          },
+          {
+            "template": "platform",
+            "xy": [ 2155, 255 ],
+            "tiles": 4
+          },
+          {
+            "template": "platform1",
+            "xy": [ 2600, 300 ]
+          },
+          {
+            "template": "platform",
+            "xy": [ 2730, 350 ],
+            "tiles": 3
           },
 
           {
