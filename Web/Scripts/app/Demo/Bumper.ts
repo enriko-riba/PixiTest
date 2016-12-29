@@ -1,5 +1,5 @@
-﻿const TEXTURE_BUMPER = "assets/images/objects/bumper_01.png";
-const TEXTURE_ROTOR = "assets/images/objects/bumper_rotor_01.png";
+﻿const TEXTURE_BUMPER = "assets/_distribute/bumper_01.png";
+const TEXTURE_ROTOR = "assets/_distribute/bumper_rotor_01.png";
 const ROTATION = Math.PI / 8;
 
 export class Bumper extends PIXI.Sprite {

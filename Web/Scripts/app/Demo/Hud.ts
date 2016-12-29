@@ -29,7 +29,7 @@ export class Hud extends PIXI.Container {
         //--------------------------------
         //  btn for level editor support
         //--------------------------------
-        var btnSave = new Button("assets/images/Gui/Button1.png",
+        var btnSave = new Button("assets/_distribute/Button1.png",
             Global.SCENE_WIDTH - Global.BTN_WIDTH - 10, 10,
             Global.BTN_WIDTH, Global.BTN_HEIGHT);
         btnSave.Text = new PIXI.Text("Save", Global.BTN_STYLE);
@@ -45,8 +45,8 @@ export class Hud extends PIXI.Container {
             this.txtHP = new PIXI.Text("0", Global.TXT_STYLE);
             this.txtHP.resolution = window.devicePixelRatio;
             this.txtHP.position = txtPosition;
-            let pnl = new PIXI.Sprite(PIXI.loader.resources["assets/images/Gui/stat_panel.png"].texture);
-            let spr = new PIXI.Sprite(PIXI.loader.resources["assets/images/Gui/heart.png"].texture);
+            let pnl = new PIXI.Sprite(PIXI.loader.resources["assets/_distribute/stat_panel.png"].texture);
+            let spr = new PIXI.Sprite(PIXI.loader.resources["assets/_distribute/heart.png"].texture);
             spr.position.set(16, 18);
             spr.scale.set(0.5);
             pnl.position.set(5, 5);
@@ -60,7 +60,7 @@ export class Hud extends PIXI.Container {
             this.txtDust = new PIXI.Text("0", Global.TXT_STYLE);
             this.txtDust.resolution = window.devicePixelRatio;
             this.txtDust.position = txtPosition;
-            let pnl = new PIXI.Sprite(PIXI.loader.resources["assets/images/Gui/stat_panel.png"].texture);
+            let pnl = new PIXI.Sprite(PIXI.loader.resources["assets/_distribute/stat_panel.png"].texture);
             this.emitter = createParticleEmitter(pnl);
             this.emitter.ownerPos.set(32, 58);
             this.emitter.startSpeed = 15;
@@ -77,8 +77,8 @@ export class Hud extends PIXI.Container {
             this.txtCoins = new PIXI.Text("0", Global.TXT_STYLE);
             this.txtCoins.resolution = window.devicePixelRatio;
             this.txtCoins.position = txtPosition;
-            let pnl = new PIXI.Sprite(PIXI.loader.resources["assets/images/Gui/stat_panel.png"].texture);
-            let spr = new PIXI.Sprite(PIXI.loader.resources["assets/images/Gui/coin.png"].texture);
+            let pnl = new PIXI.Sprite(PIXI.loader.resources["assets/_distribute/stat_panel.png"].texture);
+            let spr = new PIXI.Sprite(PIXI.loader.resources["assets/_distribute/coin.png"].texture);
             spr.position.set(16, 18);
             spr.scale.set(0.5);
             pnl.position.set(5, 170);

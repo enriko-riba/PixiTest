@@ -104,24 +104,6 @@ export class WorldP2 {
 
     /**
      * adds an object to the p2 world
-     * @param bodyOptions
-     * @param shape
-     */
-    //public addObject(bodyOptions?: p2.BodyOptions, shape?: p2.Shape): p2.Body {
-    //    var body = new p2.Body(bodyOptions);
-    //    if (!shape) {
-    //        shape = new p2.Box({ width: 64, height: 64 });
-    //    }
-    //    if (!shape.material) {
-    //        shape.material = this.materials.get("box_default");
-    //    }
-    //    body.addShape(shape);
-    //    this.world.addBody(body);
-    //    return body;
-    //}
-
-    /**
-     * adds an object to the p2 world
      * @param body
      */
     public addBody(body: p2.Body): void {

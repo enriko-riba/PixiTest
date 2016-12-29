@@ -10,7 +10,7 @@
           "parallaxFactor": 0.5,
           "y": 0,
           "tiles": [
-            "assets/images/background/Canyon.png"
+            "assets/_distribute/IceSnow.png"
           ]
         },
         {
@@ -20,11 +20,11 @@
           "y": 5,
           "scale": 2,
           "tiles": [
-            "assets/images/background/trees01.png",
-            "assets/images/background/trees02.png",
-            "assets/images/background/trees03.png",
-            "assets/images/background/trees04.png",
-            "assets/images/background/trees05.png"
+            "assets/_distribute/trees01.png",
+            "assets/_distribute/trees02.png",
+            "assets/_distribute/trees03.png",
+            "assets/_distribute/trees04.png",
+            "assets/_distribute/trees05.png"
           ]
         },
         {
@@ -33,7 +33,7 @@
           "parallaxFactor": 1,
           "y": -90,
           "tiles": [
-            "assets/images/background/ground.png"
+            "assets/_distribute/ground.png"
           ]
         }
       ],
@@ -47,7 +47,7 @@
               "sequences": [
                 {
                   "name": "spin",
-                  "texture": "assets/images/objects/coins.png",
+                  "texture": "assets/_distribute/coins.png",
                   "frames": [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ],
                   "framesize": [ 24, 24 ]
                 }
@@ -66,7 +66,7 @@
               "sequences": [
                 {
                   "name": "spin",
-                  "texture": "assets/images/objects/gem32.png",
+                  "texture": "assets/_distribute/gem32.png",
                   "frames": [ 0, 1, 2, 3, 4, 5, 6 ],
                   "framesize": [ 32, 32 ]
                 }
@@ -80,7 +80,7 @@
             "name": "bumper",
             "displayObject": {
               "typeName": "Bumper",
-              "texture": "assets/images/objects/bumper_01.png",
+              "texture": "assets/_distribute/bumper_01.png",
               "rotation": 0.785398163397
             },
             "body": {
@@ -109,7 +109,7 @@
             "name": "box64a",
             "displayObject": {
               "typeName": "Sprite",
-              "texture": "assets/images/objects/box_64_03.png"
+              "texture": "assets/_distribute/box_64_03.png"
             },
             "body": {
               "shape": "Box",
@@ -122,7 +122,7 @@
             "name": "box64b",
             "displayObject": {
               "typeName": "Sprite",
-              "texture": "assets/images/objects/box_64_02.png"
+              "texture": "assets/_distribute/box_64_02.png"
             },
             "body": {
               "shape": "Box",
@@ -135,7 +135,7 @@
             "name": "box128",
             "displayObject": {
               "typeName": "Sprite",
-              "texture": "assets/images/objects/box_128_01.png"
+              "texture": "assets/_distribute/box_128_01.png"
             },
             "body": {
               "shape": "Box",
@@ -340,9 +340,9 @@
           },
           {
             "template": "lava",
-            "texture": "assets/images/objects/lava-border-l.png",
+            "texture": "assets/_distribute/lava-border-l.png",
             "interactionType": 1000,
-            "xy": [ 1950, -60 ]
+            "xy": [ 1951, -60 ]
           },
           {
             "template": "lava",
@@ -356,15 +356,15 @@
           },
           {
             "template": "lava",
-            "texture": "assets/images/objects/lava-border-r.png",
+            "texture": "assets/_distribute/lava-border-r.png",
             "interactionType": 1000,
-            "xy": [ 2142, -60 ]
+            "xy": [ 2141, -60 ]
           },
           {
             "template": "lava",
-            "texture": "assets/images/objects/lava-border-l.png",
+            "texture": "assets/_distribute/lava-border-l.png",
             "interactionType": 1000,
-            "xy": [ 2560, -60 ]
+            "xy": [ 2561, -60 ]
           },
           {
             "template": "lava",
@@ -373,9 +373,9 @@
           },
           {
             "template": "lava",
-            "texture": "assets/images/objects/lava-border-r.png",
+            "texture": "assets/_distribute/lava-border-r.png",
             "interactionType": 1000,
-            "xy": [ 2688, -60 ]
+            "xy": [ 2687, -60 ]
           }
         ],
 
