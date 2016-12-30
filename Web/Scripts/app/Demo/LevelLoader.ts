@@ -9,21 +9,15 @@ export class LevelLoader {
 
     private levels: Array<ILevelDefinition> = [];
 
-    //constructor(levelOrName: IRootObject | string) {
-    //    var root: IRootObject;
-    //    if (typeof levelOrName === "string") {
-    //        root = PIXI.loader.resources[levelOrName as string].data as IRootObject;
-    //    } else {
-    //        root = levelOrName as IRootObject;
-    //    }
-    //    this.levels = root.levels;
-
-    //    this.levels = Global.GameLevels.root.levels;
-    //}
-
     constructor() {
         this.levels = Global.GameLevels.root.levels;
     }
+
+    /**
+     * Returns all assets referenced in the level.
+     * @param root
+     * @param levelName
+     */
     public static GetLevelAssets(root: IRootObject, levelName: string): string[] {
         var assets: string[] = []
        

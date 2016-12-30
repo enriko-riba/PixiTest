@@ -47,7 +47,7 @@ export class LoaderScene extends Scene {
         Global.GameLevels.root = PIXI.loader.resources["assets/levels/levels.json"].data;
         let assets: string[] = LevelLoader.GetLevelAssets(Global.GameLevels.root as any, "Intro");
 
-        //  add assets not in level descripton
+        //  add assets not in level description
         assets = assets.concat(
             [
                 "assets/_distribute/hero_64.png",
@@ -58,7 +58,6 @@ export class LoaderScene extends Scene {
                 "assets/_distribute/stat_panel.png",
 
                 "assets/_distribute/jump_smoke.png",
-
                 "assets/_distribute/bumper_rotor_01.png"
             ]
         );
