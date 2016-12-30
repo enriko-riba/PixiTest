@@ -286,7 +286,18 @@
             "xy": [ 2730, 350 ],
             "tiles": 3
           },
-
+          {
+            "template": "platform1",
+            "xy": [ 3100, 400 ]
+          },
+          {
+            "template": "platform1",
+            "xy": [ 3230, 450 ]
+          },
+          {
+            "template": "platform1",
+            "xy": [ 3340, 500 ]
+          },
           {
             "template": "box64a",
             "xy": [ -132, 32 ],
