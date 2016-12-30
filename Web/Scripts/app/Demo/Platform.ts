@@ -2,7 +2,6 @@
 
 export class Platform extends PIXI.Container {
 
-
     /**
      * 
      * @param textureNameMid
