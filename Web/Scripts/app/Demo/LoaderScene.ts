@@ -1,9 +1,12 @@
 ﻿import { Scene } from "app/_engine/Scene";
 import { InGameScene } from "app/Demo/InGameScene";
+import { LevelLoader, ILevelMap, IMapEntity } from "./LevelLoader";
+
 import * as Global from "app/Demo/Global";
 
 export class LoaderScene extends Scene {
     private loadingMessage: PIXI.Text;
+    private spinner: PIXI.Sprite;
 
     constructor() {
         super("Loader");
@@ -20,28 +23,47 @@ export class LoaderScene extends Scene {
         //  get loading image and define callback on image load
         //------------------------------------------------------
         PIXI.loader.reset();
-        PIXI.loader
-            .add("assets/_distribute/loading.png")
-            .load(() => {
-                //  once the loading image is downloaded start spinning it and invoke Initialize()
-                var loadingTexture = PIXI.Texture.fromImage("assets/_distribute/loading.png");
-                var romb = new PIXI.Sprite(loadingTexture);
-                romb.position.set(500, 350);
-                romb.anchor.set(0.5, 0.5);
-                romb.scale.set(0.5);
-                this.addChild(romb);
-                this.onUpdate = () => {
-                    romb.rotation += 0.05;
-                };
-                this.downloadAssets();
-            });
+        PIXI.loader.add("assets/_distribute/loading.png")
+                   .load(this.downloadLevels);
     };
-    
-    private downloadAssets():void {
-        console.log("Initializing...");
 
+    private downloadLevels = (): void => {
+        console.log("downloading levels...");
         PIXI.loader.reset();
+        PIXI.loader.add("assets/levels/levels.json")
+                   .load(this.downloadAssets);
 
+        //   add a loading spinner
+        var loadingTexture = PIXI.Texture.fromImage("assets/_distribute/loading.png");
+        this.spinner = new PIXI.Sprite(loadingTexture);
+        this.spinner.position.set(500, 350);
+        this.spinner.anchor.set(0.5, 0.5);
+        this.spinner.scale.set(0.5);
+        this.addChild(this.spinner);
+    }
+
+    private downloadAssets = ():void => {
+        console.log("Initializing...");
+        Global.GameLevels.root = PIXI.loader.resources["assets/levels/levels.json"].data;
+        let assets: string[] = LevelLoader.GetLevelAssets(Global.GameLevels.root as any, "Intro");
+
+        //  add assets not in level descripton
+        assets = assets.concat(
+            [
+                "assets/_distribute/hero_64.png",
+                "assets/_distribute/Button1.png",
+
+                "assets/_distribute/heart.png",
+                "assets/_distribute/coin.png",
+                "assets/_distribute/stat_panel.png",
+
+                "assets/_distribute/jump_smoke.png",
+
+                "assets/_distribute/bumper_rotor_01.png"
+            ]
+        );
+        console.log(`Downloading ${assets.length} assets ...`);
+        /*
         var assets:string[] = [
             "assets/_distribute/hero_64.png",
 
@@ -100,7 +122,9 @@ export class LoaderScene extends Scene {
 
             "assets/levels/levels.json",
         ];
-        
+        */
+
+        PIXI.loader.reset();
         PIXI.loader.add(assets)
             .load(this.onAssetsLoaded)
             .on("progress", this.onProgress);
@@ -119,10 +143,16 @@ export class LoaderScene extends Scene {
         var inGame = new InGameScene();
         Global.sceneMngr.AddScene(inGame);
 
-        //  setTimeout is only to make the 100% noticeable
+        //  setTimeout is only to make the "100%" noticeable
         setTimeout(() => {
             this.removeChild(this.loadingMessage);
             Global.sceneMngr.ActivateScene(inGame);
-        }, 800);
+        }, 500);
     };
+
+    public onUpdate = (dt: number) => {
+        if (this.spinner) {
+            this.spinner.rotation += 0.05;
+        }
+    }
 }

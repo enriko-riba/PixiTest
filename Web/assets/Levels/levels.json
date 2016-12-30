@@ -95,6 +95,7 @@
             "name": "lava",
             "displayObject": {
               "typeName": "Lava",
+              "texture": "assets/_distribute/lava.png",
               "rotation": 0
             },
             "body": {
