@@ -31,3 +31,7 @@ export var TXT_STYLE: PIXI.ITextStyleStyle =
 
 export var sceneMngr: SceneManager;
 
+export var GameLevels: {
+                        root: any
+} = { root: "" };
+

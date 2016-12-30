@@ -314,7 +314,7 @@ export class InGameScene extends Scene {
         //--------------------------------------
         //  load level from json (under construction)
         //--------------------------------------
-        var levelLoader = new LevelLoader("assets/levels/levels.json");
+        var levelLoader = new LevelLoader();
         var lvl = levelLoader.BuildLevel("Intro");
 
         //  add all object pairs to renderer and physics world

@@ -9,14 +9,74 @@ export class LevelLoader {
 
     private levels: Array<ILevelDefinition> = [];
 
-    constructor(levelOrName: IRootObject | string) {
-        var root: IRootObject;
-        if (typeof levelOrName === "string") {
-            root = PIXI.loader.resources[levelOrName as string].data as IRootObject;
-        } else {
-            root = levelOrName as IRootObject;
+    //constructor(levelOrName: IRootObject | string) {
+    //    var root: IRootObject;
+    //    if (typeof levelOrName === "string") {
+    //        root = PIXI.loader.resources[levelOrName as string].data as IRootObject;
+    //    } else {
+    //        root = levelOrName as IRootObject;
+    //    }
+    //    this.levels = root.levels;
+
+    //    this.levels = Global.GameLevels.root.levels;
+    //}
+
+    constructor() {
+        this.levels = Global.GameLevels.root.levels;
+    }
+    public static GetLevelAssets(root: IRootObject, levelName: string): string[] {
+        var assets: string[] = []
+       
+        var level: ILevelDefinition = undefined;
+        for (var i = 0; i < root.levels.length; i++) {
+            if (root.levels[i].name === levelName) {
+                level = root.levels[i];
+                break;
+            }
         }
-        this.levels = root.levels;
+
+        if (level) {
+            level.parallax.forEach((iplx, idx, arr) => {
+                assets = assets.concat(iplx.tiles);
+            });
+
+            level.map.entities.forEach((entity: IMapEntity, idx, arr) => {
+                var entityTemplate = level.map.templates.filter((item, idx, arr) => item.name === entity.template);
+                if (entityTemplate && entityTemplate.length > 0) {
+                    var template = entityTemplate[0];
+                    var temp = $.extend(true, {}, template.displayObject);
+                    var displayObjectDefinition = $.extend(temp, entity);
+
+                    if (displayObjectDefinition.texture) {
+                        if (typeof displayObjectDefinition.texture === "string") {
+                            assets.push(displayObjectDefinition.texture);
+                        } else {
+                            assets = assets.concat(displayObjectDefinition.texture);
+                        }
+                    }
+
+                    if (displayObjectDefinition.sequences) {
+                        displayObjectDefinition.sequences.forEach((item) => {
+                            assets.push(item.texture)
+                        });
+                    }
+                }
+            });
+        }
+
+        assets = LevelLoader.GetUniqueItems(assets);
+        return assets;
+    }
+
+    private static GetUniqueItems(arr) {
+        var n = {}, r = [];
+        for (var i = 0; i < arr.length; i++) {
+            if (!n[arr[i]]) {
+                n[arr[i]] = true;
+                r.push(arr[i]);
+            }
+        }
+        return r;
     }
 
     public get Levels():ILevelDefinition[] {
@@ -71,7 +131,8 @@ export class LevelLoader {
             var entityTemplate = level.map.templates.filter((item, idx, arr) => item.name === entity.template);
             if (entityTemplate && entityTemplate.length > 0) {
                 var template = entityTemplate[0];
-                var displayObjectDefinition = $.extend(entity, template.displayObject);
+                var temp = $.extend(true, {}, template.displayObject);
+                var displayObjectDefinition = $.extend(temp, entity);
                 var bodyDefinition = $.extend(entity, template.body);
                 var dispObj: PIXI.DisplayObject = this.buildDisplayObject(displayObjectDefinition);
                 (dispObj as any).templateName = template.name;

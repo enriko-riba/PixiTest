@@ -48,7 +48,7 @@ export class HeroCharacter extends AnimatedSprite {
     }
 
     /**
-     * Checks if the player jumped on something with a higher velocity and adds some smoke.
+     * Checks movementCtrl.MovementState and updates pixi dust emitter and consumption.
      * @param dt elapsed time in milliseconds
      */
     public update = (dt: number) => {
@@ -106,7 +106,7 @@ export class HeroCharacter extends AnimatedSprite {
                 [0, 1, 2, 3, 4, 5], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
             smoke.Anchor = new PIXI.Point(0.5, 0.5);
             smoke.x = this.x;
-            smoke.y = this.y - this.HERO_FRAME_SIZE / 2;
+            smoke.y = this.y - this.HERO_FRAME_SIZE / 3;
             smoke.Loop = false;
             smoke.OnComplete = () => this.worldContainer.removeChild(smoke);
             smoke.alpha = 0.7;
