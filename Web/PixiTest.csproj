@@ -62,7 +62,6 @@
     <None Include="assets\Images\Gui\Panel_256x128.png" />
     <None Include="assets\Images\Gui\Panel_256x256.png" />
     <None Include="assets\Images\Gui\stat_panel.png" />
-    <None Include="assets\Images\Gui\TestHUD.png" />
     <None Include="assets\Images\Npcs\SQUIRELLY_01.png" />
     <None Include="assets\Images\Npcs\SQUIRELLY_02.png" />
     <None Include="assets\Images\Objects\Box_128_01.png" />
@@ -102,10 +101,6 @@
     <None Include="assets\Images\Objects\plat-des-border-r.png" />
     <None Include="assets\Images\Objects\plat-des-mid.png" />
     <None Include="assets\Images\Objects\plat-des-single.png" />
-    <Content Include="Content\bootstrap-theme.css" />
-    <Content Include="Content\bootstrap-theme.min.css" />
-    <Content Include="Content\bootstrap.css" />
-    <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Site.css">
       <DependentUpon>Site.scss</DependentUpon>
     </Content>
@@ -119,39 +114,28 @@
       <DependentUpon>Stage.css</DependentUpon>
     </Content>
     <Content Include="favicon.ico" />
-    <Content Include="fonts\glyphicons-halflings-regular.svg" />
-    <Content Include="index.html" />
-    <Content Include="fonts\glyphicons-halflings-regular.woff2" />
-    <Content Include="fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="fonts\glyphicons-halflings-regular.eot" />
-    <Content Include="Content\bootstrap.min.css.map" />
-    <Content Include="Content\bootstrap.css.map" />
-    <Content Include="Content\bootstrap-theme.min.css.map" />
-    <Content Include="Content\bootstrap-theme.css.map" />
-    <Content Include="Scripts\app\Common\error-handler.html" />
-    <Content Include="Scripts\app\Common\overlay.html" />
-    <Content Include="Scripts\app\Demo\Demo.html" />
+    <Content Include="app\Common\error-handler.html" />
+    <Content Include="app\Demo\Demo.html" />
     <None Include="assets\Images\Objects\coins.png" />
     <None Include="assets\Images\Hero_32.png" />
-    <Content Include="Scripts\app\Home\Home.html" />
-    <Content Include="Scripts\app\Route-not-found\route-not-found.html" />
-    <Content Include="Scripts\app\_templates\component-modal.html" />
-    <Content Include="Scripts\bootstrap.js" />
-    <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="app\Route-not-found\route-not-found.html" />
+    <Content Include="app\_templates\component-modal.html" />
     <Content Include="Content\Site.scss" />
     <Content Include="assets\Levels\levels.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="assets\Images\Gui\TestHUD.pdn" />
     <None Include="assets\premultiply_alpha.bat" />
     <None Include="compilerconfig.json" />
     <None Include="compilerconfig.json.defaults">
       <DependentUpon>compilerconfig.json</DependentUpon>
     </None>
     <None Include="Content\Stage.scss" />
+    <Content Include="Index.cshtml" />
     <None Include="pp2-platform - FTP.pubxml" />
     <None Include="pp2-platform - Web Deploy.pubxml" />
+    <Content Include="Scripts\hammer.js" />
+    <Content Include="Scripts\hammer.min.js" />
+    <Content Include="Scripts\hammer.min.map" />
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.1.1.js" />
     <Content Include="Scripts\jquery-3.1.1.min.js" />
@@ -192,43 +176,39 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="Scripts\app\Common\AjaxCallbacks.ts" />
-    <TypeScriptCompile Include="Scripts\app\Common\AjaxHelper.ts" />
-    <TypeScriptCompile Include="Scripts\app\Common\error-handler.ts" />
-    <TypeScriptCompile Include="Scripts\app\Common\IOverlay.ts" />
-    <TypeScriptCompile Include="Scripts\app\Common\overlay.ts" />
-    <TypeScriptCompile Include="Scripts\app\Demo\Bumper.ts" />
-    <TypeScriptCompile Include="Scripts\app\Demo\HeroCharacter.ts" />
-    <TypeScriptCompile Include="Scripts\app\Demo\Hud.ts" />
-    <TypeScriptCompile Include="Scripts\app\Demo\Platform.ts" />
-    <TypeScriptCompile Include="Scripts\app\Demo\Lava.ts" />
-    <TypeScriptCompile Include="Scripts\app\Demo\MovementController.ts" />
-    <TypeScriptCompile Include="Scripts\app\Demo\JumpController.ts" />
-    <TypeScriptCompile Include="Scripts\app\Demo\LevelLoader.ts" />
-    <TypeScriptCompile Include="Scripts\app\Demo\MovementState.ts" />
-    <TypeScriptCompile Include="Scripts\app\Demo\Stats.ts" />
-    <TypeScriptCompile Include="Scripts\app\Demo\WorldP2.ts" />
-    <TypeScriptCompile Include="Scripts\app\_engine\AnimatedSprite.ts" />
-    <TypeScriptCompile Include="Scripts\app\_engine\Button.ts" />
-    <TypeScriptCompile Include="Scripts\app\Demo\Demo.ts" />
-    <TypeScriptCompile Include="Scripts\app\_engine\Dictionary.ts" />
-    <TypeScriptCompile Include="Scripts\app\Demo\Global.ts" />
-    <TypeScriptCompile Include="Scripts\app\Demo\InGameScene.ts" />
-    <TypeScriptCompile Include="Scripts\app\_engine\KeyboardMapper.ts" />
-    <TypeScriptCompile Include="Scripts\app\Demo\LoaderScene.ts" />
-    <TypeScriptCompile Include="Scripts\app\Demo\MainMenuScene.ts" />
-    <TypeScriptCompile Include="Scripts\app\_engine\LinkedList.ts" />
-    <TypeScriptCompile Include="Scripts\app\_engine\Parallax.ts" />
-    <TypeScriptCompile Include="Scripts\app\_engine\Scene.ts" />
-    <TypeScriptCompile Include="Scripts\app\_engine\SceneManager.ts" />
-    <TypeScriptCompile Include="Scripts\app\Home\Home.ts" />
-    <TypeScriptCompile Include="Scripts\app\main.ts" />
-    <TypeScriptCompile Include="Scripts\app\Route-not-found\Route-not-found.ts" />
-    <TypeScriptCompile Include="Scripts\app\_framework\koBindings.ts" />
-    <TypeScriptCompile Include="Scripts\app\_framework\ModalDialog.ts" />
-    <TypeScriptCompile Include="Scripts\app\_framework\SpaApplication.ts" />
+    <TypeScriptCompile Include="app\Common\AjaxHelper.ts" />
+    <TypeScriptCompile Include="app\Common\error-handler.ts" />
+    <TypeScriptCompile Include="app\Demo\Bumper.ts" />
+    <TypeScriptCompile Include="app\Demo\HeroCharacter.ts" />
+    <TypeScriptCompile Include="app\Demo\Hud.ts" />
+    <TypeScriptCompile Include="app\Demo\Platform.ts" />
+    <TypeScriptCompile Include="app\Demo\Lava.ts" />
+    <TypeScriptCompile Include="app\Demo\MovementController.ts" />
+    <TypeScriptCompile Include="app\Demo\JumpController.ts" />
+    <TypeScriptCompile Include="app\Demo\LevelLoader.ts" />
+    <TypeScriptCompile Include="app\Demo\MovementState.ts" />
+    <TypeScriptCompile Include="app\Demo\Stats.ts" />
+    <TypeScriptCompile Include="app\Demo\WorldP2.ts" />
+    <TypeScriptCompile Include="app\_engine\AnimatedSprite.ts" />
+    <TypeScriptCompile Include="app\_engine\Button.ts" />
+    <TypeScriptCompile Include="app\Demo\Demo.ts" />
+    <TypeScriptCompile Include="app\_engine\Dictionary.ts" />
+    <TypeScriptCompile Include="app\Demo\Global.ts" />
+    <TypeScriptCompile Include="app\Demo\InGameScene.ts" />
+    <TypeScriptCompile Include="app\_engine\KeyboardMapper.ts" />
+    <TypeScriptCompile Include="app\Demo\LoaderScene.ts" />
+    <TypeScriptCompile Include="app\Demo\MainMenuScene.ts" />
+    <TypeScriptCompile Include="app\_engine\LinkedList.ts" />
+    <TypeScriptCompile Include="app\_engine\Parallax.ts" />
+    <TypeScriptCompile Include="app\_engine\Scene.ts" />
+    <TypeScriptCompile Include="app\_engine\SceneManager.ts" />
+    <TypeScriptCompile Include="app\main.ts" />
+    <TypeScriptCompile Include="app\Route-not-found\Route-not-found.ts" />
+    <TypeScriptCompile Include="app\_framework\koBindings.ts" />
+    <TypeScriptCompile Include="app\_framework\ModalDialog.ts" />
+    <TypeScriptCompile Include="app\_framework\SpaApplication.ts" />
     <TypeScriptCompile Include="Scripts\main-config.ts" />
-    <TypeScriptCompile Include="Scripts\typings\bootstrap\bootstrap.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\bootstrap\index.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\knockout.amd.helpers\knockout-amd-helpers.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\knockout.mapping\knockout.mapping.d.ts" />
@@ -245,11 +225,39 @@
     <TypeScriptCompile Include="Scripts\typings\tween.js\tween.js.d.ts" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>

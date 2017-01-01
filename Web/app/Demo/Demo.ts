@@ -32,7 +32,7 @@ class DemoVM extends ViewModelBase{
 }
 
 class CustomSceneResizer extends DefaultResizer {
-    private readonly HEADER_HEIGHT = 50;
+    private readonly HEADER_HEIGHT = 0;//50;
 
     constructor(designedWidth, designedHeight) {
         super(designedWidth, designedHeight);

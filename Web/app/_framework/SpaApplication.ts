@@ -352,7 +352,7 @@ export class Application {
     */
     constructor() {
         this.router = ko.observable(new Router());
-        console.info("%c 💜 💛 ❤ \t%cSPAN SPA Application created!\t%c\t ❤ 💜 💛", consoleStyle.red, consoleStyle.greenFill, consoleStyle.red);
+        console.info("%c 💜 💛 ❤ \t%cE. Riba SPA Application created!\t%c\t ❤ 💛 💜", consoleStyle.red, consoleStyle.greenFill, consoleStyle.red);
         console.info("\t\t\t%cFramework version:%c\t" + SPA_VERSION + "\t\t", consoleStyle.greenFill, consoleStyle.greenFill_light);
     }
 

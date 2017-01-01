@@ -29,6 +29,17 @@ export var TXT_STYLE: PIXI.ITextStyleStyle =
         stroke: 0xcfbfbf
     };
 
+export var WARN_STYLE: PIXI.ITextStyleStyle =
+    {
+        align: "center",
+        padding: 0,
+        fontSize: "27px",
+        fontFamily: "Calibri",
+        fill: 0xf05b15,
+        strokeThickness: 1,
+        stroke: 0xff6f6f
+    };
+
 export var sceneMngr: SceneManager;
 
 export var GameLevels: {

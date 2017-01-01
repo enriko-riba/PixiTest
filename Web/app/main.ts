@@ -1,16 +1,9 @@
-﻿import * as ko from "knockout";
-import {Application, Router, Route, SPA_VERSION} from "app/_framework/SpaApplication";
-import * as Sammy from "sammy"; 
-
+﻿import {Application, Router, Route, SPA_VERSION} from "app/_framework/SpaApplication";
 
 /**
 *   Main view model
 */
 class Main extends Application {
-    
-    //  for debug info on/off (used in Home/Index.cshtml)
-    private showActiveRoute = ko.observable(true);
-    private showApplication = ko.observable(false);
     
     //  for app footer binding
     private spa_version = SPA_VERSION;
@@ -21,8 +14,7 @@ class Main extends Application {
         console.debug('main ctor...');
         this.IsDebugToConsoleEnabled(true);
 
-        this.registerComponent({ componentName: "Home" });
-        this.registerComponent({ componentName: "Demo" });
+        this.registerComponent({ componentName: "Demo", templatePath: "Demo/Demo", vmPath:"Demo/Demo" });
         this.registerComponent({ componentName: "Route-not-found" });
 
 
@@ -37,9 +29,8 @@ class Main extends Application {
         var r = this.router();
 
         //  define application routes
-        r.AddRoute(new Route('/', 'Home'));
-        r.AddRoute(new Route('#home', 'Home'));
-        r.AddRoute(new Route('#demo', 'Demo'));
+        r.AddRoute(new Route('/', 'Demo'));
+        r.AddRoute(new Route('#home', 'Demo'));
 
         r.SetNotFoundRoute(new Route('#notfound', 'Route-not-found'));
         r.Run('/#home');
