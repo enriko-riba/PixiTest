@@ -10,7 +10,7 @@ import { LevelLoader, ILevelMap, IMapEntity } from "./LevelLoader";
 import { DPS_TOPIC, IDpsChangeEvent, IStatChangeEvent, Stats, StatType } from "./Stats";
 import { HeroCharacter } from "./HeroCharacter";
 
-import "pixi-particles";
+import "../../Scripts/pixi-particles";
 
 export function createParticleEmitter(container: PIXI.Container): PIXI.particles.Emitter {
     "use strict";
@@ -190,12 +190,14 @@ export class InGameScene extends Scene {
                 this.addInfoMessage(dispObj.position, "+1 coin");
                 this.removeEntity(body);
                 break;
+
             case 2: //  coin
                 playerStats.increaseStat(StatType.Coins, 10);
                 this.addCollectibleTween(dispObj);
                 this.addInfoMessage(dispObj.position, "+10 coins");
                 this.removeEntity(body);
                 break;
+
             case 3: //  blue gem
                 playerStats.increaseStat(StatType.Coins, 100);
                 this.addCollectibleTween(dispObj);
@@ -203,11 +205,13 @@ export class InGameScene extends Scene {
                 this.removeEntity(body);
                 break;
 
-            case 1000:  //  border lava                
+            case 1000:  //  border lava   
+                this.addInfoMessage(dispObj.position, "Burn", Global.WARN_STYLE);             
                 playerStats.Buffs[1000] = this.secondsFromNow(1);
                 break;
 
             case 1001:  //  lava
+                this.addInfoMessage(dispObj.position, "Burn", Global.WARN_STYLE);
                 playerStats.Buffs[1001] = this.secondsFromNow(3);
                 break;
         }
