@@ -12,6 +12,7 @@ require.config({
         "stats": "Scripts/stats.min",
         "koBindings": "app/_framework/koBindings",
         "tween": "../../Scripts/Tween",
+        "hammerjs": "../../Scripts/hammer.min",
         "p2": "../../Scripts/p2"
     },
     shim: {
@@ -21,12 +22,10 @@ require.config({
     },
 });
 require(["knockout", "app/main", "koMapping", "pixi", "stats", "knockout-amd-helpers", "text", "koBindings", "postbox"], function (ko, mainModule, koMapping, PIXI, stats) {
-    //  set default folders and extension
-    ko.bindingHandlers.module.baseDir = "app/_modules"; // note: currently not used
+    ko.bindingHandlers.module.baseDir = "app/_modules";
     ko.amdTemplateEngine.defaultPath = "app/_templates";
     ko.amdTemplateEngine.defaultSuffix = ".html";
     ko.mapping = koMapping;
     ko.applyBindings(mainModule.vm);
     window.stats = new stats();
 });
-//# sourceMappingURL=main-config.js.map
