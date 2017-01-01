@@ -15,6 +15,7 @@ require.config({
         "koBindings": "app/_framework/koBindings",
 
         "tween": "../../Scripts/Tween",
+        "hammerjs": "../../Scripts/hammer.min",
         "p2":"../../Scripts/p2"
     },
 

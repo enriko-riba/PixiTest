@@ -14,7 +14,7 @@ class Main extends Application {
         console.debug('main ctor...');
         this.IsDebugToConsoleEnabled(true);
 
-        this.registerComponent({ componentName: "Demo", templatePath: "Demo/Demo", vmPath:"Demo/Demo" });
+        this.registerComponent({ componentName: "Demo"});
         this.registerComponent({ componentName: "Route-not-found" });
 
 

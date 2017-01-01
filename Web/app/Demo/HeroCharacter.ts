@@ -47,6 +47,16 @@ export class HeroCharacter extends AnimatedSprite {
         return this.playerStats.getStat(StatType.Dust) > 1;
     }
 
+    public MoveLeft() {
+        this.movementCtrl.MoveLeft();
+    }
+    public MoveRight() {
+        this.movementCtrl.MoveRight();
+    }
+    public Jump() {
+        //  TODO: implement
+    }
+
     /**
      * Checks movementCtrl.MovementState and updates pixi dust emitter and consumption.
      * @param dt elapsed time in milliseconds

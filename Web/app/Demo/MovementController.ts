@@ -17,10 +17,18 @@ export class MovementController {
 
     private isRunning = false;
     private isJumping = false;
+    private newState: MovementState = MovementState.Idle;
 
     constructor(world: WorldP2, hero: HeroCharacter) {
         this.world = world;
         this.hero = hero;
+    }
+
+    public MoveLeft() {
+        this.newState = MovementState.Left;
+    }
+    public MoveRight() {
+        this.newState = MovementState.Right;
     }
 
     public get IsJumping():boolean {
@@ -76,33 +84,33 @@ export class MovementController {
             this.world.playerBody.velocity[0] = v;
         }
 
-        var newState: MovementState = MovementState.Idle;
+        
         var newIsJumping: boolean = false;
         var newIsRunning: boolean = this.kbd.IsKeyDown(KEY_SHIFT) && this.hero.CanRun;
 
         if (this.kbd.IsKeyDown(KEY_A) || this.kbd.IsKeyDown(KEY_LEFT)) {
-            newState = MovementState.Left;
+            this.newState = MovementState.Left;
         } else if (this.kbd.IsKeyDown(KEY_D) || this.kbd.IsKeyDown(KEY_RIGHT)) {
-            newState = MovementState.Right;
+            this.newState = MovementState.Right;
         }
 
         //  check if jump is pressed
         if ((this.kbd.IsKeyDown(KEY_W) || this.kbd.IsKeyDown(KEY_UP) || this.kbd.IsKeyDown(SPACE)) && this.CanJump) {
             if (this.movementState === MovementState.Left) {
-                newState = MovementState.JumpLeft;
+                this.newState = MovementState.JumpLeft;
             }else if (this.movementState === MovementState.Right) {
-                newState = MovementState.JumpRight;
+                this.newState = MovementState.JumpRight;
             }else if (this.movementState === MovementState.Idle) {
-                newState = MovementState.JumpUp;
+                this.newState = MovementState.JumpUp;
                 newIsRunning = false;
             }
         }
 
         //  has state changed
-        if (newState !== this.movementState) {
-            console.log("state change: " + MovementState[this.movementState] + " -> " + MovementState[newState]);
+        if (this.newState !== this.movementState) {
+            console.log("state change: " + MovementState[this.movementState] + " -> " + MovementState[this.newState]);
 
-            switch (newState) {
+            switch (this.newState) {
                 case MovementState.Idle:
                     this.hero.PlayAnimation("idle");
                     break;
@@ -131,12 +139,13 @@ export class MovementController {
         }
 
         //  adjust animation FPS based on jump/idle/isrunning flags
-        var animationFPS:number = (newState === MovementState.Idle || newIsJumping) ? this.ANIMATION_FPS / 2 : (newIsRunning ? 2 : 1) * this.ANIMATION_FPS;
+        var animationFPS: number = (this.newState === MovementState.Idle || newIsJumping) ? this.ANIMATION_FPS / 2 : (newIsRunning ? 2 : 1) * this.ANIMATION_FPS;
         this.hero.Fps = animationFPS;
 
         //  update new states
-        this.movementState = newState;
+        this.movementState = this.newState;
         this.isRunning = newIsRunning;
+        this.newState = MovementState.Idle;
     }
 
     private calcMovementVelocity(): number {

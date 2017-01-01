@@ -209,6 +209,7 @@
     <TypeScriptCompile Include="app\_framework\SpaApplication.ts" />
     <TypeScriptCompile Include="Scripts\main-config.ts" />
     <TypeScriptCompile Include="Scripts\typings\bootstrap\index.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\Hammerjs\Hammerjs.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\knockout.amd.helpers\knockout-amd-helpers.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\knockout.mapping\knockout.mapping.d.ts" />
