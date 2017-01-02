@@ -350,10 +350,10 @@ export class InGameScene extends Scene {
         //  TODO: load initial settings
         var playerStats = this.hero.PlayerStats;
         playerStats.setStat(StatType.Coins, 0);
-        playerStats.setStat(StatType.MaxHP, 100);
-        playerStats.setStat(StatType.HP, 90);
+        playerStats.setStat(StatType.MaxHP, 150);
+        playerStats.setStat(StatType.HP, 120);
         playerStats.setStat(StatType.MaxDust, 1000);
-        playerStats.setStat(StatType.Dust, 150);
+        playerStats.setStat(StatType.Dust, 250);
 
         ko.postbox.subscribe<IDpsChangeEvent>(DPS_TOPIC, this.handleDpsChange);
     }

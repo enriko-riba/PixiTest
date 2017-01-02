@@ -40,6 +40,7 @@ export class Platform extends PIXI.Container {
             x += w;
         } else {
             spr = new PIXI.Sprite(texture);
+            spr.position.set(x, 0);
             x += spr.width;
         }
         this.addChild(spr);
