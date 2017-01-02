@@ -199,8 +199,8 @@ export class DefaultResizer implements ISceneResizer {
     }
     public CalculateSize(availableSize: ISize, aspect: number): ISize {
         var maxWidth: number, maxHeight: number;
-        maxWidth = aspect * availableSize.y;
-        maxHeight = window.innerHeight;
+        maxWidth = Math.floor(aspect * availableSize.y);
+        maxHeight = Math.floor(window.innerHeight);
         return { x: maxWidth, y: maxHeight };
     }
     public CalculateScale(newSize: ISize):number {

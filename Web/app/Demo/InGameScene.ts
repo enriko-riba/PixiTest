@@ -121,7 +121,6 @@ export class InGameScene extends Scene {
         this.setup();
     }
 
-    
     /**
      * Updates physics and handles player collisions.
      * @param dt elapsed time in milliseconds
@@ -151,7 +150,7 @@ export class InGameScene extends Scene {
             let body = bodies[i];
             let displayObject: PIXI.DisplayObject = (body as any).DisplayObject as PIXI.DisplayObject;
             if (displayObject && body.type !== p2.Body.STATIC) {
-                displayObject.position.set(body.interpolatedPosition[0], body.interpolatedPosition[1]);
+                displayObject.position.set(Math.floor(body.interpolatedPosition[0]), Math.floor(body.interpolatedPosition[1]));
                 displayObject.rotation = body.interpolatedAngle;
             }
         }
