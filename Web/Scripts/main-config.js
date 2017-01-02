@@ -22,10 +22,12 @@ require.config({
     },
 });
 require(["knockout", "app/main", "koMapping", "pixi", "stats", "knockout-amd-helpers", "text", "koBindings", "postbox"], function (ko, mainModule, koMapping, PIXI, stats) {
-    ko.bindingHandlers.module.baseDir = "app/_modules";
+    //  set default folders and extension
+    ko.bindingHandlers.module.baseDir = "app/_modules"; // note: currently not used
     ko.amdTemplateEngine.defaultPath = "app/_templates";
     ko.amdTemplateEngine.defaultSuffix = ".html";
     ko.mapping = koMapping;
     ko.applyBindings(mainModule.vm);
     window.stats = new stats();
 });
+//# sourceMappingURL=main-config.js.map

@@ -139,7 +139,7 @@ export class MovementController {
         }
 
         //  adjust animation FPS based on jump/idle/isrunning flags
-        var animationFPS: number = (this.newState === MovementState.Idle || newIsJumping) ? this.ANIMATION_FPS / 2 : (newIsRunning ? 2 : 1) * this.ANIMATION_FPS;
+        var animationFPS: number = (this.newState === MovementState.Idle || newIsJumping) ? this.ANIMATION_FPS / 3 : (newIsRunning ? 2 : 1) * this.ANIMATION_FPS;
         this.hero.Fps = animationFPS;
 
         //  update new states

@@ -101,6 +101,7 @@
     <None Include="assets\Images\Objects\plat-des-border-r.png" />
     <None Include="assets\Images\Objects\plat-des-mid.png" />
     <None Include="assets\Images\Objects\plat-des-single.png" />
+    <Content Include="assets\README.txt" />
     <Content Include="Content\Site.css">
       <DependentUpon>Site.scss</DependentUpon>
     </Content>
