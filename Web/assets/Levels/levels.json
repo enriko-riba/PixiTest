@@ -16,7 +16,7 @@
         {
           "index": 1,
           "name": "Near",
-          "parallaxFactor": 0.8,
+          "parallaxFactor": 0.70,
           "y": 5,
           "scale": 2,
           "tiles": [
@@ -296,8 +296,19 @@
           },
           {
             "template": "platform1",
-            "xy": [ 3360, 500 ]
+            "xy": [ 3355, 510 ]
           },
+          {
+            "template": "platform1",
+            "xy": [ 3190, 580 ]
+          },
+          {
+            "template": "platform",
+            "xy": [ 2950, 630 ],
+            "tiles": 1
+          },
+
+
           {
             "template": "box64a",
             "xy": [ -132, 32 ],
