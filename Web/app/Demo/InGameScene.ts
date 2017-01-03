@@ -11,7 +11,6 @@ import { DPS_TOPIC, IDpsChangeEvent, IStatChangeEvent, Stats, StatType } from ".
 import { HeroCharacter } from "./HeroCharacter";
 
 import "../../Scripts/pixi-particles";
-import * as Hammer from "hammerjs";
 
 export function createParticleEmitter(container: PIXI.Container): PIXI.particles.Emitter {
     "use strict";
@@ -105,13 +104,6 @@ export class InGameScene extends Scene {
                 (performance as any).webkitNow ||
                 Date.now;  /*none found - fallback to browser default */
         })();
-
-        var myElement = document.getElementById('stage');
-        var mc = new Hammer(myElement);
-        mc.on("press", (ev: any) => {
-            console.log("press", ev);
-            this.hero.MoveRight();
-        });
 
         this.worldContainer = new PIXI.Container();
         this.worldContainer.scale.y = -1;

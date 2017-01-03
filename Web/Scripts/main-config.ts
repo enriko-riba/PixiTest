@@ -15,6 +15,7 @@ require.config({
         "koBindings": "app/_framework/koBindings",
 
         "tween": "../../Scripts/Tween",
+        "hammertime": "../../Scripts/hammer-time.min",
         "hammerjs": "../../Scripts/hammer.min",
         "p2":"../../Scripts/p2"
     },
@@ -22,7 +23,7 @@ require.config({
     shim: {
         "koMapping": { "deps": ["knockout"] },
         "p2": { exports: "p2" },
-        "tween": { exports: "TWEEN" }
+        "tween": { exports: "TWEEN" },        
     },
     //  urlArgs: "v=" + gSiteVersion
 });

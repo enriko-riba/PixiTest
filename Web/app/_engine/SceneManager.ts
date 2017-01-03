@@ -61,7 +61,8 @@ export class SceneManager {
         // Position the meter in the top-left corner
         stats.domElement.style.position = "absolute";
         stats.domElement.style.left = "0px";
-        stats.domElement.style.top = "52px";
+        stats.domElement.style.bottom = "20px";
+        stats.domElement.style.top = ""; 
 
         // Append the meter to the body of your HTML5 document.
         document.body.appendChild(stats.domElement);
