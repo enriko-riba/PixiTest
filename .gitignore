@@ -253,3 +253,5 @@ paket-files/
 
 *.map
 Web/app/**/*.js
+Web/Scripts/main-config.js
+Web/assets/_distribute/*.*
