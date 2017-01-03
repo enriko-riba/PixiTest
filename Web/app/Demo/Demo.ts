@@ -16,6 +16,7 @@ class DemoVM extends ViewModelBase{
             backgroundColor: 0xff99bb,
             antialias: true,
             transparent: false,
+            roundPixels: false,
             resolution: window.devicePixelRatio
         };
         (Global as any).sceneMngr = new SceneManager(Global.SCENE_WIDTH, Global.SCENE_HEIGHT, renderOptions , new CustomSceneResizer(Global.SCENE_WIDTH, Global.SCENE_HEIGHT));
@@ -32,14 +33,12 @@ class DemoVM extends ViewModelBase{
 }
 
 class CustomSceneResizer extends DefaultResizer {
-    private readonly HEADER_HEIGHT = 0;//50;
-
     constructor(designedWidth, designedHeight) {
         super(designedWidth, designedHeight);
     }
 
     public GetAvailableSize() : ISize {
-        return { x: window.innerWidth, y: window.innerHeight - this.HEADER_HEIGHT};
+        return { x: window.innerWidth, y: window.innerHeight};
     }
 }
 
