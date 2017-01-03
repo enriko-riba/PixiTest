@@ -56,6 +56,7 @@ export class SceneManager {
         window.removeEventListener("resize", this.resizeHandler);
         window.addEventListener("resize", this.resizeHandler, true);
 
+        /*
         stats.showPanel(0); // 0 – use the FPS mode, 1 – use the milliseconds mode
 
         // Position the meter in the top-left corner
@@ -66,6 +67,7 @@ export class SceneManager {
 
         // Append the meter to the body of your HTML5 document.
         document.body.appendChild(stats.domElement);
+        */
 
         this.render(0);
     }

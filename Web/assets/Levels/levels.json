@@ -300,11 +300,11 @@
           },
           {
             "template": "platform1",
-            "xy": [ 3190, 580 ]
+            "xy": [ 3190, 570 ]
           },
           {
             "template": "platform",
-            "xy": [ 2950, 610 ],
+            "xy": [ 2950, 580 ],
             "tiles": 1
           },
 
