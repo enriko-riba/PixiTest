@@ -61,7 +61,7 @@ export class Hud extends PIXI.Container {
             this.txtDust.resolution = window.devicePixelRatio;
             this.txtDust.position = txtPosition;
             let pnl = new PIXI.Sprite(PIXI.loader.resources["assets/_distribute/stat_panel.png"].texture);
-            this.emitter = createParticleEmitter(pnl);
+            this.emitter = createParticleEmitter(pnl, [PIXI.Texture.fromImage("assets/_distribute/star.png")]);
             this.emitter.ownerPos.set(32, 58);
             this.emitter.startSpeed = 15;
             this.emitter.maxLifetime = 0.6;
