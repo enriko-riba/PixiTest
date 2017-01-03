@@ -9,7 +9,8 @@ export class HeroCharacter extends AnimatedSprite {
     private readonly HERO_FRAME_SIZE: number = 64;
     private readonly playerStats = new Stats();
 
-    private emitter: PIXI.particles.Emitter;
+    private emitterPixies: PIXI.particles.Emitter;
+    private emitterBuffs: PIXI.particles.Emitter;
     private movementCtrl: MovementController;
     private wp2: WorldP2;
     private worldContainer: PIXI.Container;
@@ -19,8 +20,34 @@ export class HeroCharacter extends AnimatedSprite {
         this.worldContainer = container;
         this.wp2 = wp2;
         this.movementCtrl = new MovementController(this.wp2, this);
-        this.emitter = createParticleEmitter(container);
+        this.emitterPixies = createParticleEmitter(container, [PIXI.Texture.fromImage("assets/_distribute/star.png")]);
 
+        var cfg: PIXI.particles.EmitterConfig = {
+            color: { start: "#ff0000", end: "#ff5050" },
+            alpha: { start: 1, end: 0.5 },
+            speed: {
+                start: 1,
+                end: 0,
+                minimumSpeedMultiplier: 1
+            },
+            scale: {
+                start: 0.3,
+                end: 0.05
+            },
+            maxParticles: 70,
+            lifetime: {
+                min: 0.3,
+                max: 0.6
+            },
+            spawnType: "circle",
+            spawnCircle: {
+                x: 0,
+                y: 40,
+                r: 30
+            }
+        };
+        this.emitterBuffs = createParticleEmitter(container, [PIXI.Texture.fromImage("assets/_distribute/flame.png")], cfg);
+        
         this.wp2.on("playerContact", this.onPlayerContact, this);
 
         this.addAnimations(new AnimationSequence("right", "assets/_distribute/hero_64.png", [12, 13, 14, 15, 16, 17], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
@@ -59,35 +86,43 @@ export class HeroCharacter extends AnimatedSprite {
 
         switch (this.movementCtrl.MovementState) {
             case MovementState.Idle:
-                this.emitter.emit = false;
+                this.emitterPixies.emit = false;
                 break;
             case MovementState.Left:
             case MovementState.JumpLeft:
-                this.emitter.emit = this.movementCtrl.IsRunning;
-                this.emitter.minStartRotation = -25;
-                this.emitter.maxStartRotation = 25;
+                this.emitterPixies.emit = this.movementCtrl.IsRunning;
+                this.emitterPixies.minStartRotation = -25;
+                this.emitterPixies.maxStartRotation = 25;
                 break;
             case MovementState.Right:
             case MovementState.JumpRight:
-                this.emitter.emit = this.movementCtrl.IsRunning;
-                this.emitter.minStartRotation = 155;
-                this.emitter.maxStartRotation = 205;
+                this.emitterPixies.emit = this.movementCtrl.IsRunning;
+                this.emitterPixies.minStartRotation = 155;
+                this.emitterPixies.maxStartRotation = 205;
                 break;
 
             case MovementState.JumpUp:
-                this.emitter.emit = this.movementCtrl.IsRunning;
-                this.emitter.minStartRotation = 245;
-                this.emitter.maxStartRotation = 295;
+                this.emitterPixies.emit = this.movementCtrl.IsRunning;
+                this.emitterPixies.minStartRotation = 245;
+                this.emitterPixies.maxStartRotation = 295;
                 break;
         }
 
-        this.emitter.update(dt * 0.001);
-        this.emitter.ownerPos = this.position;
+        this.emitterPixies.update(dt * 0.001);
+        this.emitterPixies.ownerPos = this.position;
+        this.emitterBuffs.update(dt * 0.001);
+        this.emitterBuffs.ownerPos = this.position;
 
         //  use pixi dust
         if (this.movementCtrl.IsRunning && this.movementCtrl.MovementState !== MovementState.Idle) {
             this.playerStats.increaseStat(StatType.Dust, -dt * 0.005);   //  5/sec
         }
+
+        //  check if is burning
+        let now = Date.now() / 1000;
+        let isBurning = this.playerStats.Buffs[1000] > now || this.playerStats.Buffs[1001] > now;
+        this.emitterBuffs.emit = isBurning;
+        this.alpha = (isBurning)  ? 0.7 :  1;
 
         this.playerStats.onUpdate(dt);
     };

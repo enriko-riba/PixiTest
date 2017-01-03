@@ -12,20 +12,8 @@ import { HeroCharacter } from "./HeroCharacter";
 
 import "../../Scripts/pixi-particles";
 
-export function createParticleEmitter(container: PIXI.Container): PIXI.particles.Emitter {
-    "use strict";
-    var emitter = new PIXI.particles.Emitter(
-
-        // The PIXI.Container to put the emitter in
-        // if using blend modes, it's important to put this
-        // on top of a bitmap, and not use the root stage Container
-        container,
-
-        // The collection of particle images to use
-        [PIXI.Texture.fromImage("assets/_distribute/star.png")],
-
-        // Emitter configuration, edit this to change the look
-        // of the emitter
+export function createParticleEmitter(container: PIXI.Container, textures: PIXI.Texture[], config?: PIXI.particles.EmitterConfig): PIXI.particles.Emitter {
+    var cfg: PIXI.particles.EmitterConfig =
         {
             "alpha": {
                 "start": 0.8,
@@ -70,7 +58,18 @@ export function createParticleEmitter(container: PIXI.Container): PIXI.particles
                 "y": 0,
                 "r": 10
             }
-        }
+        };
+    if (config) {
+        cfg = $.extend(cfg, config);
+    }
+
+    var emitter = new PIXI.particles.Emitter(
+        // The PIXI.Container to put the emitter in
+        // if using blend modes, it's important to put this
+        // on top of a bitmap, and not use the root stage Container
+        container,        
+        textures,
+        cfg
     );
     return emitter;
 }
@@ -205,12 +204,16 @@ export class InGameScene extends Scene {
                 break;
 
             case 1000:  //  border lava   
-                this.addInfoMessage(dispObj.position, "Burn", Global.WARN_STYLE);             
+                var now = Date.now() / 1000;
+                if (!playerStats.Buffs[1000] || playerStats.Buffs[1000] < now)
+                    this.addInfoMessage(dispObj.position, "Burn", Global.WARN_STYLE);             
                 playerStats.Buffs[1000] = this.secondsFromNow(1);
                 break;
 
             case 1001:  //  lava
-                this.addInfoMessage(dispObj.position, "Burn", Global.WARN_STYLE);
+                var now = Date.now() / 1000;
+                if (!playerStats.Buffs[1001] || playerStats.Buffs[1001] < now)
+                    this.addInfoMessage(dispObj.position, "Burn", Global.WARN_STYLE);
                 playerStats.Buffs[1001] = this.secondsFromNow(3);
                 break;
         }
