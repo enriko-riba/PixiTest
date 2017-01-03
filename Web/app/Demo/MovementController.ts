@@ -22,7 +22,9 @@ export class MovementController {
     private isJumping = false;
     private newState: MovementState = MovementState.Idle;
 
-    private touchState: MovementState = -1;
+    private isTouchLeft: boolean;
+    private isTouchRight: boolean;
+    private isTouchJump: boolean;
 
     constructor(world: WorldP2, hero: HeroCharacter) {
         this.world = world;
@@ -30,49 +32,17 @@ export class MovementController {
 
         var myElement = document.getElementById("stage");
         var mc = new Hammer.Manager(myElement);
+
         mc.add(new Hammer.Tap({ event: 'doubletap', taps: 2 }));
-        mc.add(new Hammer.Tap({ event: 'singletap', time: 150 }));
-        mc.get('doubletap').recognizeWith('singletap');
-        mc.get('singletap').requireFailure('doubletap');
-        mc.on("singletap doubletap", (ev: any)=> {
-            console.log(ev.type + " ");
-            if (ev.tapCount === 1)
-                this.touchMove(ev);
-            else if (ev.tapCount === 2)
-                this.touchJump(ev);
-        });
+        mc.on("doubletap", this.touchJump);
 
-        //mc.on("singletap", this.touchMove);
-        //mc.on("doubletap", this.touchJump);
-        //mc.on("press singletap", this.touchMove);
-        //mc.on("pressup", (ev: any) => {
-        //    console.log("pressup event", ev);
-        //    var pos = this.getLocalCoordinates(ev);
-        //    if ((this.touchState === MovementState.Right || this.touchState === MovementState.JumpRight) && pos.x > Global.sceneMngr.Renderer.width / 2)
-        //        this.touchState = MovementState.Idle;
-        //    else if (this.touchState === MovementState.Left || this.touchState === MovementState.JumpLeft)
-        //        this.touchState = MovementState.Idle;
-
-        //    console.log("new touchstate", this.touchState);
-        //});
+        mc.add(new Hammer.Press({ event: 'press', time: 25, interval: 25 }));
+        mc.on("press", this.touchMove);
     }
 
     private touchJump = (ev: any) => {
         console.log("touchJump event", ev);
-        switch (this.touchState) {
-            case MovementState.Idle:
-                this.touchState = MovementState.JumpUp;
-                break;
-
-            case MovementState.Left:
-                this.touchState = MovementState.JumpLeft;
-                break;
-
-            case MovementState.Right:
-                this.touchState = MovementState.JumpRight;
-                break;
-        }
-        console.log("new touchstate", this.touchState);
+        this.isTouchJump = true;
     }
 
     private touchMove = (ev: any) => {
@@ -81,15 +51,15 @@ export class MovementController {
 
         var pos = this.getLocalCoordinates(ev);
         let newDirection = (pos.x > 0.5) ? MovementState.Right : MovementState.Left;
-        let shouldStop = this.touchState !== MovementState.Idle && newDirection === this.touchState;
-
+        let shouldStop = (newDirection === MovementState.Left && this.isTouchRight) ||
+                         ( newDirection === MovementState.Right && this.isTouchLeft);
         if (shouldStop ) {
-            this.touchState = MovementState.Idle;
+            this.isTouchRight = false;
+            this.isTouchLeft = false;
         } else {
-            this.touchState = newDirection;
+            this.isTouchRight = (newDirection === MovementState.Right);
+            this.isTouchLeft = (newDirection === MovementState.Left);
         }
-
-        console.log("new touchstate", this.touchState);
     }
 
     /**
@@ -163,14 +133,14 @@ export class MovementController {
         var newIsJumping: boolean = false;
         var newIsRunning: boolean = this.kbd.IsKeyDown(KEY_SHIFT) && this.hero.CanRun;
 
-        if (this.kbd.IsKeyDown(KEY_A) || this.kbd.IsKeyDown(KEY_LEFT) || this.touchState === MovementState.Left) {
+        if (this.kbd.IsKeyDown(KEY_A) || this.kbd.IsKeyDown(KEY_LEFT) || this.isTouchLeft) {
             this.newState = MovementState.Left;
-        } else if (this.kbd.IsKeyDown(KEY_D) || this.kbd.IsKeyDown(KEY_RIGHT) || this.touchState === MovementState.Right) {
+        } else if (this.kbd.IsKeyDown(KEY_D) || this.kbd.IsKeyDown(KEY_RIGHT) || this.isTouchRight) {
             this.newState = MovementState.Right;
         }
 
         //  check if jump is pressed
-        if ((this.kbd.IsKeyDown(KEY_W) || this.kbd.IsKeyDown(KEY_UP) || this.kbd.IsKeyDown(SPACE)) && this.CanJump) {
+        if ((this.kbd.IsKeyDown(KEY_W) || this.kbd.IsKeyDown(KEY_UP) || this.kbd.IsKeyDown(SPACE) || this.isTouchJump) && this.CanJump) {
             if (this.movementState === MovementState.Left) {
                 this.newState = MovementState.JumpLeft;
             }else if (this.movementState === MovementState.Right) {
@@ -221,6 +191,7 @@ export class MovementController {
         this.movementState = this.newState;
         this.isRunning = newIsRunning;
         this.newState = MovementState.Idle;
+        this.isTouchJump = false;
     }
 
     private calcMovementVelocity(): number {
