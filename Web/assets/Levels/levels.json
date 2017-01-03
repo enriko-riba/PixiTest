@@ -304,7 +304,7 @@
           },
           {
             "template": "platform",
-            "xy": [ 2950, 630 ],
+            "xy": [ 2950, 610 ],
             "tiles": 1
           },
 
@@ -381,30 +381,8 @@
             "template": "box64b",
             "xy": [ 3328, 32 ]
           },
-          {
-            "template": "box64b",
-            "xy": [ 3584, 32 ]
-          },
-          {
-            "template": "box64b",
-            "xy": [ 3840, 32 ]
-          },
-          {
-            "template": "box64b",
-            "xy": [ 4096, 32 ]
-          },
-          {
-            "template": "box64b",
-            "xy": [ 4352, 32 ]
-          },
-          {
-            "template": "box64b",
-            "xy": [ 4608, 32 ]
-          },
-          {
-            "template": "box64b",
-            "xy": [ 4864, 32 ]
-          },
+
+
           {
             "template": "lava",
             "texture": "assets/_distribute/lava-border-l.png",
@@ -443,6 +421,43 @@
             "texture": "assets/_distribute/lava-border-r.png",
             "interactionType": 1000,
             "xy": [ 2687, -60 ]
+          },
+          {
+            "template": "lava",
+            "texture": "assets/_distribute/lava-border-l.png",
+            "interactionType": 1000,
+            "xy": [ 3200, -60 ]
+          },
+          {
+            "template": "lava",
+            "interactionType": 1001,
+            "xy": [ 3264, -60 ]
+          },
+          {
+            "template": "lava",
+            "interactionType": 1001,
+            "xy": [ 3328, -60 ]
+          },
+          {
+            "template": "lava",
+            "interactionType": 1001,
+            "xy": [ 3392, -60 ]
+          },
+          {
+            "template": "lava",
+            "interactionType": 1001,
+            "xy": [ 3452, -60 ]
+          },
+          {
+            "template": "lava",
+            "interactionType": 1001,
+            "xy": [ 3514, -60 ]
+          },
+          {
+            "template": "lava",
+            "texture": "assets/_distribute/lava-border-r.png",
+            "interactionType": 1000,
+            "xy": [ 3578, -60 ]
           }
         ],
 

@@ -42,7 +42,7 @@ export class SceneManager {
         this.sceneResizer = resizer || new DefaultResizer(this.designWidth, this.designHeight);
 
         if (!options) {
-            options = { antialias: false, backgroundColor: 0x012135 };
+            options = { antialias: false, roundPixels: true, backgroundColor: 0x012135 };
         }
         this.renderer = PIXI.autoDetectRenderer(width, height, options);
         //this.renderer = new PIXI.CanvasRenderer(width, height, options);
