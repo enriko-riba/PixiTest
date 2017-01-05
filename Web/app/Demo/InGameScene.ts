@@ -8,7 +8,7 @@ import { WorldP2 } from "./WorldP2";
 import { Hud } from "./Hud";
 import { LevelLoader, ILevelMap, IMapEntity, ITriggerDefinition } from "./LevelLoader";
 import { DPS_TOPIC, IDpsChangeEvent, IStatChangeEvent, Stats, StatType } from "./Stats";
-import { HeroCharacter } from "./HeroCharacter";
+import { HeroCharacter, QuestState } from "./HeroCharacter";
 
 import "../../Scripts/pixi-particles";
 
@@ -192,9 +192,20 @@ export class InGameScene extends Scene {
             pos.x += trigger.textposition[0];
             pos.y += trigger.textposition[1];
         }
-        this.addTriggerMessage(pos, trigger.text, Global.QUEST_STYLE);
+       
 
-        switch (trigger.id) {
+        if (trigger.questId) {
+            switch (trigger.questId) {
+                case 201:
+                    if (this.hero.getQuestState(201) === QuestState.Completed) {
+                        //  TODO: trigger loading next level
+                        this.hero.setQuestState(201, QuestState.Finished);
+                        this.addTriggerMessage(pos, trigger.completedText, Global.QUEST_STYLE);
+                    } else {
+                        this.addTriggerMessage(pos, trigger.text, Global.QUEST_STYLE);
+                    }
+                    break;
+            }
         }
     }
 
@@ -242,10 +253,11 @@ export class InGameScene extends Scene {
                 playerStats.Buffs[1001] = this.secondsFromNow(3);
                 break;
 
-            case 2001:  //  kendo knowledge
+            case 201:  //  kendo knowledge
                 this.addInfoMessage(dispObj.position, "Kendo knowledge acquired!");
                 this.addCollectibleTween(dispObj);
                 this.removeEntity(body);
+                this.hero.setQuestState(201, QuestState.Completed);
                 break;
         }
     }

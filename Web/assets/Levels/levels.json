@@ -142,9 +142,10 @@
             },
             "trigger": {
               "type": "collision",
-              "id": 1,
               "text": "You shall not pass,\nunless you bring\nme knowledge\nabout Kendo!",
-              "textposition": [ -328, 440 ]
+              "textposition": [ -328, 440 ],
+              "questId": 201,
+              "completedText": "What? Can it be?\nYou have the Kendo\nknowledge I need!\n"
             }
           },
           {
@@ -336,7 +337,7 @@
           {
             "template": "quest_item",
             "texture": "assets/_distribute/kendo-knowledge.png",
-            "interactionType": 2001,
+            "interactionType": 201,
             "xy": [ 2850, 560 ]
           },
 
