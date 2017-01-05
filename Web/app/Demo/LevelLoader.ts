@@ -163,7 +163,14 @@ export class LevelLoader {
             case "Sprite":
                 var text = PIXI.loader.resources[definition.texture as string].texture;
                 var spr = new PIXI.Sprite(text);
-                spr.anchor.set(0.5);
+
+                if (definition.anchor === undefined)
+                    definition.anchor = 0.5;
+                spr.anchor.set(definition.anchor);
+
+                if (definition.pivot === undefined)
+                    definition.pivot = 0.5;
+                spr.pivot.set(definition.pivot);
                 dispObj = spr;                
                 break;
 
@@ -188,7 +195,6 @@ export class LevelLoader {
                 dispObj = pl;
         }
         
-        dispObj.pivot.set(0.5);
         dispObj.rotation = definition.rotation || 0;
         if (definition.xy) {
             dispObj.position.set(definition.xy[0], definition.xy[1]);
@@ -330,6 +336,8 @@ export interface IDisplayObjectDefinition {
     xy?: number[];
     scale?: number[];
     rotation?: number;
+    pivot?: number;
+    anchor?: number;
     interactionType?: number; 
     tint?: number;
     fps?: number;

@@ -109,6 +109,7 @@ export class InGameScene extends Scene {
         this.addChild(this.worldContainer);
 
         this.HudOverlay = this.hud;
+        this.hud.position.set(5, 25);
         this.setup();
     }
 

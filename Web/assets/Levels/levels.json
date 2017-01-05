@@ -131,6 +131,18 @@
             }
           },
           {
+            "name": "castle_mb",
+            "displayObject": {
+              "typeName": "Sprite",
+              "texture": "assets/_distribute/castle-mbanovic.png"
+            },
+            "body": {
+              "shape": "Box",
+              "type": 2,
+              "material": "box_default"
+            }
+          },
+          {
             "name": "box64a",
             "displayObject": {
               "typeName": "Sprite",
@@ -382,6 +394,11 @@
             "xy": [ 3328, 32 ]
           },
 
+          {
+            "template": "castle_mb",
+            "xy": [ 4100, 260 ],
+            "rotation": 3.14159
+          },
 
           {
             "template": "lava",
