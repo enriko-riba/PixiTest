@@ -101,6 +101,9 @@
     <None Include="assets\Images\Objects\plat-des-border-r.png" />
     <None Include="assets\Images\Objects\plat-des-mid.png" />
     <None Include="assets\Images\Objects\plat-des-single.png" />
+    <Content Include="assets\Audio\Bumbling-Burglars_Looping.mp3" />
+    <Content Include="assets\Audio\Here-Come-the-Weirds_v001.mp3" />
+    <Content Include="assets\Audio\Techno-Dreaming_Looping.mp3" />
     <Content Include="assets\README.txt" />
     <Content Include="Content\Site.css">
       <DependentUpon>Site.scss</DependentUpon>
