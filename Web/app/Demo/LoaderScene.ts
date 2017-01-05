@@ -61,7 +61,6 @@ export class LoaderScene extends Scene {
                 "assets/_distribute/bumper_rotor_01.png",
 
                 "assets/_distribute/flame.png",
-                "assets/_distribute/kendo-knowledge.png",
                 "assets/_distribute/callout.png"
             ]
         );

@@ -144,7 +144,7 @@
               "type": "collision",
               "id": 1,
               "text": "You shall not pass,\nunless you bring\nme knowledge\nabout Kendo!",
-              "textposition": [-228, 430]
+              "textposition": [ -328, 440 ]
             }
           },
           {
@@ -183,6 +183,15 @@
               "shape": "Box",
               "type": 4,
               "material": "box_default"
+            }
+          },
+          {
+            "name": "quest_item",
+            "displayObject": {
+              "typeName": "Sprite"              
+            },
+            "body": {
+              "shape": "Box"
             }
           }
         ],
@@ -321,10 +330,15 @@
           },
           {
             "template": "platform",
-            "xy": [ 2950, 580 ],
+            "xy": [ 2950, 570 ],
             "tiles": 1
           },
-
+          {
+            "template": "quest_item",
+            "texture": "assets/_distribute/kendo-knowledge.png",
+            "interactionType": 2001,
+            "xy": [ 2850, 560 ]
+          },
 
           {
             "template": "box64a",
@@ -401,8 +415,7 @@
 
           {
             "template": "castle_mb",
-            "xy": [ 4100, 260 ],
-            "rotation": 3.14159
+            "xy": [ 4100, 260 ]           
           },
 
           {

@@ -175,6 +175,10 @@ export class LevelLoader {
 
                 if (definition.pivot === undefined)
                     definition.pivot = 0.5;
+
+                if (definition.scale === undefined)
+                    definition.scale = [1, -1];
+
                 spr.pivot.set(definition.pivot);
                 dispObj = spr;                
                 break;
