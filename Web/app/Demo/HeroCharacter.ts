@@ -5,6 +5,25 @@ import { MovementState } from "./MovementState";
 import { createParticleEmitter } from "./InGameScene";
 import { Stats, StatType } from "./Stats";
 
+export enum QuestState {
+    None,
+
+    /**
+     *  Quest has been started.
+     */
+    InProgress,
+
+    /**
+     *  Quest items/conditions have been completed.
+     */
+    Completed,
+
+    /**
+     *  Quest has been finished.
+     */
+    Finished
+}
+
 export class HeroCharacter extends AnimatedSprite {
     private readonly HERO_FRAME_SIZE: number = 64;
     private readonly playerStats = new Stats();
@@ -15,7 +34,9 @@ export class HeroCharacter extends AnimatedSprite {
     private wp2: WorldP2;
     private worldContainer: PIXI.Container;
 
-    constructor(wp2: WorldP2, container : PIXI.Container) {
+    private questState: Array<QuestState> = [];
+
+    constructor(wp2: WorldP2, container: PIXI.Container) {
         super();
         this.worldContainer = container;
         this.wp2 = wp2;
@@ -47,7 +68,7 @@ export class HeroCharacter extends AnimatedSprite {
             }
         };
         this.emitterBuffs = createParticleEmitter(container, [PIXI.Texture.fromImage("assets/_distribute/flame.png")], cfg);
-        
+
         this.wp2.on("playerContact", this.onPlayerContact, this);
 
         this.addAnimations(new AnimationSequence("right", "assets/_distribute/hero_64.png", [12, 13, 14, 15, 16, 17], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
@@ -63,7 +84,7 @@ export class HeroCharacter extends AnimatedSprite {
     /**
      * Returns the player statistics object.
      */
-    public get PlayerStats():Stats {
+    public get PlayerStats(): Stats {
         return this.playerStats;
     }
 
@@ -72,6 +93,19 @@ export class HeroCharacter extends AnimatedSprite {
      */
     public get CanRun(): boolean {
         return this.playerStats.getStat(StatType.Dust) > 1;
+    }
+
+    /**
+     * Sets the quest state.
+     */
+    public setQuestState(questId: number, state: QuestState) {
+        this.questState[questId] = state;
+    }
+    /**
+     * Sets the quest state.
+     */
+    public getQuestState(questId: number): QuestState {
+        return this.questState[questId];
     }
 
     /**
@@ -131,11 +165,11 @@ export class HeroCharacter extends AnimatedSprite {
         let now = Date.now() / 1000;
         let isBurning = this.playerStats.Buffs[1000] > now || this.playerStats.Buffs[1001] > now;
         this.emitterBuffs.emit = isBurning;
-        this.alpha = (isBurning)  ? 0.7 :  1;
+        this.alpha = (isBurning) ? 0.7 : 1;
 
         this.playerStats.onUpdate(dt);
     };
-   
+
 
     /**
      * Checks if the player jumped on something with a high velocity and adds some smoke.
@@ -145,7 +179,7 @@ export class HeroCharacter extends AnimatedSprite {
         const SMOKE_VELOCITY: number = 425;
 
         if (Math.abs(event.velocity[1]) > SMOKE_VELOCITY) {
-            var smoke:AnimatedSprite = new AnimatedSprite();
+            var smoke: AnimatedSprite = new AnimatedSprite();
             smoke.addAnimations(new AnimationSequence("smoke", "assets/_distribute/jump_smoke.png",
                 [0, 1, 2, 3, 4, 5], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
             smoke.Anchor = new PIXI.Point(0.5, 0.5);

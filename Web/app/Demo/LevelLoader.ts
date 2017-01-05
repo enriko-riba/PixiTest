@@ -355,9 +355,10 @@ export interface IDisplayObjectDefinition {
 
 export interface ITriggerDefinition {
     type: string;
-    id?: number;
     text: string;
     textposition: number[]
+    questId?: number;
+    completedText?: string;
 }
 
 export interface ITemplate {
