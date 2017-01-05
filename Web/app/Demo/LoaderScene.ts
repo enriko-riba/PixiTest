@@ -60,7 +60,9 @@ export class LoaderScene extends Scene {
                 "assets/_distribute/jump_smoke.png",
                 "assets/_distribute/bumper_rotor_01.png",
 
-                "assets/_distribute/flame.png"
+                "assets/_distribute/flame.png",
+                "assets/_distribute/kendo-knowledge.png",
+                "assets/_distribute/callout.png"
             ]
         );
         console.log(`Downloading ${assets.length} assets ...`);

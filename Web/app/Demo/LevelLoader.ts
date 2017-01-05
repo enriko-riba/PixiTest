@@ -132,6 +132,11 @@ export class LevelLoader {
                 (dispObj as any).templateName = template.name;
                 var p2body: p2.Body = this.buildPhysicsObject(bodyDefinition, dispObj);
                 (p2body as any).DisplayObject = dispObj;
+
+                if (template.trigger) {
+                    (p2body as any).Trigger = template.trigger;
+                }
+
                 result.entities.push(p2body);
             } else {
                 throw `Entity template: '${entity.template}' not found!`;
@@ -343,10 +348,19 @@ export interface IDisplayObjectDefinition {
     fps?: number;
     sequences?:IAnimationSequence[]
 }
+
+export interface ITriggerDefinition {
+    type: string;
+    id?: number;
+    text: string;
+    textposition: number[]
+}
+
 export interface ITemplate {
     name: string;
     displayObject: IDisplayObjectDefinition;
     body: IBodyDefinition;
+    trigger: ITriggerDefinition;
 }
 
 export interface IMapEntity {

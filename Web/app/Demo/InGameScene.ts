@@ -6,7 +6,7 @@ import { Scene } from "app/_engine/Scene";
 import { Parallax } from "app/_engine/Parallax";
 import { WorldP2 } from "./WorldP2";
 import { Hud } from "./Hud";
-import { LevelLoader, ILevelMap, IMapEntity } from "./LevelLoader";
+import { LevelLoader, ILevelMap, IMapEntity, ITriggerDefinition } from "./LevelLoader";
 import { DPS_TOPIC, IDpsChangeEvent, IStatChangeEvent, Stats, StatType } from "./Stats";
 import { HeroCharacter } from "./HeroCharacter";
 
@@ -155,6 +155,10 @@ export class InGameScene extends Scene {
             if (body.DisplayObject && body.DisplayObject.interactionType) {
                 this.handleInteractiveCollision(body);
             }
+
+            if (body.Trigger && body.Trigger.type === "collision") {
+                this.handleTriggerCollision(body);
+            }
         }
 
         //-------------------------------------------
@@ -173,6 +177,26 @@ export class InGameScene extends Scene {
         this.hud.heroPosition = this.hero.position;
         this.hud.onUpdate(dt);
     };
+
+    /**
+     * Handles player collision with triggers.
+     * @param body
+     */
+    private handleTriggerCollision(body: any): void {
+        var playerStats = this.hero.PlayerStats;
+        var dispObj: PIXI.DisplayObject = body.DisplayObject as PIXI.DisplayObject;
+
+        var trigger: ITriggerDefinition = body.Trigger;
+        var pos = new PIXI.Point(dispObj.position.x, dispObj.position.y);
+        if (trigger.textposition !== undefined) {
+            pos.x += trigger.textposition[0];
+            pos.y += trigger.textposition[1];
+        }
+        this.addTriggerMessage(pos, trigger.text, Global.QUEST_STYLE);
+
+        switch (trigger.id) {
+        }
+    }
 
     /**
      * Handles player collision with interactive objects.
@@ -269,7 +293,7 @@ export class InGameScene extends Scene {
 
         this.worldContainer.addChild(txtInfo);
 
-        var upY = position.y + 200;
+        var upY = position.y + 250;
         var moveUp = new TWEEN.Tween(txtInfo.position)
             .to({ y: upY }, 2000);
         moveUp.start();
@@ -282,6 +306,40 @@ export class InGameScene extends Scene {
             .to({alpha: 0}, 3000)
             .onComplete(() => this.worldContainer.removeChild(txtInfo));;
         scale.chain(fade).start();
+    }
+
+    /**
+    * Starts an animation tween with informational text moving upwards from the given position.
+    * @param position the start position of the message
+    * @param message the message to be added
+    * @param style optional PIXI.ITextStyle
+    */
+    private addTriggerMessage(position: PIXI.Point, message: string, style: PIXI.ITextStyleStyle): void {
+        var container = new PIXI.Sprite(PIXI.loader.resources["assets/_distribute/callout.png"].texture);
+        container.position.set(position.x, position.y);
+        container.scale.set(1, -1);   //  scale invert since everything is upside down due to coordinate system
+        this.worldContainer.addChild(container);
+
+        var txtInfo = new PIXI.Text(message, style);
+        txtInfo.position.set(40, 70);
+        container.addChild(txtInfo);
+
+        //var upY = position.y + 300;
+        //var x = this.hero.position.x - txtInfo.width/2;
+        //var moveUp = new TWEEN.Tween(txtInfo.position)
+        //    .to({ y: upY, x: x }, 3000);
+        //moveUp.start();
+
+        //var scale = new TWEEN.Tween(txtInfo.scale)
+        //    .to({ x: 1.6, y: -1.6 }, 3500)
+        //    .easing(TWEEN.Easing.Linear.None);
+
+        var fade = new TWEEN.Tween(container)
+            .to({ alpha: 0 }, 8000)
+            .onComplete(() => this.worldContainer.removeChild(container));
+
+        fade.start();
+        //scale.chain(fade).start();
     }
 
     /**
