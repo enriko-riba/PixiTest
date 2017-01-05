@@ -241,6 +241,12 @@ export class InGameScene extends Scene {
                     this.addInfoMessage(dispObj.position, "Burn", Global.WARN_STYLE);
                 playerStats.Buffs[1001] = this.secondsFromNow(3);
                 break;
+
+            case 2001:  //  kendo knowledge
+                this.addInfoMessage(dispObj.position, "Kendo knowledge acquired!");
+                this.addCollectibleTween(dispObj);
+                this.removeEntity(body);
+                break;
         }
     }
 
@@ -249,7 +255,7 @@ export class InGameScene extends Scene {
      * @param body
      */
     private removeEntity(body: any): void {
-        this.wp2.removeBody(body);
+        this.wp2.removeBody(body);        
         body.DisplayObject = null;
     }
 

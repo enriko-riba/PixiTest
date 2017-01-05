@@ -70,7 +70,7 @@
     <None Include="assets\Images\Objects\Box_64_03.png" />
     <None Include="assets\Images\Objects\Bumper_01.png" />
     <None Include="assets\Images\Objects\Bumper_rotor_01.png" />
-    <None Include="assets\Images\Objects\chest_01.png" />
+    <None Include="assets\Unused\chest_01.png" />
     <None Include="assets\Images\Gui\Button1.png" />
     <None Include="assets\Images\Hero_64.png" />
     <None Include="assets\Images\loading.png" />
