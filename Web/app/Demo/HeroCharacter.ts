@@ -113,12 +113,21 @@ export class HeroCharacter extends AnimatedSprite {
         this.emitterBuffs.update(dt * 0.001);
         this.emitterBuffs.ownerPos = this.position;
 
-        //  use pixi dust
+        //--------------------------
+        //  check if running
+        //--------------------------
         if (this.movementCtrl.IsRunning && this.movementCtrl.MovementState !== MovementState.Idle) {
             this.playerStats.increaseStat(StatType.Dust, -dt * 0.005);   //  5/sec
+            let angle = 8;
+            let degree = Math.PI * 2 * angle / 360;
+            this.rotation = (this.movementCtrl.MovementState === MovementState.Left) ? degree : -degree;
+        } else {
+            this.rotation = 0;
         }
 
+        //--------------------------
         //  check if is burning
+        //--------------------------
         let now = Date.now() / 1000;
         let isBurning = this.playerStats.Buffs[1000] > now || this.playerStats.Buffs[1001] > now;
         this.emitterBuffs.emit = isBurning;
