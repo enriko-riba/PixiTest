@@ -40,6 +40,17 @@ export var WARN_STYLE: PIXI.ITextStyleStyle =
         stroke: 0xff6f6f
     };
 
+export var QUEST_STYLE: PIXI.ITextStyleStyle =
+    {
+        align: "left",
+        padding: 0,
+        fontSize: "20px",
+        fontFamily: "Futura",
+        fill: 0x35ffff,
+        strokeThickness: 3,
+        stroke: 0xffaaff
+    };
+
 export var sceneMngr: SceneManager;
 
 export var GameLevels: {

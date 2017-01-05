@@ -95,8 +95,7 @@
             "name": "lava",
             "displayObject": {
               "typeName": "Lava",
-              "texture": "assets/_distribute/lava.png",
-              "rotation": 0
+              "texture": "assets/_distribute/lava.png"
             },
             "body": {
               "shape": "Box",
@@ -140,6 +139,12 @@
               "shape": "Box",
               "type": 2,
               "material": "box_default"
+            },
+            "trigger": {
+              "type": "collision",
+              "id": 1,
+              "text": "You shall not pass,\nunless you bring\nme knowledge\nabout Kendo!",
+              "textposition": [-228, 430]
             }
           },
           {
