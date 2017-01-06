@@ -98,8 +98,13 @@
     <None Include="assets\Images\Objects\plat-des-mid.png" />
     <None Include="assets\Images\Objects\plat-des-single.png" />
     <Content Include="assets\Audio\Bumbling-Burglars_Looping.mp3" />
+    <Content Include="assets\Audio\effects\burn.mp3" />
+    <Content Include="assets\Audio\effects\jump1.mp3" />
+    <Content Include="assets\Audio\effects\jump2.mp3" />
+    <Content Include="assets\Audio\effects\step.wav" />
     <Content Include="assets\Audio\Here-Come-the-Weirds_v001.mp3" />
     <Content Include="assets\Audio\Techno-Dreaming_Looping.mp3" />
+    <Content Include="assets\Audio\Two-Finger-Johnny.mp3" />
     <Content Include="assets\Images\Gui\callout.png" />
     <Content Include="assets\Images\Objects\castle-mbanovic.png" />
     <Content Include="assets\Images\Objects\flame.png" />
@@ -142,6 +147,7 @@
     <None Include="pp2-platform - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="Scripts\hammer.min.js" />
+    <Content Include="Scripts\howler.min.js" />
     <Content Include="Scripts\jquery-3.1.1.js" />
     <Content Include="Scripts\jquery-3.1.1.min.js" />
     <Content Include="Scripts\jquery-3.1.1.slim.js" />
@@ -215,7 +221,8 @@
     <Content Include="Scripts\hammer-time.min.js" />
     <TypeScriptCompile Include="Scripts\main-config.ts" />
     <TypeScriptCompile Include="Scripts\typings\bootstrap\index.d.ts" />
-    <TypeScriptCompile Include="Scripts\typings\Hammerjs\Hammerjs.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\hammerjs\Hammerjs.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\howler\howler.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\knockout.amd.helpers\knockout-amd-helpers.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\knockout.mapping\knockout.mapping.d.ts" />
