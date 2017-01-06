@@ -4,11 +4,18 @@ import { WorldP2 } from "./WorldP2";
 import { HeroCharacter } from "./HeroCharacter";
 import * as Global from "./Global";
 import * as Hammer from "hammerjs";
+import * as ko from "knockout";
 import "../../Scripts/hammer-time.min";
 
-export class MovementController {
+export var MOVE_TOPIC = "move_event";
+export interface IMoveEvent {
+    newState: MovementState;
+    oldState: MovementState;
+    isJumping: boolean;
+    isRunning: boolean;
+}
 
-    private readonly ANIMATION_FPS = 10;
+export class MovementController {
     private readonly VELOCITY = 150;
     private readonly JUMP_FORCE = 16500;
     private nextJumpAllowed: number = 0;
@@ -33,8 +40,8 @@ export class MovementController {
         var myElement = document.getElementById("stage");
         var mc = new Hammer.Manager(myElement);
 
-        mc.add(new Hammer.Tap({ event: 'doubletap', taps: 2 }));
-        mc.on("doubletap", this.touchJump);
+        mc.add(new Hammer.Pan({ event: 'pan', direction: Hammer.DIRECTION_UP }));
+        mc.on("pan", this.touchJump);
 
         mc.add(new Hammer.Press({ event: 'press', time: 25, interval: 25 }));
         mc.on("press", this.touchMove);
@@ -152,41 +159,30 @@ export class MovementController {
         }
 
         //  has state changed
-        if (this.newState !== this.movementState) {
+        if (this.newState !== this.movementState || newIsRunning!= this.IsRunning) {
             console.log("state change: " + MovementState[this.movementState] + " -> " + MovementState[this.newState]);
-
             switch (this.newState) {
-                case MovementState.Idle:
-                    this.hero.PlayAnimation("idle");
-                    break;
-                case MovementState.Left:
-                    this.hero.PlayAnimation("left");
-                    break;
-                case MovementState.Right:
-                    this.hero.PlayAnimation("right");
-                    break;
                 case MovementState.JumpLeft:
                     newIsJumping = true;
-                    this.hero.PlayAnimation("jumpleft");
                     this.StartJump(MovementState.JumpLeft);
                     break;
                 case MovementState.JumpRight:
                     newIsJumping = true;
-                    this.hero.PlayAnimation("jumpright");
                     this.StartJump(MovementState.JumpRight);
                     break;
                 case MovementState.JumpUp:
                     newIsJumping = true;
-                    this.hero.PlayAnimation("jumpup");
                     this.StartJump(MovementState.JumpUp);
                     break;
             }
+            ko.postbox.publish<IMoveEvent>(MOVE_TOPIC, {
+                newState: this.newState,
+                oldState: this.movementState,
+                isJumping: newIsJumping,
+                isRunning: newIsRunning
+            });
         }
-
-        //  adjust animation FPS based on jump/idle/isrunning flags
-        var animationFPS: number = (this.newState === MovementState.Idle || newIsJumping) ? this.ANIMATION_FPS / 3 : (newIsRunning ? 2 : 1) * this.ANIMATION_FPS;
-        this.hero.Fps = animationFPS;
-
+       
         //  update new states
         this.movementState = this.newState;
         this.isRunning = newIsRunning;

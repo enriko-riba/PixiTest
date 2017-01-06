@@ -9,6 +9,10 @@ import { Hud } from "./Hud";
 import { LevelLoader, ILevelMap, IMapEntity, ITriggerDefinition } from "./LevelLoader";
 import { DPS_TOPIC, IDpsChangeEvent, IStatChangeEvent, Stats, StatType } from "./Stats";
 import { HeroCharacter, QuestState } from "./HeroCharacter";
+import { MovementState } from "./MovementState";
+import { MOVE_TOPIC, IMoveEvent } from "./MovementController";
+import {  } from "./MovementController";
+import * as howler from "howler";
 
 import "../../Scripts/pixi-particles";
 
@@ -88,11 +92,18 @@ export class InGameScene extends Scene {
     private wp2: WorldP2;
     private hero: HeroCharacter;
 
+    private backgroundSound: Howl;
+    private walkSound: Howl;
+    private jumpSound1: Howl;
+    private jumpSound2: Howl;
+    private hitSound: Howl;
+
     /**
      *   Creates a new scene instance.
      */
     constructor() {
         super("InGame");
+        let h = howler.Howl;//  HACK: dummy assignment needed to force the transpiler generate the import
 
         (window as any).performance = window.performance || {};
         performance.now = (function () {
@@ -103,6 +114,34 @@ export class InGameScene extends Scene {
                 (performance as any).webkitNow ||
                 Date.now;  /*none found - fallback to browser default */
         })();
+
+        this.backgroundSound = new Howl({
+            src: ['assets/Audio/Two-Finger-Johnny.mp3'],
+            autoplay: true,
+            loop: true,
+            volume: 1,
+            //onend: function () {
+            //    console.log('Finished!');
+            //}
+        });
+        this.walkSound = new Howl({
+            src: ['assets/Audio/effects/step.wav'],
+            autoplay: false,
+            loop: true,
+            volume: 1,
+        });
+        this.jumpSound1 = new Howl({
+            src: ['assets/Audio/effects/jump1.mp3'],
+            autoplay: false,
+            loop: false,
+            volume: 1,
+        });
+        this.jumpSound2 = new Howl({
+            src: ['assets/Audio/effects/jump2.mp3'],
+            autoplay: false,
+            loop: false,
+            volume: 1,
+        });
 
         this.worldContainer = new PIXI.Container();
         this.worldContainer.scale.y = -1;
@@ -197,11 +236,16 @@ export class InGameScene extends Scene {
         if (trigger.questId) {
             switch (trigger.questId) {
                 case 201:
-                    if (this.hero.getQuestState(201) === QuestState.Completed) {
+                    let state = this.hero.getQuestState(201);
+                    if (state === QuestState.Completed) {
                         //  TODO: trigger loading next level
                         this.hero.setQuestState(201, QuestState.Finished);
                         this.addTriggerMessage(pos, trigger.completedText, Global.QUEST_STYLE);
-                    } else {
+                    }
+                    else if (state === QuestState.Finished) {
+                        ;
+                    }
+                    else{
                         this.addTriggerMessage(pos, trigger.text, Global.QUEST_STYLE);
                     }
                     break;
@@ -428,10 +472,60 @@ export class InGameScene extends Scene {
         playerStats.setStat(StatType.Dust, 250);
 
         ko.postbox.subscribe<IDpsChangeEvent>(DPS_TOPIC, this.handleDpsChange);
+        ko.postbox.subscribe<IMoveEvent>(MOVE_TOPIC, this.handleMoveChange);
     }
 
     private handleDpsChange = (event: IDpsChangeEvent) => {
         this.addInfoMessage(this.hero.position, `${event.Amount} HP`);
+    }
+
+    private playJumpSound =() => {
+        var r = Math.random() * 101 | 0;
+        if (r % 2 == 0) {
+            this.jumpSound1.play();
+        } else {
+            this.jumpSound2.play();
+        }
+    }
+
+    private handleMoveChange = (event: IMoveEvent) => {
+        const ANIMATION_FPS = 10;
+
+        switch (event.newState) {
+            case MovementState.Idle:
+                this.hero.PlayAnimation("idle");
+                this.walkSound.pause();
+                break;
+            case MovementState.Left:
+                this.hero.PlayAnimation("left");
+                if (!this.walkSound.playing())
+                    this.walkSound.play();
+                break;
+            case MovementState.Right:
+                this.hero.PlayAnimation("right");
+                if (!this.walkSound.playing())
+                    this.walkSound.play();
+                break;
+            case MovementState.JumpLeft:
+                this.hero.PlayAnimation("jumpleft");
+                this.walkSound.pause();
+                this.playJumpSound();
+                break;
+            case MovementState.JumpRight:
+                this.hero.PlayAnimation("jumpright");
+                this.walkSound.pause();
+                this.playJumpSound();
+                break;
+            case MovementState.JumpUp:
+                this.hero.PlayAnimation("jumpup");
+                this.walkSound.pause();
+                this.playJumpSound();
+                break;
+        }
+
+        //  adjust animation FPS based on jump/idle/isrunning flags
+        var animationFPS: number = (event.newState === MovementState.Idle || event.isJumping) ? ANIMATION_FPS / 3 : (event.isRunning ? 2 : 1) * ANIMATION_FPS;
+        this.hero.Fps = animationFPS;
     }
 
     /**

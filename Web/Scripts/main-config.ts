@@ -13,6 +13,7 @@ require.config({
         "koMapping": "Scripts/knockout.mapping-latest",
         "stats": "Scripts/stats.min",
         "koBindings": "app/_framework/koBindings",
+        "howler": "Scripts/howler.min",
 
         "tween": "../../Scripts/Tween",
         "hammertime": "../../Scripts/hammer-time.min",
