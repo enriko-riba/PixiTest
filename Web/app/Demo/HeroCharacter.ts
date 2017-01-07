@@ -4,6 +4,7 @@ import { MovementController } from "./MovementController";
 import { MovementState } from "./MovementState";
 import { createParticleEmitter } from "./InGameScene";
 import { Stats, StatType } from "./Stats";
+import * as ko from "knockout";
 
 export enum QuestState {
     None,
@@ -22,6 +23,12 @@ export enum QuestState {
      *  Quest has been finished.
      */
     Finished
+}
+
+export var BURN_TOPIC = "burn_event";
+export interface IBurnEvent {
+    wasBurning: boolean;
+    isBurning: boolean;
 }
 
 export class HeroCharacter extends AnimatedSprite {
@@ -162,14 +169,35 @@ export class HeroCharacter extends AnimatedSprite {
         //--------------------------
         //  check if is burning
         //--------------------------
+        let wasBurning = this._isBurning;
         let now = Date.now() / 1000;
-        let isBurning = this.playerStats.Buffs[1000] > now || this.playerStats.Buffs[1001] > now;
-        this.emitterBuffs.emit = isBurning;
-        this.alpha = (isBurning) ? 0.7 : 1;
+        this._isBurning = this.playerStats.Buffs[1000] > now || this.playerStats.Buffs[1001] > now;
+        this.emitterBuffs.emit = this._isBurning;
+        this.alpha = (this._isBurning) ? 0.7 : 1;
+
+        if (wasBurning !== this._isBurning) {
+            ko.postbox.publish<IBurnEvent>(BURN_TOPIC, {wasBurning: wasBurning, isBurning: this._isBurning});
+        }
 
         this.playerStats.onUpdate(dt);
     };
 
+    private _isBurning: boolean = false;
+
+     /**
+     * Returns true if the player is taking burn damage.
+     */
+    public get isBurning() {
+        return this._isBurning;
+    }
+
+    /**
+     * Returns true if the player is jumping.
+     */
+    public get isJumping() {
+        return this.movementCtrl.IsJumping;
+    }
+    
 
     /**
      * Checks if the player jumped on something with a high velocity and adds some smoke.

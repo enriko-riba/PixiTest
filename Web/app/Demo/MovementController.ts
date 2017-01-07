@@ -125,7 +125,8 @@ export class MovementController {
         const KEY_UP: number = 38;
         const SPACE: number = 32;
 
-        this.isJumping = Math.abs(this.world.playerBody.velocity[1]) > 0.01 && this.world.playerContacts.length === 0;
+        var nonSensors = this.world.playerContacts.filter((body, idx) => body.shapes[0].sensor !== true);
+        this.isJumping = Math.abs(this.world.playerBody.velocity[1]) > 0.01 && nonSensors.length === 0;
 
         //  no movement while jumping
         if (this.isJumping) {
