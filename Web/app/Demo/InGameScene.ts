@@ -8,11 +8,10 @@ import { WorldP2 } from "./WorldP2";
 import { Hud } from "./Hud";
 import { LevelLoader, ILevelMap, IMapEntity, ITriggerDefinition } from "./LevelLoader";
 import { DPS_TOPIC, IDpsChangeEvent, IStatChangeEvent, Stats, StatType } from "./Stats";
-import { HeroCharacter, QuestState } from "./HeroCharacter";
+import { HeroCharacter, QuestState, BURN_TOPIC, IBurnEvent } from "./HeroCharacter";
 import { MovementState } from "./MovementState";
 import { MOVE_TOPIC, IMoveEvent } from "./MovementController";
-import {  } from "./MovementController";
-import * as howler from "howler";
+import { SoundMan } from "./SoundMan";
 
 import "../../Scripts/pixi-particles";
 
@@ -92,18 +91,14 @@ export class InGameScene extends Scene {
     private wp2: WorldP2;
     private hero: HeroCharacter;
 
-    private backgroundSound: Howl;
-    private walkSound: Howl;
-    private jumpSound1: Howl;
-    private jumpSound2: Howl;
-    private hitSound: Howl;
+    private snd = new SoundMan();
 
     /**
      *   Creates a new scene instance.
      */
     constructor() {
         super("InGame");
-        let h = howler.Howl;//  HACK: dummy assignment needed to force the transpiler generate the import
+        
 
         (window as any).performance = window.performance || {};
         performance.now = (function () {
@@ -114,34 +109,6 @@ export class InGameScene extends Scene {
                 (performance as any).webkitNow ||
                 Date.now;  /*none found - fallback to browser default */
         })();
-
-        this.backgroundSound = new Howl({
-            src: ['assets/Audio/Two-Finger-Johnny.mp3'],
-            autoplay: true,
-            loop: true,
-            volume: 1,
-            //onend: function () {
-            //    console.log('Finished!');
-            //}
-        });
-        this.walkSound = new Howl({
-            src: ['assets/Audio/effects/step.wav'],
-            autoplay: false,
-            loop: true,
-            volume: 1,
-        });
-        this.jumpSound1 = new Howl({
-            src: ['assets/Audio/effects/jump1.mp3'],
-            autoplay: false,
-            loop: false,
-            volume: 1,
-        });
-        this.jumpSound2 = new Howl({
-            src: ['assets/Audio/effects/jump2.mp3'],
-            autoplay: false,
-            loop: false,
-            volume: 1,
-        });
 
         this.worldContainer = new PIXI.Container();
         this.worldContainer.scale.y = -1;
@@ -267,6 +234,7 @@ export class InGameScene extends Scene {
                 this.addCollectibleTween(dispObj);
                 this.addInfoMessage(dispObj.position, "+1 coin");
                 this.removeEntity(body);
+                this.snd.coin();
                 break;
 
             case 2: //  coin
@@ -274,6 +242,7 @@ export class InGameScene extends Scene {
                 this.addCollectibleTween(dispObj);
                 this.addInfoMessage(dispObj.position, "+10 coins");
                 this.removeEntity(body);
+                this.snd.coin();
                 break;
 
             case 3: //  blue gem
@@ -281,6 +250,7 @@ export class InGameScene extends Scene {
                 this.addCollectibleTween(dispObj);
                 this.addInfoMessage(dispObj.position, "+100 coins");
                 this.removeEntity(body);
+                this.snd.gem();
                 break;
 
             case 1000:  //  border lava   
@@ -288,6 +258,7 @@ export class InGameScene extends Scene {
                 if (!playerStats.Buffs[1000] || playerStats.Buffs[1000] < now)
                     this.addInfoMessage(dispObj.position, "Burn", Global.WARN_STYLE);             
                 playerStats.Buffs[1000] = this.secondsFromNow(1);
+                //this.snd.burn();
                 break;
 
             case 1001:  //  lava
@@ -295,12 +266,14 @@ export class InGameScene extends Scene {
                 if (!playerStats.Buffs[1001] || playerStats.Buffs[1001] < now)
                     this.addInfoMessage(dispObj.position, "Burn", Global.WARN_STYLE);
                 playerStats.Buffs[1001] = this.secondsFromNow(3);
+                //this.snd.burn();
                 break;
 
             case 201:  //  kendo knowledge
                 this.addInfoMessage(dispObj.position, "Kendo knowledge acquired!");
                 this.addCollectibleTween(dispObj);
                 this.removeEntity(body);
+                this.snd.questItem();
                 this.hero.setQuestState(201, QuestState.Completed);
                 break;
         }
@@ -422,6 +395,7 @@ export class InGameScene extends Scene {
      * Sets up the scene.
      */
     private setup(): void {
+        //this.snd.playTrack(0);
         this.BackGroundColor = 0x1099bb;
         PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.LINEAR;
 
@@ -473,59 +447,64 @@ export class InGameScene extends Scene {
 
         ko.postbox.subscribe<IDpsChangeEvent>(DPS_TOPIC, this.handleDpsChange);
         ko.postbox.subscribe<IMoveEvent>(MOVE_TOPIC, this.handleMoveChange);
+        ko.postbox.subscribe<IBurnEvent>(BURN_TOPIC, this.handleBurnChange);
     }
 
     private handleDpsChange = (event: IDpsChangeEvent) => {
         this.addInfoMessage(this.hero.position, `${event.Amount} HP`);
     }
 
-    private playJumpSound =() => {
-        var r = Math.random() * 101 | 0;
-        if (r % 2 == 0) {
-            this.jumpSound1.play();
-        } else {
-            this.jumpSound2.play();
-        }
-    }
-
     private handleMoveChange = (event: IMoveEvent) => {
         const ANIMATION_FPS = 10;
-
-        switch (event.newState) {
-            case MovementState.Idle:
-                this.hero.PlayAnimation("idle");
-                this.walkSound.pause();
-                break;
-            case MovementState.Left:
-                this.hero.PlayAnimation("left");
-                if (!this.walkSound.playing())
-                    this.walkSound.play();
-                break;
-            case MovementState.Right:
-                this.hero.PlayAnimation("right");
-                if (!this.walkSound.playing())
-                    this.walkSound.play();
-                break;
-            case MovementState.JumpLeft:
-                this.hero.PlayAnimation("jumpleft");
-                this.walkSound.pause();
-                this.playJumpSound();
-                break;
-            case MovementState.JumpRight:
-                this.hero.PlayAnimation("jumpright");
-                this.walkSound.pause();
-                this.playJumpSound();
-                break;
-            case MovementState.JumpUp:
-                this.hero.PlayAnimation("jumpup");
-                this.walkSound.pause();
-                this.playJumpSound();
-                break;
-        }
 
         //  adjust animation FPS based on jump/idle/isrunning flags
         var animationFPS: number = (event.newState === MovementState.Idle || event.isJumping) ? ANIMATION_FPS / 3 : (event.isRunning ? 2 : 1) * ANIMATION_FPS;
         this.hero.Fps = animationFPS;
+
+        switch (event.newState) {
+            case MovementState.Idle:
+                this.hero.PlayAnimation("idle");
+                this.snd.idle();
+                break;
+
+            case MovementState.Left:
+                this.hero.PlayAnimation("left");
+                if (!this.hero.isJumping) {
+                    this.snd.walk(event.isRunning);
+                }
+                break;
+
+            case MovementState.Right:
+                this.hero.PlayAnimation("right");
+                if (!this.hero.isJumping) {
+                    this.snd.walk(event.isRunning);
+                }
+                break;
+
+            case MovementState.JumpLeft:
+                this.hero.PlayAnimation("jumpleft");
+                this.snd.jump();
+                break;
+
+            case MovementState.JumpRight:
+                this.hero.PlayAnimation("jumpright");
+                this.snd.jump();
+                break;
+
+            case MovementState.JumpUp:
+                this.hero.PlayAnimation("jumpup");
+                this.snd.jump();
+                break;
+        }
+
+    }
+
+    private handleBurnChange = (event: IBurnEvent) => {
+        if (event.isBurning) {
+            this.snd.burn();
+        } else {
+            this.snd.burnStop();
+        }
     }
 
     /**

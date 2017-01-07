@@ -99,9 +99,13 @@
     <None Include="assets\Images\Objects\plat-des-single.png" />
     <Content Include="assets\Audio\Bumbling-Burglars_Looping.mp3" />
     <Content Include="assets\Audio\effects\burn.mp3" />
+    <Content Include="assets\Audio\effects\coin.mp3" />
+    <Content Include="assets\Audio\effects\gem.mp3" />
+    <Content Include="assets\Audio\effects\hurt.mp3" />
     <Content Include="assets\Audio\effects\jump1.mp3" />
     <Content Include="assets\Audio\effects\jump2.mp3" />
-    <Content Include="assets\Audio\effects\step.wav" />
+    <Content Include="assets\Audio\effects\quest-item.mp3" />
+    <Content Include="assets\Audio\effects\step.mp3" />
     <Content Include="assets\Audio\Here-Come-the-Weirds_v001.mp3" />
     <Content Include="assets\Audio\Techno-Dreaming_Looping.mp3" />
     <Content Include="assets\Audio\Two-Finger-Johnny.mp3" />
@@ -109,6 +113,7 @@
     <Content Include="assets\Images\Objects\castle-mbanovic.png" />
     <Content Include="assets\Images\Objects\flame.png" />
     <Content Include="assets\Images\Objects\kendo-knowledge.png" />
+    <Content Include="assets\Images\Objects\sign-question.png" />
     <Content Include="assets\Unused\Portrait\port-isakoman.png" />
     <Content Include="assets\Unused\Portrait\port-ivucicevic.png" />
     <Content Include="assets\Unused\Portrait\port-mbanovic.png" />
@@ -198,6 +203,7 @@
     <TypeScriptCompile Include="app\Demo\JumpController.ts" />
     <TypeScriptCompile Include="app\Demo\LevelLoader.ts" />
     <TypeScriptCompile Include="app\Demo\MovementState.ts" />
+    <TypeScriptCompile Include="app\Demo\SoundMan.ts" />
     <TypeScriptCompile Include="app\Demo\Stats.ts" />
     <TypeScriptCompile Include="app\Demo\WorldP2.ts" />
     <TypeScriptCompile Include="app\_engine\AnimatedSprite.ts" />
