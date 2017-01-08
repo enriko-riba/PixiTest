@@ -43,11 +43,9 @@ export class HeroCharacter extends AnimatedSprite {
 
     private questState: Array<QuestState> = [];
 
-    constructor(wp2: WorldP2, container: PIXI.Container) {
+    constructor(container: PIXI.Container) {
         super();
-        this.worldContainer = container;
-        this.wp2 = wp2;
-        this.movementCtrl = new MovementController(this.wp2, this);
+        this.worldContainer = container;       
         this.emitterPixies = createParticleEmitter(container, [PIXI.Texture.fromImage("assets/_distribute/star.png")]);
 
         var cfg: PIXI.particles.EmitterConfig = {
@@ -76,8 +74,6 @@ export class HeroCharacter extends AnimatedSprite {
         };
         this.emitterBuffs = createParticleEmitter(container, [PIXI.Texture.fromImage("assets/_distribute/flame.png")], cfg);
 
-        this.wp2.on("playerContact", this.onPlayerContact, this);
-
         this.addAnimations(new AnimationSequence("right", "assets/_distribute/hero_64.png", [12, 13, 14, 15, 16, 17], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
         this.addAnimations(new AnimationSequence("left", "assets/_distribute/hero_64.png", [6, 7, 8, 9, 10, 11], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
         this.addAnimations(new AnimationSequence("jumpleft", "assets/_distribute/hero_64.png", [48, 49, 50, 51, 52, 53], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
@@ -87,6 +83,16 @@ export class HeroCharacter extends AnimatedSprite {
         this.Anchor = new PIXI.Point(0.5, 0.4);
         this.PlayAnimation("idle");
     }
+
+    /**
+     * Sets the physics world instance.
+     */
+    public SetWorldP2(wp2: WorldP2) {
+        this.wp2 = wp2;
+        this.wp2.on("playerContact", this.onPlayerContact, this);
+        this.movementCtrl = new MovementController(this.wp2, this);
+    }
+    
 
     /**
      * Returns the player statistics object.
@@ -171,7 +177,7 @@ export class HeroCharacter extends AnimatedSprite {
         //--------------------------
         let wasBurning = this._isBurning;
         let now = Date.now() / 1000;
-        this._isBurning = this.playerStats.Buffs[1000] > now || this.playerStats.Buffs[1001] > now;
+        this._isBurning = this.playerStats.buffs[1000] > now || this.playerStats.buffs[1001] > now;
         this.emitterBuffs.emit = this._isBurning;
         this.alpha = (this._isBurning) ? 0.7 : 1;
 

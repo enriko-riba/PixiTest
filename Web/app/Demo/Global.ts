@@ -46,10 +46,10 @@ export var QUEST_STYLE: PIXI.ITextStyleStyle =
         padding: 0,
         fontSize: "21px",
         fontFamily: "Futura",
-        fill: 0x35ffaf,
-        strokeThickness: 3,
+        fill: 0xff3333,
+        strokeThickness: 2,
         stroke: 0x36366f,
-        dropShadow: true
+        dropShadow: false
     };
 
 export var sceneMngr: SceneManager;
