@@ -76,4 +76,13 @@ export class Scene extends PIXI.Container {
     public isPaused():boolean {
         return this.paused;
     }
+
+    private _clear:boolean = true;
+    public get clear() {
+        return this._clear;
+    }
+
+    public set clear(clearFlag: boolean) {
+        this._clear = clearFlag;
+    }
 }

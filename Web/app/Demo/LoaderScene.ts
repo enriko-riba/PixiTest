@@ -61,7 +61,8 @@ export class LoaderScene extends Scene {
                 "assets/_distribute/bumper_rotor_01.png",
 
                 "assets/_distribute/flame.png",
-                "assets/_distribute/callout.png"
+                "assets/_distribute/callout.png",
+                "assets/_distribute/rect.png"
             ]
         );
         console.log(`Downloading ${assets.length} assets ...`);

@@ -44,11 +44,12 @@ export var QUEST_STYLE: PIXI.ITextStyleStyle =
     {
         align: "left",
         padding: 0,
-        fontSize: "19px",
+        fontSize: "21px",
         fontFamily: "Futura",
         fill: 0x35ffaf,
         strokeThickness: 3,
-        stroke: 0x6666ff
+        stroke: 0x36366f,
+        dropShadow: true
     };
 
 export var sceneMngr: SceneManager;

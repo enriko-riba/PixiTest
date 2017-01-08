@@ -38,7 +38,7 @@ class CustomSceneResizer extends DefaultResizer {
     }
 
     public GetAvailableSize() : ISize {
-        return { x: window.innerWidth, y: window.innerHeight};
+        return { x: Math.min(window.innerWidth, this.designedWidth), y: Math.min(window.innerHeight, this.designedHeight)};
     }
 }
 
