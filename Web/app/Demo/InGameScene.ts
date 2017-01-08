@@ -6,7 +6,7 @@ import { Scene } from "app/_engine/Scene";
 import { Parallax } from "app/_engine/Parallax";
 import { WorldP2 } from "./WorldP2";
 import { Hud } from "./Hud";
-import { LevelLoader, ILevelMap, IMapEntity, ITriggerDefinition } from "./LevelLoader";
+import { LevelLoader, ILevel, ILevelDefinition, ILevelMap, IMapEntity, ITriggerDefinition } from "./LevelLoader";
 import { DPS_TOPIC, IDpsChangeEvent, IStatChangeEvent, Stats, StatType } from "./Stats";
 import { HeroCharacter, QuestState, BURN_TOPIC, IBurnEvent } from "./HeroCharacter";
 import { MovementState } from "./MovementState";
@@ -94,13 +94,14 @@ export class InGameScene extends Scene {
     private hero: HeroCharacter;
 
     private snd = new SoundMan();
+    private levelLoader = new LevelLoader();
+    private currentLevel: ILevel;
 
     /**
      *   Creates a new scene instance.
      */
     constructor() {
         super("InGame");
-        
 
         (window as any).performance = window.performance || {};
         performance.now = (function () {
@@ -219,7 +220,7 @@ export class InGameScene extends Scene {
                         cs.addChildAt(back, 0);                       
                         back.scale.set(1 / this.scale.x, 1 / this.scale.y);  //  rescale to fit full scene
                         Global.sceneMngr.ActivateScene(cs);
-                        this.hud.visible = true;
+                        //this.hud.visible = true;
                     }
                     else if (state === QuestState.Finished) {
                         ;
@@ -267,17 +268,17 @@ export class InGameScene extends Scene {
 
             case 1000:  //  border lava   
                 var now = Date.now() / 1000;
-                if (!playerStats.Buffs[1000] || playerStats.Buffs[1000] < now)
+                if (!playerStats.buffs[1000] || playerStats.buffs[1000] < now)
                     this.addInfoMessage(dispObj.position, "Burn", Global.WARN_STYLE);             
-                playerStats.Buffs[1000] = this.secondsFromNow(1);
+                playerStats.buffs[1000] = this.secondsFromNow(1);
                 //this.snd.burn();
                 break;
 
             case 1001:  //  lava
                 var now = Date.now() / 1000;
-                if (!playerStats.Buffs[1001] || playerStats.Buffs[1001] < now)
+                if (!playerStats.buffs[1001] || playerStats.buffs[1001] < now)
                     this.addInfoMessage(dispObj.position, "Burn", Global.WARN_STYLE);
-                playerStats.Buffs[1001] = this.secondsFromNow(3);
+                playerStats.buffs[1001] = this.secondsFromNow(3);
                 //this.snd.burn();
                 break;
 
@@ -368,25 +369,13 @@ export class InGameScene extends Scene {
         this.worldContainer.addChild(container);
 
         var txtInfo = new PIXI.Text(message, style);
-        txtInfo.position.set(40, 70);
+        txtInfo.position.set(50, 90);
         container.addChild(txtInfo);
-
-        //var upY = position.y + 300;
-        //var x = this.hero.position.x - txtInfo.width/2;
-        //var moveUp = new TWEEN.Tween(txtInfo.position)
-        //    .to({ y: upY, x: x }, 3000);
-        //moveUp.start();
-
-        //var scale = new TWEEN.Tween(txtInfo.scale)
-        //    .to({ x: 1.6, y: -1.6 }, 3500)
-        //    .easing(TWEEN.Easing.Linear.None);
 
         var fade = new TWEEN.Tween(container)
             .to({ alpha: 0 }, 8000)
             .onComplete(() => this.worldContainer.removeChild(container));
-
         fade.start();
-        //scale.chain(fade).start();
     }
 
     /**
@@ -411,46 +400,12 @@ export class InGameScene extends Scene {
         this.BackGroundColor = 0x1099bb;
         PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.LINEAR;
 
-        //--------------------------------------
-        //  setup physics subsystem
-        //--------------------------------------
-        var startPosition = new PIXI.Point(-350, 36);
-        this.wp2 = new WorldP2(startPosition);
-        
-
         //-----------------------------
         //  setup hero
-        //-----------------------------        
-        this.hero = new HeroCharacter(this.wp2, this.worldContainer);
-        this.hero.position = startPosition;
-        
-        //--------------------------------------
-        //  load level from json (under construction)
-        //--------------------------------------
-        var levelLoader = new LevelLoader();
-        var lvl = levelLoader.BuildLevel("Intro");
-
-        //  add all object pairs to renderer and physics world
-        lvl.entities.forEach((body:any) => {
-            this.worldContainer.addChild(body.DisplayObject);
-            this.wp2.addBody(body);
-        });
-
-        //  add parallax backgrounds
-        this.parallaxBackgrounds = lvl.parallax;
-        lvl.parallax.forEach((plx: Parallax, idx:number) => {
-            this.worldContainer.addChildAt(plx, idx);
-            //  TODO: there is a bug not initially calculating all viewport  
-            //        visible parallax textures. So just move it in both 
-            //        directions to trigger textures recalculation
-            plx.SetViewPortX(0);
-            plx.SetViewPortX(this.hero.position.x + 1);
-        });
-
-        this.worldContainer.addChild(this.hero);        
-
-        //  TODO: load initial settings
-        var playerStats = this.hero.PlayerStats;
+        //-----------------------------      
+        this.hero = new HeroCharacter(this.worldContainer);
+         
+        var playerStats = this.hero.PlayerStats; //  TODO: load initial settings
         playerStats.setStat(StatType.Coins, 0);
         playerStats.setStat(StatType.MaxHP, 150);
         playerStats.setStat(StatType.HP, 120);
@@ -463,6 +418,19 @@ export class InGameScene extends Scene {
 
         var cutScene = new CutScene();
         Global.sceneMngr.AddScene(cutScene);
+
+        playerStats.currentLevel = 1;
+        var lvl = this.levelLoader.BuildLevel(playerStats.currentLevel);
+
+        //--------------------------------------
+        //  setup physics subsystem
+        //--------------------------------------
+        this.wp2 = new WorldP2(new PIXI.Point(lvl.start[0], lvl.start[1]));
+        this.hero.SetWorldP2(this.wp2);
+
+        this.worldContainer.addChild(this.hero);   
+        this.LoadLevel(lvl);
+        this.currentLevel = lvl;
     }
 
     private handleDpsChange = (event: IDpsChangeEvent) => {
@@ -535,10 +503,67 @@ export class InGameScene extends Scene {
     }
 
     /**
+     *  Calculates the next level and invokes the level loading.
+     */
+    public NextLevel() {
+        var id = ++this.hero.PlayerStats.currentLevel;
+        var lvl = this.levelLoader.BuildLevel(id);
+        if (!lvl) {
+            console.log("No more levels!!!");
+            return;
+        } else {
+            this.LoadLevel(lvl);
+            this.currentLevel = lvl;
+        }
+    }
+
+    /**
+     * Loads the level and adds all objects to the scene.
+     * @param id
+     */
+    public LoadLevel(lvl: ILevel) {
+
+        //  remove all entities
+        if (this.currentLevel) {
+            this.currentLevel.parallax.forEach((plx: Parallax, idx: number) => {
+                this.worldContainer.removeChild(plx);
+            });
+            this.currentLevel.entities.forEach((body: any) => {
+                if (body !== this.wp2.playerBody) {
+                    this.worldContainer.removeChild(body.DisplayObject);
+                    this.wp2.removeBody(body);
+                    body.DisplayObject = null;
+                }
+            });
+        }
+
+        //  add all object pairs to renderer and physics world
+        lvl.entities.forEach((body: any) => {
+            this.worldContainer.addChild(body.DisplayObject);
+            this.wp2.addBody(body);
+        });
+
+        //  add parallax backgrounds
+        this.parallaxBackgrounds = lvl.parallax;
+        lvl.parallax.forEach((plx: Parallax, idx: number) => {
+            this.worldContainer.addChildAt(plx, idx);
+            //  TODO: there is a bug not initially calculating all viewport  
+            //        visible parallax textures. So just move it in both 
+            //        directions to trigger textures recalculation
+            plx.SetViewPortX(0);
+            plx.SetViewPortX(lvl.start[0] + 1);
+        });
+
+        //  set start for player
+        this.wp2.playerBody.position = lvl.start;
+    }
+
+    /**
      * Saves the current level and dumps to console.
      */
     public saveLevel(): void {
         var map: ILevelMap = {
+            start:[],
             templates:[],
             entities: [],
             NPC:[]

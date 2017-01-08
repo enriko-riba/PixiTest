@@ -53,8 +53,8 @@ export class Stats {
         var now = Date.now() / 1000;
 
         //  accumulate dps
-        for (let i = 1000, len = this.Buffs.length; i < len; i++){
-            if (this.Buffs[i] && this.Buffs[i] > now) {
+        for (let i = 1000, len = this.buffs.length; i < len; i++){
+            if (this.buffs[i] && this.buffs[i] > now) {
                 let dps = 0;
                 switch (i) {
                     case 1000:  // lava border
@@ -112,10 +112,12 @@ export class Stats {
         return this.stats[type];
     }
 
+    public currentLevel: number = 1;
+
     /**
      *   Stores timestamps (Unix timestamps in seconds with fractions) when the buff elapses.
      */
-    public Buffs: Array<number> = [];
+    public buffs: Array<number> = [];
 
     private scevent: IStatChangeEvent = {
         Type: StatType.Coins,

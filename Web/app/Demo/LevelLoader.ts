@@ -78,14 +78,30 @@ export class LevelLoader {
     }
 
     /**
-     * Loads the level and adds all display objects to the container.
+     * Finds a level by its name.
      * @param name
      * @param container
      */
-    public BuildLevel(name: string): any {
+    public FindLevel(name: string): ILevelDefinition {
         var levelDefinition: ILevelDefinition = undefined;
         for (var i = 0; i < this.levels.length; i++) {
             if (this.levels[i].name === name) {
+                levelDefinition = this.levels[i];
+                break;
+            }
+        }
+        return levelDefinition;
+    }
+
+    /**
+    * Loads the level.
+    * @param name
+    * @param container
+    */
+    public BuildLevel(id: number): ILevel {
+        var levelDefinition: ILevelDefinition = undefined;
+        for (var i = 0; i < this.levels.length; i++) {
+            if (this.levels[i].id === id) {
                 levelDefinition = this.levels[i];
                 break;
             }
@@ -104,7 +120,8 @@ export class LevelLoader {
     private createLevel(level: ILevelDefinition): ILevel {
         var result: ILevel = {
             parallax : [],
-            entities : []
+            entities: [],
+            start: []
         };
 
         //--------------------------------------
@@ -142,7 +159,7 @@ export class LevelLoader {
                 throw `Entity template: '${entity.template}' not found!`;
             }
         });
-
+        result.start = level.map.start;
         return result;
     }
 
@@ -307,6 +324,7 @@ export class LevelLoader {
 export interface ILevel {
     parallax: Parallax[];
     entities: p2.Body[];
+    start: number[];
 }
 
 export interface IParallaxDefinition {
@@ -378,6 +396,7 @@ export interface IMapEntity {
 }
 
 export interface ILevelMap {
+    start: number[];
     templates: ITemplate[];
     entities: IMapEntity[];
     NPC: any[];

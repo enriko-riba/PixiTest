@@ -1,8 +1,8 @@
 ﻿{
   "levels": [
     {
-      "id": 1,
-      "name": "Intro",
+      "id": 2,
+      "name": "Kendo",
       "parallax": [
         {
           "index": 0,
@@ -37,7 +37,10 @@
           ]
         }
       ],
+
+
       "map": {
+        "start": [ -350, 36 ],
         "templates": [
           {
             "name": "coin",
@@ -143,9 +146,9 @@
             "trigger": {
               "type": "collision",
               "text": "You shall not pass,\nunless you bring\nme knowledge\nabout Kendo!",
-              "textposition": [ -328, 440 ],
+              "textposition": [ -328, 450 ],
               "questId": 201,
-              "completedText": "What?\nCould it be... you have the Kendo knowledge I need!\n\nYou can proceed now."
+              "completedText": "What? Could it be...\nYou have the Kendo knowledge I need so much!\n\nYou can proceed now."
             }
           },
           {
@@ -189,7 +192,7 @@
           {
             "name": "quest_item",
             "displayObject": {
-              "typeName": "Sprite"              
+              "typeName": "Sprite"
             },
             "body": {
               "shape": "Box"
@@ -416,7 +419,7 @@
 
           {
             "template": "castle_mb",
-            "xy": [ 4100, 260 ]           
+            "xy": [ 4100, 260 ]
           },
 
           {
@@ -424,7 +427,7 @@
             "texture": "assets/_distribute/lava-border-l.png",
             "interactionType": 1000,
             "xy": [ 2014, -60 ]
-          },          
+          },
           {
             "template": "lava",
             "interactionType": 1001,
@@ -494,6 +497,197 @@
 
         "NPC": []
       }
-    }
-  ]
-}
+    },
+
+
+
+
+
+
+
+
+
+
+
+
+    {
+      "id": 1,
+      "name": "Intro",
+      "parallax": [
+        {
+          "index": 0,
+          "name": "Ground",
+          "parallaxFactor": 1,
+          "y": -90,
+          "tiles": [
+            "assets/_distribute/ground.png"
+          ]
+        }
+      ],
+
+
+      "map": {
+        "start": [ 1800, 36 ],
+        "templates": [
+          {
+            "name": "box128",
+            "displayObject": {
+              "typeName": "Sprite",
+              "texture": "assets/_distribute/box_128_01.png"
+            },
+            "body": {
+              "shape": "Box",
+              "type": 4,
+              "material": "box_default"
+            }
+          },
+          {
+            "name": "coin",
+            "displayObject": {
+              "typeName": "AnimatedSprite",
+              "fps": 24,
+              "sequences": [
+                {
+                  "name": "spin",
+                  "texture": "assets/_distribute/coins.png",
+                  "frames": [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ],
+                  "framesize": [ 24, 24 ]
+                }
+              ]
+            },
+            "body": {
+              "shape": "Circle"
+            }
+          },
+          {
+            "name": "gem",
+            "displayObject": {
+              "typeName": "AnimatedSprite",
+              "fps": 8,
+
+              "sequences": [
+                {
+                  "name": "spin",
+                  "texture": "assets/_distribute/gem32.png",
+                  "frames": [ 0, 1, 2, 3, 4, 5, 6 ],
+                  "framesize": [ 32, 32 ]
+                }
+              ]
+            },
+            "body": {
+              "shape": "Circle"
+            }
+          },
+          {
+            "name": "bumper",
+            "displayObject": {
+              "typeName": "Bumper",
+              "texture": "assets/_distribute/bumper_01.png",
+              "rotation": 0.785398163397
+            },
+            "body": {
+              "shape": "Box",
+              "type": 4,
+              "damping": 0,
+              "angularDamping": 0,
+              "material": "bumper"
+            }
+          },
+          {
+            "name": "lava",
+            "displayObject": {
+              "typeName": "Lava",
+              "texture": "assets/_distribute/lava.png"
+            },
+            "body": {
+              "shape": "Box",
+              "type": 4,
+              "damping": 0,
+              "angularDamping": 0,
+              "material": "lava"
+            }
+          },
+          {
+            "name": "platform",
+            "displayObject": {
+              "typeName": "Platform",
+              "texture": [ "assets/_distribute/plat-des-mid.png", "assets/_distribute/plat-des-border-l.png", "assets/_distribute/plat-des-border-r.png" ]
+            },
+            "body": {
+              "shape": "Platform",
+              "type": 2,
+              "material": "box_default"
+            }
+          },
+          {
+            "name": "platform1",
+            "displayObject": {
+              "typeName": "Platform",
+              "texture": "assets/_distribute/plat-des-single.png"
+            },
+            "body": {
+              "shape": "Platform",
+              "type": 2,
+              "material": "box_default"
+            }
+          },
+          {
+            "name": "quest_item",
+            "displayObject": {
+              "typeName": "Sprite"
+            },
+            "body": {
+              "shape": "Box"
+            }
+          },
+          {
+            "name": "box64a",
+            "displayObject": {
+              "typeName": "Sprite",
+              "texture": "assets/_distribute/box_64_03.png"
+            },
+            "body": {
+              "shape": "Box",
+              "type": 1,
+              "mass": 80,
+              "material": "box_default"
+            }
+          },
+          {
+            "name": "baloon_vv",
+            "displayObject": {
+              "typeName": "Sprite",
+              "texture": "assets/_distribute/baloon-vedran.png"
+            },
+            "body": {
+              "shape": "Box",
+              "type": 2,
+              "material": "box_default"
+            }
+          }
+        ],
+        "entities": [
+          {
+            "template": "baloon_vv",
+            "xy": [ 1600, 470 ]
+          },
+          {
+            "template": "box64a",
+            "xy": [ 1900, 32 ]
+          },
+          {
+            "template": "box128",
+            "xy": [ 2050, 64 ]
+          },
+          {
+            "template": "platform",
+            "xy": [ 2150, 115 ],
+            "tiles": 2
+          },
+          {
+            "template": "platform1",
+            "xy": [ 2430, 180 ]
+          }
+        ]
+      }
+} ] }

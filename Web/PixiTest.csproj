@@ -106,6 +106,7 @@
     <Content Include="assets\Audio\effects\jump2.mp3" />
     <Content Include="assets\Audio\effects\quest-item.mp3" />
     <Content Include="assets\Audio\effects\step.mp3" />
+    <Content Include="assets\Audio\effects\win.mp3" />
     <Content Include="assets\Audio\Here-Come-the-Weirds_v001.mp3" />
     <Content Include="assets\Audio\Techno-Dreaming_Looping.mp3" />
     <Content Include="assets\Audio\Two-Finger-Johnny.mp3" />
@@ -115,6 +116,7 @@
     <None Include="assets\Images\Objects\flame.png" />
     <None Include="assets\Images\Objects\kendo-knowledge.png" />
     <None Include="assets\Images\Objects\sign-question.png" />
+    <Content Include="assets\Images\Objects\baloon-vedran.png" />
     <Content Include="assets\Unused\Portrait\port-isakoman.png" />
     <Content Include="assets\Unused\Portrait\port-ivucicevic.png" />
     <Content Include="assets\Unused\Portrait\port-mbanovic.png" />
