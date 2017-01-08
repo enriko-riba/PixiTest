@@ -11,6 +11,7 @@ export class SoundMan {
     private coinSnd: Howl;
     private gemSnd: Howl;
     private hurtSnd: Howl;
+    private winSnd: Howl;
 
     private questItemSnd: Howl;
 
@@ -93,6 +94,13 @@ export class SoundMan {
             loop: false,
             volume: 1
         });
+        this.winSnd = new Howl({
+            src: ['assets/Audio/effects/win.mp3'],
+            preload: true,
+            autoplay: false,
+            loop: false,
+            volume: 1
+        });
     }
 
     private playJumpRnd() {
@@ -135,6 +143,18 @@ export class SoundMan {
 
     public questItem() {
         this.questItemSnd.play();
+    }
+
+    public win() {
+        if (this.backgroundSnd && this.backgroundSnd.playing()) {
+            this.backgroundSnd.fade(1, 0, 500);
+        }
+        this.hurtSnd.stop();
+        this.walkSnd.stop();
+        this.jumpSnd1.stop();
+        this.jumpSnd2.stop();
+        this.burnSnd.stop();
+        this.winSnd.play();
     }
 
     public burn() {

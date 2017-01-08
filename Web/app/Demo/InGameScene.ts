@@ -12,6 +12,8 @@ import { HeroCharacter, QuestState, BURN_TOPIC, IBurnEvent } from "./HeroCharact
 import { MovementState } from "./MovementState";
 import { MOVE_TOPIC, IMoveEvent } from "./MovementController";
 import { SoundMan } from "./SoundMan";
+import { CutScene } from "./CutScene";
+
 
 import "../../Scripts/pixi-particles";
 
@@ -207,7 +209,17 @@ export class InGameScene extends Scene {
                     if (state === QuestState.Completed) {
                         //  TODO: trigger loading next level
                         this.hero.setQuestState(201, QuestState.Finished);
-                        this.addTriggerMessage(pos, trigger.completedText, Global.QUEST_STYLE);
+                        //this.addTriggerMessage(pos, trigger.completedText, Global.QUEST_STYLE);
+                        this.snd.win();
+                        this.hud.visible = false;
+                        var cs = Global.sceneMngr.GetScene("CutScene") as CutScene;
+                        cs.SetText(trigger.completedText, Global.QUEST_STYLE);
+                        var rt = Global.sceneMngr.CaptureScene();
+                        var back = new PIXI.Sprite(rt);
+                        cs.addChildAt(back, 0);                       
+                        back.scale.set(1 / this.scale.x, 1 / this.scale.y);  //  rescale to fit full scene
+                        Global.sceneMngr.ActivateScene(cs);
+                        this.hud.visible = true;
                     }
                     else if (state === QuestState.Finished) {
                         ;
@@ -395,7 +407,7 @@ export class InGameScene extends Scene {
      * Sets up the scene.
      */
     private setup(): void {
-        //this.snd.playTrack(0);
+        this.snd.playTrack(0);
         this.BackGroundColor = 0x1099bb;
         PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.LINEAR;
 
@@ -448,6 +460,9 @@ export class InGameScene extends Scene {
         ko.postbox.subscribe<IDpsChangeEvent>(DPS_TOPIC, this.handleDpsChange);
         ko.postbox.subscribe<IMoveEvent>(MOVE_TOPIC, this.handleMoveChange);
         ko.postbox.subscribe<IBurnEvent>(BURN_TOPIC, this.handleBurnChange);
+
+        var cutScene = new CutScene();
+        Global.sceneMngr.AddScene(cutScene);
     }
 
     private handleDpsChange = (event: IDpsChangeEvent) => {

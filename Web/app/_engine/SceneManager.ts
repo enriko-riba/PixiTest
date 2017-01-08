@@ -12,7 +12,7 @@ export enum State {
     CUSTOM5,
 }
 
-declare var stats: Stats;
+//declare var stats: Stats;
 
 /**
  *   Handles multiple scenes, scene activation, rendering and updates.
@@ -82,7 +82,7 @@ export class SceneManager {
     /**
      *   Returns the current scene instance.
      */
-    public get CurrentScene():Scene {
+    public get CurrentScene(): Scene {
         return this.currentScene;
     }
 
@@ -102,6 +102,21 @@ export class SceneManager {
             return item !== scene;
         });
         scene.sceneManager = undefined;
+    }
+
+    /**
+     * Returns the scene by its name.
+     * @param name
+     */
+    public GetScene(name: string): Scene{
+        var found = this.scenes.filter((item: Scene) => { return item.Name === name; });
+        if (!found || found.length === 0) {
+            throw Error("Scene: '" + name + "' not found");
+        }
+        if (found.length > 1) {
+            throw Error("Multiple scenes: '" + name + "' found");
+        }
+        return found[0];
     }
 
     /**
@@ -135,6 +150,16 @@ export class SceneManager {
     }
 
     /**
+     *  Renders the current scene in a rendertexture.
+     */
+    public CaptureScene(): PIXI.RenderTexture {
+        console.log(`Capturing scene, width: ${this.renderer.width}, height: ${this.renderer.height}`);
+        var renderTexture = PIXI.RenderTexture.create(this.renderer.width, this.renderer.height);
+        this.renderer.render(this.currentScene, renderTexture);
+        return renderTexture;
+    }
+
+    /**
      *   Cancels the animationFrame loop, removes all scenes and finally destroys the renderer.
      */
     public Destroy = () => {
@@ -161,7 +186,8 @@ export class SceneManager {
     };
 
     private render = (timestamp) => {
-        stats.begin();
+        //stats.begin();
+
         //  for tween support
         TWEEN.update(timestamp);
 
@@ -185,9 +211,9 @@ export class SceneManager {
         }
 
         this.startTime = timestamp;
-        this.renderer.render(this.currentScene);
+        this.renderer.render(this.currentScene, null, this.currentScene.clear);
 
-        stats.end();
+        //stats.end();
     };
 }
 
