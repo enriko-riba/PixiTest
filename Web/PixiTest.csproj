@@ -116,7 +116,9 @@
     <None Include="assets\Images\Objects\flame.png" />
     <None Include="assets\Images\Objects\kendo-knowledge.png" />
     <None Include="assets\Images\Objects\sign-question.png" />
-    <Content Include="assets\Images\Objects\baloon-vedran.png" />
+    <Content Include="assets\Images\Objects\balloon-vedran.png" />
+    <Content Include="assets\Images\Objects\boulder.png" />
+    <Content Include="assets\Images\Objects\sign-exit.png" />
     <Content Include="assets\Unused\Portrait\port-isakoman.png" />
     <Content Include="assets\Unused\Portrait\port-ivucicevic.png" />
     <Content Include="assets\Unused\Portrait\port-mbanovic.png" />
@@ -314,7 +316,7 @@
   </ProjectExtensions>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <TypeScriptRemoveComments>false</TypeScriptRemoveComments>
-    <TypeScriptSourceMap>False</TypeScriptSourceMap>
+    <TypeScriptSourceMap>True</TypeScriptSourceMap>
     <TypeScriptTarget>ES5</TypeScriptTarget>
     <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
     <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>

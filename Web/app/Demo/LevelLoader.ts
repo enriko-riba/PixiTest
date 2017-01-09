@@ -16,14 +16,14 @@ export class LevelLoader {
     /**
      * Returns all assets referenced in the level.
      * @param root
-     * @param levelName
+     * @param levelId
      */
-    public static GetLevelAssets(root: IRootObject, levelName: string): string[] {
+    public static GetLevelAssets(root: IRootObject, levelId: number): string[] {
         var assets: string[] = []
        
         var level: ILevelDefinition = undefined;
         for (var i = 0; i < root.levels.length; i++) {
-            if (root.levels[i].name === levelName) {
+            if (root.levels[i].id === levelId) {
                 level = root.levels[i];
                 break;
             }
@@ -146,12 +146,14 @@ export class LevelLoader {
                 var displayObjectDefinition = $.extend(temp, entity);
                 var bodyDefinition = $.extend(entity, template.body);
                 var dispObj: PIXI.DisplayObject = this.buildDisplayObject(displayObjectDefinition);
+                dispObj.name = entity.name;
                 (dispObj as any).templateName = template.name;
                 var p2body: p2.Body = this.buildPhysicsObject(bodyDefinition, dispObj);
                 (p2body as any).DisplayObject = dispObj;
 
-                if (template.trigger) {
-                    (p2body as any).Trigger = template.trigger;
+                if (template.trigger || displayObjectDefinition.trigger) {
+                    var temp = $.extend(true, {}, template.trigger);
+                    (p2body as any).Trigger = $.extend(true, temp, displayObjectDefinition.trigger);
                 }
 
                 result.entities.push(p2body);
@@ -373,6 +375,7 @@ export interface IDisplayObjectDefinition {
 
 export interface ITriggerDefinition {
     type: string;
+    distance?: number;
     text: string;
     textposition: number[]
     questId?: number;
@@ -393,6 +396,7 @@ export interface IMapEntity {
     rotation?: number;
     texture?: string;
     interactionType?: number; 
+    name?: string;
 }
 
 export interface ILevelMap {

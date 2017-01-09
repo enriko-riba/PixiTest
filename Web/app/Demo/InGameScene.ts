@@ -122,6 +122,10 @@ export class InGameScene extends Scene {
         this.setup();
     }
 
+    public onActivate = () => {
+        this.hud.visible = true;
+    }
+
     /**
      * Updates physics and handles player collisions.
      * @param dt elapsed time in milliseconds
@@ -142,17 +146,28 @@ export class InGameScene extends Scene {
         for (var i = 0; i < this.parallaxBackgrounds.length; i++) {
             this.parallaxBackgrounds[i].SetViewPortX(this.hero.x);
         }
+        
 
         //-------------------------------------------
         //  update entities position
         //-------------------------------------------
         var bodies = this.wp2.bodies;
         for (var i = 0, len = bodies.length; i < len; i++) {
-            let body = bodies[i];
+            let body = bodies[i] as any;
             let displayObject: PIXI.DisplayObject = (body as any).DisplayObject as PIXI.DisplayObject;
             if (displayObject && body.type !== p2.Body.STATIC) {
                 displayObject.position.set(Math.floor(body.interpolatedPosition[0]), Math.floor(body.interpolatedPosition[1]));
                 displayObject.rotation = body.interpolatedAngle;
+            }
+
+            //  check for distance based triggers
+            if (body.Trigger && body.Trigger.type === "distance") {
+                var x = this.hero.position.x - body.position[0];
+                var y = this.hero.position.y - body.position[1];
+                var distance = Math.sqrt(x * x + y * y);
+                if (body.Trigger.distance >= distance) {
+                    this.handleTriggerEvent(body);
+                }
             }
         }
 
@@ -166,7 +181,7 @@ export class InGameScene extends Scene {
             }
 
             if (body.Trigger && body.Trigger.type === "collision") {
-                this.handleTriggerCollision(body);
+                this.handleTriggerEvent(body);
             }
         }
 
@@ -187,11 +202,22 @@ export class InGameScene extends Scene {
         this.hud.onUpdate(dt);
     };
 
+    private previousQuestMessage: PIXI.Sprite;
+    public set IsHeroInteractive(value: boolean) {
+        if (this.hero.IsInteractive != value) {
+            this.hero.IsInteractive = value;
+            if (!this.hero.IsInteractive) {
+                this.hero.PlayAnimation("idle");
+                this.snd.idle();
+            }
+        }
+    }
+
     /**
-     * Handles player collision with triggers.
+     * Handles level events triggers.
      * @param body
      */
-    private handleTriggerCollision(body: any): void {
+    private handleTriggerEvent(body: any): void {
         var playerStats = this.hero.PlayerStats;
         var dispObj: PIXI.DisplayObject = body.DisplayObject as PIXI.DisplayObject;
 
@@ -202,25 +228,95 @@ export class InGameScene extends Scene {
             pos.y += trigger.textposition[1];
         }
        
+        let state = this.hero.getQuestState(trigger.questId);
 
         if (trigger.questId) {
             switch (trigger.questId) {
+                case 1:
+                    if (state === QuestState.Completed || state === QuestState.Finished) {
+                    }
+                    else {
+                        this.hero.setQuestState(trigger.questId, QuestState.Completed);
+
+                        this.IsHeroInteractive = false;
+                        this.previousQuestMessage = this.addTriggerMessage(pos, trigger.text, Global.QUEST_STYLE, 0);
+                        setTimeout(() => {
+                            this.worldContainer.removeChild(this.previousQuestMessage);
+                            this.previousQuestMessage = this.addTriggerMessage(pos, trigger.completedText, Global.QUEST_STYLE, 0);
+                            setTimeout(() => {
+                                this.worldContainer.removeChild(this.previousQuestMessage);
+                                this.previousQuestMessage = this.addTriggerMessage(pos, "Now jump\non that big box.", Global.QUEST_STYLE, 0);
+                                this.hero.setQuestState(trigger.questId, QuestState.Finished);
+                                this.hero.IsInteractive = true;
+                            }, 4000);
+                        }, 4000);
+                    }
+                    break;
+
+                case 2:
+                    if (this.hero.getQuestState(1) === QuestState.Finished) {
+                        if (state === QuestState.Finished || state === QuestState.Completed) {                            
+                        } else {
+                            this.hero.setQuestState(trigger.questId, QuestState.Completed);
+                            this.IsHeroInteractive = false;
+
+                            this.worldContainer.removeChild(this.previousQuestMessage);
+                            this.previousQuestMessage = this.addTriggerMessage(pos, trigger.text, Global.QUEST_STYLE, 0);
+
+                            setTimeout(() => {
+                                this.worldContainer.removeChild(this.previousQuestMessage);
+                                this.previousQuestMessage = this.addTriggerMessage(pos, trigger.completedText, Global.QUEST_STYLE, 0);
+                                this.hero.setQuestState(trigger.questId, QuestState.Finished);
+                                this.hero.IsInteractive = true;
+                            }, 4000);
+                        }
+                    }
+                    break;
+                case 3:
+                    if (this.hero.getQuestState(2) === QuestState.Finished) {
+                        if (state === QuestState.Finished) {
+                            ;
+                        } else {
+                            this.hero.setQuestState(trigger.questId, QuestState.Finished);
+                            this.IsHeroInteractive = false;
+
+                            this.worldContainer.removeChild(this.previousQuestMessage);
+                            this.previousQuestMessage = this.addTriggerMessage(pos, trigger.text, Global.QUEST_STYLE, 0);
+
+                            this.snd.win();
+
+                            var balloon = this.worldContainer.getChildByName("balloon");                           
+                            var anim1 = new TWEEN.Tween(balloon)
+                                .to({ x: dispObj.position.x }, 3000).start();
+
+                            var endx = (dispObj.position.x - 300);// + trigger.textposition[0];
+                            var anim2 = new TWEEN.Tween(this.previousQuestMessage)
+                                .to({ x: endx}, 3000)
+                                .onComplete(() => {                                    
+                                    this.hud.visible = false;
+                                    this.worldContainer.removeChild(this.previousQuestMessage);
+                                    var cs = Global.sceneMngr.GetScene("CutScene") as CutScene;
+                                    cs.SetText("After mastering the basics\nthe real adventure begins!", Global.QUEST_STYLE);
+                                    var rt = Global.sceneMngr.CaptureScene();
+                                    cs.SetBackGround(rt, this.scale); 
+                                    Global.sceneMngr.ActivateScene(cs);
+                                }).start();                                                       
+                        }
+                    }
+                    break;
+
                 case 201:
-                    let state = this.hero.getQuestState(201);
+                    
                     if (state === QuestState.Completed) {
-                        //  TODO: trigger loading next level
-                        this.hero.setQuestState(201, QuestState.Finished);
-                        //this.addTriggerMessage(pos, trigger.completedText, Global.QUEST_STYLE);
+                        this.hero.setQuestState(trigger.questId, QuestState.Finished);
+                        this.IsHeroInteractive = false;
                         this.snd.win();
                         this.hud.visible = false;
                         var cs = Global.sceneMngr.GetScene("CutScene") as CutScene;
                         cs.SetText(trigger.completedText, Global.QUEST_STYLE);
                         var rt = Global.sceneMngr.CaptureScene();
-                        var back = new PIXI.Sprite(rt);
-                        cs.addChildAt(back, 0);                       
-                        back.scale.set(1 / this.scale.x, 1 / this.scale.y);  //  rescale to fit full scene
+                        cs.SetBackGround(rt, this.scale); 
                         Global.sceneMngr.ActivateScene(cs);
-                        //this.hud.visible = true;
                     }
                     else if (state === QuestState.Finished) {
                         ;
@@ -357,25 +453,30 @@ export class InGameScene extends Scene {
     }
 
     /**
-    * Starts an animation tween with informational text moving upwards from the given position.
+    * Adds a balloon call-out message.
     * @param position the start position of the message
     * @param message the message to be added
-    * @param style optional PIXI.ITextStyle
+    * @param style PIXI.ITextStyle
+    * @param fadeSeconds optional number of milliseconds the message should linger
     */
-    private addTriggerMessage(position: PIXI.Point, message: string, style: PIXI.ITextStyleStyle): void {
+    private addTriggerMessage(position: PIXI.Point, message: string, style: PIXI.ITextStyleStyle, fadeSeconds: number = 8000): PIXI.Sprite {
         var container = new PIXI.Sprite(PIXI.loader.resources["assets/_distribute/callout.png"].texture);
         container.position.set(position.x, position.y);
         container.scale.set(1, -1);   //  scale invert since everything is upside down due to coordinate system
         this.worldContainer.addChild(container);
 
         var txtInfo = new PIXI.Text(message, style);
-        txtInfo.position.set(50, 90);
+        txtInfo.position.set(50, 80);
         container.addChild(txtInfo);
 
-        var fade = new TWEEN.Tween(container)
-            .to({ alpha: 0 }, 8000)
-            .onComplete(() => this.worldContainer.removeChild(container));
-        fade.start();
+        if (fadeSeconds > 0 ) {
+            var fade = new TWEEN.Tween(container)
+                .to({ alpha: 0 }, fadeSeconds)
+                .onComplete(() => this.worldContainer.removeChild(container));
+            fade.start();
+        }
+        container.name = "TriggerMessage";
+        return container;
     }
 
     /**
@@ -396,7 +497,7 @@ export class InGameScene extends Scene {
      * Sets up the scene.
      */
     private setup(): void {
-        this.snd.playTrack(0);
+        
         this.BackGroundColor = 0x1099bb;
         PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.LINEAR;
 
@@ -404,7 +505,7 @@ export class InGameScene extends Scene {
         //  setup hero
         //-----------------------------      
         this.hero = new HeroCharacter(this.worldContainer);
-         
+        this.hero.name = "hero";
         var playerStats = this.hero.PlayerStats; //  TODO: load initial settings
         playerStats.setStat(StatType.Coins, 0);
         playerStats.setStat(StatType.MaxHP, 150);
@@ -419,8 +520,8 @@ export class InGameScene extends Scene {
         var cutScene = new CutScene();
         Global.sceneMngr.AddScene(cutScene);
 
-        playerStats.currentLevel = 1;
-        var lvl = this.levelLoader.BuildLevel(playerStats.currentLevel);
+        playerStats.currentLevel = 0;
+        var lvl = this.levelLoader.BuildLevel(playerStats.currentLevel + 1);
 
         //--------------------------------------
         //  setup physics subsystem
@@ -429,7 +530,7 @@ export class InGameScene extends Scene {
         this.hero.SetWorldP2(this.wp2);
 
         this.worldContainer.addChild(this.hero);   
-        this.LoadLevel(lvl);
+        //this.LoadLevel(lvl);
         this.currentLevel = lvl;
     }
 
@@ -491,7 +592,7 @@ export class InGameScene extends Scene {
     }
 
     /**
-     * Returns a date instance with added seconds from now.
+     * Helper that returns time tick value with the given seconds added.
      * @param seconds
      */
     private secondsFromNow(seconds: number): number {
@@ -503,11 +604,21 @@ export class InGameScene extends Scene {
     }
 
     /**
+     * Calculates the next level id.
+     */
+    public GetNextLevelId() : number {
+        var id = this.hero.PlayerStats.currentLevel + 1;
+        return id;
+    }
+
+    /**
      *  Calculates the next level and invokes the level loading.
      */
     public NextLevel() {
-        var id = ++this.hero.PlayerStats.currentLevel;
+        this.hero.PlayerStats.currentLevel += 1;
+        var id = this.hero.PlayerStats.currentLevel;
         var lvl = this.levelLoader.BuildLevel(id);
+        this.snd.playTrack(0);
         if (!lvl) {
             console.log("No more levels!!!");
             return;
@@ -523,7 +634,9 @@ export class InGameScene extends Scene {
      */
     public LoadLevel(lvl: ILevel) {
 
-        //  remove all entities
+        //--------------------------------------
+        //  remove all entities except hero
+        //--------------------------------------
         if (this.currentLevel) {
             this.currentLevel.parallax.forEach((plx: Parallax, idx: number) => {
                 this.worldContainer.removeChild(plx);
@@ -534,6 +647,12 @@ export class InGameScene extends Scene {
                     this.wp2.removeBody(body);
                     body.DisplayObject = null;
                 }
+            });
+
+            //  now remove displayobjects without bodies
+            var all = this.worldContainer.children.filter((c: PIXI.DisplayObject) => c.name != "hero");
+            all.forEach((child) => {
+                this.worldContainer.removeChild(child);
             });
         }
 

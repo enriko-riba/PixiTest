@@ -230,7 +230,7 @@ export class DefaultResizer implements ISceneResizer {
         var maxWidth: number, maxHeight: number;
         maxWidth = Math.floor(aspect * availableSize.y);
         maxHeight = Math.floor(window.innerHeight);
-        return { x: maxWidth, y: maxHeight };
+        return { x: Math.min(maxWidth, availableSize.x ), y: Math.min(maxHeight, availableSize.y) };
     }
     public CalculateScale(newSize: ISize):number {
         return newSize.x / this.designedWidth;
