@@ -1,6 +1,280 @@
 ﻿{
   "levels": [
     {
+      "id": 1,
+      "name": "Intro",
+      "parallax": [
+        {
+          "index": 0,
+          "name": "Far",
+          "parallaxFactor": 0.5,
+          "y": 0,
+          "tiles": [
+            "assets/_distribute/Mountains.png"
+          ]
+        },
+        {
+          "index": 1,
+          "name": "Near",
+          "parallaxFactor": 0.70,
+          "y": 5,
+          "scale": 1.3,
+          "tiles": [
+            "assets/_distribute/trees06.png",
+            "assets/_distribute/trees07.png",
+            "assets/_distribute/trees08.png"
+          ]
+        },
+        {
+          "index": 2,
+          "name": "Ground",
+          "parallaxFactor": 1,
+          "y": -90,
+          "tiles": [
+            "assets/_distribute/ground.png"
+          ]
+        }
+      ],
+
+
+      "map": {
+        "start": [ 1600, 36 ],
+        "templates": [
+          {
+            "name": "edge",
+            "displayObject": {
+              "typeName": "Sprite",
+              "texture": "assets/_distribute/boulder.png"
+            },
+            "body": {
+              "shape": "Box",
+              "type": 2,
+              "material": "box_default"
+            }
+          },
+          {
+            "name": "box128",
+            "displayObject": {
+              "typeName": "Sprite",
+              "texture": "assets/_distribute/box_128_01.png"
+            },
+            "body": {
+              "shape": "Box",
+              "type": 4,
+              "material": "box_default"
+            }
+          },
+          {
+            "name": "coin",
+            "displayObject": {
+              "typeName": "AnimatedSprite",
+              "fps": 24,
+              "sequences": [
+                {
+                  "name": "spin",
+                  "texture": "assets/_distribute/coins.png",
+                  "frames": [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ],
+                  "framesize": [ 24, 24 ]
+                }
+              ]
+            },
+            "body": {
+              "shape": "Circle"
+            }
+          },
+          {
+            "name": "gem",
+            "displayObject": {
+              "typeName": "AnimatedSprite",
+              "fps": 8,
+
+              "sequences": [
+                {
+                  "name": "spin",
+                  "texture": "assets/_distribute/gem32.png",
+                  "frames": [ 0, 1, 2, 3, 4, 5, 6 ],
+                  "framesize": [ 32, 32 ]
+                }
+              ]
+            },
+            "body": {
+              "shape": "Circle"
+            }
+          },
+          {
+            "name": "bumper",
+            "displayObject": {
+              "typeName": "Bumper",
+              "texture": "assets/_distribute/bumper_01.png",
+              "rotation": 0.785398163397
+            },
+            "body": {
+              "shape": "Box",
+              "type": 4,
+              "damping": 0,
+              "angularDamping": 0,
+              "material": "bumper"
+            }
+          },
+          {
+            "name": "lava",
+            "displayObject": {
+              "typeName": "Lava",
+              "texture": "assets/_distribute/lava.png"
+            },
+            "body": {
+              "shape": "Box",
+              "type": 4,
+              "damping": 0,
+              "angularDamping": 0,
+              "material": "lava"
+            }
+          },
+          {
+            "name": "platform",
+            "displayObject": {
+              "typeName": "Platform",
+              "texture": [ "assets/_distribute/plat-des-mid.png", "assets/_distribute/plat-des-border-l.png", "assets/_distribute/plat-des-border-r.png" ]
+            },
+            "body": {
+              "shape": "Platform",
+              "type": 2,
+              "material": "box_default"
+            }
+          },
+          {
+            "name": "platform1",
+            "displayObject": {
+              "typeName": "Platform",
+              "texture": "assets/_distribute/plat-des-single.png"
+            },
+            "body": {
+              "shape": "Platform",
+              "type": 2,
+              "material": "box_default"
+            }
+          },
+          {
+            "name": "quest_item",
+            "displayObject": {
+              "typeName": "Sprite"
+            },
+            "body": {
+              "shape": "Box"
+            }
+          },
+          {
+            "name": "box64a",
+            "displayObject": {
+              "typeName": "Sprite",
+              "texture": "assets/_distribute/box_64_03.png"
+            },
+            "body": {
+              "shape": "Box",
+              "type": 1,
+              "mass": 80,
+              "material": "box_default"
+            }
+          },
+          {
+            "name": "balloon_vv",
+            "displayObject": {
+              "typeName": "Sprite",
+              "texture": "assets/_distribute/balloon-vedran.png"
+            },
+            "body": {
+              "shape": "Box",
+              "type": 2,
+              "material": "box_default"
+            }
+          },
+          {
+            "name": "exit",
+            "displayObject": {
+              "typeName": "Sprite",
+              "texture": "assets/_distribute/sign-exit.png"
+            },
+            "body": {
+              "shape": "Box",
+              "type": 2
+            }
+          }
+        ],
+        "entities": [
+          {
+            "template": "edge",
+            "xy": [ 1140, 100 ],
+            "rotation": 1.5,
+            "scale": [ 2, 1.5 ]
+          },
+          {
+            "template": "edge",
+            "name": "edge-left",
+            "xy": [ 1300, 64 ]
+          },
+          {
+            "template": "balloon_vv",
+            "name": "balloon",
+            "xy": [ 2100, 500 ]
+          },
+          {
+            "template": "box64a",
+            "xy": [ 1950, 32 ],
+            "trigger": {
+              "questId": 1,
+              "type": "distance",
+              "distance": 100,
+              "text": "Hello there,\nI will teach you the\nbasics. Follow my\ninstructions and you\nwill be fine.",
+              "textposition": [ -155, 600 ],
+              "completedText": "OK lad,\nTo jump use 'w' or space.\nTo move use 'a', 'd' or\narrows!"
+            }
+          },
+          {
+            "template": "box128",
+            "xy": [ 2050, 64 ],
+            "trigger": {
+              "questId": 2,
+              "type": "distance",
+              "distance": 88,
+              "text": "Excellent,\nTo run hold shift.\nIf running you can\njump higher and longer!",
+              "textposition": [ -300, 550 ],
+              "completedText": "OK,\nnow run to the exit sign!"
+            }
+          },
+          {
+            "template": "box64a",
+            "xy": [ 2150, 32 ]
+          },
+          {
+            "template": "platform",
+            "xy": [ 2210, 175 ],
+            "tiles": 2
+          },
+          {
+            "template": "platform1",
+            "xy": [ 2550, 220 ]
+          },
+          {
+            "template": "exit",
+            "xy": [ 2604, 250 ],
+            "trigger": {
+              "type": "collision",
+              "text": "Well done!",
+              "textposition": [ -820, 400 ],
+              "questId": 3
+            }
+          },
+          {
+            "template": "edge",
+            "xy": [ 2800, 100 ],
+            "rotation": 0.5,
+            "scale": [ 2, 1.5 ]
+          }
+        ]
+      }
+    },
+
+    {
       "id": 2,
       "name": "Kendo",
       "parallax": [
@@ -149,6 +423,19 @@
               "textposition": [ -370, 450 ],
               "questId": 201,
               "completedText": "What? Could it be...\nYou have the Kendo knowledge I need so much!\n\nYou can proceed now."
+            }
+          },
+          {
+            "name": "lock",
+            "displayObject": {
+              "typeName": "Sprite",
+              "texture": "assets/_distribute/sign-question.png"
+            },
+            "body": {
+              "shape": "Box",
+              "type": 2,
+              "size": [64, 128],
+              "material": "box_default"
             }
           },
           {
@@ -338,9 +625,16 @@
             "tiles": 1
           },
           {
+            "template": "lock",
+            "name":  "lock",
+            "xy": [ 2975, 600 ]
+          },
+          {
             "template": "quest_item",
+            "name": "quest_item_201",
             "texture": "assets/_distribute/kendo-knowledge.png",
             "interactionType": 201,
+            "visible": false,
             "xy": [ 2850, 560 ]
           },
 
@@ -497,7 +791,7 @@
 
         "NPC": []
       }
-    },
+    }
 
 
 
@@ -510,258 +804,4 @@
 
 
 
-    {
-      "id": 1,
-      "name": "Intro",
-      "parallax": [
-        {
-          "index": 0,
-          "name": "Far",
-          "parallaxFactor": 1,
-          "y": 0,
-          "tiles": [
-            "assets/_distribute/IceSnow.png"
-          ]
-        },
-        {
-          "index": 1,
-          "name": "Ground",
-          "parallaxFactor": 1,
-          "y": -90,
-          "tiles": [
-            "assets/_distribute/ground.png"
-          ]
-        }
-      ],
-
-
-      "map": {
-        "start": [ 1600, 36 ],
-        "templates": [
-          {
-            "name": "edge",
-            "displayObject": {
-              "typeName": "Sprite",
-              "texture": "assets/_distribute/boulder.png"
-            },
-            "body": {
-              "shape": "Box",
-              "type": 2,
-              "material": "box_default"
-            }
-          },
-          {
-            "name": "box128",
-            "displayObject": {
-              "typeName": "Sprite",
-              "texture": "assets/_distribute/box_128_01.png"
-            },
-            "body": {
-              "shape": "Box",
-              "type": 4,
-              "material": "box_default"
-            }
-          },
-          {
-            "name": "coin",
-            "displayObject": {
-              "typeName": "AnimatedSprite",
-              "fps": 24,
-              "sequences": [
-                {
-                  "name": "spin",
-                  "texture": "assets/_distribute/coins.png",
-                  "frames": [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ],
-                  "framesize": [ 24, 24 ]
-                }
-              ]
-            },
-            "body": {
-              "shape": "Circle"
-            }
-          },
-          {
-            "name": "gem",
-            "displayObject": {
-              "typeName": "AnimatedSprite",
-              "fps": 8,
-
-              "sequences": [
-                {
-                  "name": "spin",
-                  "texture": "assets/_distribute/gem32.png",
-                  "frames": [ 0, 1, 2, 3, 4, 5, 6 ],
-                  "framesize": [ 32, 32 ]
-                }
-              ]
-            },
-            "body": {
-              "shape": "Circle"
-            }
-          },
-          {
-            "name": "bumper",
-            "displayObject": {
-              "typeName": "Bumper",
-              "texture": "assets/_distribute/bumper_01.png",
-              "rotation": 0.785398163397
-            },
-            "body": {
-              "shape": "Box",
-              "type": 4,
-              "damping": 0,
-              "angularDamping": 0,
-              "material": "bumper"
-            }
-          },
-          {
-            "name": "lava",
-            "displayObject": {
-              "typeName": "Lava",
-              "texture": "assets/_distribute/lava.png"
-            },
-            "body": {
-              "shape": "Box",
-              "type": 4,
-              "damping": 0,
-              "angularDamping": 0,
-              "material": "lava"
-            }
-          },
-          {
-            "name": "platform",
-            "displayObject": {
-              "typeName": "Platform",
-              "texture": [ "assets/_distribute/plat-des-mid.png", "assets/_distribute/plat-des-border-l.png", "assets/_distribute/plat-des-border-r.png" ]
-            },
-            "body": {
-              "shape": "Platform",
-              "type": 2,
-              "material": "box_default"
-            }
-          },
-          {
-            "name": "platform1",
-            "displayObject": {
-              "typeName": "Platform",
-              "texture": "assets/_distribute/plat-des-single.png"
-            },
-            "body": {
-              "shape": "Platform",
-              "type": 2,
-              "material": "box_default"
-            }
-          },
-          {
-            "name": "quest_item",
-            "displayObject": {
-              "typeName": "Sprite"
-            },
-            "body": {
-              "shape": "Box"
-            }
-          },
-          {
-            "name": "box64a",
-            "displayObject": {
-              "typeName": "Sprite",
-              "texture": "assets/_distribute/box_64_03.png"
-            },
-            "body": {
-              "shape": "Box",
-              "type": 1,
-              "mass": 80,
-              "material": "box_default"
-            }
-          },
-          {
-            "name": "balloon_vv",
-            "displayObject": {
-              "typeName": "Sprite",
-              "texture": "assets/_distribute/balloon-vedran.png"
-            },
-            "body": {
-              "shape": "Box",
-              "type": 2,
-              "material": "box_default"
-            }
-          },
-          {
-            "name": "exit",
-            "displayObject": {
-              "typeName": "Sprite",
-              "texture": "assets/_distribute/sign-exit.png"
-            },
-            "body": {
-              "shape": "Box",
-              "type": 2
-            }
-          }
-        ],
-        "entities": [
-          {
-            "template": "edge",
-            "xy": [ 1140, 100 ],
-            "rotation": 1.5,
-            "scale": [2, 1.5]
-          },
-          {
-            "template": "edge",
-            "name": "edge-left",
-            "xy": [ 1300, 64 ]
-          },
-          {
-            "template": "balloon_vv",
-            "name": "balloon",
-            "xy": [ 2100, 500 ]
-          },
-          {
-            "template": "box64a",
-            "xy": [ 1950, 32 ],
-            "trigger": {
-              "questId": 1,
-              "type": "distance",
-              "distance": 100,
-              "text": "Hello there,\nI will teach you the\nbasics. Follow my\ninstructions and you\nwill be fine.",
-              "textposition": [ -155, 600 ],
-              "completedText": "OK lad,\nTo jump use 'w' or space.\nTo move use 'a', 'd' or\narrows!"
-            }
-          },
-          {
-            "template": "box128",
-            "xy": [ 2050, 64 ],
-            "trigger": {
-              "questId": 2,
-              "type": "distance",
-              "distance": 88,
-              "text": "Excellent,\nTo run hold shift.\nIf running you can\njump higher and longer!",
-              "textposition": [ -300, 550 ],
-              "completedText": "OK,\nnow run to the exit sign!"
-            }
-          },
-          {
-            "template": "box64a",
-            "xy": [ 2150, 32 ]
-          },
-          {
-            "template": "platform",
-            "xy": [ 2210, 175 ],
-            "tiles": 2
-          },
-          {
-            "template": "platform1",
-            "xy": [ 2550, 220 ]
-          },
-          {
-            "template": "exit",
-            "xy": [ 2604, 250 ],
-            "trigger": {
-              "type": "collision",
-              "text": "Well done!",
-              "textposition": [ -820, 400 ],
-              "questId": 3
-            }
-          }
-        ]
-      }
-} ] }
+  ] }
