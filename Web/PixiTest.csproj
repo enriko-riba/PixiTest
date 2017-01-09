@@ -116,6 +116,9 @@
     <None Include="assets\Images\Objects\flame.png" />
     <None Include="assets\Images\Objects\kendo-knowledge.png" />
     <None Include="assets\Images\Objects\sign-question.png" />
+    <Content Include="assets\Images\background\trees06.png" />
+    <Content Include="assets\Images\background\trees07.png" />
+    <Content Include="assets\Images\background\trees08.png" />
     <Content Include="assets\Images\Objects\balloon-vedran.png" />
     <Content Include="assets\Images\Objects\boulder.png" />
     <Content Include="assets\Images\Objects\sign-exit.png" />

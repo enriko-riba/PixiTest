@@ -46,9 +46,9 @@ export var QUEST_STYLE: PIXI.ITextStyleStyle =
         padding: 0,
         fontSize: "21px",
         fontFamily: "Futura",
-        fill: 0xff3333,
-        strokeThickness: 2,
-        stroke: 0x36366f,
+        fill: 0x79ff33        ,
+        strokeThickness: 3,
+        stroke: 0x06160f,
         dropShadow: false
     };
 

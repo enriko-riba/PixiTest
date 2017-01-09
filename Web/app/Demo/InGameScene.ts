@@ -296,7 +296,7 @@ export class InGameScene extends Scene {
                                     this.hud.visible = false;
                                     this.worldContainer.removeChild(this.previousQuestMessage);
                                     var cs = Global.sceneMngr.GetScene("CutScene") as CutScene;
-                                    cs.SetText("After mastering the basics\nthe real adventure begins!", Global.QUEST_STYLE);
+                                    cs.SetText("Listen up lad,\nYou did well...for a n00b.\n\nAfter mastering the basics\nthe real adventure merely begins!", Global.QUEST_STYLE);
                                     var rt = Global.sceneMngr.CaptureScene();
                                     cs.SetBackGround(rt, this.scale); 
                                     Global.sceneMngr.ActivateScene(cs);
@@ -306,8 +306,16 @@ export class InGameScene extends Scene {
                     break;
 
                 case 201:
-                    
-                    if (state === QuestState.Completed) {
+                    if (state === QuestState.Finished) {
+                        ;
+                    }
+                    else if (state === QuestState.InProgress) {
+                        //  display message if not already shown
+                        if (!this.previousQuestMessage || !this.previousQuestMessage.parent) {
+                            this.previousQuestMessage = this.addTriggerMessage(pos, trigger.text, Global.QUEST_STYLE);
+                        }
+                    }
+                    else if (state === QuestState.Completed) {
                         this.hero.setQuestState(trigger.questId, QuestState.Finished);
                         this.IsHeroInteractive = false;
                         this.snd.win();
@@ -317,12 +325,15 @@ export class InGameScene extends Scene {
                         var rt = Global.sceneMngr.CaptureScene();
                         cs.SetBackGround(rt, this.scale); 
                         Global.sceneMngr.ActivateScene(cs);
-                    }
-                    else if (state === QuestState.Finished) {
-                        ;
-                    }
-                    else{
-                        this.addTriggerMessage(pos, trigger.text, Global.QUEST_STYLE);
+                    }                     
+                    else {
+                        this.hero.setQuestState(trigger.questId, QuestState.InProgress);
+                        this.previousQuestMessage = this.addTriggerMessage(pos, trigger.text, Global.QUEST_STYLE);
+                        var item = this.worldContainer.getChildByName("quest_item_201");
+                        item.visible = true;
+                        var lock:any = this.findBodyByName("lock");
+                        this.worldContainer.removeChild(lock.DisplayObject);
+                        this.removeEntity(lock);
                     }
                     break;
             }
@@ -395,6 +406,21 @@ export class InGameScene extends Scene {
     private removeEntity(body: any): void {
         this.wp2.removeBody(body);        
         body.DisplayObject = null;
+    }
+
+    /**
+     * Finds a body with the given display objects name.
+     * @param name
+     */
+    private findBodyByName(name: string): p2.Body {
+        var foundBody = undefined;
+        this.wp2.bodies.forEach((body:any) => {
+            var dispObj = body.DisplayObject as PIXI.DisplayObject;
+            if (dispObj && dispObj.name === name) {
+                foundBody = body;
+            }
+        });
+        return foundBody;
     }
 
     /**
@@ -472,7 +498,9 @@ export class InGameScene extends Scene {
         if (fadeSeconds > 0 ) {
             var fade = new TWEEN.Tween(container)
                 .to({ alpha: 0 }, fadeSeconds)
-                .onComplete(() => this.worldContainer.removeChild(container));
+                .onComplete(() => {
+                    this.worldContainer.removeChild(container);
+                });
             fade.start();
         }
         container.name = "TriggerMessage";
@@ -669,8 +697,9 @@ export class InGameScene extends Scene {
             //  TODO: there is a bug not initially calculating all viewport  
             //        visible parallax textures. So just move it in both 
             //        directions to trigger textures recalculation
-            plx.SetViewPortX(0);
-            plx.SetViewPortX(lvl.start[0] + 1);
+            plx.SetViewPortX(lvl.start[0]-10);
+            plx.SetViewPortX(lvl.start[0] + 10);
+            plx.SetViewPortX(lvl.start[0]);
         });
 
         //  set start for player

@@ -222,7 +222,10 @@ export class LevelLoader {
                 }
                 dispObj = pl;
         }
-        
+
+        if (definition.visible !== undefined) {
+            dispObj.visible = definition.visible;
+        }
         dispObj.rotation = definition.rotation || 0;
         if (definition.xy) {
             dispObj.position.set(definition.xy[0], definition.xy[1]);
@@ -369,6 +372,7 @@ export interface IDisplayObjectDefinition {
     anchor?: number;
     interactionType?: number; 
     tint?: number;
+    visible?: boolean;
     fps?: number;
     sequences?:IAnimationSequence[]
 }

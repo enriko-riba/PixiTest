@@ -17,7 +17,7 @@ export interface IMoveEvent {
 
 export class MovementController {
     private readonly VELOCITY = 150;
-    private readonly JUMP_FORCE = 16500;
+    private readonly JUMP_FORCE = 16700;
     private nextJumpAllowed: number = 0;
 
     private world: WorldP2;
@@ -58,7 +58,11 @@ export class MovementController {
      * Sets if the player can interact via controls.
      */
     public set isInteractive(newValue: boolean) {
-        this._isInteractive = newValue;        
+        this._isInteractive = newValue;  
+        if(!this._isInteractive) {
+            this.isRunning = false;
+            this.movementState = MovementState.Idle;
+        }      
     }
 
     private touchJump = (ev: any) => {

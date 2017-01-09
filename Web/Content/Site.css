@@ -1,12 +1,7 @@
 ﻿body {
-  padding-top: 50px;
-  padding-bottom: 20px;
   background-color: #95A3A3; }
 
 /* Set padding to keep content from hitting the edges */
-.body-content {
-  padding: 15px; }
-
 /* Override the default bootstrap behavior where horizontal description lists 
    will truncate terms that are too long to fit in the left column 
 */
