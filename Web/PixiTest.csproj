@@ -122,6 +122,7 @@
     <Content Include="assets\Unused\Portrait\port-mbanovic.png" />
     <Content Include="assets\README.txt" />
     <Content Include="assets\Unused\Portrait\port-vgikic.png" />
+    <Content Include="assets\Unused\Portrait\port-vvucetic.png" />
     <Content Include="Content\Site.css">
       <DependentUpon>Site.scss</DependentUpon>
     </Content>
