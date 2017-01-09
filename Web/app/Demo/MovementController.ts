@@ -47,25 +47,42 @@ export class MovementController {
         mc.on("press", this.touchMove);
     }
 
+    private _isInteractive: boolean = true;
+    /**
+     * Returns if the player can interact via controls.
+     */
+    public get isInteractive(): boolean {
+        return this._isInteractive;
+    }
+    /**
+     * Sets if the player can interact via controls.
+     */
+    public set isInteractive(newValue: boolean) {
+        this._isInteractive = newValue;        
+    }
+
     private touchJump = (ev: any) => {
-        console.log("touchJump event", ev);
-        this.isTouchJump = true;
+        if (this._isInteractive) {
+            console.log("touchJump event", ev);
+            this.isTouchJump = true;
+        }
     }
 
     private touchMove = (ev: any) => {
-        console.log("touch event", ev);
-        //if (!ev.isFirst) return;
+        if (this._isInteractive) {
+            console.log("touch event", ev);
 
-        var pos = this.getLocalCoordinates(ev);
-        let newDirection = (pos.x > 0.5) ? MovementState.Right : MovementState.Left;
-        let shouldStop = (newDirection === MovementState.Left && this.isTouchRight) ||
-                         ( newDirection === MovementState.Right && this.isTouchLeft);
-        if (shouldStop ) {
-            this.isTouchRight = false;
-            this.isTouchLeft = false;
-        } else {
-            this.isTouchRight = (newDirection === MovementState.Right);
-            this.isTouchLeft = (newDirection === MovementState.Left);
+            var pos = this.getLocalCoordinates(ev);
+            let newDirection = (pos.x > 0.5) ? MovementState.Right : MovementState.Left;
+            let shouldStop = (newDirection === MovementState.Left && this.isTouchRight) ||
+                (newDirection === MovementState.Right && this.isTouchLeft);
+            if (shouldStop) {
+                this.isTouchRight = false;
+                this.isTouchLeft = false;
+            } else {
+                this.isTouchRight = (newDirection === MovementState.Right);
+                this.isTouchLeft = (newDirection === MovementState.Left);
+            }
         }
     }
 

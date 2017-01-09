@@ -19,7 +19,7 @@ class DemoVM extends ViewModelBase{
             roundPixels: false,
             resolution: window.devicePixelRatio
         };
-        (Global as any).sceneMngr = new SceneManager(Global.SCENE_WIDTH, Global.SCENE_HEIGHT, renderOptions , new CustomSceneResizer(Global.SCENE_WIDTH, Global.SCENE_HEIGHT));
+        (Global as any).sceneMngr = new SceneManager(Global.SCENE_WIDTH, Global.SCENE_HEIGHT, renderOptions, new CustomSceneResizer(Global.SCENE_WIDTH, Global.SCENE_HEIGHT));
         
         Global.sceneMngr.AddScene(new LoaderScene());
         Global.sceneMngr.ActivateScene("Loader");

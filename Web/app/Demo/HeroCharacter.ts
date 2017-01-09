@@ -92,7 +92,19 @@ export class HeroCharacter extends AnimatedSprite {
         this.wp2.on("playerContact", this.onPlayerContact, this);
         this.movementCtrl = new MovementController(this.wp2, this);
     }
-    
+
+    /**
+     * Returns if the player can interact via controls.
+     */
+    public get IsInteractive(): boolean {
+        return this.movementCtrl.isInteractive;
+    }
+    /**
+     * Sets if the player can interact via controls.
+     */
+    public set IsInteractive(newValue: boolean) {
+        this.movementCtrl.isInteractive = newValue;        
+    }
 
     /**
      * Returns the player statistics object.
@@ -126,6 +138,10 @@ export class HeroCharacter extends AnimatedSprite {
      * @param dt elapsed time in milliseconds
      */
     public update = (dt: number) => {
+        if (!this.IsInteractive) {
+            return;
+        }
+
         this.position.x = this.wp2.playerX;
         this.position.y = this.wp2.playerY;
 

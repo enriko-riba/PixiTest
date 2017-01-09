@@ -7,10 +7,17 @@ import * as Global from "app/Demo/Global";
 export class LoaderScene extends Scene {
     private loadingMessage: PIXI.Text;
     private spinner: PIXI.Sprite;
+    private levelId: number = 1;
 
     constructor() {
         super("Loader");
         this.BackGroundColor = 0x1099bb;
+    }
+
+    public onUpdate = (dt: number) => {
+        if (this.spinner) {
+            this.spinner.rotation += 0.05;
+        }
     }
 
     public onActivate = () => {
@@ -24,10 +31,14 @@ export class LoaderScene extends Scene {
         //------------------------------------------------------
         PIXI.loader.reset();
         PIXI.loader.add("assets/_distribute/loading.png")
-                   .load(this.downloadLevels);
+                   .load(this.downloadLevel);
     };
 
-    private downloadLevels = (): void => {
+    public setNextLevel= (lvl: number)=> {
+        this.levelId = lvl;
+    }
+
+    private downloadLevel = (): void => {
         console.log("downloading levels...");
         PIXI.loader.reset();
         PIXI.loader.add("assets/levels/levels.json")
@@ -45,7 +56,7 @@ export class LoaderScene extends Scene {
     private downloadAssets = ():void => {
         console.log("Initializing...");
         Global.GameLevels.root = PIXI.loader.resources["assets/levels/levels.json"].data;
-        let assets: string[] = LevelLoader.GetLevelAssets(Global.GameLevels.root as any, "Intro");
+        let assets: string[] = LevelLoader.GetLevelAssets(Global.GameLevels.root as any, this.levelId);
 
         //  add assets not in level description
         assets = assets.concat(
@@ -66,66 +77,6 @@ export class LoaderScene extends Scene {
             ]
         );
         console.log(`Downloading ${assets.length} assets ...`);
-        /*
-        var assets:string[] = [
-            "assets/_distribute/hero_64.png",
-
-            "assets/_distribute/Button1.png",
-            "assets/_distribute/Listitem.png",
-            "assets/_distribute/Panel_256x128.png",
-            "assets/_distribute/Panel_256x256.png",
-            "assets/_distribute/TestHUD.png",
-            "assets/_distribute/heart.png",
-            "assets/_distribute/coin.png",
-            "assets/_distribute/stat_panel.png",
-
-            "assets/_distribute/jump_smoke.png",
-
-            "assets/_distribute/bahamut.png",
-            "assets/_distribute/barrissoffee.png",
-            "assets/_distribute/ifrit.png",
-            "assets/_distribute/leviathan.png",
-            "assets/_distribute/phoenix.png",
-            "assets/_distribute/tonberry.png",
-
-            "assets/_distribute/IceSnow.png",
-            "assets/_distribute/Canyon.png",
-            "assets/_distribute/Mountains.png",
-            "assets/_distribute/Wood_night.png",
-            "assets/_distribute/trees01.png",
-            "assets/_distribute/trees02.png",
-            "assets/_distribute/trees03.png",
-            "assets/_distribute/trees04.png",
-            "assets/_distribute/trees05.png",
-            "assets/_distribute/ground.png",
-
-            "assets/_distribute/plat-des-mid.png",
-            "assets/_distribute/plat-des-border-l.png",
-            "assets/_distribute/plat-des-border-r.png",
-            "assets/_distribute/plat-des-single.png",
-
-            "assets/_distribute/box_64_01.png",
-            "assets/_distribute/box_64_02.png",
-            "assets/_distribute/box_64_03.png",
-
-            "assets/_distribute/box_128_01.png",
-            "assets/_distribute/box_128_02.png",
-            "assets/_distribute/box_128_03.png",
-
-            "assets/_distribute/bumper_01.png",
-            "assets/_distribute/bumper_rotor_01.png",
-            "assets/_distribute/chest_01.png",
-            "assets/_distribute/coins.png",
-            "assets/_distribute/gem32.png",
-            "assets/_distribute/gem64.png",
-            "assets/_distribute/star.png",
-            "assets/_distribute/lava.png",
-            "assets/_distribute/lava-border-l.png",
-            "assets/_distribute/lava-border-r.png",
-
-            "assets/levels/levels.json",
-        ];
-        */
 
         PIXI.loader.reset();
         PIXI.loader.add(assets)
@@ -143,19 +94,26 @@ export class LoaderScene extends Scene {
         console.log("onAssetsLoaded...");
         this.loadingMessage.text = "Loading 100 %";
 
-        var inGame = new InGameScene();
-        Global.sceneMngr.AddScene(inGame);
+        //---------------------------------------------
+        //  Bootstrap new game scene or reuse existing
+        //---------------------------------------------
+        var inGame : InGameScene;
+        try {
+            inGame = Global.sceneMngr.GetScene("InGame") as InGameScene;
+        } catch (e) {
+        }
+
+        if (!inGame) {
+            inGame = new InGameScene();
+            Global.sceneMngr.AddScene(inGame);
+        }
 
         //  setTimeout is only to make the "100%" noticeable
         setTimeout(() => {
             this.removeChild(this.loadingMessage);
+            inGame.IsHeroInteractive = true;
+            inGame.NextLevel();
             Global.sceneMngr.ActivateScene(inGame);
         }, 500);
     };
-
-    public onUpdate = (dt: number) => {
-        if (this.spinner) {
-            this.spinner.rotation += 0.05;
-        }
-    }
 }

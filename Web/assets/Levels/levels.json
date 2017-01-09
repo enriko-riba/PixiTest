@@ -145,8 +145,8 @@
             },
             "trigger": {
               "type": "collision",
-              "text": "You shall not pass,\nunless you bring\nme knowledge\nabout Kendo!",
-              "textposition": [ -328, 450 ],
+              "text": "You shall not pass\nunless you bring\nme knowledge\nabout Kendo!",
+              "textposition": [ -370, 450 ],
               "questId": 201,
               "completedText": "What? Could it be...\nYou have the Kendo knowledge I need so much!\n\nYou can proceed now."
             }
@@ -516,6 +516,15 @@
       "parallax": [
         {
           "index": 0,
+          "name": "Far",
+          "parallaxFactor": 1,
+          "y": 0,
+          "tiles": [
+            "assets/_distribute/IceSnow.png"
+          ]
+        },
+        {
+          "index": 1,
           "name": "Ground",
           "parallaxFactor": 1,
           "y": -90,
@@ -527,8 +536,20 @@
 
 
       "map": {
-        "start": [ 1800, 36 ],
+        "start": [ 1600, 36 ],
         "templates": [
+          {
+            "name": "edge",
+            "displayObject": {
+              "typeName": "Sprite",
+              "texture": "assets/_distribute/boulder.png"
+            },
+            "body": {
+              "shape": "Box",
+              "type": 2,
+              "material": "box_default"
+            }
+          },
           {
             "name": "box128",
             "displayObject": {
@@ -654,39 +675,92 @@
             }
           },
           {
-            "name": "baloon_vv",
+            "name": "balloon_vv",
             "displayObject": {
               "typeName": "Sprite",
-              "texture": "assets/_distribute/baloon-vedran.png"
+              "texture": "assets/_distribute/balloon-vedran.png"
             },
             "body": {
               "shape": "Box",
               "type": 2,
               "material": "box_default"
             }
+          },
+          {
+            "name": "exit",
+            "displayObject": {
+              "typeName": "Sprite",
+              "texture": "assets/_distribute/sign-exit.png"
+            },
+            "body": {
+              "shape": "Box",
+              "type": 2
+            }
           }
         ],
         "entities": [
           {
-            "template": "baloon_vv",
-            "xy": [ 1600, 470 ]
+            "template": "edge",
+            "xy": [ 1140, 100 ],
+            "rotation": 1.5,
+            "scale": [2, 1.5]
+          },
+          {
+            "template": "edge",
+            "name": "edge-left",
+            "xy": [ 1300, 64 ]
+          },
+          {
+            "template": "balloon_vv",
+            "name": "balloon",
+            "xy": [ 2100, 500 ]
           },
           {
             "template": "box64a",
-            "xy": [ 1900, 32 ]
+            "xy": [ 1950, 32 ],
+            "trigger": {
+              "questId": 1,
+              "type": "distance",
+              "distance": 100,
+              "text": "Hello there,\nI will teach you the\nbasics. Follow my\ninstructions and you\nwill be fine.",
+              "textposition": [ -155, 600 ],
+              "completedText": "OK lad,\nTo jump use 'w' or space.\nTo move use 'a', 'd' or\narrows!"
+            }
           },
           {
             "template": "box128",
-            "xy": [ 2050, 64 ]
+            "xy": [ 2050, 64 ],
+            "trigger": {
+              "questId": 2,
+              "type": "distance",
+              "distance": 88,
+              "text": "Excellent,\nTo run hold shift.\nIf running you can\njump higher and longer!",
+              "textposition": [ -300, 550 ],
+              "completedText": "OK,\nnow run to the exit sign!"
+            }
+          },
+          {
+            "template": "box64a",
+            "xy": [ 2150, 32 ]
           },
           {
             "template": "platform",
-            "xy": [ 2150, 115 ],
+            "xy": [ 2210, 175 ],
             "tiles": 2
           },
           {
             "template": "platform1",
-            "xy": [ 2430, 180 ]
+            "xy": [ 2550, 220 ]
+          },
+          {
+            "template": "exit",
+            "xy": [ 2604, 250 ],
+            "trigger": {
+              "type": "collision",
+              "text": "Well done!",
+              "textposition": [ -820, 400 ],
+              "questId": 3
+            }
           }
         ]
       }
