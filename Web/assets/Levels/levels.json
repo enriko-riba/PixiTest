@@ -227,7 +227,7 @@
               "distance": 100,
               "text": "Hello there,\nI will teach you the\nbasics. Follow my\ninstructions and you\nwill be fine.",
               "textposition": [ -155, 600 ],
-              "completedText": "OK lad,\nTo jump use 'w' or space.\nTo move use 'a', 'd' or\narrows!"
+              "completedText": "OK lad,\nuse 'w' or space to jump.\nand 'a', 'd' or arrows\nto move!"
             }
           },
           {
@@ -316,7 +316,7 @@
 
 
       "map": {
-        "start": [ -350, 36 ],
+        "start": [ -350, 30 ],
         "templates": [
           {
             "name": "coin",

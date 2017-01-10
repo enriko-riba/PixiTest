@@ -160,7 +160,7 @@ export class MovementController {
 
         
         var newIsJumping: boolean = false;
-        var newIsRunning: boolean = this.kbd.IsKeyDown(KEY_SHIFT) && this.hero.CanRun;
+        var newIsRunning: boolean = this.kbd.IsKeyDown(KEY_SHIFT) && this.hero.CanRun && this._isInteractive;
 
         if (this.kbd.IsKeyDown(KEY_A) || this.kbd.IsKeyDown(KEY_LEFT) || this.isTouchLeft) {
             this.newState = MovementState.Left;

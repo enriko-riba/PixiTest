@@ -296,7 +296,7 @@ export class InGameScene extends Scene {
                                     this.hud.visible = false;
                                     this.worldContainer.removeChild(this.previousQuestMessage);
                                     var cs = Global.sceneMngr.GetScene("CutScene") as CutScene;
-                                    cs.SetText("Listen up lad,\nYou did well...for a n00b.\n\nAfter mastering the basics\nthe real adventure merely begins!", Global.QUEST_STYLE);
+                                    cs.SetText("Listen up lad,\nYou did well...for a n00b.\n\nThe time is running out.\nNow hurry to the white castle.\nThe real adventure merely begins!", Global.QUEST_STYLE);
                                     var rt = Global.sceneMngr.CaptureScene();
                                     cs.SetBackGround(rt, this.scale);
                                     Global.sceneMngr.ActivateScene(cs);
