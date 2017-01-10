@@ -3,6 +3,7 @@
     {
       "id": 1,
       "name": "Intro",
+      "audioTrack": 1,
       "parallax": [
         {
           "index": 0,
@@ -277,6 +278,7 @@
     {
       "id": 2,
       "name": "Kendo",
+      "audioTrack": 0,
       "parallax": [
         {
           "index": 0,
@@ -434,7 +436,7 @@
             "body": {
               "shape": "Box",
               "type": 2,
-              "size": [64, 128],
+              "size": [ 64, 128 ],
               "material": "box_default"
             }
           },
@@ -626,7 +628,7 @@
           },
           {
             "template": "lock",
-            "name":  "lock",
+            "name": "lock",
             "xy": [ 2975, 600 ]
           },
           {

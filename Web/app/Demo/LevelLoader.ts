@@ -19,8 +19,8 @@ export class LevelLoader {
      * @param levelId
      */
     public static GetLevelAssets(root: IRootObject, levelId: number): string[] {
-        var assets: string[] = []
-       
+        var assets: string[] = [];
+
         var level: ILevelDefinition = undefined;
         for (var i = 0; i < root.levels.length; i++) {
             if (root.levels[i].id === levelId) {
@@ -51,7 +51,7 @@ export class LevelLoader {
 
                     if (displayObjectDefinition.sequences) {
                         displayObjectDefinition.sequences.forEach((item) => {
-                            assets.push(item.texture)
+                            assets.push(item.texture);
                         });
                     }
                 }
@@ -73,31 +73,11 @@ export class LevelLoader {
         return r;
     }
 
-    public get Levels():ILevelDefinition[] {
-        return this.levels;
-    }
-
     /**
-     * Finds a level by its name.
+     * Loads the level.
      * @param name
      * @param container
      */
-    public FindLevel(name: string): ILevelDefinition {
-        var levelDefinition: ILevelDefinition = undefined;
-        for (var i = 0; i < this.levels.length; i++) {
-            if (this.levels[i].name === name) {
-                levelDefinition = this.levels[i];
-                break;
-            }
-        }
-        return levelDefinition;
-    }
-
-    /**
-    * Loads the level.
-    * @param name
-    * @param container
-    */
     public BuildLevel(id: number): ILevel {
         var levelDefinition: ILevelDefinition = undefined;
         for (var i = 0; i < this.levels.length; i++) {
@@ -121,7 +101,8 @@ export class LevelLoader {
         var result: ILevel = {
             parallax : [],
             entities: [],
-            start: []
+            start: [],
+            audioTrack: level.audioTrack
         };
 
         //--------------------------------------
@@ -130,11 +111,11 @@ export class LevelLoader {
         var vps = new PIXI.Point(Global.SCENE_WIDTH, Global.SCENE_HEIGHT);
         level.parallax.forEach((iplx, idx, arr) => {
             var parallax = new Parallax(vps, iplx.parallaxFactor, iplx.scale);
-            parallax.y = iplx.y;           
+            parallax.y = iplx.y;
             parallax.setTextures(iplx.tiles);
-            result.parallax.push(parallax);            
+            result.parallax.push(parallax);
         });
-       
+
         //--------------------------------------
         //  create display/physics object pairs
         //--------------------------------------
@@ -170,7 +151,7 @@ export class LevelLoader {
      * @param definition
      */
     private buildDisplayObject(definition: IDisplayObjectDefinition): PIXI.DisplayObject {
-        var dispObj: PIXI.DisplayObject
+        var dispObj: PIXI.DisplayObject;
         switch (definition.typeName) {
             case "AnimatedSprite":
                 var aspr = new AnimatedSprite();
@@ -180,7 +161,7 @@ export class LevelLoader {
                 });
                 aspr.PlayAnimation(definition.sequences[0].name, definition.fps);
                 aspr.Anchor = new PIXI.Point(0.5, 0.5);
-                
+
                 dispObj = aspr;
                 break;
 
@@ -199,7 +180,7 @@ export class LevelLoader {
                     definition.scale = [1, -1];
 
                 spr.pivot.set(definition.pivot);
-                dispObj = spr;                
+                dispObj = spr;
                 break;
 
             case "Bumper":
@@ -209,7 +190,7 @@ export class LevelLoader {
                 break;
 
             case "Lava":
-                var lv = new Lava(definition.texture as string);                
+                var lv = new Lava(definition.texture as string);
                 dispObj = lv;
                 break;
 
@@ -236,7 +217,7 @@ export class LevelLoader {
         if (definition.interactionType) {
             dispObj.interactionType = definition.interactionType;
         }
-        
+
         return dispObj;
     }
 
@@ -254,15 +235,15 @@ export class LevelLoader {
                 angle: definition.angle || dispObj.rotation,
                 fixedRotation: definition.fixedRotation || false,
                 angularDamping: definition.angularDamping || 0.1,
-                damping: definition.damping || 0.1, 
+                damping: definition.damping || 0.1,
             };
             body = new p2.Body(options);
             body.type = definition.type;
             var dispObjAsAny:any = dispObj as any;
             var shape: p2.Shape;
             switch (definition.shape) {
-                case "Circle":  
-                    var radius = definition.size ? definition.size[0] : dispObjAsAny.width;            
+                case "Circle":
+                    var radius = definition.size ? definition.size[0] : dispObjAsAny.width;
                     shape = new p2.Circle({ radius: radius });
                     break;
 
@@ -283,15 +264,15 @@ export class LevelLoader {
                     //  the position is centered but we need it to be left top aligned
                     body.position[0] = body.position[0] + w / 2;
                     body.position[1] = body.position[1] - h / 2;
-                    break; 
+                    break;
 
                 case "Box":
                     //  get the size
                     var w, h;
                     if (definition.size) {
-                        w = definition.size[0]; 
+                        w = definition.size[0];
                         h = definition.size[1];
-                    } else {                        
+                    } else {
                         if (dispObjAsAny.width) {
                             w = Math.abs(dispObjAsAny.width);
                             h = Math.abs(dispObjAsAny.height);
@@ -305,12 +286,12 @@ export class LevelLoader {
                         width:  w,
                         height: h,
                     });
-                    break;                
+                    break;
                 //  TODO: implement other shapes if needed
             }
 
             if (definition.material) {
-                (shape as any).materialName = definition.material;                
+                (shape as any).materialName = definition.material;
             }
 
             if (!!dispObj.interactionType) {
@@ -330,6 +311,7 @@ export interface ILevel {
     parallax: Parallax[];
     entities: p2.Body[];
     start: number[];
+    audioTrack?: number;
 }
 
 export interface IParallaxDefinition {
@@ -342,14 +324,14 @@ export interface IParallaxDefinition {
 }
 
 export interface IBodyDefinition {
-    shape: string,
+    shape: string;
     type: number;
     xy: number[];
     size?: number[];
     mass: number;
     angle: number;
     material?: string;
-    damping?: number; 
+    damping?: number;
     angularDamping?: number;
     fixedRotation?: boolean;
 }
@@ -362,26 +344,26 @@ export interface IAnimationSequence {
 }
 
 export interface IDisplayObjectDefinition {
-    typeName: string,
+    typeName: string;
     texture: string | string[];
-    tiles?: number,
+    tiles?: number;
     xy?: number[];
     scale?: number[];
     rotation?: number;
     pivot?: number;
     anchor?: number;
-    interactionType?: number; 
+    interactionType?: number;
     tint?: number;
     visible?: boolean;
     fps?: number;
-    sequences?:IAnimationSequence[]
+    sequences?: IAnimationSequence[];
 }
 
 export interface ITriggerDefinition {
     type: string;
     distance?: number;
     text: string;
-    textposition: number[]
+    textposition: number[];
     questId?: number;
     completedText?: string;
 }
@@ -399,7 +381,7 @@ export interface IMapEntity {
     scale?: number[];
     rotation?: number;
     texture?: string;
-    interactionType?: number; 
+    interactionType?: number;
     name?: string;
 }
 
@@ -415,6 +397,7 @@ export interface ILevelDefinition {
     assets?: string[];
     name: string;
     parallax: IParallaxDefinition[];
+    audioTrack?: number;
     map: ILevelMap;
 }
 

@@ -7,7 +7,7 @@ import { Parallax } from "app/_engine/Parallax";
 import { WorldP2 } from "./WorldP2";
 import { Hud } from "./Hud";
 import { LevelLoader, ILevel, ILevelDefinition, ILevelMap, IMapEntity, ITriggerDefinition } from "./LevelLoader";
-import { DPS_TOPIC, IDpsChangeEvent, IStatChangeEvent, Stats, StatType } from "./Stats";
+import { DPS_TOPIC, IDpsChangeEvent, StatType } from "./Stats";
 import { HeroCharacter, QuestState, BURN_TOPIC, IBurnEvent } from "./HeroCharacter";
 import { MovementState } from "./MovementState";
 import { MOVE_TOPIC, IMoveEvent } from "./MovementController";
@@ -18,8 +18,7 @@ import { CutScene } from "./CutScene";
 import "../../Scripts/pixi-particles";
 
 export function createParticleEmitter(container: PIXI.Container, textures: PIXI.Texture[], config?: PIXI.particles.EmitterConfig): PIXI.particles.Emitter {
-    var cfg: PIXI.particles.EmitterConfig =
-        {
+    var cfg: PIXI.particles.EmitterConfig = {
             "alpha": {
                 "start": 0.8,
                 "end": 0.03
@@ -69,10 +68,10 @@ export function createParticleEmitter(container: PIXI.Container, textures: PIXI.
     }
 
     var emitter = new PIXI.particles.Emitter(
-        // The PIXI.Container to put the emitter in
+        // the PIXI.Container to put the emitter in
         // if using blend modes, it's important to put this
         // on top of a bitmap, and not use the root stage Container
-        container,        
+        container,
         textures,
         cfg
     );
@@ -124,7 +123,7 @@ export class InGameScene extends Scene {
 
     public onActivate = () => {
         this.hud.visible = true;
-    }
+    };
 
     /**
      * Updates physics and handles player collisions.
@@ -146,7 +145,7 @@ export class InGameScene extends Scene {
         for (var i = 0; i < this.parallaxBackgrounds.length; i++) {
             this.parallaxBackgrounds[i].SetViewPortX(this.hero.x);
         }
-        
+
 
         //-------------------------------------------
         //  update entities position
@@ -189,7 +188,7 @@ export class InGameScene extends Scene {
         //  invoke update on each updateable
         //-------------------------------------------
         for (var i = 0, len = this.worldContainer.children.length; i < len; i++) {
-            let child: any = this.worldContainer.children[i];           
+            let child: any = this.worldContainer.children[i];
             if (child && child.onUpdate) {
                 child.onUpdate(dt);
             }
@@ -204,7 +203,7 @@ export class InGameScene extends Scene {
 
     private previousQuestMessage: PIXI.Sprite;
     public set IsHeroInteractive(value: boolean) {
-        if (this.hero.IsInteractive != value) {
+        if (this.hero.IsInteractive !== value) {
             this.hero.IsInteractive = value;
             if (!this.hero.IsInteractive) {
                 this.hero.PlayAnimation("idle");
@@ -218,7 +217,6 @@ export class InGameScene extends Scene {
      * @param body
      */
     private handleTriggerEvent(body: any): void {
-        var playerStats = this.hero.PlayerStats;
         var dispObj: PIXI.DisplayObject = body.DisplayObject as PIXI.DisplayObject;
 
         var trigger: ITriggerDefinition = body.Trigger;
@@ -227,13 +225,14 @@ export class InGameScene extends Scene {
             pos.x += trigger.textposition[0];
             pos.y += trigger.textposition[1];
         }
-       
+
         let state = this.hero.getQuestState(trigger.questId);
 
         if (trigger.questId) {
             switch (trigger.questId) {
                 case 1:
                     if (state === QuestState.Completed || state === QuestState.Finished) {
+                        ;
                     }
                     else {
                         this.hero.setQuestState(trigger.questId, QuestState.Completed);
@@ -255,7 +254,8 @@ export class InGameScene extends Scene {
 
                 case 2:
                     if (this.hero.getQuestState(1) === QuestState.Finished) {
-                        if (state === QuestState.Finished || state === QuestState.Completed) {                            
+                        if (state === QuestState.Finished || state === QuestState.Completed) {
+                            ;
                         } else {
                             this.hero.setQuestState(trigger.questId, QuestState.Completed);
                             this.IsHeroInteractive = false;
@@ -285,22 +285,22 @@ export class InGameScene extends Scene {
 
                             this.snd.win();
 
-                            var balloon = this.worldContainer.getChildByName("balloon");                           
+                            var balloon = this.worldContainer.getChildByName("balloon");
                             var anim1 = new TWEEN.Tween(balloon)
                                 .to({ x: dispObj.position.x }, 3000).start();
 
                             var endx = (dispObj.position.x - 300);// + trigger.textposition[0];
                             var anim2 = new TWEEN.Tween(this.previousQuestMessage)
                                 .to({ x: endx}, 3000)
-                                .onComplete(() => {                                    
+                                .onComplete(() => {
                                     this.hud.visible = false;
                                     this.worldContainer.removeChild(this.previousQuestMessage);
                                     var cs = Global.sceneMngr.GetScene("CutScene") as CutScene;
                                     cs.SetText("Listen up lad,\nYou did well...for a n00b.\n\nAfter mastering the basics\nthe real adventure merely begins!", Global.QUEST_STYLE);
                                     var rt = Global.sceneMngr.CaptureScene();
-                                    cs.SetBackGround(rt, this.scale); 
+                                    cs.SetBackGround(rt, this.scale);
                                     Global.sceneMngr.ActivateScene(cs);
-                                }).start();                                                       
+                                }).start();
                         }
                     }
                     break;
@@ -323,9 +323,9 @@ export class InGameScene extends Scene {
                         var cs = Global.sceneMngr.GetScene("CutScene") as CutScene;
                         cs.SetText(trigger.completedText, Global.QUEST_STYLE);
                         var rt = Global.sceneMngr.CaptureScene();
-                        cs.SetBackGround(rt, this.scale); 
+                        cs.SetBackGround(rt, this.scale);
                         Global.sceneMngr.ActivateScene(cs);
-                    }                     
+                    }
                     else {
                         this.hero.setQuestState(trigger.questId, QuestState.InProgress);
                         this.previousQuestMessage = this.addTriggerMessage(pos, trigger.text, Global.QUEST_STYLE);
@@ -347,7 +347,8 @@ export class InGameScene extends Scene {
     private handleInteractiveCollision(body: any): void {
         var playerStats = this.hero.PlayerStats;
         var dispObj: PIXI.DisplayObject = body.DisplayObject as PIXI.DisplayObject;
-        
+        let now = Date.now() / 1000;
+
         switch (dispObj.interactionType) {
             case 1: //  small coin
                 playerStats.increaseStat(StatType.Coins, 1);
@@ -374,19 +375,15 @@ export class InGameScene extends Scene {
                 break;
 
             case 1000:  //  border lava   
-                var now = Date.now() / 1000;
                 if (!playerStats.buffs[1000] || playerStats.buffs[1000] < now)
-                    this.addInfoMessage(dispObj.position, "Burn", Global.WARN_STYLE);             
+                    this.addInfoMessage(dispObj.position, "Burn", Global.WARN_STYLE);
                 playerStats.buffs[1000] = this.secondsFromNow(1);
-                //this.snd.burn();
                 break;
 
             case 1001:  //  lava
-                var now = Date.now() / 1000;
                 if (!playerStats.buffs[1001] || playerStats.buffs[1001] < now)
                     this.addInfoMessage(dispObj.position, "Burn", Global.WARN_STYLE);
                 playerStats.buffs[1001] = this.secondsFromNow(3);
-                //this.snd.burn();
                 break;
 
             case 201:  //  kendo knowledge
@@ -404,7 +401,7 @@ export class InGameScene extends Scene {
      * @param body
      */
     private removeEntity(body: any): void {
-        this.wp2.removeBody(body);        
+        this.wp2.removeBody(body);
         body.DisplayObject = null;
     }
 
@@ -479,12 +476,12 @@ export class InGameScene extends Scene {
     }
 
     /**
-    * Adds a balloon call-out message.
-    * @param position the start position of the message
-    * @param message the message to be added
-    * @param style PIXI.ITextStyle
-    * @param fadeSeconds optional number of milliseconds the message should linger
-    */
+     * Adds a balloon call-out message.
+     * @param position the start position of the message
+     * @param message the message to be added
+     * @param style PIXI.ITextStyle
+     * @param fadeSeconds optional number of milliseconds the message should linger
+     */
     private addTriggerMessage(position: PIXI.Point, message: string, style: PIXI.ITextStyleStyle, fadeSeconds: number = 8000): PIXI.Sprite {
         var container = new PIXI.Sprite(PIXI.loader.resources["assets/_distribute/callout.png"].texture);
         container.position.set(position.x, position.y);
@@ -508,24 +505,10 @@ export class InGameScene extends Scene {
     }
 
     /**
-     * Decreases the HP for the given amount and displays a message with the total integer amount.
-     * @param amount the positive amount to decrease the HP
-     */
-    private decreaseHP(amount: number) {
-        var playerStats = this.hero.PlayerStats;
-        var oldHP = Math.round(playerStats.getStat(StatType.HP));
-        playerStats.increaseStat(StatType.HP, -amount);
-        var newHP = Math.round(playerStats.getStat(StatType.HP));
-        if (newHP < oldHP) {
-            this.addInfoMessage(this.hero.position, `-${oldHP-newHP} HP`);
-        }
-    }
-
-    /**
      * Sets up the scene.
      */
     private setup(): void {
-        
+
         this.BackGroundColor = 0x1099bb;
         PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.LINEAR;
 
@@ -557,14 +540,13 @@ export class InGameScene extends Scene {
         this.wp2 = new WorldP2(new PIXI.Point(lvl.start[0], lvl.start[1]));
         this.hero.SetWorldP2(this.wp2);
 
-        this.worldContainer.addChild(this.hero);   
-        //this.LoadLevel(lvl);
+        this.worldContainer.addChild(this.hero);
         this.currentLevel = lvl;
-    }
+    };
 
     private handleDpsChange = (event: IDpsChangeEvent) => {
         this.addInfoMessage(this.hero.position, `${event.Amount} HP`);
-    }
+    };
 
     private handleMoveChange = (event: IMoveEvent) => {
         const ANIMATION_FPS = 10;
@@ -609,7 +591,7 @@ export class InGameScene extends Scene {
                 break;
         }
 
-    }
+    };
 
     private handleBurnChange = (event: IBurnEvent) => {
         if (event.isBurning) {
@@ -617,7 +599,7 @@ export class InGameScene extends Scene {
         } else {
             this.snd.burnStop();
         }
-    }
+    };
 
     /**
      * Helper that returns time tick value with the given seconds added.
@@ -629,15 +611,15 @@ export class InGameScene extends Scene {
         now += seconds;
         console.log("secondsFromNow() result:", now);
         return now;
-    }
+    };
 
     /**
      * Calculates the next level id.
      */
-    public GetNextLevelId() : number {
+    public GetNextLevelId(): number {
         var id = this.hero.PlayerStats.currentLevel + 1;
         return id;
-    }
+    };
 
     /**
      *  Calculates the next level and invokes the level loading.
@@ -646,15 +628,16 @@ export class InGameScene extends Scene {
         this.hero.PlayerStats.currentLevel += 1;
         var id = this.hero.PlayerStats.currentLevel;
         var lvl = this.levelLoader.BuildLevel(id);
-        this.snd.playTrack(0);
+
         if (!lvl) {
             console.log("No more levels!!!");
             return;
         } else {
+            this.snd.playTrack(lvl.audioTrack||0);
             this.LoadLevel(lvl);
             this.currentLevel = lvl;
         }
-    }
+    };
 
     /**
      * Loads the level and adds all objects to the scene.
@@ -662,6 +645,7 @@ export class InGameScene extends Scene {
      */
     public LoadLevel(lvl: ILevel) {
 
+    // this.snd.playTrack(lvl
         //--------------------------------------
         //  remove all entities except hero
         //--------------------------------------
@@ -678,7 +662,7 @@ export class InGameScene extends Scene {
             });
 
             //  now remove displayobjects without bodies
-            var all = this.worldContainer.children.filter((c: PIXI.DisplayObject) => c.name != "hero");
+            var all = this.worldContainer.children.filter((c: PIXI.DisplayObject) => c.name !== "hero");
             all.forEach((child) => {
                 this.worldContainer.removeChild(child);
             });

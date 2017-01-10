@@ -170,12 +170,14 @@ export class SoundMan {
     public playTrack(trackId: number) {
         if (this.backgroundSnd === undefined) {
             this.backgroundSnd = this.musicTracks[trackId];
+            console.log("playTrack " + trackId, this.backgroundSnd);
         }
 
         if (this.backgroundSnd !== this.musicTracks[trackId]) {
             this.backgroundSnd.fade(1, 0, 1000).on("fade", (id) => {
                 this.backgroundSnd.stop();
                 this.backgroundSnd = this.musicTracks[trackId];
+                this.backgroundSnd.play();
                 this.backgroundSnd.fade(0, 1, 1000);
             });
         } else {
