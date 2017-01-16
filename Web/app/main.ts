@@ -1,5 +1,5 @@
 ﻿import {Application, Router, Route, SPA_VERSION} from "app/_framework/SpaApplication";
-
+import * as ko from "knockout";
 /**
 *   Main view model
 */
@@ -8,6 +8,7 @@ class Main extends Application {
     //  for app footer binding
     private spa_version = SPA_VERSION;
     private build_version = "0.1.0";
+    public isLoadingVisible = ko.observable(true);
 
     constructor() {
         super();

@@ -3,6 +3,7 @@ import { InGameScene } from "app/Demo/InGameScene";
 import { LevelLoader, ILevelMap, IMapEntity } from "./LevelLoader";
 
 import * as Global from "app/Demo/Global";
+import { vm } from "app/main";
 
 export class LoaderScene extends Scene {
     private loadingMessage: PIXI.Text;
@@ -31,7 +32,10 @@ export class LoaderScene extends Scene {
         //------------------------------------------------------
         PIXI.loader.reset();
         PIXI.loader.add("assets/_distribute/loading.png")
-                   .load(this.downloadLevel);
+            .load(this.downloadLevel);
+
+        //  this hides the loading HTML text
+        vm.isLoadingVisible(false);
     };
 
     public setNextLevel= (lvl: number)=> {

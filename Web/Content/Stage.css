@@ -1,8 +1,6 @@
 ﻿#stage {
   display: block;
   position: fixed;
-  left: 50%;
-  transform: translateX(-50%);
   image-rendering: -moz-crisp-edges;
   /* Firefox */
   image-rendering: -o-crisp-edges;
@@ -14,5 +12,6 @@
   /* IE (non-standard property) */ }
 
 html, body {
-  background-color: #085c63; }
+  background-color: #085c63;
+  margin: 0; }
 
