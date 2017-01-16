@@ -32,13 +32,29 @@ class DemoVM extends ViewModelBase{
     }
 }
 
+/**
+ * Resizes the scene to fit vertically
+ */
 class CustomSceneResizer extends DefaultResizer {
     constructor(designedWidth, designedHeight) {
         super(designedWidth, designedHeight);
     }
 
-    public GetAvailableSize() : ISize {
-        return { x: Math.min(window.innerWidth, this.designedWidth), y: Math.min(window.innerHeight, this.designedHeight)};
+    public GetAvailableSize(): ISize {
+        return { x: window.innerWidth, y: window.innerHeight };
+        //return { x: Math.min(window.innerWidth, this.designedWidth), y: Math.min(window.innerHeight, this.designedHeight)};
+    }
+    public CalculateSize(availableSize: ISize, aspect: number): ISize {
+        var maxWidth: number, maxHeight: number;
+        maxWidth = Math.floor(aspect * availableSize.y);
+        maxHeight = Math.floor(window.innerHeight);
+        //return { x: availableSize.x, y: Math.min(maxHeight, availableSize.y) };
+        return { x: Math.min(maxWidth, availableSize.x), y: Math.min(maxHeight, availableSize.y) };
+    }
+    public CalculateScale(newSize: ISize): number {
+        //let aspect = this.GetAspectRatio();
+        //return Math.floor(aspect * newSize.y) / this.designedWidth;
+        return newSize.x / this.designedWidth;
     }
 }
 

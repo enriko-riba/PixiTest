@@ -12,7 +12,7 @@ export enum State {
     CUSTOM5,
 }
 
-//declare var stats: Stats;
+declare var stats: Stats;
 
 /**
  *   Handles multiple scenes, scene activation, rendering and updates.
@@ -56,7 +56,7 @@ export class SceneManager {
         window.removeEventListener("resize", this.resizeHandler);
         window.addEventListener("resize", this.resizeHandler, true);
 
-        /*
+        
         stats.showPanel(0); // 0 – use the FPS mode, 1 – use the milliseconds mode
 
         // Position the meter in the top-left corner
@@ -67,7 +67,7 @@ export class SceneManager {
 
         // Append the meter to the body of your HTML5 document.
         document.body.appendChild(stats.domElement);
-        */
+        
 
         this.render(0);
     }
@@ -186,7 +186,7 @@ export class SceneManager {
     };
 
     private render = (timestamp) => {
-        //stats.begin();
+        stats.begin();
 
         //  for tween support
         TWEEN.update(timestamp);
@@ -213,12 +213,12 @@ export class SceneManager {
         this.startTime = timestamp;
         this.renderer.render(this.currentScene, null, this.currentScene.clear);
 
-        //stats.end();
+        stats.end();
     };
 }
 
 export class DefaultResizer implements ISceneResizer {
-    constructor(protected designedWidth, protected designedHeight) {
+    constructor(protected designedWidth:number, protected designedHeight:number) {
     }
     public GetAvailableSize():ISize {
         return { x: window.innerWidth, y: window.innerHeight};
