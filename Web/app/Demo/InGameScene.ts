@@ -280,22 +280,7 @@ export class InGameScene extends Scene {
         this.wp2.removeBody(body);
         body.DisplayObject = null;
     }
-
-    /**
-     * Finds a body with the given display objects name.
-     * @param name
-     */
-    public findBodyByName(name: string): p2.Body {
-        var foundBody = undefined;
-        this.wp2.bodies.forEach((body:any) => {
-            var dispObj = body.DisplayObject as PIXI.DisplayObject;
-            if (dispObj && dispObj.name === name) {
-                foundBody = body;
-            }
-        });
-        return foundBody;
-    }
-
+    
     /**
      * Starts an animation tween and removes the display object from scene.
      * @param dispObj

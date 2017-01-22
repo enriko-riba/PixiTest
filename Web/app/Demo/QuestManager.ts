@@ -173,13 +173,28 @@ export class QuestManager {
                         this.previousQuestMessage = this.gameScene.addTriggerMessage(pos, trigger.text, Global.QUEST_STYLE);
                         var item = this.gameScene.worldContainer.getChildByName("quest_item_201");
                         item.visible = true;
-                        var lock: any = this.gameScene.findBodyByName("lock");
+                        var lock: any = this.findBodyByName("lock");
                         this.gameScene.worldContainer.removeChild(lock.DisplayObject);
                         this.gameScene.removeEntity(lock);
                     }
                     break;
             }
         }
+    }
+
+    /**
+     * Finds a body with the given display objects name.
+     * @param name
+     */
+    private findBodyByName(name: string): p2.Body {
+        var foundBody = undefined;
+        this.wp2.bodies.forEach((body: any) => {
+            var dispObj = body.DisplayObject as PIXI.DisplayObject;
+            if (dispObj && dispObj.name === name) {
+                foundBody = body;
+            }
+        });
+        return foundBody;
     }
 }
 
