@@ -8,7 +8,8 @@ import { WorldP2 } from "./WorldP2";
 import { Hud } from "./Hud";
 import { LevelLoader, ILevel, ILevelDefinition, ILevelMap, IMapEntity, ITriggerDefinition } from "./LevelLoader";
 import { DPS_TOPIC, IDpsChangeEvent, StatType } from "./Stats";
-import { HeroCharacter, QuestState, BURN_TOPIC, IBurnEvent } from "./HeroCharacter";
+import { HeroCharacter, BURN_TOPIC, IBurnEvent } from "./HeroCharacter";
+import { QuestManager, QuestState } from "./QuestManager";
 import { MovementState } from "./MovementState";
 import { MOVE_TOPIC, IMoveEvent } from "./MovementController";
 import { SoundMan } from "./SoundMan";
@@ -95,6 +96,7 @@ export class InGameScene extends Scene {
     private snd = new SoundMan();
     private levelLoader = new LevelLoader();
     private currentLevel: ILevel;
+    private questMngr: QuestManager;
 
     /**
      *   Creates a new scene instance.
@@ -226,7 +228,7 @@ export class InGameScene extends Scene {
             pos.y += trigger.textposition[1];
         }
 
-        let state = this.hero.getQuestState(trigger.questId);
+        let state = this.questMngr.getQuestState(trigger.questId);
 
         if (trigger.questId) {
             switch (trigger.questId) {
@@ -235,7 +237,7 @@ export class InGameScene extends Scene {
                         ;
                     }
                     else {
-                        this.hero.setQuestState(trigger.questId, QuestState.Completed);
+                        this.questMngr.setQuestState(trigger.questId, QuestState.Completed);
 
                         this.IsHeroInteractive = false;
                         this.previousQuestMessage = this.addTriggerMessage(pos, trigger.text, Global.QUEST_STYLE, 0);
@@ -245,7 +247,7 @@ export class InGameScene extends Scene {
                             setTimeout(() => {
                                 this.worldContainer.removeChild(this.previousQuestMessage);
                                 this.previousQuestMessage = this.addTriggerMessage(pos, "Now jump\non that big box.", Global.QUEST_STYLE, 0);
-                                this.hero.setQuestState(trigger.questId, QuestState.Finished);
+                                this.questMngr.setQuestState(trigger.questId, QuestState.Finished);
                                 this.hero.IsInteractive = true;
                             }, 4000);
                         }, 4000);
@@ -253,11 +255,11 @@ export class InGameScene extends Scene {
                     break;
 
                 case 2:
-                    if (this.hero.getQuestState(1) === QuestState.Finished) {
+                    if (this.questMngr.getQuestState(1) === QuestState.Finished) {
                         if (state === QuestState.Finished || state === QuestState.Completed) {
                             ;
                         } else {
-                            this.hero.setQuestState(trigger.questId, QuestState.Completed);
+                            this.questMngr.setQuestState(trigger.questId, QuestState.Completed);
                             this.IsHeroInteractive = false;
 
                             this.worldContainer.removeChild(this.previousQuestMessage);
@@ -266,18 +268,18 @@ export class InGameScene extends Scene {
                             setTimeout(() => {
                                 this.worldContainer.removeChild(this.previousQuestMessage);
                                 this.previousQuestMessage = this.addTriggerMessage(pos, trigger.completedText, Global.QUEST_STYLE, 0);
-                                this.hero.setQuestState(trigger.questId, QuestState.Finished);
+                                this.questMngr.setQuestState(trigger.questId, QuestState.Finished);
                                 this.hero.IsInteractive = true;
                             }, 4000);
                         }
                     }
                     break;
                 case 3:
-                    if (this.hero.getQuestState(2) === QuestState.Finished) {
+                    if (this.questMngr.getQuestState(2) === QuestState.Finished) {
                         if (state === QuestState.Finished) {
                             ;
                         } else {
-                            this.hero.setQuestState(trigger.questId, QuestState.Finished);
+                            this.questMngr.setQuestState(trigger.questId, QuestState.Finished);
                             this.IsHeroInteractive = false;
 
                             this.worldContainer.removeChild(this.previousQuestMessage);
@@ -316,7 +318,7 @@ export class InGameScene extends Scene {
                         }
                     }
                     else if (state === QuestState.Completed) {
-                        this.hero.setQuestState(trigger.questId, QuestState.Finished);
+                        this.questMngr.setQuestState(trigger.questId, QuestState.Finished);
                         this.IsHeroInteractive = false;
                         this.snd.win();
                         this.hud.visible = false;
@@ -327,7 +329,7 @@ export class InGameScene extends Scene {
                         Global.sceneMngr.ActivateScene(cs);
                     }
                     else {
-                        this.hero.setQuestState(trigger.questId, QuestState.InProgress);
+                        this.questMngr.setQuestState(trigger.questId, QuestState.InProgress);
                         this.previousQuestMessage = this.addTriggerMessage(pos, trigger.text, Global.QUEST_STYLE);
                         var item = this.worldContainer.getChildByName("quest_item_201");
                         item.visible = true;
@@ -391,7 +393,7 @@ export class InGameScene extends Scene {
                 this.addCollectibleTween(dispObj);
                 this.removeEntity(body);
                 this.snd.questItem();
-                this.hero.setQuestState(201, QuestState.Completed);
+                this.questMngr.setQuestState(201, QuestState.Completed);
                 break;
         }
     }
@@ -539,9 +541,9 @@ export class InGameScene extends Scene {
         //--------------------------------------
         this.wp2 = new WorldP2(new PIXI.Point(lvl.start[0], lvl.start[1]));
         this.hero.SetWorldP2(this.wp2);
-
         this.worldContainer.addChild(this.hero);
         this.currentLevel = lvl;
+        this.questMngr = new QuestManager(this.wp2, this.hero);
     };
 
     private handleDpsChange = (event: IDpsChangeEvent) => {
@@ -607,9 +609,7 @@ export class InGameScene extends Scene {
      */
     private secondsFromNow(seconds: number): number {
         var now = Date.now() / 1000;
-        console.log("secondsFromNow()  start:", now);
         now += seconds;
-        console.log("secondsFromNow() result:", now);
         return now;
     };
 
@@ -645,7 +645,6 @@ export class InGameScene extends Scene {
      */
     public LoadLevel(lvl: ILevel) {
 
-    // this.snd.playTrack(lvl
         //--------------------------------------
         //  remove all entities except hero
         //--------------------------------------
@@ -668,7 +667,9 @@ export class InGameScene extends Scene {
             });
         }
 
-        //  add all object pairs to renderer and physics world
+        //--------------------------------------
+        //  add all objects from level to scene
+        //--------------------------------------
         lvl.entities.forEach((body: any) => {
             this.worldContainer.addChild(body.DisplayObject);
             this.wp2.addBody(body);
