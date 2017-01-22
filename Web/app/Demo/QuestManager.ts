@@ -26,8 +26,8 @@ export class QuestManager {
      * Gets the quest state.
      */
     public getQuestState(questId: number): QuestState {
-        return this.questState[questId];
-    } 
+        return this.questState[questId] || QuestState.None;
+    }
 
     /**
      * checks if the body has any trigger conditions.
@@ -72,7 +72,7 @@ export class QuestManager {
 
         if (trigger.questId) {
             switch (trigger.questId) {
-                case 1:
+                case 1: //   intro
                     if (state === QuestState.Completed || state === QuestState.Finished) {
                         ;
                     }
@@ -94,7 +94,7 @@ export class QuestManager {
                     }
                     break;
 
-                case 2:
+                case 2: //  intro - jump on box task
                     if (this.getQuestState(1) === QuestState.Finished) {
                         if (state === QuestState.Finished || state === QuestState.Completed) {
                             ;
@@ -114,7 +114,8 @@ export class QuestManager {
                         }
                     }
                     break;
-                case 3:
+
+                case 3: //  intro - exit sign
                     if (this.getQuestState(2) === QuestState.Finished) {
                         if (state === QuestState.Finished) {
                             ;
@@ -148,34 +149,34 @@ export class QuestManager {
                     break;
 
                 case 201:
-                    if (state === QuestState.Finished) {
-                        ;
-                    }
-                    else if (state === QuestState.InProgress) {
-                        //  display message if not already shown
-                        if (!this.previousQuestMessage || !this.previousQuestMessage.parent) {
+                    switch (state) {
+                        case QuestState.None:
+                            this.setQuestState(trigger.questId, QuestState.InProgress);
                             this.previousQuestMessage = this.gameScene.addTriggerMessage(pos, trigger.text, Global.QUEST_STYLE);
-                        }
-                    }
-                    else if (state === QuestState.Completed) {
-                        this.setQuestState(trigger.questId, QuestState.Finished);
-                        this.gameScene.IsHeroInteractive = false;
-                        this.gameScene.snd.win();
-                        this.gameScene.hud.visible = false;
-                        var cs = Global.sceneMngr.GetScene("CutScene") as CutScene;
-                        cs.SetText(trigger.completedText, Global.QUEST_STYLE);
-                        var rt = Global.sceneMngr.CaptureScene();
-                        cs.SetBackGround(rt, this.gameScene.scale);
-                        Global.sceneMngr.ActivateScene(cs);
-                    }
-                    else {
-                        this.setQuestState(trigger.questId, QuestState.InProgress);
-                        this.previousQuestMessage = this.gameScene.addTriggerMessage(pos, trigger.text, Global.QUEST_STYLE);
-                        var item = this.gameScene.worldContainer.getChildByName("quest_item_201");
-                        item.visible = true;
-                        var lock: any = this.findBodyByName("lock");
-                        this.gameScene.worldContainer.removeChild(lock.DisplayObject);
-                        this.gameScene.removeEntity(lock);
+                            let item = this.gameScene.worldContainer.getChildByName("quest_item_201");
+                            item.visible = true;
+                            var lock: any = this.findBodyByName("lock");
+                            this.gameScene.worldContainer.removeChild(lock.DisplayObject);
+                            this.gameScene.removeEntity(lock);
+                            break;
+
+                        case QuestState.InProgress:
+                            if (!this.previousQuestMessage || !this.previousQuestMessage.parent) {
+                                this.previousQuestMessage = this.gameScene.addTriggerMessage(pos, trigger.text, Global.QUEST_STYLE);
+                            }
+                            break;
+
+                        case QuestState.Completed:
+                            this.setQuestState(trigger.questId, QuestState.Finished);
+                            this.gameScene.IsHeroInteractive = false;
+                            this.gameScene.snd.win();
+                            this.gameScene.hud.visible = false;
+                            var cs = Global.sceneMngr.GetScene("CutScene") as CutScene;
+                            cs.SetText(trigger.completedText, Global.QUEST_STYLE);
+                            var rt = Global.sceneMngr.CaptureScene();
+                            cs.SetBackGround(rt, this.gameScene.scale);
+                            Global.sceneMngr.ActivateScene(cs);
+                            break;
                     }
                     break;
             }

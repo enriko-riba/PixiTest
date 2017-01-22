@@ -1,6 +1,5 @@
 ﻿import { Scene } from "app/_engine/Scene";
 import { Button } from "app/_engine/Button";
-import { LevelLoader, ILevelMap, IMapEntity } from "./LevelLoader";
 import { InGameScene } from "./InGameScene";
 import { LoaderScene } from "./LoaderScene";
 import * as Global from "app/Demo/Global";
@@ -12,7 +11,7 @@ export class CutScene extends Scene {
     constructor() {
         super("CutScene");
         this.BackGroundColor = 0x1099bb;
-        var callout = new PIXI.Sprite(PIXI.loader.resources["assets/_distribute/rect.png"].texture);
+        var callout: PIXI.Sprite = new PIXI.Sprite(PIXI.loader.resources["assets/_distribute/rect.png"].texture);
         callout.anchor.set(0.5);
         callout.position.set(Global.SCENE_WIDTH / 2, Global.SCENE_HEIGHT / 2);
         this.addChild(callout);
@@ -39,7 +38,7 @@ export class CutScene extends Scene {
         };
         this.addChild(btnContinue);
     }
-    
+
     public SetBackGround(texture : PIXI.RenderTexture, scale) {
         if (!this.backSprite) {
             this.backSprite = new PIXI.Sprite(texture);

@@ -6,7 +6,7 @@ import { Scene } from "app/_engine/Scene";
 import { Parallax } from "app/_engine/Parallax";
 import { WorldP2 } from "./WorldP2";
 import { Hud } from "./Hud";
-import { LevelLoader, ILevel, ILevelDefinition, ILevelMap, IMapEntity, ITriggerDefinition } from "./LevelLoader";
+import { LevelLoader, ILevel, ILevelMap, IMapEntity } from "./LevelLoader";
 import { DPS_TOPIC, IDpsChangeEvent, StatType } from "./Stats";
 import { HeroCharacter, BURN_TOPIC, IBurnEvent } from "./HeroCharacter";
 import { QuestManager, QuestState } from "./QuestManager";
@@ -19,6 +19,7 @@ import { CutScene } from "./CutScene";
 import "../../Scripts/pixi-particles";
 
 export function createParticleEmitter(container: PIXI.Container, textures: PIXI.Texture[], config?: PIXI.particles.EmitterConfig): PIXI.particles.Emitter {
+    "use strict";
     var cfg: PIXI.particles.EmitterConfig = {
             "alpha": {
                 "start": 0.8,
@@ -162,16 +163,7 @@ export class InGameScene extends Scene {
                 displayObject.rotation = body.interpolatedAngle;
             }
 
-            //  check for distance based triggers
             this.questMngr.checkTriggerCondition(body);
-            //if (body.Trigger && body.Trigger.type === "distance") {
-            //    var x = this.hero.position.x - body.position[0];
-            //    var y = this.hero.position.y - body.position[1];
-            //    var distance = Math.sqrt(x * x + y * y);
-            //    if (body.Trigger.distance >= distance) {
-            //        this.handleTriggerEvent(body);
-            //    }
-            //}
         }
 
         //-------------------------------------------
@@ -205,7 +197,7 @@ export class InGameScene extends Scene {
         this.hud.onUpdate(dt);
     };
 
-    
+
     public set IsHeroInteractive(value: boolean) {
         if (this.hero.IsInteractive !== value) {
             this.hero.IsInteractive = value;
@@ -251,14 +243,16 @@ export class InGameScene extends Scene {
                 break;
 
             case 1000:  //  border lava   
-                if (!playerStats.buffs[1000] || playerStats.buffs[1000] < now)
+                if (!playerStats.buffs[1000] || playerStats.buffs[1000] < now) {
                     this.addInfoMessage(dispObj.position, "Burn", Global.WARN_STYLE);
+                }
                 playerStats.buffs[1000] = this.secondsFromNow(1);
                 break;
 
             case 1001:  //  lava
-                if (!playerStats.buffs[1001] || playerStats.buffs[1001] < now)
+                if (!playerStats.buffs[1001] || playerStats.buffs[1001] < now) {
                     this.addInfoMessage(dispObj.position, "Burn", Global.WARN_STYLE);
+                }
                 playerStats.buffs[1001] = this.secondsFromNow(3);
                 break;
 
@@ -280,7 +274,7 @@ export class InGameScene extends Scene {
         this.wp2.removeBody(body);
         body.DisplayObject = null;
     }
-    
+
     /**
      * Starts an animation tween and removes the display object from scene.
      * @param dispObj
@@ -519,9 +513,9 @@ export class InGameScene extends Scene {
                 }
             });
 
-            //  now remove displayobjects without bodies
+            //  now remove display objects without bodies
             var all = this.worldContainer.children.filter((c: PIXI.DisplayObject) => c.name !== "hero");
-            all.forEach((child) => {
+            all.forEach((child: PIXI.DisplayObject) => {
                 this.worldContainer.removeChild(child);
             });
         }
