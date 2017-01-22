@@ -6,24 +6,7 @@ import { createParticleEmitter } from "./InGameScene";
 import { Stats, StatType } from "./Stats";
 import * as ko from "knockout";
 
-export enum QuestState {
-    None,
 
-    /**
-     *  Quest has been started.
-     */
-    InProgress,
-
-    /**
-     *  Quest items/conditions have been completed.
-     */
-    Completed,
-
-    /**
-     *  Quest has been finished.
-     */
-    Finished
-}
 
 export var BURN_TOPIC = "burn_event";
 export interface IBurnEvent {
@@ -41,7 +24,7 @@ export class HeroCharacter extends AnimatedSprite {
     private wp2: WorldP2;
     private worldContainer: PIXI.Container;
 
-    private questState: Array<QuestState> = [];
+    
 
     constructor(container: PIXI.Container) {
         super();
@@ -121,18 +104,7 @@ export class HeroCharacter extends AnimatedSprite {
         return this.playerStats.getStat(StatType.Dust) > 1;
     }
 
-    /**
-     * Sets the quest state.
-     */
-    public setQuestState(questId: number, state: QuestState) {
-        this.questState[questId] = state;
-    }
-    /**
-     * Sets the quest state.
-     */
-    public getQuestState(questId: number): QuestState {
-        return this.questState[questId];
-    } 
+    
 
     /**
      * Checks movementCtrl.MovementState and updates pixi dust emitter and consumption.
