@@ -87,13 +87,14 @@ export class InGameScene extends Scene {
     private readonly HERO_FRAME_SIZE: number = 64;
     private readonly SCENE_HALF_WIDTH: number = Global.SCENE_WIDTH / 2;
 
-    private worldContainer: PIXI.Container;
+    public worldContainer: PIXI.Container;
+    public hud = new Hud();
+    public snd = new SoundMan();
+
     private parallaxBackgrounds: Array<Parallax> = [];
-    private hud = new Hud();
     private wp2: WorldP2;
     private hero: HeroCharacter;
 
-    private snd = new SoundMan();
     private levelLoader = new LevelLoader();
     private currentLevel: ILevel;
     private questMngr: QuestManager;
@@ -162,14 +163,15 @@ export class InGameScene extends Scene {
             }
 
             //  check for distance based triggers
-            if (body.Trigger && body.Trigger.type === "distance") {
-                var x = this.hero.position.x - body.position[0];
-                var y = this.hero.position.y - body.position[1];
-                var distance = Math.sqrt(x * x + y * y);
-                if (body.Trigger.distance >= distance) {
-                    this.handleTriggerEvent(body);
-                }
-            }
+            this.questMngr.checkTriggerCondition(body);
+            //if (body.Trigger && body.Trigger.type === "distance") {
+            //    var x = this.hero.position.x - body.position[0];
+            //    var y = this.hero.position.y - body.position[1];
+            //    var distance = Math.sqrt(x * x + y * y);
+            //    if (body.Trigger.distance >= distance) {
+            //        this.handleTriggerEvent(body);
+            //    }
+            //}
         }
 
         //-------------------------------------------
@@ -182,7 +184,7 @@ export class InGameScene extends Scene {
             }
 
             if (body.Trigger && body.Trigger.type === "collision") {
-                this.handleTriggerEvent(body);
+                this.questMngr.handleTriggerEvent(body);
             }
         }
 
@@ -203,141 +205,13 @@ export class InGameScene extends Scene {
         this.hud.onUpdate(dt);
     };
 
-    private previousQuestMessage: PIXI.Sprite;
+    
     public set IsHeroInteractive(value: boolean) {
         if (this.hero.IsInteractive !== value) {
             this.hero.IsInteractive = value;
             if (!this.hero.IsInteractive) {
                 this.hero.PlayAnimation("idle");
                 this.snd.idle();
-            }
-        }
-    }
-
-    /**
-     * Handles level events triggers.
-     * @param body
-     */
-    private handleTriggerEvent(body: any): void {
-        var dispObj: PIXI.DisplayObject = body.DisplayObject as PIXI.DisplayObject;
-
-        var trigger: ITriggerDefinition = body.Trigger;
-        var pos = new PIXI.Point(dispObj.position.x, dispObj.position.y);
-        if (trigger.textposition !== undefined) {
-            pos.x += trigger.textposition[0];
-            pos.y += trigger.textposition[1];
-        }
-
-        let state = this.questMngr.getQuestState(trigger.questId);
-
-        if (trigger.questId) {
-            switch (trigger.questId) {
-                case 1:
-                    if (state === QuestState.Completed || state === QuestState.Finished) {
-                        ;
-                    }
-                    else {
-                        this.questMngr.setQuestState(trigger.questId, QuestState.Completed);
-
-                        this.IsHeroInteractive = false;
-                        this.previousQuestMessage = this.addTriggerMessage(pos, trigger.text, Global.QUEST_STYLE, 0);
-                        setTimeout(() => {
-                            this.worldContainer.removeChild(this.previousQuestMessage);
-                            this.previousQuestMessage = this.addTriggerMessage(pos, trigger.completedText, Global.QUEST_STYLE, 0);
-                            setTimeout(() => {
-                                this.worldContainer.removeChild(this.previousQuestMessage);
-                                this.previousQuestMessage = this.addTriggerMessage(pos, "Now jump\non that big box.", Global.QUEST_STYLE, 0);
-                                this.questMngr.setQuestState(trigger.questId, QuestState.Finished);
-                                this.hero.IsInteractive = true;
-                            }, 4000);
-                        }, 4000);
-                    }
-                    break;
-
-                case 2:
-                    if (this.questMngr.getQuestState(1) === QuestState.Finished) {
-                        if (state === QuestState.Finished || state === QuestState.Completed) {
-                            ;
-                        } else {
-                            this.questMngr.setQuestState(trigger.questId, QuestState.Completed);
-                            this.IsHeroInteractive = false;
-
-                            this.worldContainer.removeChild(this.previousQuestMessage);
-                            this.previousQuestMessage = this.addTriggerMessage(pos, trigger.text, Global.QUEST_STYLE, 0);
-
-                            setTimeout(() => {
-                                this.worldContainer.removeChild(this.previousQuestMessage);
-                                this.previousQuestMessage = this.addTriggerMessage(pos, trigger.completedText, Global.QUEST_STYLE, 0);
-                                this.questMngr.setQuestState(trigger.questId, QuestState.Finished);
-                                this.hero.IsInteractive = true;
-                            }, 4000);
-                        }
-                    }
-                    break;
-                case 3:
-                    if (this.questMngr.getQuestState(2) === QuestState.Finished) {
-                        if (state === QuestState.Finished) {
-                            ;
-                        } else {
-                            this.questMngr.setQuestState(trigger.questId, QuestState.Finished);
-                            this.IsHeroInteractive = false;
-
-                            this.worldContainer.removeChild(this.previousQuestMessage);
-                            this.previousQuestMessage = this.addTriggerMessage(pos, trigger.text, Global.QUEST_STYLE, 0);
-
-                            this.snd.win();
-
-                            var balloon = this.worldContainer.getChildByName("balloon");
-                            var anim1 = new TWEEN.Tween(balloon)
-                                .to({ x: dispObj.position.x }, 3000).start();
-
-                            var endx = (dispObj.position.x - 300);// + trigger.textposition[0];
-                            var anim2 = new TWEEN.Tween(this.previousQuestMessage)
-                                .to({ x: endx}, 3000)
-                                .onComplete(() => {
-                                    this.hud.visible = false;
-                                    this.worldContainer.removeChild(this.previousQuestMessage);
-                                    var cs = Global.sceneMngr.GetScene("CutScene") as CutScene;
-                                    cs.SetText("Listen up lad,\nYou did well...for a n00b.\n\nThe time is running out.\nNow hurry to the white castle.\nThe real adventure merely begins!", Global.QUEST_STYLE);
-                                    var rt = Global.sceneMngr.CaptureScene();
-                                    cs.SetBackGround(rt, this.scale);
-                                    Global.sceneMngr.ActivateScene(cs);
-                                }).start();
-                        }
-                    }
-                    break;
-
-                case 201:
-                    if (state === QuestState.Finished) {
-                        ;
-                    }
-                    else if (state === QuestState.InProgress) {
-                        //  display message if not already shown
-                        if (!this.previousQuestMessage || !this.previousQuestMessage.parent) {
-                            this.previousQuestMessage = this.addTriggerMessage(pos, trigger.text, Global.QUEST_STYLE);
-                        }
-                    }
-                    else if (state === QuestState.Completed) {
-                        this.questMngr.setQuestState(trigger.questId, QuestState.Finished);
-                        this.IsHeroInteractive = false;
-                        this.snd.win();
-                        this.hud.visible = false;
-                        var cs = Global.sceneMngr.GetScene("CutScene") as CutScene;
-                        cs.SetText(trigger.completedText, Global.QUEST_STYLE);
-                        var rt = Global.sceneMngr.CaptureScene();
-                        cs.SetBackGround(rt, this.scale);
-                        Global.sceneMngr.ActivateScene(cs);
-                    }
-                    else {
-                        this.questMngr.setQuestState(trigger.questId, QuestState.InProgress);
-                        this.previousQuestMessage = this.addTriggerMessage(pos, trigger.text, Global.QUEST_STYLE);
-                        var item = this.worldContainer.getChildByName("quest_item_201");
-                        item.visible = true;
-                        var lock:any = this.findBodyByName("lock");
-                        this.worldContainer.removeChild(lock.DisplayObject);
-                        this.removeEntity(lock);
-                    }
-                    break;
             }
         }
     }
@@ -402,7 +276,7 @@ export class InGameScene extends Scene {
      * Removes an entity from the stage.
      * @param body
      */
-    private removeEntity(body: any): void {
+    public removeEntity(body: any): void {
         this.wp2.removeBody(body);
         body.DisplayObject = null;
     }
@@ -411,7 +285,7 @@ export class InGameScene extends Scene {
      * Finds a body with the given display objects name.
      * @param name
      */
-    private findBodyByName(name: string): p2.Body {
+    public findBodyByName(name: string): p2.Body {
         var foundBody = undefined;
         this.wp2.bodies.forEach((body:any) => {
             var dispObj = body.DisplayObject as PIXI.DisplayObject;
@@ -484,7 +358,7 @@ export class InGameScene extends Scene {
      * @param style PIXI.ITextStyle
      * @param fadeSeconds optional number of milliseconds the message should linger
      */
-    private addTriggerMessage(position: PIXI.Point, message: string, style: PIXI.ITextStyleStyle, fadeSeconds: number = 8000): PIXI.Sprite {
+    public addTriggerMessage(position: PIXI.Point, message: string, style: PIXI.ITextStyleStyle, fadeSeconds: number = 8000): PIXI.Sprite {
         var container = new PIXI.Sprite(PIXI.loader.resources["assets/_distribute/callout.png"].texture);
         container.position.set(position.x, position.y);
         container.scale.set(1, -1);   //  scale invert since everything is upside down due to coordinate system
@@ -543,7 +417,7 @@ export class InGameScene extends Scene {
         this.hero.SetWorldP2(this.wp2);
         this.worldContainer.addChild(this.hero);
         this.currentLevel = lvl;
-        this.questMngr = new QuestManager(this.wp2, this.hero);
+        this.questMngr = new QuestManager(this, this.wp2, this.hero);
     };
 
     private handleDpsChange = (event: IDpsChangeEvent) => {

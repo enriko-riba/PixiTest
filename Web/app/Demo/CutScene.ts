@@ -36,9 +36,6 @@ export class CutScene extends Scene {
             var loderScene = Global.sceneMngr.GetScene("Loader") as LoaderScene;
             loderScene.setNextLevel(nextLevel);
             Global.sceneMngr.ActivateScene(loderScene);
-
-            //ig.NextLevel();
-            //Global.sceneMngr.ActivateScene(ig);
         };
         this.addChild(btnContinue);
     }
