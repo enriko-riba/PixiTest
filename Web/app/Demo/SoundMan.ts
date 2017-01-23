@@ -18,7 +18,6 @@ export class SoundMan {
     private musicTrackNames: Array<string> = [
         'assets/Audio/Two-Finger-Johnny.mp3',
         'assets/Audio/Bumbling-Burglars_Looping.mp3',
-        'assets/Audio/Here-Come-the-Weirds_v001.mp3',
         'assets/Audio/Techno-Dreaming_Looping.mp3'
     ];
     private musicTracks: Array<Howl> = [];
