@@ -34,8 +34,11 @@ export class LevelLoader {
                 assets = assets.concat(iplx.tiles);
             });
 
+            //  merge global templates with level templates
+            var templates = root.templates.concat(level.map.templates);
+
             level.map.entities.forEach((entity: IMapEntity, idx, arr) => {
-                var entityTemplate = level.map.templates.filter((item, idx, arr) => item.name === entity.template);
+                var entityTemplate = templates.filter((item, idx, arr) => item.name === entity.template);
                 if (entityTemplate && entityTemplate.length > 0) {
                     var template = entityTemplate[0];
                     var temp = $.extend(true, {}, template.displayObject);
@@ -117,10 +120,15 @@ export class LevelLoader {
         });
 
         //--------------------------------------
+        //  merge global with level templates
+        //--------------------------------------
+        var templates = Global.GameLevels.root.templates.concat(level.map.templates);
+
+        //--------------------------------------
         //  create display/physics object pairs
         //--------------------------------------
         level.map.entities.forEach((entity: IMapEntity, idx, arr) => {
-            var entityTemplate = level.map.templates.filter((item, idx, arr) => item.name === entity.template);
+            var entityTemplate = templates.filter((item, idx, arr) => item.name === entity.template);
             if (entityTemplate && entityTemplate.length > 0) {
                 var template = entityTemplate[0];
                 var temp = $.extend(true, {}, template.displayObject);
@@ -402,5 +410,6 @@ export interface ILevelDefinition {
 }
 
 export interface IRootObject {
+    templates: ITemplate[];
     levels: ILevelDefinition[];
 }
