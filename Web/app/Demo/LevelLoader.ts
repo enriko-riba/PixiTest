@@ -1,5 +1,6 @@
 ﻿import * as Global from "./Global";
 import { Parallax } from "app/_engine/Parallax";
+import { Balloon } from "./Balloon";
 import { Bumper } from "./Bumper";
 import { Lava } from "./Lava";
 import { Platform } from "./Platform";
@@ -189,6 +190,11 @@ export class LevelLoader {
 
                 spr.pivot.set(definition.pivot);
                 dispObj = spr;
+                break;
+
+            case "Balloon":
+                var bln = new Balloon();
+                dispObj = bln;
                 break;
 
             case "Bumper":

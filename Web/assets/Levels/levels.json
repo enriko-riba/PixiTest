@@ -241,8 +241,7 @@
           {
             "name": "balloon_vv",
             "displayObject": {
-              "typeName": "Sprite",
-              "texture": "assets/_distribute/balloon-vedran.png"
+              "typeName": "Balloon"
             },
             "body": {
               "shape": "Box",
