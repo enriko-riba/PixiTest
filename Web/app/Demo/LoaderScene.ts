@@ -75,6 +75,9 @@ export class LoaderScene extends Scene {
                 "assets/_distribute/jump_smoke.png",
                 "assets/_distribute/bumper_rotor_01.png",
 
+                "assets/_distribute/balloon_01.png",
+                "assets/_distribute/balloon_basket_01.png",
+
                 "assets/_distribute/flame.png",
                 "assets/_distribute/callout.png",
                 "assets/_distribute/rect.png"

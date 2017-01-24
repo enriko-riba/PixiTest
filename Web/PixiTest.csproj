@@ -136,6 +136,8 @@
     <None Include="assets\Images\background\trees07.png" />
     <None Include="assets\Images\background\trees08.png" />
     <Content Include="assets\Images\Objects\balloon-vedran.png" />
+    <Content Include="assets\Images\Objects\balloon_01.png" />
+    <Content Include="assets\Images\Objects\balloon_basket_01.png" />
     <Content Include="assets\Images\Objects\boulder.png" />
     <Content Include="assets\Images\Objects\sign-exit.png" />
     <Content Include="assets\Unused\Portrait\port-isakoman.png" />
@@ -229,6 +231,7 @@
   <ItemGroup>
     <TypeScriptCompile Include="app\Common\AjaxHelper.ts" />
     <TypeScriptCompile Include="app\Common\error-handler.ts" />
+    <TypeScriptCompile Include="app\Demo\Balloon.ts" />
     <TypeScriptCompile Include="app\Demo\Bumper.ts" />
     <TypeScriptCompile Include="app\Demo\HeroCharacter.ts" />
     <TypeScriptCompile Include="app\Demo\Hud.ts" />
