@@ -15,7 +15,12 @@ class Main extends Application {
         console.debug('main ctor...');
         this.IsDebugToConsoleEnabled(true);
 
-        this.registerComponent({ componentName: "Demo"});
+        this.registerComponent({ componentName: "Login" });
+        this.registerComponent({ componentName: "Home" });
+        this.registerComponent({
+            componentName: "Game",
+            templatePath: 'Game/Start',
+            vmPath: 'Game/Start'});
         this.registerComponent({ componentName: "Route-not-found" });
 
 
@@ -30,9 +35,10 @@ class Main extends Application {
         var r = this.router();
 
         //  define application routes
-        r.AddRoute(new Route('/', 'Demo'));
-        r.AddRoute(new Route('#home', 'Demo'));
-
+        r.AddRoute(new Route('/', 'Home'));
+        r.AddRoute(new Route('#home', 'Home'));
+        r.AddRoute(new Route('#login', 'Login'));
+        r.AddRoute(new Route('#pp2', 'Game'));
         r.SetNotFoundRoute(new Route('#notfound', 'Route-not-found'));
         r.Run('/#home');
     }   
