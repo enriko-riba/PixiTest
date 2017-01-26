@@ -1,13 +1,16 @@
 ﻿import * as ko from "knockout";
 import { ViewModelBase, RouteNavigationData } from "app/_framework/SpaApplication";
 import { SceneManager, ISceneResizer, ISize, DefaultResizer } from "app/_engine/SceneManager";
-import { LoaderScene } from "app/Demo/LoaderScene";
-import * as Global from "app/Demo/Global";
+import { LoaderScene } from "app/Game/LoaderScene";
+import * as Global from "app/Game/Global";
+import { vm } from "app/main";
 
-class DemoVM extends ViewModelBase{
+class StartVM extends ViewModelBase{
 
     constructor() {
         super();        
+
+        vm.isLoadingVisible(true);
 
         //  prepare canvas and scene manager
         var canvas: HTMLCanvasElement = document.getElementById("stage") as HTMLCanvasElement;
@@ -58,4 +61,4 @@ class CustomSceneResizer extends DefaultResizer {
     }
 }
 
-export = DemoVM;
+export = StartVM;

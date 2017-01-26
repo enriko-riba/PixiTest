@@ -1,8 +1,8 @@
 ﻿import { Scene } from "app/_engine/Scene";
 import { Button } from "app/_engine/Button";
-//import { LoadMenuScene } from "app/Demo/LoadMenuScene";
-import { InGameScene } from "app/Demo/InGameScene";
-import * as Global from "app/Demo/Global";
+//import { LoadMenuScene } from "app/Game/LoadMenuScene";
+import { InGameScene } from "app/Game/InGameScene";
+import * as Global from "app/Game/Global";
 
 /**
 *   Main menu GUI.
