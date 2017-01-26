@@ -4,6 +4,14 @@
     background-color:#95A3A3;
 }
 
+h1, h2, h3,.login-message {
+    padding: 10px;
+    color: #d3955a;
+}
+.fb-login-area{
+ display: none;   
+}
+
 /* Set padding to keep content from hitting the edges */
 .body-content {
     //padding: 15px;
