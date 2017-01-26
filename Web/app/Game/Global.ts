@@ -1,8 +1,8 @@
 ﻿import { SceneManager } from "app/_engine/SceneManager";
 
-export var SCENE_WIDTH : number = 1366;
+export var SCENE_WIDTH: number = 1366;
 export var SCENE_HEIGHT: number = 768;
-export var BTN_WIDTH : number = 100;
+export var BTN_WIDTH: number = 100;
 export var BTN_HEIGHT: number = 48;
 
 export var BTN_STYLE: PIXI.ITextStyleStyle =
@@ -46,7 +46,7 @@ export var QUEST_STYLE: PIXI.ITextStyleStyle =
         padding: 0,
         fontSize: "21px",
         fontFamily: "Futura",
-        fill: 0x79ff33        ,
+        fill: 0x79ff33,
         strokeThickness: 3,
         stroke: 0x06160f,
         dropShadow: false
@@ -55,6 +55,11 @@ export var QUEST_STYLE: PIXI.ITextStyleStyle =
 export var sceneMngr: SceneManager;
 
 export var GameLevels: {
-                        root: any
+    root: any
 } = { root: "" };
+
+export var UserInfo: {
+    id: number;
+    name: string;
+} = { id: 0, name: "" };
 

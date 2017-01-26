@@ -2,7 +2,7 @@
 import { Button } from "app/_engine/Button";
 import { InGameScene } from "./InGameScene";
 import { LoaderScene } from "./LoaderScene";
-import * as Global from "app/Demo/Global";
+import * as Global from "app/Game/Global";
 
 export class CutScene extends Scene {
     private textMessage: PIXI.Text;
