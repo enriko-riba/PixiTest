@@ -26,6 +26,11 @@ class HomeVM {
         let model = { id: id, name: name };
         AjaxHelper.GetWithData(baseUrl + "/api/user/login", model, (data, status) => {
             console.log("connectUser() response", data);
+            //  for game logic
+            Global.UserInfo.gold = data.Gold;
+            Global.UserInfo.gamelevel = data.LastLevel;
+
+            //  for GUI binding
             this.usr_Name(data.Name);
             this.usr_GameLevel(data.LastLevel);
             this.usr_Gold(data.Gold);

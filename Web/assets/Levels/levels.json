@@ -186,6 +186,21 @@
         },
         {
           "index": 2,
+          "name": "NearSmall",
+          "parallaxFactor": 0.75,
+          "y": 5,
+          "scale": 0.6,
+          "tiles": [
+            "assets/_distribute/trees06.png",
+            "assets/_distribute/trees07.png",
+            "assets/_distribute/trees08.png",
+            "assets/_distribute/trees06.png",
+            "assets/_distribute/trees07.png",
+            "assets/_distribute/trees08.png"
+          ]
+        },
+        {
+          "index": 3,
           "name": "Ground",
           "parallaxFactor": 1,
           "y": -90,

@@ -384,6 +384,7 @@
     <Compile Include="Server\DocumentDB.cs" />
     <Compile Include="Server\Models\LoginResponse.cs" />
     <Compile Include="Server\Models\User.cs" />
+    <Compile Include="Server\Models\UserDataBindingModel.cs" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">12.0</VisualStudioVersion>
