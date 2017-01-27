@@ -59,9 +59,16 @@ export var GameLevels: {
 } = { root: "" };
 
 export var UserInfo: {
-    id: number;
-    name: string;
-    gold: number;
-    gamelevel: number;
-} = { id: 0, name: "", gold: 0, gamelevel: 0 };
+            id: number;
+            name: string;
+            gold: number;
+            dust: number;
+            gamelevel: number;
+        } = {
+                id: 0,
+                name: "",
+                gold: 0,
+                dust: 0,
+                gamelevel: 0
+            };
 

@@ -1,35 +1,60 @@
 ﻿$color: #670606;
+$back-color: #a6acb7;
+$title-color:#c43b6b;
+$data-color:#596f2a;
 
 html, body {
     margin: 0;
     color: $color;
-    background-color:#a6acb7;
+    background-color:$back-color;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
 
 h2,.login-message {
     font-size: 1.7em;
-    padding: 10px;
-    color: #bf8484;
+    color: $title-color;
+    margin: 30px 20px;
 }
 
 .greeting{
     color: $color;
     margin: 10px 20px;
     font-size: 1.3em;
+
+    span{
+        font-weight:700;
+        color: $data-color;
+    }
+}
+
+.subtitle{
+    font-size: 24px;
+    text-align: center;
+    color: $title-color;
 }
 
 .profile-data{
     display: inline-block;
     border: solid 2px $color;
     margin: 10px 20px;
-
+    padding: 10px 25px;
+    font-size: 1.15em;
     div{
         padding: 10px;
     }
+    label {
+      position: absolute;
+      width: 150px;
+      left: 30px;
+    }
     input {
-        margin-left: 30px;
+        margin-left: 70px;
+        width: 100px;
+        background-color: $back-color;
+        border-style: ridge;
+        padding-left: 10px;
+        color: $data-color;
      }
 }
 
