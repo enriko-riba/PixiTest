@@ -5,6 +5,7 @@ import { HeroCharacter } from "./HeroCharacter";
 import { ITriggerDefinition } from "./LevelLoader";
 import { InGameScene } from "./InGameScene";
 import { CutScene } from "./CutScene";
+import { StatType } from "./PlayerStats";
 
 declare var baseUrl: string;
 
@@ -123,6 +124,7 @@ export class QuestManager {
                         if (state === QuestState.Finished) {
                             ;
                         } else {
+                            this.saveUserState();
                             this.setQuestState(trigger.questId, QuestState.Finished);
                             this.gameScene.IsHeroInteractive = false;
 
@@ -170,6 +172,7 @@ export class QuestManager {
                             break;
 
                         case QuestState.Completed:
+                            this.saveUserState();
                             this.setQuestState(trigger.questId, QuestState.Finished);
                             this.gameScene.IsHeroInteractive = false;
                             this.gameScene.snd.win();
@@ -203,8 +206,9 @@ export class QuestManager {
 
     private saveUserState() {
         let model = {
-            id: Global.UserInfo.id,
-            //gold: this.gameScene.
+            ExternalId: Global.UserInfo.id,
+            Gold: this.gameScene.PlayerStats.getStat(StatType.Coins),
+            LastLevel: Global.UserInfo.gamelevel
         };
         AjaxHelper.Post(baseUrl + "/api/user/save", model, (data, status) => {
             console.log("connectUser() response", data);            
