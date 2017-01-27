@@ -375,12 +375,12 @@ export class InGameScene extends Scene {
         //-----------------------------      
         this.hero = new HeroCharacter(this.worldContainer);
         this.hero.name = "hero";
-        var playerStats = this.hero.PlayerStats; //  TODO: load initial settings
-        playerStats.setStat(StatType.Coins, 0);
+        var playerStats = this.hero.PlayerStats;
+        playerStats.setStat(StatType.Coins, Global.UserInfo.gold);
+        playerStats.setStat(StatType.Dust, Global.UserInfo.dust);
         playerStats.setStat(StatType.MaxHP, 150);
         playerStats.setStat(StatType.HP, 120);
         playerStats.setStat(StatType.MaxDust, 1000);
-        playerStats.setStat(StatType.Dust, 250);
 
         ko.postbox.subscribe<IDpsChangeEvent>(DPS_TOPIC, this.handleDpsChange);
         ko.postbox.subscribe<IMoveEvent>(MOVE_TOPIC, this.handleMoveChange);
@@ -392,7 +392,6 @@ export class InGameScene extends Scene {
         //--------------------------------------
         //  setup physics subsystem
         //--------------------------------------
-        //this.wp2 = new WorldP2(new PIXI.Point(lvl.start[0], lvl.start[1]));
         this.wp2 = new WorldP2(new PIXI.Point(0, 0));
         this.hero.SetWorldP2(this.wp2);
         this.worldContainer.addChild(this.hero);

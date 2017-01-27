@@ -37,10 +37,10 @@ export class PlayerStats {
 
     constructor() {
         this.stats[StatType.Coins] = 0;
-        this.stats[StatType.MaxHP] = 100;
-        this.stats[StatType.HP] = 100;
-        this.stats[StatType.MaxDust] = 1000;
-        this.stats[StatType.Dust] = 100;
+        this.stats[StatType.MaxHP] = 0;
+        this.stats[StatType.HP] = 0;
+        this.stats[StatType.MaxDust] = 0;
+        this.stats[StatType.Dust] = 0;
     }
 
     /**
