@@ -1,55 +1,30 @@
-﻿body {
-  background-color: #95A3A3; }
+﻿html, body {
+  margin: 0;
+  color: #670606;
+  background-color: #a6acb7;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; }
 
-h1, h2, h3, .login-message {
+h2, .login-message {
+  font-size: 1.7em;
   padding: 10px;
-  color: #d3955a; }
+  color: #bf8484; }
 
-.fb-login-area {
-  display: none; }
+.greeting {
+  color: #670606;
+  margin: 10px 20px;
+  font-size: 1.3em; }
 
-/* Set padding to keep content from hitting the edges */
-/* Override the default bootstrap behavior where horizontal description lists 
-   will truncate terms that are too long to fit in the left column 
-*/
-.dl-horizontal dt {
-  white-space: normal; }
+.profile-data {
+  display: inline-block;
+  border: solid 2px #670606;
+  margin: 10px 20px; }
+  .profile-data div {
+    padding: 10px; }
+  .profile-data input {
+    margin-left: 30px; }
 
-/* Set width on the form input elements since they're 100% wide by default */
-input,
-select,
-textarea {
-  /*max-width: 280px;*/ }
-
-/* override bootstrap navbar item colors */
-.navbar-inverse .navbar-nav > li > a,
-.navbar-inverse .navbar-nav > li > a:focus,
-.navbar-inverse .navbar-brand {
-  color: #c4c8a1;
-  /*text-shadow: 0 0 2px #95eb3f; */
-  outline: none; }
-
-/*	active menu color */
-.navbar-inverse .navbar-nav > li > a.active, .navbar-inverse a.navbar-brand.active {
-  color: white; }
-
-/* This is for bottom fixed footer  support */
-.footer {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  height: 50px;
-  background-color: #000000;
-  border-color: #565b59;
-  color: #c4c8a1;
-  text-shadow: 0 0 4px #ff0000; }
-
-.footer p {
-  margin-top: 15px; }
-
-.footer > .container {
-  padding-right: 15px;
-  padding-left: 15px; }
+.commands {
+  margin: 10px 20px; }
 
 /* page not found error message */
 .error-message {
@@ -59,35 +34,20 @@ textarea {
 .route-not-found {
   color: #d829e0; }
 
-.checkbox {
-  margin-top: 30px;
-  margin-bottom: 20px; }
-
-.datatable-wrapper {
-  margin-top: 30px;
-  margin-bottom: 30px; }
-
-/*Dropdown menu*/
-.dropdown-menu {
-  background-color: #222; }
-
-.dropdown-menu .dropdown-toggle a {
-  color: #c4c8a1; }
-
-.dropdown-menu .dropdown-toggle a:hover {
-  background-color: #222;
-  color: white; }
-
-.dropdown-menu .dropdown-toggle a:focus {
-  background-color: #222;
-  color: white; }
+.loading-profile {
+  margin: 0;
+  padding-top: 200px;
+  font-size: 28px;
+  text-align: center;
+  color: #670606;
+  transition: visibility 0s linear 0.1s,opacity 0.8s ease; }
 
 .loading-text {
   margin: 0;
   padding-top: 200px;
   font-size: 40px;
   text-align: center;
-  color: darkorange;
+  color: #670606;
   transition: visibility 0s linear 0.1s,opacity 0.8s ease; }
 
 .sk-cube-grid {
@@ -98,7 +58,7 @@ textarea {
 .sk-cube-grid .sk-cube {
   width: 33%;
   height: 33%;
-  background-color: darkorange;
+  background-color: #670606;
   float: left;
   -webkit-animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
   animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out; }

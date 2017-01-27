@@ -8,7 +8,6 @@ import { vm } from "app/main";
 export class LoaderScene extends Scene {
     private loadingMessage: PIXI.Text;
     private spinner: PIXI.Sprite;
-    private levelId: number = 1;
 
     constructor() {
         super("Loader");
@@ -32,18 +31,16 @@ export class LoaderScene extends Scene {
         //------------------------------------------------------
         PIXI.loader.reset();
         PIXI.loader.add("assets/_distribute/loading.png")
-            .load(this.downloadLevel);
+            .load(this.downloadNextLevel);
 
         //  this hides the loading HTML text
         vm.isLoadingVisible(false);
     };
 
-    public setNextLevel= (lvl: number)=> {
-        this.levelId = lvl;
-    }
+    private downloadNextLevel = (): void => {
+        Global.UserInfo.gamelevel += 1;
+        console.log(`downloading level ${Global.UserInfo.gamelevel}...`);
 
-    private downloadLevel = (): void => {
-        console.log("downloading levels...");
         PIXI.loader.reset();
         PIXI.loader.add("assets/levels/levels.json")
                    .load(this.downloadAssets);
@@ -60,7 +57,8 @@ export class LoaderScene extends Scene {
     private downloadAssets = ():void => {
         console.log("Initializing...");
         Global.GameLevels.root = PIXI.loader.resources["assets/levels/levels.json"].data;
-        let assets: string[] = LevelLoader.GetLevelAssets(Global.GameLevels.root as any, this.levelId);
+        
+        let assets: string[] = LevelLoader.GetLevelAssets(Global.GameLevels.root as any, Global.UserInfo.gamelevel);
 
         //  add assets not in level description
         assets = assets.concat(
@@ -104,23 +102,22 @@ export class LoaderScene extends Scene {
         //---------------------------------------------
         //  Bootstrap new game scene or reuse existing
         //---------------------------------------------
-        var inGame : InGameScene;
+        var inGame: InGameScene;
         try {
             inGame = Global.sceneMngr.GetScene("InGame") as InGameScene;
         } catch (e) {
         }
-
         if (!inGame) {
             inGame = new InGameScene();
             Global.sceneMngr.AddScene(inGame);
         }
+        inGame.StartLevel(Global.UserInfo.gamelevel);       
 
         //  setTimeout is only to make the "100%" noticeable
         setTimeout(() => {
-            this.removeChild(this.loadingMessage);
-            inGame.IsHeroInteractive = true;
-            inGame.NextLevel();
-            Global.sceneMngr.ActivateScene(inGame);
+            this.removeChild(this.loadingMessage);            
+            inGame.IsHeroInteractive = true;            
+            Global.sceneMngr.ActivateScene("InGame");
         }, 500);
     };
 }

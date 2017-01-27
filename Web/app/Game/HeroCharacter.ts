@@ -3,7 +3,7 @@ import { WorldP2 } from "./WorldP2";
 import { MovementController } from "./MovementController";
 import { MovementState } from "./MovementState";
 import { createParticleEmitter } from "./InGameScene";
-import { Stats, StatType } from "./Stats";
+import { PlayerStats, StatType } from "./PlayerStats";
 import * as ko from "knockout";
 
 
@@ -16,7 +16,7 @@ export interface IBurnEvent {
 
 export class HeroCharacter extends AnimatedSprite {
     private readonly HERO_FRAME_SIZE: number = 64;
-    private readonly playerStats = new Stats();
+    private readonly playerStats = new PlayerStats();
 
     private emitterPixies: PIXI.particles.Emitter;
     private emitterBuffs: PIXI.particles.Emitter;
@@ -93,7 +93,7 @@ export class HeroCharacter extends AnimatedSprite {
     /**
      * Returns the player statistics object.
      */
-    public get PlayerStats(): Stats {
+    public get PlayerStats(): PlayerStats {
         return this.playerStats;
     }
 

@@ -1,9 +1,12 @@
 ﻿import * as Global from "./Global";
+import * as AjaxHelper from "app/Common/AjaxHelper";
 import { WorldP2 } from "./WorldP2";
 import { HeroCharacter } from "./HeroCharacter";
 import { ITriggerDefinition } from "./LevelLoader";
 import { InGameScene } from "./InGameScene";
 import { CutScene } from "./CutScene";
+
+declare var baseUrl: string;
 
 /**
  * Contains quest related logic, checks and helpers.
@@ -196,6 +199,16 @@ export class QuestManager {
             }
         });
         return foundBody;
+    }
+
+    private saveUserState() {
+        let model = {
+            id: Global.UserInfo.id,
+            //gold: this.gameScene.
+        };
+        AjaxHelper.Post(baseUrl + "/api/user/save", model, (data, status) => {
+            console.log("connectUser() response", data);            
+        });
     }
 }
 

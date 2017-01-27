@@ -3,7 +3,6 @@
 
 class LoginVM {
     constructor() {
-        vm.isLoadingVisible(false);
     }
 }
 export = LoginVM;
