@@ -37,7 +37,8 @@
     <link href="../Content/Stage.css" rel="stylesheet" />
 </head>
 
-<body>
+<body>    
+    <div data-bind="component: ActiveRoute().component"></div>
     <div class="loading-text" data-bind="visible: isLoadingVisible">
         <div>Initializing please wait...</div>        
         <div class="sk-cube-grid">
@@ -52,6 +53,5 @@
             <div class="sk-cube sk-cube9"></div>
         </div>
     </div>    
-    <div data-bind="component: ActiveRoute().component"></div>
 </body>
 </html>

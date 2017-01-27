@@ -7,7 +7,7 @@ import { Parallax } from "app/_engine/Parallax";
 import { WorldP2 } from "./WorldP2";
 import { Hud } from "./Hud";
 import { LevelLoader, ILevel, ILevelMap, IMapEntity } from "./LevelLoader";
-import { DPS_TOPIC, IDpsChangeEvent, StatType } from "./Stats";
+import { DPS_TOPIC, IDpsChangeEvent, StatType, PlayerStats } from "./PlayerStats";
 import { HeroCharacter, BURN_TOPIC, IBurnEvent } from "./HeroCharacter";
 import { QuestManager, QuestState } from "./QuestManager";
 import { MovementState } from "./MovementState";
@@ -197,6 +197,9 @@ export class InGameScene extends Scene {
         this.hud.onUpdate(dt);
     };
 
+    public get PlayerStats(): PlayerStats {
+        return this.hero.PlayerStats;
+    }
 
     public set IsHeroInteractive(value: boolean) {
         if (this.hero.IsInteractive !== value) {
@@ -384,18 +387,15 @@ export class InGameScene extends Scene {
         ko.postbox.subscribe<IBurnEvent>(BURN_TOPIC, this.handleBurnChange);
 
         var cutScene = new CutScene();
-        Global.sceneMngr.AddScene(cutScene);
-
-        playerStats.currentLevel = 0;
-        var lvl = this.levelLoader.BuildLevel(playerStats.currentLevel + 1);
+        Global.sceneMngr.AddScene(cutScene);        
 
         //--------------------------------------
         //  setup physics subsystem
         //--------------------------------------
-        this.wp2 = new WorldP2(new PIXI.Point(lvl.start[0], lvl.start[1]));
+        //this.wp2 = new WorldP2(new PIXI.Point(lvl.start[0], lvl.start[1]));
+        this.wp2 = new WorldP2(new PIXI.Point(0, 0));
         this.hero.SetWorldP2(this.wp2);
         this.worldContainer.addChild(this.hero);
-        this.currentLevel = lvl;
         this.questMngr = new QuestManager(this, this.wp2, this.hero);
     };
 
@@ -467,20 +467,11 @@ export class InGameScene extends Scene {
     };
 
     /**
-     * Calculates the next level id.
+     *  Invokes the level loading.
      */
-    public GetNextLevelId(): number {
-        var id = this.hero.PlayerStats.currentLevel + 1;
-        return id;
-    };
-
-    /**
-     *  Calculates the next level and invokes the level loading.
-     */
-    public NextLevel() {
-        this.hero.PlayerStats.currentLevel += 1;
-        var id = this.hero.PlayerStats.currentLevel;
-        var lvl = this.levelLoader.BuildLevel(id);
+    public StartLevel(levelId: number) {
+        console.log("loading level " + levelId);
+        var lvl = this.levelLoader.BuildLevel(levelId);
 
         if (!lvl) {
             console.log("No more levels!!!");

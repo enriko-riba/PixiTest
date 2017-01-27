@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web.Http;
+﻿using System.Web.Http;
 
-namespace PixiTest
+namespace PP2
 {
     public static class WebApiConfig
     {
@@ -16,6 +13,11 @@ namespace PixiTest
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+
+            //-------------------------
+            //  SimpleInjector setup
+            //-------------------------
+            IocConfig.Register();
         }
     }
 }

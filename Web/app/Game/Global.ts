@@ -61,5 +61,7 @@ export var GameLevels: {
 export var UserInfo: {
     id: number;
     name: string;
-} = { id: 0, name: "" };
+    gold: number;
+    gamelevel: number;
+} = { id: 0, name: "", gold: 0, gamelevel: 0 };
 

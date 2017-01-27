@@ -1,2 +1,34 @@
-﻿<h2>Welcome to the awesome PP2</h2>
+﻿<div class="loading-profile" data-bind="visible: !hasProfileData()">
+    <div>Loading profile data...</div>
+    <div class="sk-cube-grid">
+        <div class="sk-cube sk-cube1"></div>
+        <div class="sk-cube sk-cube2"></div>
+        <div class="sk-cube sk-cube3"></div>
+        <div class="sk-cube sk-cube4"></div>
+        <div class="sk-cube sk-cube5"></div>
+        <div class="sk-cube sk-cube6"></div>
+        <div class="sk-cube sk-cube7"></div>
+        <div class="sk-cube sk-cube8"></div>
+        <div class="sk-cube sk-cube9"></div>
+    </div>
+</div>  
 
+<div data-bind="visible: hasProfileData">
+    <h2>The great PP2 adventure</h2>
+    <div class="greeting">Hello&nbsp;<span data-bind="text: usr_Name"></span></div>
+
+    <div class="profile-data" >
+        <div>
+            <label for="atr_lvl">Level</label>
+            <input id="atr_lvl" data-bind="value: usr_GameLevel" disabled />
+        </div>
+        <div>
+            <label for="atr_gld">Gold</label>
+            <input id="atr_gld" data-bind="value: usr_Gold" disabled />
+        </div>
+    </div>
+    <div class="commands" >
+        <button data-bind="click: startGame">Start Game</button>
+    </div>
+
+</div>

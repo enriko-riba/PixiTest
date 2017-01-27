@@ -28,12 +28,8 @@ export class CutScene extends Scene {
             (Global.SCENE_WIDTH - Global.BTN_WIDTH) / 2, (Global.SCENE_HEIGHT - Global.BTN_HEIGHT + callout.height + 30) / 2,
             Global.BTN_WIDTH, Global.BTN_HEIGHT);
         btnContinue.Text = new PIXI.Text("Continue", Global.BTN_STYLE);
-        btnContinue.onClick = () => {
-            var ig = Global.sceneMngr.GetScene("InGame") as InGameScene;
-            var nextLevel = ig.GetNextLevelId();
-
+        btnContinue.onClick = () => {            
             var loderScene = Global.sceneMngr.GetScene("Loader") as LoaderScene;
-            loderScene.setNextLevel(nextLevel);
             Global.sceneMngr.ActivateScene(loderScene);
         };
         this.addChild(btnContinue);

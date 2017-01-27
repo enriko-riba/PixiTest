@@ -11,7 +11,3 @@
   -ms-interpolation-mode: nearest-neighbor;
   /* IE (non-standard property) */ }
 
-html, body {
-  background-color: #085c63;
-  margin: 0; }
-

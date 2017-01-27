@@ -29,7 +29,7 @@ export interface IDpsChangeEvent {
 export var STATCHANGE_TOPIC = "stat_changed";
 export var DPS_TOPIC = "dps_changed";
 
-export class Stats {
+export class PlayerStats {
     private stats: Array<number> = [];
 
     private accumulator: number = 0.0;
@@ -111,8 +111,6 @@ export class Stats {
     public getStat(type: StatType): number {
         return this.stats[type];
     }
-
-    public currentLevel: number = 1;
 
     /**
      *   Stores timestamps (Unix timestamps in seconds with fractions) when the buff elapses.

@@ -1,4 +1,4 @@
-﻿namespace PixiTest.Server.Models
+﻿namespace PP2.Server.Models
 {
     public class LoginResponse
     {
