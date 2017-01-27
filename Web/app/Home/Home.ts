@@ -1,7 +1,7 @@
 ﻿import { vm } from "app/main";
 import * as ko from "knockout";
 import * as Global from "app/Game/Global";
-import * as AjaxHelper from "app/Common/Ajaxhelper";
+import * as AjaxHelper from "app/Common/AjaxHelper";
 
 declare var baseUrl: string;
 
