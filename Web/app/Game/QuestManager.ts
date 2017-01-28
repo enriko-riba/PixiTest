@@ -208,7 +208,7 @@ export class QuestManager {
         let model = {
             ExternalId: Global.UserInfo.id,
             Gold: this.gameScene.PlayerStats.getStat(StatType.Coins),
-            Dust: this.gameScene.PlayerStats.getStat(StatType.Dust),
+            Dust: Math.floor(this.gameScene.PlayerStats.getStat(StatType.Dust)),
             LastLevel: Global.UserInfo.gamelevel
         };
         AjaxHelper.Post(baseUrl + "/api/user/save", model, (data, status) => {

@@ -182,12 +182,15 @@
       <DependentUpon>compilerconfig.json</DependentUpon>
     </None>
     <None Include="Content\Stage.scss" />
+    <Content Include="fb-icon.png" />
     <Content Include="Global.asax" />
     <Content Include="Index.cshtml" />
     <Content Include="manifest.json" />
     <Content Include="Log4Net.config" />
     <None Include="pp2-platform - FTP.pubxml" />
     <None Include="pp2-platform - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\pp2-platform - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\pp2-platform - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="ms-icon-144x144.png" />
     <Content Include="ms-icon-150x150.png" />
