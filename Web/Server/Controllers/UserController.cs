@@ -7,10 +7,13 @@
     using System.Linq;
     using System.Threading.Tasks;
     using System.Collections.Generic;
+    using log4net;
     #endregion
 
     public class UserController : ApiController
     {
+        private static readonly ILog log = LogManager.GetLogger(typeof(UserController));
+
         private DocumentDBFactory docDbFactory;
 
         public UserController(DocumentDBFactory docDbFactory)
@@ -22,13 +25,27 @@
         /// Saves the user data.
         /// </summary>
         /// <param name="model"></param>
-        public async Task SaveUserData(UserDataBindingModel model)
+        [Route("api/user/save")]
+        [HttpPost]
+        public async Task<IHttpActionResult> SaveUserData([FromBody]UserDataBindingModel model)
         {
             try
             {
+                log.InfoFormat("model: {0}", model);
+
+                if (model == null)
+                {
+                    return BadRequest("model");
+                }
+                if (string.IsNullOrWhiteSpace(model.ExternalId))
+                {
+                    ModelState.AddModelError("ExternalId", "ExternalId is required");
+                    return BadRequest(ModelState);
+                }
+
                 // get user
                 var docDb = await docDbFactory.CreateDB("testDB");
-                var qry = docDb.CreateQuery<User>("realm").Where(u => u.ExternalId == model.ExternalId);
+                var qry = docDb.CreateQuery<PP2.Server.Models.User>("realm").Where(u => u.ExternalId == model.ExternalId);
                 User user = qry.AsEnumerable().FirstOrDefault();
 
                 //  insert user 
@@ -41,11 +58,14 @@
                 }
                 else
                 {
+                    log.WarnFormat("ExternalId: {0} not found in DB", model.ExternalId);
                     throw new System.ArgumentException("mode.ExternalId not found");
                 }
+                return Ok(user);
             }
             catch (System.Exception ex)
             {
+                log.Error(ex);
                 throw;
             }
         }
@@ -77,6 +97,7 @@
             }
             catch (System.Exception ex)
             {
+                log.Error(ex);
                 throw;
             }
         }
