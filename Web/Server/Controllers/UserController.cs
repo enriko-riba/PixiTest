@@ -54,6 +54,7 @@
                     //  TODO: update user with new data
                     user.LastLevel = model.LastLevel;
                     user.Gold = model.Gold;
+                    user.Dust = model.Dust;
                     await docDb.SaveDocumentAsync("realm", user);
                 }
                 else
