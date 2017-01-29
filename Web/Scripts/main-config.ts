@@ -20,19 +20,18 @@ require.config({
         "hammerjs": "../../Scripts/hammer.min",
         "p2": "../../Scripts/p2",
 
-        "facebook": "//connect.facebook.net/en_US/sdk",
-        "fb": "Scripts/fb",
+        "FB": "//connect.facebook.net/en_US/sdk",
     },
     shim: {
         "koMapping": { "deps": ["knockout"] },
         "p2": { exports: "p2" },
         "tween": { exports: "TWEEN" },  
-        "facebook": {exports: "FB"},
+        "FB": { exports: "FB" },
     },    
     //  urlArgs: "v=" + gSiteVersion
 });
 
-require(["knockout", "app/main", "koMapping", "pixi", "stats", "knockout-amd-helpers", "text", "koBindings", "postbox", "fb"], function (ko: KnockoutStatic, mainModule, koMapping, PIXI, stats) {
+require(["knockout", "app/main", "koMapping", "pixi", "stats", "knockout-amd-helpers", "text", "koBindings", "postbox"], function (ko: KnockoutStatic, mainModule, koMapping, PIXI, stats) {
 
     //  set default folders and extension
     ko.bindingHandlers.module.baseDir = "app/_modules"; // note: currently not used

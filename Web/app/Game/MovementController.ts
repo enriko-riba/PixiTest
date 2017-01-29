@@ -37,6 +37,7 @@ export class MovementController {
         this.world = world;
         this.hero = hero;
 
+        /*
         var myElement = document.getElementById("stage");
         var mc = new Hammer.Manager(myElement);
 
@@ -45,6 +46,7 @@ export class MovementController {
 
         mc.add(new Hammer.Press({ event: 'press', time: 25, interval: 25 }));
         mc.on("press", this.touchMove);
+        */
     }
 
     private _isInteractive: boolean = true;

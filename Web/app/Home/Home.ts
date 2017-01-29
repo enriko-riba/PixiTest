@@ -46,7 +46,7 @@ class HomeVM {
 
     private startGame = () => {
         window.location.hash = "#pp2";
-    }
+    };
 }
 
 export = HomeVM;

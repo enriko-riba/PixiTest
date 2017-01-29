@@ -1,1 +1,9 @@
-﻿<div class="login-message">Checking Facebook log-in...</div>
+﻿<div class="login-message">
+    Checking account...
+    <p></p>
+    <p data-bind="visible: isLoginVisible">
+        <fb:login-button autologoutlink="true" >
+            Login with Facebook
+        </fb:login-button>
+    </p>
+</div>

@@ -9,27 +9,17 @@ export class Button extends PIXI.Sprite {
     private isPressed: boolean;
     private isClickStarted: boolean;
     private text: PIXI.Text;
-
+    private requestedWidth: number = undefined;
+    private requestedHeight: number = undefined;
     constructor(texturePath: string, x?: number, y?: number, width?: number, height?: number) {
         super();
         this.position.set(x || 0, y || 0);
+        this.requestedHeight = height;
+        this.requestedWidth = width;
 
         //  setup button textures
-        var atlasTexture = PIXI.loader.resources[texturePath].texture;
-        var btnHeight = atlasTexture.height / 3;
-        var btnWidth = atlasTexture.width;
-        this.textureUp = new PIXI.Texture(atlasTexture.baseTexture, new PIXI.Rectangle(0, 0 * btnHeight, btnWidth, btnHeight));
-        this.textureHighlight = new PIXI.Texture(atlasTexture.baseTexture, new PIXI.Rectangle(0, 1 * btnHeight, btnWidth, btnHeight));
-        this.textureDown = new PIXI.Texture(atlasTexture.baseTexture, new PIXI.Rectangle(0, 2 * btnHeight, btnWidth, btnHeight));
+        this.SetTexture(texturePath);
 
-        this.textureUp.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
-        this.textureHighlight.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
-        this.textureDown.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
-
-        //  calc the scale based on desired height/width
-        var scaleW = (width || btnWidth) / btnWidth;
-        var scaleH = (height || btnHeight) / btnHeight;
-        this.scale.set(scaleW, scaleH);
         this.buttonMode = true;
         this.interactive = true;
 
@@ -114,5 +104,23 @@ export class Button extends PIXI.Sprite {
 
     private applyTexture() {
         this.texture = this.isPressed ? this.textureDown : this.textureUp;
+    }
+
+    public SetTexture(textureAtlasName: string) {
+        var atlasTexture = PIXI.loader.resources[textureAtlasName].texture;
+        var btnHeight = atlasTexture.height / 3;
+        var btnWidth = atlasTexture.width;
+        this.textureUp = new PIXI.Texture(atlasTexture.baseTexture, new PIXI.Rectangle(0, 0 * btnHeight, btnWidth, btnHeight));
+        this.textureHighlight = new PIXI.Texture(atlasTexture.baseTexture, new PIXI.Rectangle(0, 1 * btnHeight, btnWidth, btnHeight));
+        this.textureDown = new PIXI.Texture(atlasTexture.baseTexture, new PIXI.Rectangle(0, 2 * btnHeight, btnWidth, btnHeight));
+
+        this.textureUp.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
+        this.textureHighlight.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
+        this.textureDown.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
+
+        //  calc the scale based on desired height/width
+        var scaleW = (this.requestedWidth || btnWidth ) / btnWidth;
+        var scaleH = (this.requestedHeight || btnHeight) / btnHeight;
+        this.scale.set(scaleW, scaleH);
     }
 }
