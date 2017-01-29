@@ -255,7 +255,7 @@
     <TypeScriptCompile Include="app\Game\QuestManager.ts" />
     <TypeScriptCompile Include="app\Game\SoundMan.ts" />
     <TypeScriptCompile Include="app\Game\PlayerStats.ts" />
-    <TypeScriptCompile Include="app\Home\WorldP2.ts" />
+    <TypeScriptCompile Include="app\Game\WorldP2.ts" />
     <TypeScriptCompile Include="app\Home\Home.ts" />
     <TypeScriptCompile Include="app\Login\Login.ts" />
     <TypeScriptCompile Include="app\_engine\AnimatedSprite.ts" />
