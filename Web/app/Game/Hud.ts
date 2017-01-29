@@ -22,22 +22,55 @@ export class Hud extends PIXI.Container {
 
     private emitter: PIXI.particles.Emitter;
 
+    private get isFullScreen(): boolean {
+        var doc: any = document;
+        return !(!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement);
+    }
+
+    private toggleFullScreen() {
+        var doc: any = document;
+        var docElm: any = document.documentElement;
+
+        var requestFullScreen = docElm.requestFullscreen || docElm.mozRequestFullScreen || docElm.webkitRequestFullScreen || docElm.msRequestFullscreen;
+        var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+
+        if (!this.isFullScreen) {
+            requestFullScreen.call(docElm);
+        } else {
+            cancelFullScreen.call(doc);
+        }
+    }
+
     private setup(): void {
 
         ko.postbox.subscribe<IStatChangeEvent>(STATCHANGE_TOPIC, this.handleStatChange);
 
+/*
         //--------------------------------
         //  btn for level editor support
         //--------------------------------
         var btnSave = new Button("assets/_distribute/Button1.png",
             Global.SCENE_WIDTH - Global.BTN_WIDTH - 10, 10,
             Global.BTN_WIDTH, Global.BTN_HEIGHT);
-        btnSave.Text = new PIXI.Text("Save", Global.BTN_STYLE);
+        btnSave.Text = new PIXI.Text("Console dump", Global.BTN_STYLE);
         btnSave.onClick = () => {
             var igs = Global.sceneMngr.CurrentScene as InGameScene;
             igs.saveLevel();
         };
         this.addChild(btnSave);
+        */
+        var btnFullScreen = new Button("assets/_distribute/gui_fs_enter.png",
+            Global.SCENE_WIDTH - 100,
+            10);
+        this.addChild(btnFullScreen);
+        btnFullScreen.onClick = () => {
+            this.toggleFullScreen();
+            if (this.isFullScreen) {
+                btnFullScreen.SetTexture("assets/_distribute/gui_fs_exit.png");
+            } else {
+                btnFullScreen.SetTexture("assets/_distribute/gui_fs_enter.png");
+            }
+        };
 
         let txtPosition = new PIXI.Point(70, 18);
         //  HP

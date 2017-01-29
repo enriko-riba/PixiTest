@@ -63,6 +63,9 @@ export class LoaderScene extends Scene {
         //  add assets not in level description
         assets = assets.concat(
             [
+                "assets/_distribute/gui_fs_enter.png",
+                "assets/_distribute/gui_fs_exit.png",
+
                 "assets/_distribute/hero_64.png",
                 "assets/_distribute/Button1.png",
 

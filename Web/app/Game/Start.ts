@@ -11,6 +11,10 @@ class StartVM extends ViewModelBase{
         super();        
 
         vm.isLoadingVisible(true);
+        if (Global.UserInfo.id === 0) {
+            window.location.hash = "#login";
+            return;
+        }
 
         //  prepare canvas and scene manager
         var canvas: HTMLCanvasElement = document.getElementById("stage") as HTMLCanvasElement;

@@ -45,6 +45,10 @@ h2, .login-message {
 .commands {
   margin: 10px 20px; }
 
+button {
+  cursor: pointer;
+  min-height: 50px; }
+
 /* page not found error message */
 .error-message {
   font-size: 18px;
