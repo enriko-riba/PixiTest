@@ -70,56 +70,69 @@ export class Hud extends PIXI.Container {
                 btnFullScreen.SetTexture("assets/_distribute/gui_fs_enter.png");
             }
         };
-        PIXI.SCALE_MODES
-        let txtPosition = new PIXI.Point(70, 18);
+
         //  HP
         {
+            let y = 5;
+
+            let pnl = new PIXI.Sprite(PIXI.loader.resources["assets/_distribute/stat_panel.png"].texture);
+            pnl.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.LINEAR;
+            pnl.position.set(5, y);
+            pnl.scale.set(0.5);
+            this.addChild(pnl);
+
             this.txtHP = new PIXI.Text("0", Global.TXT_STYLE);
             this.txtHP.resolution = window.devicePixelRatio;
-            this.txtHP.position = txtPosition;
-            let pnl = new PIXI.Sprite(PIXI.loader.resources["assets/_distribute/stat_panel.png"].texture);
+            this.txtHP.position = new PIXI.Point(80, y + 15);
+            this.addChild(this.txtHP);
+
             let spr = new PIXI.Sprite(PIXI.loader.resources["assets/_distribute/heart.png"].texture);
-            spr.position.set(16, 18);
+            spr.position.set(21, y + 17);
             spr.scale.set(0.5);
-            pnl.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.LINEAR;
-            pnl.position.set(5, 5);
-            pnl.addChild(spr);
-            pnl.addChild(this.txtHP);
-            this.addChild(pnl);
+            this.addChild(spr);
         }
 
         //  pixi dust
         {
+            let y = 90;
+            let pnl = new PIXI.Sprite(PIXI.loader.resources["assets/_distribute/stat_panel.png"].texture);
+            pnl.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.LINEAR;
+            pnl.position.set(5, y);
+            pnl.scale.set(0.5);
+            this.addChild(pnl);
+
             this.txtDust = new PIXI.Text("0", Global.TXT_STYLE);
             this.txtDust.resolution = window.devicePixelRatio;
-            this.txtDust.position = txtPosition;
-            let pnl = new PIXI.Sprite(PIXI.loader.resources["assets/_distribute/stat_panel.png"].texture);
-            this.emitter = createParticleEmitter(pnl, [PIXI.Texture.fromImage("assets/_distribute/star.png")]);
-            this.emitter.ownerPos.set(32, 58);
+            this.txtDust.position = new PIXI.Point(80, y+15);
+            this.addChild(this.txtDust);
+
+            this.emitter = createParticleEmitter(pnl, [PIXI.Texture.fromImage("assets/_distribute/star.png")], { spawnCircle: { x:0, y: 0, r: 20 }});
+            this.emitter.ownerPos.set(65, 90);
             this.emitter.startSpeed = 15;
             this.emitter.maxLifetime = 0.6;
             this.emitter.maxParticles = 50;
-            this.emitter.emit = true;
-            pnl.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.LINEAR;
-            pnl.position.set(5, 90);
-            pnl.addChild(this.txtDust);
-            this.addChild(pnl);
+            this.emitter.emit = true;           
         }
 
         //  coins
         {
+            let y = 170;
+
+            let pnl = new PIXI.Sprite(PIXI.loader.resources["assets/_distribute/stat_panel.png"].texture);
+            pnl.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.LINEAR;
+            pnl.position.set(5, y);
+            pnl.scale.set(0.5);
+            this.addChild(pnl);
+
             this.txtCoins = new PIXI.Text("0", Global.TXT_STYLE);
             this.txtCoins.resolution = window.devicePixelRatio;
-            this.txtCoins.position = txtPosition;
-            let pnl = new PIXI.Sprite(PIXI.loader.resources["assets/_distribute/stat_panel.png"].texture);
+            this.txtCoins.position = new PIXI.Point(80, y + 15);
+            this.addChild(this.txtCoins);
+
             let spr = new PIXI.Sprite(PIXI.loader.resources["assets/_distribute/coin.png"].texture);
-            spr.position.set(16, 18);
+            spr.position.set(21, y + 17);
             spr.scale.set(0.5);
-            pnl.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.LINEAR;
-            pnl.position.set(5, 170);
-            pnl.addChild(spr);
-            pnl.addChild(this.txtCoins);
-            this.addChild(pnl);
+            this.addChild(spr);
         }
 
         //  TODO: remove or make a hud for lvl, position
