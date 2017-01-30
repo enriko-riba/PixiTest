@@ -60,8 +60,7 @@ export class Hud extends PIXI.Container {
         this.addChild(btnSave);
         */
         var btnFullScreen = new Button("assets/_distribute/gui_fs_enter.png",
-            Global.SCENE_WIDTH - 100,
-            10);
+            Global.SCENE_WIDTH - 38, -24);
         this.addChild(btnFullScreen);
         btnFullScreen.onClick = () => {
             this.toggleFullScreen();
@@ -71,7 +70,7 @@ export class Hud extends PIXI.Container {
                 btnFullScreen.SetTexture("assets/_distribute/gui_fs_enter.png");
             }
         };
-
+        PIXI.SCALE_MODES
         let txtPosition = new PIXI.Point(70, 18);
         //  HP
         {
@@ -82,6 +81,7 @@ export class Hud extends PIXI.Container {
             let spr = new PIXI.Sprite(PIXI.loader.resources["assets/_distribute/heart.png"].texture);
             spr.position.set(16, 18);
             spr.scale.set(0.5);
+            pnl.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.LINEAR;
             pnl.position.set(5, 5);
             pnl.addChild(spr);
             pnl.addChild(this.txtHP);
@@ -100,6 +100,7 @@ export class Hud extends PIXI.Container {
             this.emitter.maxLifetime = 0.6;
             this.emitter.maxParticles = 50;
             this.emitter.emit = true;
+            pnl.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.LINEAR;
             pnl.position.set(5, 90);
             pnl.addChild(this.txtDust);
             this.addChild(pnl);
@@ -114,6 +115,7 @@ export class Hud extends PIXI.Container {
             let spr = new PIXI.Sprite(PIXI.loader.resources["assets/_distribute/coin.png"].texture);
             spr.position.set(16, 18);
             spr.scale.set(0.5);
+            pnl.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.LINEAR;
             pnl.position.set(5, 170);
             pnl.addChild(spr);
             pnl.addChild(this.txtCoins);

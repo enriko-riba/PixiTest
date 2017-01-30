@@ -28,7 +28,7 @@
             <input id="atr_mhp" data-bind="value: usr_MaxHP" disabled />
         </div>
         <div>
-            <label for="atr_dst">Dust</label>
+            <label for="atr_dst">Pixie Dust</label>
             <input id="atr_dst" data-bind="value: usr_Dust" disabled />
         </div>
         <div>
@@ -37,7 +37,7 @@
         </div>
     </div>
     <div class="commands" >
-        <button data-bind="click: startGame">Start Game</button>
+        <button data-bind="click: startGame, enable: isStartEnabled">Start Game</button>
     </div>
 
     <div class="fb-like"

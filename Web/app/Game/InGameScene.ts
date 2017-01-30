@@ -367,7 +367,7 @@ export class InGameScene extends Scene {
      */
     private setup(): void {
 
-        this.BackGroundColor = 0x1099bb;
+        this.BackGroundColor = 0x684123;
         PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.LINEAR;
 
         //-----------------------------
