@@ -20,7 +20,7 @@ class StartVM extends ViewModelBase{
         var canvas: HTMLCanvasElement = document.getElementById("stage") as HTMLCanvasElement;
         var renderOptions : PIXI.IRendererOptions = {
             view: canvas,
-            backgroundColor: 0xff99bb,
+            backgroundColor: 0x684123,
             antialias: true,
             transparent: false,
             roundPixels: false,

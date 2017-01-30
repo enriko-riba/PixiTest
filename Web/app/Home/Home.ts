@@ -12,6 +12,7 @@ class HomeVM {
     private usr_Dust = ko.observable<string>("");
     private usr_MaxHP = ko.observable<string>("");
     private hasProfileData = ko.observable<boolean>(false);
+    private isStartEnabled = ko.observable<boolean>(true);
 
     constructor() {
         if (Global.UserInfo.id === 0) {
@@ -45,6 +46,7 @@ class HomeVM {
     }
 
     private startGame = () => {
+        this.isStartEnabled(false);
         window.location.hash = "#pp2";
     };
 }
