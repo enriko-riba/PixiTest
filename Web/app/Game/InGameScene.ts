@@ -347,12 +347,12 @@ export class InGameScene extends Scene {
         this.worldContainer.addChild(container);
 
         var txtInfo = new PIXI.Text(message, style);
-        txtInfo.position.set(50, 80);
+        txtInfo.position.set(60, 80);
         container.addChild(txtInfo);
 
         if (fadeSeconds > 0 ) {
             var fade = new TWEEN.Tween(container)
-                .to({ alpha: 0 }, fadeSeconds)
+                .to({ alpha: 0.5 }, fadeSeconds)
                 .onComplete(() => {
                     this.worldContainer.removeChild(container);
                 });
