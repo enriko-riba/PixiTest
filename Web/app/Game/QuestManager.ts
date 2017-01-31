@@ -153,7 +153,7 @@ export class QuestManager {
                     }
                     break;
 
-                case 201:
+                case 201:   //  Kendo knowledge
                     switch (state) {
                         case QuestState.None:
                             this.setQuestState(trigger.questId, QuestState.InProgress);
@@ -182,6 +182,22 @@ export class QuestManager {
                             var rt = Global.sceneMngr.CaptureScene();
                             cs.SetBackGround(rt, this.gameScene.scale);
                             Global.sceneMngr.ActivateScene(cs);
+                            break;
+                    }
+                    break;
+
+                case 202:   //  seek the han-shi Kendo master
+                    switch (state) {
+                        case QuestState.None:
+                            this.setQuestState(trigger.questId, QuestState.InProgress);
+                            this.previousQuestMessage = this.gameScene.addTriggerMessage(pos, trigger.text, Global.QUEST_STYLE);
+                            break;
+                        case QuestState.InProgress:
+                            if (!this.previousQuestMessage || !this.previousQuestMessage.parent) {
+                                this.previousQuestMessage = this.gameScene.addTriggerMessage(pos, trigger.text, Global.QUEST_STYLE);
+                            }
+                            break;
+                        default:
                             break;
                     }
                     break;

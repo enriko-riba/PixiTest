@@ -103,7 +103,7 @@ export class LevelLoader {
 
     private createLevel(level: ILevelDefinition): ILevel {
         var result: ILevel = {
-            parallax : [],
+            parallax: [],
             entities: [],
             start: [],
             audioTrack: level.audioTrack
@@ -162,6 +162,12 @@ export class LevelLoader {
     private buildDisplayObject(definition: IDisplayObjectDefinition): PIXI.DisplayObject {
         var dispObj: PIXI.DisplayObject;
         switch (definition.typeName) {
+
+            case "Sensor":
+                dispObj = new PIXI.DisplayObject();
+                (dispObj as any).typeName = "Sensor";
+                break;
+
             case "AnimatedSprite":
                 var aspr = new AnimatedSprite();
                 definition.sequences.forEach((seq, idx, arr) => {
@@ -253,7 +259,7 @@ export class LevelLoader {
             };
             body = new p2.Body(options);
             body.type = definition.type;
-            var dispObjAsAny:any = dispObj as any;
+            var dispObjAsAny: any = dispObj as any;
             var shape: p2.Shape;
             switch (definition.shape) {
                 case "Circle":
@@ -297,7 +303,7 @@ export class LevelLoader {
                         }
                     }
                     shape = new p2.Box({
-                        width:  w,
+                        width: w,
                         height: h,
                     });
                     break;
@@ -314,7 +320,13 @@ export class LevelLoader {
                 body.collisionResponse = false;
                 body.setDensity(0.0); //   this is to prevent body impacts on player collide (makes no sense as it is a sensor, bug maybe?)
                 console.log("created collectible sensor", shape);
+            } else if ((dispObj as any).typeName === "Sensor") {
+                shape.sensor = true;
+                body.type = p2.Body.STATIC;
+                body.collisionResponse = false;
+                body.setDensity(0.0);
             }
+
             body.addShape(shape);
         }
         return body;

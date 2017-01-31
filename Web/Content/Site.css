@@ -1,35 +1,35 @@
 ﻿html, body {
   margin: 0;
-  color: #670606;
-  background-color: #a6acb7;
+  color: #b7afac;
+  background-color: #321e0d;
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; }
 
 h2, .login-message {
   font-size: 1.7em;
-  color: #c43b6b;
+  color: #dbc646;
   margin: 30px 20px; }
 
 .greeting {
-  color: #670606;
+  color: #b7afac;
   margin: 10px 20px;
   font-size: 1.3em; }
   .greeting span {
     font-weight: 700;
-    color: #596f2a; }
+    color: #d9f3a2; }
 
 .subtitle {
   font-size: 24px;
   text-align: center;
-  color: #c43b6b; }
+  color: #dbc646; }
 
 .profile-data {
   display: inline-block;
-  border: solid 2px #670606;
+  border: solid 2px #b7afac;
   margin: 10px 20px;
-  padding: 10px 25px;
-  font-size: 1.15em; }
+  font-size: 1.15em;
+  width: 260px; }
   .profile-data div {
-    padding: 10px; }
+    padding: 10px 25px; }
   .profile-data label {
     position: absolute;
     width: 150px;
@@ -37,17 +37,21 @@ h2, .login-message {
   .profile-data input {
     margin-left: 70px;
     width: 100px;
-    background-color: #a6acb7;
+    background-color: #321e0d;
     border-style: ridge;
     padding-left: 10px;
-    color: #596f2a; }
+    color: #d9f3a2; }
 
 .commands {
   margin: 10px 20px; }
 
 button {
   cursor: pointer;
-  min-height: 50px; }
+  min-height: 50px;
+  width: 264px;
+  color: black;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  background-color: #d9f3a2; }
 
 /* page not found error message */
 .error-message {
@@ -62,7 +66,7 @@ button {
   padding-top: 200px;
   font-size: 28px;
   text-align: center;
-  color: #670606;
+  color: #b7afac;
   transition: visibility 0s linear 0.1s,opacity 0.8s ease; }
 
 .loading-text {
@@ -70,7 +74,7 @@ button {
   padding-top: 200px;
   font-size: 40px;
   text-align: center;
-  color: #670606;
+  color: #b7afac;
   transition: visibility 0s linear 0.1s,opacity 0.8s ease; }
 
 .sk-cube-grid {
@@ -81,7 +85,7 @@ button {
 .sk-cube-grid .sk-cube {
   width: 33%;
   height: 33%;
-  background-color: #670606;
+  background-color: #b7afac;
   float: left;
   -webkit-animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
   animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out; }

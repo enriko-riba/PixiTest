@@ -1,7 +1,7 @@
-﻿$color: #670606;
-$back-color: #a6acb7;
-$title-color:#c43b6b;
-$data-color:#596f2a;
+﻿$back-color: #321e0d;
+$title-color:#dbc646;
+$color: #b7afac;
+$data-color:#d9f3a2;
 
 html, body {
     margin: 0;
@@ -38,10 +38,11 @@ h2,.login-message {
     display: inline-block;
     border: solid 2px $color;
     margin: 10px 20px;
-    padding: 10px 25px;
     font-size: 1.15em;
+    width: 260px;
+
     div{
-        padding: 10px;
+        padding: 10px 25px;
     }
     label {
       position: absolute;
@@ -65,6 +66,10 @@ h2,.login-message {
 button {
     cursor: pointer;
     min-height: 50px;
+    width: 264px;
+    color: black;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    background-color: $data-color;
 }
 
 /* page not found error message */
