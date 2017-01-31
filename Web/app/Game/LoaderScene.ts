@@ -11,7 +11,7 @@ export class LoaderScene extends Scene {
 
     constructor() {
         super("Loader");
-        this.BackGroundColor = 0x1060a0;
+        this.BackGroundColor = 0x321e0d;
     }
 
     public onUpdate = (dt: number) => {

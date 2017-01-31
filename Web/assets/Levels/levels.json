@@ -1,6 +1,19 @@
 ﻿{
   "templates": [
     {
+      "name": "sensor",
+      "displayObject": {
+        "typeName": "Sensor"
+      },
+      "body": {
+        "shape": "Box",
+        "size": [
+          64,
+          64
+        ]
+      }
+    },
+    {
       "name": "edge",
       "displayObject": {
         "typeName": "Sprite",
@@ -210,7 +223,10 @@
         }
       ],
       "map": {
-        "start": [1600,36],
+        "start": [
+          1600,
+          36
+        ],
         "templates": [
           {
             "name": "platform",
@@ -273,7 +289,10 @@
               100
             ],
             "rotation": 1.5,
-            "scale": [2, 1.5]
+            "scale": [
+              2,
+              1.5
+            ]
           },
           {
             "template": "edge",
@@ -286,17 +305,26 @@
           {
             "template": "balloon_vv",
             "name": "balloon",
-            "xy": [2100,500]
+            "xy": [
+              2100,
+              500
+            ]
           },
           {
             "template": "box64a",
-            "xy": [1950,32],
+            "xy": [
+              1950,
+              32
+            ],
             "trigger": {
               "questId": 1,
               "type": "distance",
               "distance": 100,
               "text": "Hello there,\nI will teach you the\nbasics. Follow my\ninstructions and you\nwill be fine.",
-              "textposition": [-155,600],
+              "textposition": [
+                -155,
+                600
+              ],
               "completedText": "OK lad,\nuse 'w' or space to jump.\nand 'a', 'd' or arrows\nto move!"
             }
           },
@@ -311,38 +339,62 @@
               "type": "distance",
               "distance": 88,
               "text": "Excellent,\nTo run hold shift.\nIf running you can\njump higher and longer!",
-              "textposition": [-300,550],
+              "textposition": [
+                -300,
+                550
+              ],
               "completedText": "OK,\nnow run to the exit sign!"
             }
           },
           {
             "template": "box64a",
-            "xy": [2150,32]
+            "xy": [
+              2150,
+              32
+            ]
           },
           {
             "template": "platform",
-            "xy": [2210,175],
+            "xy": [
+              2210,
+              175
+            ],
             "tiles": 2
           },
           {
             "template": "platform1",
-            "xy": [2550,220]
+            "xy": [
+              2550,
+              220
+            ]
           },
           {
             "template": "exit",
-            "xy": [2604,250],
+            "xy": [
+              2604,
+              250
+            ],
             "trigger": {
               "type": "collision",
               "text": "Well done!",
-              "textposition": [-820,400],
+              "textposition": [
+                -820,
+                400
+              ],
               "questId": 3
             }
           },
           {
             "template": "edge",
-            "xy": [2800,100],
+            "xy": [
+              2800,
+              100
+            ],
             "rotation": 0.5,
-            "scale": [2,1.5]
+            "scale": [
+              2,
+              1.5
+            ]
           }
         ]
       }
@@ -999,7 +1051,10 @@
         }
       ],
       "map": {
-        "start": [0, 30],
+        "start": [
+          0,
+          30
+        ],
         "templates": [
           {
             "name": "platform",
@@ -1046,14 +1101,23 @@
           {
             "template": "edge",
             "name": "edge-right",
-            "xy": [8000, 64]
+            "xy": [
+              8000,
+              64
+            ]
           },
           {
             "template": "edge",
             "name": "edge-right2",
-            "xy": [8000, 64],
+            "xy": [
+              8000,
+              64
+            ],
             "rotation": 1.4,
-            "scale": [2, 1.5]
+            "scale": [
+              2,
+              1.5
+            ]
           },
           {
             "template": "castle_mb",
@@ -1061,6 +1125,19 @@
               -350,
               260
             ]
+          },
+          {
+            "template": "sensor",
+            "xy": [ 0, 30 ],
+            "trigger": {
+              "type": "collision",
+              "text": "You should seek the\nhan-shi Kendo master.\nHe will train you until\nyou achieve the\nsho-dan level.",
+              "textposition": [
+                -20,
+                600
+              ],
+              "questId": 202
+            }
           }
         ]
       }
