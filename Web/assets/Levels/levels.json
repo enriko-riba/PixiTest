@@ -1018,7 +1018,6 @@
       "audioTrack": 2,
       "parallax": [
         {
-          "index": 0,
           "name": "Far",
           "parallaxFactor": 0.5,
           "y": 0,
@@ -1027,7 +1026,19 @@
           ]
         },
         {
-          "index": 1,
+          "name": "Mid",
+          "parallaxFactor": 0.6,
+          "y": 25,
+          "scale": 1.2,
+          "tiles": [
+            "assets/_distribute/trees01.png",
+            "assets/_distribute/trees02.png",
+            "assets/_distribute/trees03.png",
+            "assets/_distribute/trees04.png",
+            "assets/_distribute/trees05.png"
+          ]
+        },
+        {
           "name": "Near",
           "parallaxFactor": 0.7,
           "y": 5,
@@ -1041,7 +1052,6 @@
           ]
         },
         {
-          "index": 2,
           "name": "Ground",
           "parallaxFactor": 1,
           "y": -90,
@@ -1122,7 +1132,7 @@
           {
             "template": "castle_mb",
             "xy": [
-              -350,
+              -355,
               260
             ]
           },

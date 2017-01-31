@@ -341,7 +341,6 @@ export interface ILevel {
 }
 
 export interface IParallaxDefinition {
-    index: number;
     name: string;
     parallaxFactor: number;
     y: number;
