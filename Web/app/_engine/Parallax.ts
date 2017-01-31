@@ -15,7 +15,7 @@ export class Parallax extends PIXI.Container {
     /**
      *   Creates a new ParalaxSprite instance.
      */
-    constructor(size?: PIXI.Point, parallaxFactor?:number, private textureScale?:number) {
+    constructor(size?: PIXI.Point, parallaxFactor?: number, private textureScale?: number) {
         super();
         this.ViewPortSize = size || new PIXI.Point(100, 100);
         this.parallaxFactor = parallaxFactor || 1;
@@ -49,27 +49,37 @@ export class Parallax extends PIXI.Container {
 
         var totalWidth = 0;
         var index = 0;
-        while (totalWidth <= this.viewPortSize.x || this.spriteBuffer.length < 3) {
-            for (var i: number = 0; i < textures.length; i++) {
-                var t: PIXI.Texture;
-                if (typeof textures[i] === "string") {
-                    t = PIXI.loader.resources[textures[i] as string].texture;
-                } else {
-                    t = textures[i] as PIXI.Texture;
-                }
-                t.rotate = 8;
-                var spr = new PIXI.Sprite(t);
-                spr.x = totalWidth;
-                spr.scale.set(this.textureScale, this.textureScale);
-                this.spriteBuffer.push(spr);
-                this.addChild(spr);
+        let len = textures.length - 1;
+        while (totalWidth <= this.viewPortSize.x || this.spriteBuffer.length < 3 || this.spriteBuffer.length < textures.length) {
 
-                //  if sprite is inside VP add & update last index
-                if (spr.x < this.viewPortSize.x) {
-                    this.endIDX = index;
-                }
-                totalWidth += t.width;
-                index++;
+            //  get the texture
+            var t: PIXI.Texture;
+            if (typeof textures[index] === "string") {
+                t = PIXI.loader.resources[textures[index] as string].texture;
+            } else {
+                t = textures[index] as PIXI.Texture;
+            }
+            t.rotate = 8;
+
+            // create a sprite
+            var spr = new PIXI.Sprite(t);
+            spr.x = totalWidth;
+            spr.scale.set(this.textureScale, this.textureScale);
+            this.spriteBuffer.push(spr);
+            this.addChild(spr);
+
+            //  if sprite is inside VP add & update last index
+            if (spr.x < this.viewPortSize.x) {
+                this.endIDX = index;
+            }
+
+            //  update 
+            totalWidth += spr.width;// t.width;
+            console.log(`${t.baseTexture.imageUrl} -> width: ${t.width} spr width: ${spr.width}, total width: ${totalWidth}`);
+
+            index++;
+            if (index > len) {
+                index = 0;
             }
         }
     }
@@ -81,7 +91,7 @@ export class Parallax extends PIXI.Container {
         var delta: number = this.worldPosition - newPositionX;
         var parallaxDistance: number = delta * (1 - this.parallaxFactor);
 
-        //  update sprite positions    
+        //  update sprite positions
         for (var i = 0, len = this.children.length; i < len; i++) {
             let spr: PIXI.Sprite = this.children[i] as PIXI.Sprite;
             spr.x -= parallaxDistance;
@@ -91,25 +101,25 @@ export class Parallax extends PIXI.Container {
         //-------------------------------------
         //  remove sprites outside viewport
         //-------------------------------------
-        if (delta < 0) {
-            //  check for removals from left side
-            if (firstSpr.x + firstSpr.width < (this.worldPosition - this.halfSizeX)) {
-                firstSpr.visible = false;
-                this.startIDX++;
-                if (this.startIDX >= this.spriteBuffer.length) {
-                    this.startIDX = 0;
-                }
-            }
-        } else {
-            //  check for removals from right side
-            if (lastSpr.x > (this.worldPosition + this.halfSizeX)) {
-                lastSpr.visible = false;
-                this.endIDX--;
-                if (this.endIDX < 0) {
-                    this.endIDX = this.spriteBuffer.length - 1;
-                }
-            }
-        }
+        //if (delta < 0) {
+        //    //  check for removals from left side
+        //    if (firstSpr.x + firstSpr.width < (this.worldPosition - this.halfSizeX)) {
+        //        firstSpr.visible = false;
+        //        this.startIDX++;
+        //        if (this.startIDX >= this.spriteBuffer.length) {
+        //            this.startIDX = 0;
+        //        }
+        //    }
+        //} else {
+        //    //  check for removals from right side
+        //    if (lastSpr.x > (this.worldPosition + this.halfSizeX)) {
+        //        lastSpr.visible = false;
+        //        this.endIDX--;
+        //        if (this.endIDX < 0) {
+        //            this.endIDX = this.spriteBuffer.length - 1;
+        //        }
+        //    }
+        //}
 
         this.worldPosition = newPositionX;
 
