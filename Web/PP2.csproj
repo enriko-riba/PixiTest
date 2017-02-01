@@ -140,8 +140,11 @@
     <None Include="assets\Images\background\trees06.png" />
     <None Include="assets\Images\background\trees07.png" />
     <None Include="assets\Images\background\trees08.png" />
+    <Content Include="assets\Images\background\front01.png" />
     <Content Include="assets\Images\Gui\gui_fs_enter.png" />
     <Content Include="assets\Images\Gui\gui_fs_exit.png" />
+    <Content Include="assets\Images\Mobs\mob_skelbride01.png" />
+    <Content Include="assets\Images\Mobs\mob_slime01.png" />
     <Content Include="assets\Images\Objects\balloon-vedran.png" />
     <Content Include="assets\Images\Objects\balloon_01.png" />
     <Content Include="assets\Images\Objects\balloon_basket_01.png" />
@@ -247,6 +250,7 @@
     <TypeScriptCompile Include="app\Game\HeroCharacter.ts" />
     <TypeScriptCompile Include="app\Game\Hud.ts" />
     <TypeScriptCompile Include="app\Game\CutScene.ts" />
+    <TypeScriptCompile Include="app\Game\Mob.ts" />
     <TypeScriptCompile Include="app\Game\Platform.ts" />
     <TypeScriptCompile Include="app\Game\Lava.ts" />
     <TypeScriptCompile Include="app\Game\MovementController.ts" />
