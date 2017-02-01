@@ -234,8 +234,10 @@ export class LevelLoader {
         var dispObj: PIXI.DisplayObject;
         switch (definition.typeName) {
             case "Mob":
-                dispObj = new Mob(definition.texture as string);
-                (dispObj as any).typeName = "Mob";
+                let mob = new Mob(definition.texture as string);
+                mob.Anchor = new PIXI.Point(0.5, 0.5);
+                (mob as any).typeName = "Mob";
+                dispObj = mob;
                 break;
 
             case "Sensor":
@@ -251,7 +253,7 @@ export class LevelLoader {
                 });
                 aspr.PlayAnimation(definition.sequences[0].name, definition.fps);
                 aspr.Anchor = new PIXI.Point(0.5, 0.5);
-
+                (aspr as any).typeName = "AnimatedSprite";
                 dispObj = aspr;
                 break;
 
@@ -270,6 +272,7 @@ export class LevelLoader {
                     definition.scale = [1, -1];
 
                 spr.pivot.set(definition.pivot);
+                (spr as any).typeName = "Sprite";
                 dispObj = spr;
                 break;
 
@@ -338,7 +341,16 @@ export class LevelLoader {
             var shape: p2.Shape;
             switch (definition.shape) {
                 case "Circle":
-                    var radius = definition.size ? definition.size[0] : dispObjAsAny.width;
+                    let radius = 32;
+                    if (definition.size) {
+                        if (definition.size.constructor === Array) {
+                            radius = definition.size[0];
+                        } else {
+                            radius = definition.size as number;
+                        }
+                    } else {
+                        radius = dispObjAsAny.width;
+                    }
                     shape = new p2.Circle({ radius: radius });
                     break;
 
@@ -427,7 +439,7 @@ export interface IBodyDefinition {
     shape: string;
     type: number;
     xy: number[];
-    size?: number[];
+    size?: number[] | number;
     mass: number;
     angle: number;
     material?: string;
