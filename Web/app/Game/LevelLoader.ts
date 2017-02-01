@@ -5,6 +5,7 @@ import { Bumper } from "./Bumper";
 import { Lava } from "./Lava";
 import { Platform } from "./Platform";
 import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
+import { Mob } from "./Mob";
 
 export class LevelLoader {
 
@@ -39,6 +40,29 @@ export class LevelLoader {
             var templates = root.templates.concat(level.map.templates);
 
             level.map.entities.forEach((entity: IMapEntity, idx, arr) => {
+                var entityTemplate = templates.filter((item, idx, arr) => item.name === entity.template);
+                if (entityTemplate && entityTemplate.length > 0) {
+                    var template = entityTemplate[0];
+                    var temp = $.extend(true, {}, template.displayObject);
+                    var displayObjectDefinition = $.extend(temp, entity);
+
+                    if (displayObjectDefinition.texture) {
+                        if (typeof displayObjectDefinition.texture === "string") {
+                            assets.push(displayObjectDefinition.texture);
+                        } else {
+                            assets = assets.concat(displayObjectDefinition.texture);
+                        }
+                    }
+
+                    if (displayObjectDefinition.sequences) {
+                        displayObjectDefinition.sequences.forEach((item) => {
+                            assets.push(item.texture);
+                        });
+                    }
+                }
+            });
+
+            level.map.NPC.forEach((entity: IMobEntity, idx, arr) => {
                 var entityTemplate = templates.filter((item, idx, arr) => item.name === entity.template);
                 if (entityTemplate && entityTemplate.length > 0) {
                     var template = entityTemplate[0];
@@ -129,30 +153,77 @@ export class LevelLoader {
         //  create display/physics object pairs
         //--------------------------------------
         level.map.entities.forEach((entity: IMapEntity, idx, arr) => {
-            var entityTemplate = templates.filter((item, idx, arr) => item.name === entity.template);
-            if (entityTemplate && entityTemplate.length > 0) {
-                var template = entityTemplate[0];
-                var temp = $.extend(true, {}, template.displayObject);
-                var displayObjectDefinition = $.extend(temp, entity);
-                var bodyDefinition = $.extend(entity, template.body);
-                var dispObj: PIXI.DisplayObject = this.buildDisplayObject(displayObjectDefinition);
-                dispObj.name = entity.name;
-                (dispObj as any).templateName = template.name;
-                var p2body: p2.Body = this.buildPhysicsObject(bodyDefinition, dispObj);
-                (p2body as any).DisplayObject = dispObj;
+            let defs = this.GetTemplates(templates, entity);
 
-                if (template.trigger || displayObjectDefinition.trigger) {
-                    var temp = $.extend(true, {}, template.trigger);
-                    (p2body as any).Trigger = $.extend(true, temp, displayObjectDefinition.trigger);
-                }
+            //  display object
+            var dispObj: PIXI.DisplayObject = this.buildDisplayObject(defs.doDef);
+            dispObj.name = entity.name;
+            (dispObj as any).templateName = defs.templateName;
 
-                result.entities.push(p2body);
-            } else {
-                throw `Entity template: '${entity.template}' not found!`;
+             //  body
+            var p2body: p2.Body = this.buildPhysicsObject(defs.bdDef, dispObj);
+            (p2body as any).DisplayObject = dispObj;
+
+            //  trigger
+            if (defs.trigger) {
+                (p2body as any).Trigger = defs.trigger;
             }
+            result.entities.push(p2body);
+        });
+
+        level.map.NPC.forEach((entity: IMobEntity, idx, arr) => {
+            let defs = this.GetTemplates(templates, entity);
+
+            //  display object
+            var dispObj: PIXI.DisplayObject = this.buildDisplayObject(defs.doDef);
+            dispObj.name = entity.name;
+            (dispObj as any).templateName = defs.templateName;
+
+            //  body
+            var p2body: p2.Body = this.buildPhysicsObject(defs.bdDef, dispObj);
+            (p2body as any).DisplayObject = dispObj;
+
+            //  trigger
+            if (defs.trigger) {
+                (p2body as any).Trigger = defs.trigger;
+            }
+            result.entities.push(p2body);
         });
         result.start = level.map.start;
         return result;
+    }
+
+   /**
+    * Returns an object containing extracted display object and body definitions.
+    * @param templates
+    * @param entity
+    */
+    private GetTemplates(templates: Array<any>, entity: IMapEntity | IMobEntity) {
+        let displayObjectDefinition = null;
+        let bodyDefinition = null;
+
+        var entityTemplate = templates.filter((item, idx, arr) => item.name === entity.template);
+        if (entityTemplate && entityTemplate.length > 0) {
+
+            var template = entityTemplate[0];
+            var temp = $.extend(true, {}, template.displayObject);
+            displayObjectDefinition = $.extend(temp, entity);
+            bodyDefinition = $.extend(entity, template.body);
+
+            let triggerTemplate = undefined;
+            if (template.trigger || displayObjectDefinition.trigger) {
+                triggerTemplate = $.extend(true, {}, template.trigger);
+                triggerTemplate = $.extend(true, triggerTemplate, displayObjectDefinition.trigger)
+            }
+            return {
+                templateName: template.name,
+                doDef: displayObjectDefinition,
+                bdDef: bodyDefinition,
+                trigger: triggerTemplate
+            };
+        }
+
+        throw `Template ${entity.template} not found!`;
     }
 
     /**
@@ -162,6 +233,10 @@ export class LevelLoader {
     private buildDisplayObject(definition: IDisplayObjectDefinition): PIXI.DisplayObject {
         var dispObj: PIXI.DisplayObject;
         switch (definition.typeName) {
+            case "Mob":
+                dispObj = new Mob(definition.texture as string);
+                (dispObj as any).typeName = "Mob";
+                break;
 
             case "Sensor":
                 dispObj = new PIXI.DisplayObject();
@@ -258,7 +333,7 @@ export class LevelLoader {
                 damping: definition.damping || 0.1,
             };
             body = new p2.Body(options);
-            body.type = definition.type;
+            body.type = definition.type || p2.Body.KINEMATIC;
             var dispObjAsAny: any = dispObj as any;
             var shape: p2.Shape;
             switch (definition.shape) {
@@ -410,11 +485,21 @@ export interface IMapEntity {
     name?: string;
 }
 
+export interface IMobEntity {
+    template: string;
+    xy?: number[];
+    scale?: number[];    
+    texture?: string;
+    interactionType?: number;
+    name?: string;
+    attributes: number[]
+}
+
 export interface ILevelMap {
     start: number[];
     templates: ITemplate[];
     entities: IMapEntity[];
-    NPC: any[];
+    NPC: IMobEntity[];
 }
 
 export interface ILevelDefinition {

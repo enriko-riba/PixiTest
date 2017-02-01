@@ -75,7 +75,7 @@ export class Parallax extends PIXI.Container {
 
             //  update 
             totalWidth += spr.width;// t.width;
-            console.log(`${t.baseTexture.imageUrl} -> width: ${t.width} spr width: ${spr.width}, total width: ${totalWidth}`);
+           // console.log(`${t.baseTexture.imageUrl} -> width: ${t.width} spr width: ${spr.width}, total width: ${totalWidth}`);
 
             index++;
             if (index > len) {

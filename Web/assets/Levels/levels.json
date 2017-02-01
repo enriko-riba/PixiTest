@@ -168,6 +168,19 @@
       "body": {
         "shape": "Box"
       }
+    },
+    {
+      "name": "mob_short",
+      "displayObject": {
+        "typeName": "Mob"
+      },
+      "body": {
+        "shape": "Circle",
+        "size": [
+          13,
+          16
+        ]
+      }      
     }
   ],
   "levels": [
@@ -176,8 +189,7 @@
       "name": "Intro",
       "audioTrack": 1,
       "parallax": [
-        {
-          "index": 0,
+        {          
           "name": "Far",
           "parallaxFactor": 0.5,
           "y": 0,
@@ -185,8 +197,7 @@
             "assets/_distribute/Mountains.png"
           ]
         },
-        {
-          "index": 1,
+        {         
           "name": "Near",
           "parallaxFactor": 0.7,
           "y": 5,
@@ -197,8 +208,7 @@
             "assets/_distribute/trees08.png"
           ]
         },
-        {
-          "index": 2,
+        {          
           "name": "NearSmall",
           "parallaxFactor": 0.75,
           "y": 5,
@@ -212,8 +222,7 @@
             "assets/_distribute/trees08.png"
           ]
         },
-        {
-          "index": 3,
+        {          
           "name": "Ground",
           "parallaxFactor": 1,
           "y": -90,
@@ -225,7 +234,7 @@
       "map": {
         "start": [
           1600,
-          36
+          24
         ],
         "templates": [
           {
@@ -333,11 +342,14 @@
             "xy": [
               2050,
               64
-            ],
+            ]
+          },
+          {
+            "template": "sensor",
+            "xy": [ 2050, 128 ],
             "trigger": {
               "questId": 2,
-              "type": "distance",
-              "distance": 88,
+              "type": "collision",
               "text": "Excellent,\nTo run hold shift.\nIf running you can\njump higher and longer!",
               "textposition": [
                 -300,
@@ -440,7 +452,7 @@
       "map": {
         "start": [
           -350,
-          30
+          24
         ],
         "templates": [
           {
@@ -1058,12 +1070,29 @@
           "tiles": [
             "assets/_distribute/ground.png"
           ]
+        },
+        {
+          "name": "Front",
+          "parallaxFactor": 0.85,
+          "y": 30,
+          "tiles": [
+            "assets/_distribute/front01.png"
+          ]
         }
       ],
+
       "map": {
         "start": [
           0,
-          30
+          24
+        ],
+        "NPC": [
+          {
+            "template": "mob_short",
+            "name": "slime",
+            "xy": [ 300, 24 ],
+            "texture": "assets/_distribute/mob_slime01.png"
+          }
         ],
         "templates": [
           {
@@ -1123,7 +1152,7 @@
               8000,
               64
             ],
-            "rotation": 1.4,
+            "rotation": 1.58,
             "scale": [
               2,
               1.5
@@ -1132,7 +1161,7 @@
           {
             "template": "castle_mb",
             "xy": [
-              -355,
+              -340,
               260
             ]
           },
