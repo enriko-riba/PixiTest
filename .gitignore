@@ -256,3 +256,4 @@ Web/app/**/*.js
 Web/Scripts/main-config.js
 Web/assets/_distribute/*.*
 Web/Logs/*.*
+Web/app.config
