@@ -34,28 +34,8 @@
           {
             "name": "spin",
             "texture": "assets/_distribute/coins.png",
-            "frames": [
-              0,
-              1,
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9,
-              10,
-              11,
-              12,
-              13,
-              14,
-              15
-            ],
-            "framesize": [
-              24,
-              24
-            ]
+            "frames": [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ],
+            "framesize": [24,24]
           }
         ]
       },
@@ -176,10 +156,7 @@
       },
       "body": {
         "shape": "Circle",
-        "size": [
-          13,
-          16
-        ]
+        "size": 11
       }      
     }
   ],
@@ -1082,16 +1059,14 @@
       ],
 
       "map": {
-        "start": [
-          0,
-          24
-        ],
+        "start": [ 0, 24 ],
         "NPC": [
           {
             "template": "mob_short",
             "name": "slime",
-            "xy": [ 300, 24 ],
-            "texture": "assets/_distribute/mob_slime01.png"
+            "xy": [ 300, 20 ],
+            "texture": "assets/_distribute/mob_slime01.png",
+            "AI": "Basic"
           }
         ],
         "templates": [
