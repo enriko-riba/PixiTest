@@ -1,4 +1,5 @@
 ﻿import * as p2 from "p2";
+import * as Global from "app/Game/Global";
 import { Dictionary } from "app/_engine/Dictionary";
 
 /**
@@ -16,7 +17,6 @@ export class WorldP2 {
     private world: p2.World;
     private ground: p2.Body;
 
-    private playerPosition: PIXI.Point;
     private materials: Dictionary<p2.Material>;
 
     private contactPairs: Array<ContactPair> = [];
@@ -30,14 +30,13 @@ export class WorldP2 {
     private readonly fixedTimeStep = 1 / 60; // seconds
 
 
-    constructor(playerPosition: PIXI.Point) {
+    constructor() {
         this.world = new p2.World({
             gravity: [0, -1500]
         });
         this.world.sleepMode = p2.World.BODY_SLEEPING;
 
         this.setupMaterials();
-        this.playerPosition = playerPosition;
 
         // create an infinite ground plane body
         this.ground = new p2.Body({
@@ -51,17 +50,17 @@ export class WorldP2 {
         //  player body
         this.playerBody = new p2.Body({
             mass: 40,
-            position: [playerPosition.x, playerPosition.y],
+            position: [Global.UserInfo.position.x, Global.UserInfo.position.y],
             fixedRotation: true,
         });
         shape = new p2.Circle({
-            radius: 24,
+            radius: 25,
         });
         shape.material = this.materials.get("player");
         this.playerBody.addShape(shape);
         this.world.addBody(this.playerBody);
 
-        this.world.solver.iterations = 25;
+        this.world.solver.iterations = 30;
         this.world.on("beginContact", this.beginContact, this);
         this.world.on("endContact", this.endContact, this);
     }
@@ -90,8 +89,10 @@ export class WorldP2 {
     public update(dt: number): void {
         //console.log("worldp2 update() dt: " + dt/1000);
         this.world.step(this.fixedTimeStep, dt/1000, 20);
-        this.playerPosition.x = this.playerBody.interpolatedPosition[0];
-        this.playerPosition.y = this.playerBody.interpolatedPosition[1];
+        //this.playerPosition.x = this.playerBody.interpolatedPosition[0];
+        //this.playerPosition.y = this.playerBody.interpolatedPosition[1];
+        Global.UserInfo.position.x = this.playerBody.interpolatedPosition[0];
+        Global.UserInfo.position.y = this.playerBody.interpolatedPosition[1];
     }
 
     /**
@@ -181,15 +182,15 @@ export class WorldP2 {
     /**
      * Returns the players x position.
      */
-    public get playerX(): number {
-        return this.playerPosition.x;
-    }
+    //public get playerX(): number {
+    //    return this.playerPosition.x;
+    //}
     /**
      * Returns the players x position.
      */
-    public get playerY(): number {
-        return this.playerPosition.y;
-    }
+    //public get playerY(): number {
+    //    return this.playerPosition.y;
+    //}
 
     private beginContact = (evt: any) => {
 

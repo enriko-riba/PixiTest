@@ -35,7 +35,7 @@
             "name": "spin",
             "texture": "assets/_distribute/coins.png",
             "frames": [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ],
-            "framesize": [24,24]
+            "framesize": [ 24, 24 ]
           }
         ]
       },
@@ -157,8 +157,8 @@
       "body": {
         "shape": "Circle",
         "size": 11
-      }      
-    }
+      }
+    }    
   ],
   "levels": [
     {
@@ -1066,10 +1066,12 @@
             "name": "slime",
             "xy": [ 300, 20 ],
             "texture": "assets/_distribute/mob_slime01.png",
-            "ai": "Basic"
+            "ai": "basic_static",
+            "attributes": [ 20, 15, 2000, 10 ],
+            "attack": "assets/_distribute/slime_atk.png"
           }
         ],
-        "templates": [
+        "templates": [         
           {
             "name": "platform",
             "displayObject": {
@@ -1109,6 +1111,18 @@
               "type": 2,
               "material": "box_default"
             }
+          },
+          {
+            "name": "kendo-master",
+            "displayObject": {
+              "typeName": "Sprite",
+              "texture": "assets/_distribute/kendo-master.png"
+            },
+            "body": {
+              "shape": "Box",
+              "type": 2,
+              "material": "box_default"
+            }
           }
         ],
         "entities": [
@@ -1135,10 +1149,11 @@
           },
           {
             "template": "castle_mb",
-            "xy": [
-              -340,
-              260
-            ]
+            "xy": [ -340, 260 ]
+          },
+          {
+            "template": "kendo-master",
+            "xy": [1300, 100]
           },
           {
             "template": "sensor",

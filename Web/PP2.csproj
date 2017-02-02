@@ -149,7 +149,9 @@
     <Content Include="assets\Images\Objects\balloon_01.png" />
     <Content Include="assets\Images\Objects\balloon_basket_01.png" />
     <Content Include="assets\Images\Objects\boulder.png" />
+    <Content Include="assets\Images\Objects\kendo-master.png" />
     <Content Include="assets\Images\Objects\sign-exit.png" />
+    <Content Include="assets\Images\Objects\slime_atk.png" />
     <Content Include="assets\Unused\Portrait\port-isakoman.png" />
     <Content Include="assets\Unused\Portrait\port-ivucicevic.png" />
     <Content Include="assets\Unused\Portrait\port-mbanovic.png" />
@@ -202,7 +204,6 @@
     <Content Include="ms-icon-150x150.png" />
     <Content Include="ms-icon-310x310.png" />
     <Content Include="ms-icon-70x70.png" />
-    <Content Include="Scripts\hammer.min.js" />
     <Content Include="Scripts\howler.min.js" />
     <Content Include="Scripts\jquery-3.1.1.js" />
     <Content Include="Scripts\jquery-3.1.1.min.js" />
@@ -251,6 +252,7 @@
     <TypeScriptCompile Include="app\Game\Mobs\AI.ts" />
     <TypeScriptCompile Include="app\Game\Mobs\BasicStaticAI.ts" />
     <TypeScriptCompile Include="app\Game\Mobs\Mob.ts" />
+    <TypeScriptCompile Include="app\Game\Particle.ts" />
     <TypeScriptCompile Include="app\Game\Platform.ts" />
     <TypeScriptCompile Include="app\Game\Lava.ts" />
     <TypeScriptCompile Include="app\Game\MovementController.ts" />
@@ -281,11 +283,9 @@
     <TypeScriptCompile Include="app\_framework\koBindings.ts" />
     <TypeScriptCompile Include="app\_framework\ModalDialog.ts" />
     <TypeScriptCompile Include="app\_framework\SpaApplication.ts" />
-    <Content Include="Scripts\hammer-time.min.js" />
     <TypeScriptCompile Include="Scripts\main-config.ts" />
     <TypeScriptCompile Include="Scripts\typings\bootstrap\index.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\facebook\fbsdk.d.ts" />
-    <TypeScriptCompile Include="Scripts\typings\hammerjs\Hammerjs.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\howler\howler.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\knockout.amd.helpers\knockout-amd-helpers.d.ts" />

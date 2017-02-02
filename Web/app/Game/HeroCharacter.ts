@@ -5,7 +5,7 @@ import { MovementState } from "./MovementState";
 import { createParticleEmitter } from "./InGameScene";
 import { PlayerStats, StatType } from "./PlayerStats";
 import * as ko from "knockout";
-
+import * as Global from "./Global";
 
 
 export var BURN_TOPIC = "burn_event";
@@ -112,8 +112,10 @@ export class HeroCharacter extends AnimatedSprite {
      */
     public update = (dt: number) => {
 
-        this.position.x = this.wp2.playerX;
-        this.position.y = this.wp2.playerY;
+        //this.position.x = this.wp2.playerX;
+        //this.position.y = this.wp2.playerY;
+        this.position.x = Global.UserInfo.position.x;
+        this.position.y = Global.UserInfo.position.y;
 
         if (this.IsInteractive) {
             this.movementCtrl.update(dt);
@@ -212,7 +214,7 @@ export class HeroCharacter extends AnimatedSprite {
             smoke.alpha = 0.7;
             smoke.rotation = Math.random() * Math.PI;
             this.worldContainer.addChild(smoke);
-            smoke.PlayAnimation("smoke", 5);
+            smoke.PlayAnimation("smoke", 5, false);
         }
     }
 }

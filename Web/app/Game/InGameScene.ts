@@ -392,7 +392,7 @@ export class InGameScene extends Scene {
         //--------------------------------------
         //  setup physics subsystem
         //--------------------------------------
-        this.wp2 = new WorldP2(new PIXI.Point(0, 0));
+        this.wp2 = new WorldP2();
         this.hero.SetWorldP2(this.wp2);
         this.worldContainer.addChild(this.hero);
         this.questMngr = new QuestManager(this, this.wp2, this.hero);
@@ -477,7 +477,7 @@ export class InGameScene extends Scene {
             return;
         } else {
             this.snd.playTrack(lvl.audioTrack||0);
-            this.LoadLevel(lvl);
+            this.loadLevel(lvl);
             this.currentLevel = lvl;
         }
     };
@@ -486,7 +486,7 @@ export class InGameScene extends Scene {
      * Loads the level and adds all objects to the scene.
      * @param id
      */
-    public LoadLevel(lvl: ILevel) {
+    private loadLevel(lvl: ILevel) {
 
         //--------------------------------------
         //  remove all entities except hero
@@ -532,6 +532,8 @@ export class InGameScene extends Scene {
 
         //  set start for player
         this.wp2.playerBody.position = lvl.start;
+        Global.UserInfo.position.x = lvl.start[0];
+        Global.UserInfo.position.y = lvl.start[1];
     }
 
     /**

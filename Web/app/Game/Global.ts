@@ -64,11 +64,13 @@ export var UserInfo: {
             gold: number;
             dust: number;
             gamelevel: number;
+            position: PIXI.Point;
         } = {
                 id: 0,
                 name: "",
                 gold: 0,
                 dust: 0,
-                gamelevel: 0
+                gamelevel: 0,
+                position: new PIXI.Point()
             };
 

@@ -16,8 +16,8 @@ require.config({
         "howler": "Scripts/howler.min",
 
         "tween": "../../Scripts/Tween",
-        "hammertime": "../../Scripts/hammer-time.min",
-        "hammerjs": "../../Scripts/hammer.min",
+        //"hammertime": "../../Scripts/hammer-time.min",
+        //"hammerjs": "../../Scripts/hammer.min",
         "p2": "../../Scripts/p2",
 
         "FB": "//connect.facebook.net/en_US/sdk",

@@ -63,8 +63,12 @@ export class LevelLoader {
             });
 
             level.map.NPC.forEach((entity: IMobEntity, idx, arr) => {
+
+                //  concat attack (string | string[]
+                assets = assets.concat(entity.attack);
+
                 var entityTemplate = templates.filter((item, idx, arr) => item.name === entity.template);
-                if (entityTemplate && entityTemplate.length > 0) {
+                if (entityTemplate && entityTemplate.length > 0) {                    
                     var template = entityTemplate[0];
                     var temp = $.extend(true, {}, template.displayObject);
                     var displayObjectDefinition = $.extend(temp, entity);
@@ -82,7 +86,7 @@ export class LevelLoader {
                             assets.push(item.texture);
                         });
                     }
-                }
+                }                
             });
         }
 
@@ -193,6 +197,7 @@ export class LevelLoader {
             // attributes and AI
             mobDispObj.Attributes = entity.attributes || [];
             mobDispObj.CreateAI(entity.ai || "basic_static");
+            mobDispObj.AtkTexture = entity.attack;
 
             //  body
             var p2body: p2.Body = this.buildPhysicsObject(defs.bdDef, mobDispObj);
@@ -523,6 +528,7 @@ export interface IMobEntity {
     name?: string;
     attributes: number[];
     ai: string;
+    attack: string | string[];
 }
 
 export interface ILevelMap {

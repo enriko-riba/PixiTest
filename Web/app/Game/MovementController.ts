@@ -3,9 +3,9 @@ import { MovementState } from "./MovementState";
 import { WorldP2 } from "./WorldP2";
 import { HeroCharacter } from "./HeroCharacter";
 import * as Global from "./Global";
-import * as Hammer from "hammerjs";
 import * as ko from "knockout";
-import "../../Scripts/hammer-time.min";
+//import * as Hammer from "hammerjs";
+//import "../../Scripts/hammer-time.min";
 
 export var MOVE_TOPIC = "move_event";
 export interface IMoveEvent {

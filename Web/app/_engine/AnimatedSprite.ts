@@ -7,9 +7,9 @@ export class AnimatedSprite extends PIXI.Container {
     }
 
     private animations = new Dictionary<AnimationSequence>();
-    private currentSequence: AnimationSequence;
     private clip: PIXI.extras.AnimatedSprite = null;
-
+    protected currentSequence: AnimationSequence;
+    a
     public addAnimations(...sequences: Array<AnimationSequence>):void {
         sequences.forEach((seq: AnimationSequence, idx:number) => {
             this.animations.set(seq.sequenceName, seq);
@@ -21,13 +21,14 @@ export class AnimatedSprite extends PIXI.Container {
         });
     }
 
-    public PlayAnimation(name: string, fps?: number): void {
+    public PlayAnimation = (name: string, fps?: number, loop = true) :void => {
         if (!this.currentSequence || this.currentSequence.sequenceName !== name) {
-            this.currentSequence = this.animations.get(name);
             this.resetAnimation();
+            this.currentSequence = this.animations.get(name);
             this.createClip(this.currentSequence);
 
             this.Fps = fps || this.Fps;
+            this.clip.loop = loop;
             this.clip.play();
         }
     }
@@ -65,9 +66,10 @@ export class AnimatedSprite extends PIXI.Container {
         return this.clip.loop;
     }
     
-    private resetAnimation():void {
+    protected resetAnimation():void {
         if (this.clip) {
             this.clip.stop();
+            this.currentSequence = null;
         }
     }
     private createClip(sequence: AnimationSequence):void {
