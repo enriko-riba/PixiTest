@@ -8,6 +8,7 @@ export enum AtrType {
     Def,
 }
 
+
 /**
  * Represents a monster entity
  */
@@ -31,6 +32,15 @@ export class Mob extends AnimatedSprite {
     }
     public get Attributes(): number[] {
         return this.attributes;
+    }
+
+    public CreateAI(aiTypeName: string):void {
+        switch (aiTypeName.toLowerCase()) {
+            case "basic_static":
+                break;
+            case "basic":
+                break;
+        }
     }
 
     public update = (dt: number) => {
