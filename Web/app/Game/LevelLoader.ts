@@ -5,7 +5,7 @@ import { Bumper } from "./Bumper";
 import { Lava } from "./Lava";
 import { Platform } from "./Platform";
 import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
-import { Mob } from "./Mob";
+import { Mob } from "./Mobs/Mob";
 
 export class LevelLoader {
 
@@ -86,11 +86,15 @@ export class LevelLoader {
             });
         }
 
-        assets = LevelLoader.GetUniqueItems(assets);
+        assets = LevelLoader.getUniqueItems(assets);
         return assets;
     }
 
-    private static GetUniqueItems(arr) {
+    /**
+     * Returns a filtered array with unique only items from the input array
+     * @param arr 
+     */
+    private static getUniqueItems(arr) {
         var n = {}, r = [];
         for (var i = 0; i < arr.length; i++) {
             if (!n[arr[i]]) {
@@ -106,7 +110,9 @@ export class LevelLoader {
      * @param name
      * @param container
      */
-    public BuildLevel(id: number): ILevel {
+    public buildLevel(id: number): ILevel {
+
+        //  find the level by its id
         var levelDefinition: ILevelDefinition = undefined;
         for (var i = 0; i < this.levels.length; i++) {
             if (this.levels[i].id === id) {
@@ -114,6 +120,8 @@ export class LevelLoader {
                 break;
             }
         }
+
+        //  create level objects
         var result: ILevel;
         if (levelDefinition) {
             if (levelDefinition.assets && levelDefinition.assets.length > 0) {
@@ -153,10 +161,10 @@ export class LevelLoader {
         //  create display/physics object pairs
         //--------------------------------------
         level.map.entities.forEach((entity: IMapEntity, idx, arr) => {
-            let defs = this.GetTemplates(templates, entity);
+            let defs = this.getTemplates(templates, entity);
 
             //  display object
-            var dispObj: PIXI.DisplayObject = this.buildDisplayObject(defs.doDef);
+            let dispObj: PIXI.DisplayObject = this.buildDisplayObject(defs.doDef);
             dispObj.name = entity.name;
             (dispObj as any).templateName = defs.templateName;
 
@@ -171,22 +179,31 @@ export class LevelLoader {
             result.entities.push(p2body);
         });
 
+        //--------------------------------------
+        //  create NPC's
+        //--------------------------------------
         level.map.NPC.forEach((entity: IMobEntity, idx, arr) => {
-            let defs = this.GetTemplates(templates, entity);
+            let defs = this.getTemplates(templates, entity);
 
             //  display object
-            var dispObj: PIXI.DisplayObject = this.buildDisplayObject(defs.doDef);
-            dispObj.name = entity.name;
-            (dispObj as any).templateName = defs.templateName;
+            let mobDispObj: Mob = this.buildDisplayObject(defs.doDef) as Mob;
+            mobDispObj.name = entity.name;
+            (mobDispObj as any).templateName = defs.templateName;
+
+            // attributes and AI
+            mobDispObj.Attributes = entity.attributes || [];
+            mobDispObj.CreateAI(entity.ai || "basic_static");
 
             //  body
-            var p2body: p2.Body = this.buildPhysicsObject(defs.bdDef, dispObj);
-            (p2body as any).DisplayObject = dispObj;
+            var p2body: p2.Body = this.buildPhysicsObject(defs.bdDef, mobDispObj);
+            (p2body as any).DisplayObject = mobDispObj;
 
             //  trigger
             if (defs.trigger) {
                 (p2body as any).Trigger = defs.trigger;
             }
+
+
             result.entities.push(p2body);
         });
         result.start = level.map.start;
@@ -198,7 +215,7 @@ export class LevelLoader {
     * @param templates
     * @param entity
     */
-    private GetTemplates(templates: Array<any>, entity: IMapEntity | IMobEntity) {
+    private getTemplates(templates: Array<any>, entity: IMapEntity | IMobEntity) {
         let displayObjectDefinition = null;
         let bodyDefinition = null;
 
@@ -504,7 +521,8 @@ export interface IMobEntity {
     texture?: string;
     interactionType?: number;
     name?: string;
-    attributes: number[]
+    attributes: number[];
+    ai: string;
 }
 
 export interface ILevelMap {

@@ -470,7 +470,7 @@ export class InGameScene extends Scene {
      */
     public StartLevel(levelId: number) {
         console.log("loading level " + levelId);
-        var lvl = this.levelLoader.BuildLevel(levelId);
+        var lvl = this.levelLoader.buildLevel(levelId);
 
         if (!lvl) {
             console.log("No more levels!!!");
