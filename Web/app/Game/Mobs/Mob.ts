@@ -1,6 +1,8 @@
 ﻿import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
 import { AI } from "./AI";
 import { BasicStaticAI } from "./BasicStaticAI";
+import { Bullet } from "../Bullet";
+import * as Global from "../Global";
 
 let FRAME_SIZE: number = 48;
 
@@ -24,7 +26,7 @@ export class Mob extends AnimatedSprite {
     private attributes: number[];
     private ai: AI;
     private direction: DirectionH;
-
+    private emitBullet: (textureName: string, position: PIXI.Point, damage: number)=> Bullet;
 
     constructor(private textureName: string) {
         super();
@@ -34,7 +36,11 @@ export class Mob extends AnimatedSprite {
         this.addAnimations(new AnimationSequence("latk", textureName, [6, 7, 8], FRAME_SIZE, FRAME_SIZE));
         this.addAnimations(new AnimationSequence("ratk", textureName, [9, 10 , 11], FRAME_SIZE, FRAME_SIZE));
         this.PlayAnimation("left", 2);   
-        this.direction = DirectionH.Left;     
+        this.direction = DirectionH.Left;  
+
+        //  borrow bullet emitter from in game scene
+        var igs = Global.sceneMngr.GetScene("InGame") as any;
+        this.emitBullet = igs.emitBullet;
     }
 
     public AtkTexture: string | string[];
@@ -80,6 +86,7 @@ export class Mob extends AnimatedSprite {
             //  TODO: animated sprite
         } else {
             //  sprite
+            this.emitBullet(this.AtkTexture as string, this.position, this.attributes[AtrType.Atk]);
         }
     }
 

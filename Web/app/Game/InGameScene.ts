@@ -14,7 +14,7 @@ import { MovementState } from "./MovementState";
 import { MOVE_TOPIC, IMoveEvent } from "./MovementController";
 import { SoundMan } from "./SoundMan";
 import { CutScene } from "./CutScene";
-
+import { Bullet } from "./Bullet";
 
 import "../../Scripts/pixi-particles";
 
@@ -221,6 +221,10 @@ export class InGameScene extends Scene {
         let now = Date.now() / 1000;
 
         switch (dispObj.interactionType) {
+            case 666: //    bullet
+                console.log("BUM ...bullet collision!");
+                break;
+
             case 1: //  small coin
                 playerStats.increaseStat(StatType.Coins, 1);
                 this.addCollectibleTween(dispObj);
@@ -277,6 +281,40 @@ export class InGameScene extends Scene {
         this.wp2.removeBody(body);
         body.DisplayObject = null;
     }
+
+
+    private bullets: Bullet[] = [];
+    public emitBullet = (textureName: string, position: PIXI.Point, damage: number): Bullet => {
+        let bullet = this.findDeadBullet();
+        if (!bullet) {
+            //  create new bullet
+            bullet = new Bullet(PIXI.loader.resources[textureName].texture, 200, 5, damage);
+            bullet.anchor.set(0.5);
+            bullet.scale.set(0.5);
+            this.bullets.push(bullet);
+            this.worldContainer.addChild(bullet);
+        }
+
+        bullet.position = position;
+        bullet.Direction = new PIXI.Point(Global.UserInfo.position.x - position.x, Global.UserInfo.position.y - position.y);
+        bullet.IsDead = false;
+
+
+        return bullet;
+    };
+
+    private findDeadBullet(): Bullet{
+        for (var i = 0, len = this.bullets.length; i < len; i++){
+            let blt = this.bullets[i];
+            if (blt.IsDead) {
+                return blt;
+            }
+        }
+        return null;
+    }
+
+
+
 
     /**
      * Starts an animation tween and removes the display object from scene.

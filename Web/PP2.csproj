@@ -252,7 +252,7 @@
     <TypeScriptCompile Include="app\Game\Mobs\AI.ts" />
     <TypeScriptCompile Include="app\Game\Mobs\BasicStaticAI.ts" />
     <TypeScriptCompile Include="app\Game\Mobs\Mob.ts" />
-    <TypeScriptCompile Include="app\Game\Particle.ts" />
+    <TypeScriptCompile Include="app\Game\Bullet.ts" />
     <TypeScriptCompile Include="app\Game\Platform.ts" />
     <TypeScriptCompile Include="app\Game\Lava.ts" />
     <TypeScriptCompile Include="app\Game\MovementController.ts" />
