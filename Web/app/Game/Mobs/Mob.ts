@@ -70,16 +70,20 @@ export class Mob extends AnimatedSprite {
         var currentSeq = this.currentSequence;
         var currentFps = this.Fps;
         this.resetAnimation();
+
+        if (this.direction == DirectionH.Left) {
+            console.log("playing animation latk  ", Date.now()/1000);
+            this.PlayAnimation("latk", 0.5, false);
+        } else {
+            console.log("playing animation ratk  ", Date.now()/1000);
+            this.PlayAnimation("ratk", 0.5, false);
+        }
+
         this.OnComplete = () => {
+            console.log("completed animation " + this.currentSequence.sequenceName, Date.now()/1000);
             this.OnComplete = null;
             this.PlayAnimation(currentSeq.sequenceName, currentFps);
         };
-
-        if (this.direction == DirectionH.Left) {
-            this.PlayAnimation("latk", 2, false);
-        } else {
-            this.PlayAnimation("ratk", 2, false);
-        }
 
         //  emit atk 
         if (this.AtkTexture.constructor === Array) {

@@ -223,6 +223,10 @@ export class InGameScene extends Scene {
         switch (dispObj.interactionType) {
             case 666: //    bullet
                 console.log("BUM ...bullet collision!");
+                let bullet: Bullet = dispObj as Bullet;
+                bullet.IsDead = true;
+                this.addInfoMessage(this.hero.position, `${bullet.damage} HP`);
+                this.hero.PlayerStats.increaseStat(StatType.HP, -bullet.damage);
                 break;
 
             case 1: //  small coin
@@ -287,23 +291,45 @@ export class InGameScene extends Scene {
     public emitBullet = (textureName: string, position: PIXI.Point, damage: number): Bullet => {
         let bullet = this.findDeadBullet();
         if (!bullet) {
+            console.log("creating new bullet...");
             //  create new bullet
             bullet = new Bullet(PIXI.loader.resources[textureName].texture, 200, 5, damage);
             bullet.anchor.set(0.5);
             bullet.scale.set(0.5);
             this.bullets.push(bullet);
             this.worldContainer.addChild(bullet);
+
+            //-----------------------------
+            //  create body (sensor shape)
+            //-----------------------------
+            let shape = new p2.Circle({ radius: bullet.width / 2 });
+            shape.sensor = true;
+            var options: p2.BodyOptions = {
+                mass: 0,
+                position: [position.x, position.y],
+                angle: 0,
+                fixedRotation: true,
+                angularDamping: 0.1,
+                damping: 0.1,
+            };
+            let body = new p2.Body(options);
+            body.type = p2.Body.KINEMATIC;
+            body.collisionResponse = false;
+            body.setDensity(0.0);
+            body.addShape(shape);
+            (body as any).DisplayObject = bullet;
+            bullet.body = body;
+
+            this.wp2.addBody(body);
         }
 
         bullet.position = position;
         bullet.Direction = new PIXI.Point(Global.UserInfo.position.x - position.x, Global.UserInfo.position.y - position.y);
         bullet.IsDead = false;
-
-
         return bullet;
     };
 
-    private findDeadBullet(): Bullet{
+    private findDeadBullet = (): Bullet => {
         for (var i = 0, len = this.bullets.length; i < len; i++){
             let blt = this.bullets[i];
             if (blt.IsDead) {

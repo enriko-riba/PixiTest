@@ -17,7 +17,7 @@ export class Bullet extends PIXI.Sprite {
      * @param ttl time to live in seconds
      * @param damage bullet hit damage
      */
-    constructor(texture: PIXI.Texture, velocity: number, ttl: number, private damage: number) {
+    constructor(texture: PIXI.Texture, velocity: number, ttl: number, public damage: number) {
         super(texture);
 
         this.velocity = velocity / 1000;
@@ -25,6 +25,8 @@ export class Bullet extends PIXI.Sprite {
         this.IsDead = false;
         this.interactionType = 666;
     }
+
+    public body: p2.Body;
 
     public set Direction(direction: PIXI.Point) {
         //  normalize movement vector
@@ -39,11 +41,20 @@ export class Bullet extends PIXI.Sprite {
     public set IsDead(value: boolean) {
         if (value != this.isDead) {
             this.isDead = value;
-            console.log("bullet is dead: " + value);
+            //console.log("bullet is dead: " + value);
 
-            //  if set to alive remember starttime
-            if (!this.isDead) {
+            //  if set to alive remember start time
+            if (this.isDead) {
+                if (this.body) {
+                    this.body.setZeroForce();
+                    this.body.velocity = [0, 0];
+                    this.body.position = [0, -10000];
+                }
+            } else {
                 this.startTime = Date.now() / 1000;
+                if (this.body) {
+                    this.body.position = [this.position.x, this.position.y];
+                }
             }
 
             //  fire OnDeath if needed
@@ -64,19 +75,19 @@ export class Bullet extends PIXI.Sprite {
 
 
     public onUpdate = (dt: number) => {
-        let now = Date.now() / 1000;
-        let ellapsed = now - this.startTime;
-        //console.log("now: " + now + ", alive: " + ellapsed);
 
         // TTL expiry
-        this.IsDead = this.ttl < ellapsed;
+        if (!this.isDead) {
+            let now = Date.now() / 1000;
+            let ellapsed = now - this.startTime;
+            this.IsDead = this.ttl < ellapsed;
+        }
 
         //  update position
         if (!this.isDead) {
             let distance = dt * this.velocity;
-            //  TODO: set body position to get collisions
-            this.x += (distance * this.direction.x);
-            this.y += (distance * this.direction.y);
+            this.body.position[0] += (distance * this.direction.x);
+            this.body.position[1] += (distance * this.direction.y);
         }
     }
 }
