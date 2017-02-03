@@ -1134,7 +1134,7 @@
             "name": "kendo-master",
             "displayObject": {
               "typeName": "Sprite",
-              "texture": "assets/_distribute/kendo-master.png"
+              "texture": "assets/_distribute/kendo-master-dojo.png"
             },
             "body": {
               "shape": "Box",
@@ -1185,7 +1185,7 @@
           },
           {
             "template": "kendo-master",
-            "xy": [ 2300, 100 ]
+            "xy": [ 2600, 140 ]
           }
         ]
       }
