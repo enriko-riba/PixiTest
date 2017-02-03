@@ -2,6 +2,7 @@
 import { AI } from "./AI";
 import { BasicStaticAI } from "./BasicStaticAI";
 import { Bullet } from "../Bullet";
+import { SoundMan } from "../SoundMan";
 import * as Global from "../Global";
 
 let FRAME_SIZE: number = 48;
@@ -27,6 +28,7 @@ export class Mob extends AnimatedSprite {
     private ai: AI;
     private direction: DirectionH;
     private emitBullet: (textureName: string, position: PIXI.Point, damage: number)=> Bullet;
+    private snd: SoundMan;
 
     constructor(private textureName: string) {
         super();
@@ -38,9 +40,10 @@ export class Mob extends AnimatedSprite {
         this.PlayAnimation("left", 2);   
         this.direction = DirectionH.Left;  
 
-        //  borrow bullet emitter from in game scene
+        //  borrow bullet emitter and Soundman from in game scene
         var igs = Global.sceneMngr.GetScene("InGame") as any;
         this.emitBullet = igs.emitBullet;
+        this.snd = igs.snd;
     }
 
     public AtkTexture: string | string[];
@@ -70,12 +73,12 @@ export class Mob extends AnimatedSprite {
         var currentSeq = this.currentSequence;
         var currentFps = this.Fps;
 
+        this.snd.atkMagic1();
         if (this.direction == DirectionH.Left) {
-            console.log("playing animation latk  ", Date.now()/1000);
-            this.PlayAnimation("latk", 4, false);
+            this.PlayAnimation("latk", 10, false);
         } else {
-            console.log("playing animation ratk  ", Date.now()/1000);
-            this.PlayAnimation("ratk", 4, false);
+            //this.snd.atkMagic1();
+            this.PlayAnimation("ratk", 10, false);
         }
 
         this.OnComplete = (seq: AnimationSequence) => {

@@ -120,9 +120,12 @@
     <Content Include="app\Home\Home.html" />
     <Content Include="app\Login\Login.html" />
     <Content Include="assets\Audio\Bumbling-Burglars_Looping.mp3" />
+    <Content Include="assets\Audio\effects\atk-mag01.mp3" />
+    <Content Include="assets\Audio\effects\atk-mag02.mp3" />
     <Content Include="assets\Audio\effects\burn.mp3" />
     <Content Include="assets\Audio\effects\coin.mp3" />
     <Content Include="assets\Audio\effects\gem.mp3" />
+    <Content Include="assets\Audio\effects\hit-mag01.mp3" />
     <Content Include="assets\Audio\effects\hurt.mp3" />
     <Content Include="assets\Audio\effects\jump1.mp3" />
     <Content Include="assets\Audio\effects\jump2.mp3" />

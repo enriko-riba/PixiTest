@@ -12,6 +12,8 @@ export class SoundMan {
     private gemSnd: Howl;
     private hurtSnd: Howl;
     private winSnd: Howl;
+    private atkMag1: Howl;
+    private hitMag1: Howl;
 
     private questItemSnd: Howl;
 
@@ -100,23 +102,25 @@ export class SoundMan {
             loop: false,
             volume: 1
         });
-    }
-
-    private playJumpRnd() {
-        this.jumpSnd1.play();
-        return;
-
-        //var r = Math.random() * 101 | 0;
-        //if (r % 2 == 0) {
-        //    this.jumpSnd1.play();
-        //} else {
-        //    this.jumpSnd2.play();
-        //}
+        this.atkMag1 = new Howl({
+            src: ['assets/Audio/effects/atk-mag01.mp3'],
+            preload: true,
+            autoplay: false,
+            loop: false,
+            volume: 1, 
+        });
+        this.hitMag1 = new Howl({
+            src: ['assets/Audio/effects/hit-mag01.mp3'],
+            preload: true,
+            autoplay: false,
+            loop: false,
+            volume: 1
+        });
     }
 
     public jump() {
         this.walkSnd.pause();
-        this.playJumpRnd();
+        this.jumpSnd1.play();
     }
     public idle() {
         this.walkSnd.pause();
@@ -127,7 +131,12 @@ export class SoundMan {
             this.walkSnd.play();
         }
     }
-
+    public atkMagic1() {
+        this.atkMag1.play();
+    }
+    public hitMagic1() {
+        this.hitMag1.play();
+    }
     public coin() {
         this.coinSnd.play();
     }
@@ -177,7 +186,7 @@ export class SoundMan {
                 this.backgroundSnd.stop();
                 this.backgroundSnd = this.musicTracks[trackId];
                 this.backgroundSnd.play();
-                this.backgroundSnd.fade(0, 1, 1000);
+                this.backgroundSnd.fade(0, 0.8, 1000);
             });
         } else {
             if (!this.backgroundSnd.playing()) {

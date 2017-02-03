@@ -224,9 +224,9 @@ export class InGameScene extends Scene {
             case 666: //    bullet
                 let bullet: Bullet = dispObj as Bullet;
                 if (!bullet.IsDead) {
-                    //console.log("BUM ...bullet collision, bullet isdead" + bullet.IsDead + ", bullet position: ", bullet.body.interpolatedPosition);
+                    this.snd.hitMagic1();
                     bullet.IsDead = true;
-                    this.addInfoMessage(this.hero.position, `${bullet.damage} HP`);
+                    this.addInfoMessage(this.hero.position, `${-bullet.damage} HP`);
                     this.hero.PlayerStats.increaseStat(StatType.HP, -bullet.damage);
                 }
                 break;
