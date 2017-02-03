@@ -1,22 +1,24 @@
 ﻿import { Dictionary } from "./Dictionary";
 
-export class AnimatedSprite extends PIXI.Container {
+export class AnimatedSprite extends PIXI.Sprite {
     constructor() {
         super();
         this.pivot.set(0.5);
+        this.anchor.set(0.5);
+        this.scale.set(1, -1);
     }
 
     private animations = new Dictionary<AnimationSequence>();
-    private clip: PIXI.extras.AnimatedSprite = null;
     protected currentSequence: AnimationSequence;
-    a
+
     public addAnimations(...sequences: Array<AnimationSequence>):void {
         sequences.forEach((seq: AnimationSequence, idx:number) => {
             this.animations.set(seq.sequenceName, seq);
 
             //  if no clip exists create it from first animation sequence
-            if (!this.clip && idx === 0) {
-                this.createClip(seq);
+            if (!this.texture.valid && idx === 0) {
+                this.texture = seq.textureAtlas;
+                this.texture.frame = seq.frames[0];
             }
         });
     }
@@ -25,89 +27,96 @@ export class AnimatedSprite extends PIXI.Container {
         if (!this.currentSequence || this.currentSequence.sequenceName !== name) {
             this.resetAnimation();
             this.currentSequence = this.animations.get(name);
-            this.createClip(this.currentSequence);
-
+            this.texture = this.currentSequence.textureAtlas;
+            this.texture.frame = this.currentSequence.frames[0];
             this.Fps = fps || this.Fps;
-            this.clip.loop = loop;
-            this.clip.play();
+            this.isLooping = loop;
+            this.isPlaying = true;
         }
     }
 
-    public set OnComplete(cb: () => void) {
-        this.clip.onComplete = cb;
+    private accumulator: number = 0;
+    private isPlaying: boolean = false;
+    private isLooping: boolean = false;
+    private frameIndex: number = 0;
+    private fps: number = 8;
+    private onComplete: (seq:AnimationSequence) => void;
+
+    public onUpdate (dt: number) { 
+        if (this.isPlaying && this.texture.valid) {
+            this.accumulator += dt;
+            let secForFrame = 1000 / this.Fps;
+            if (this.accumulator > secForFrame) {
+                this.accumulator -= secForFrame;
+                this.texture.frame = this.currentSequence.frames[++this.frameIndex];
+                if (this.frameIndex == this.currentSequence.frames.length-1) {
+                    this.frameIndex = 0;
+
+                    //  end the animation if not looping
+                    if (!this.isLooping) {
+                        this.isPlaying = false;
+                        if (this.onComplete) {
+                            this.onComplete(this.currentSequence);
+                        }
+                    }
+                }
+                
+            }
+        }
     }
 
-    public get OnComplete(): () => void {
-        return this.clip.onComplete;
+    public set OnComplete(cb: (seq: AnimationSequence) => void) {
+        this.onComplete = cb;
+    }
+    public get OnComplete(): (seq: AnimationSequence) => void {
+        return this.onComplete;
     }
 
     public Stop():void {
-        this.clip.stop();
+        this.isPlaying = false;
     }
     public get Fps():number {
-        return this.clip.animationSpeed * 60;
+        return this.fps;
     }
     public set Fps(fps: number) {
-        let animationSpeed = fps / 60;
-        this.clip.animationSpeed = animationSpeed;
-    }
-    public get Anchor(): PIXI.Point {
-        let p = new PIXI.Point;
-        this.clip.anchor.copy(p);
-        return p;
-    }
-    public set Anchor(p:PIXI.Point) {
-        this.clip.anchor.set(p.x, p.y);
-    }
+        this.fps = fps;
+    }    
     public set Loop(isLooping: boolean) {
-        this.clip.loop = isLooping;
+        this.isLooping = isLooping;
     }
     public get Loop(): boolean {
-        return this.clip.loop;
+        return this.isLooping;
     }
     
     protected resetAnimation():void {
-        if (this.clip) {
-            this.clip.stop();
-            this.currentSequence = null;
-        }
+        this.Stop();
+        this.currentSequence = null;
+        this.accumulator = 0;
+        this.frameIndex = -1;
     }
-    private createClip(sequence: AnimationSequence):void {
-        if (!this.clip) {
-            this.clip = new PIXI.extras.AnimatedSprite(sequence.Textures);
-            this.clip.anchor.set(0.5);
-            this.clip.pivot.set(0.5);
-            this.addChild(this.clip);
-        } else {
-            this.clip.textures = this.currentSequence.Textures;
-        }
-    }
+    
 }
 
 /*
 *   Creates and holds textures form a texture atlas.
 */
 export class AnimationSequence  {
-    private textures: Array<PIXI.Texture> = [];
-    constructor(public sequenceName: string, textureAtlasName:string, frames: Array<number> = [], frameWidth : number, frameHeight : number) {
-        var base: PIXI.BaseTexture = PIXI.utils.TextureCache[textureAtlasName];
-        var xFrames = Math.floor(base.width / frameWidth);
-        //var yFrames = Math.floor(base.height / frameHeight);
+    public textureAtlas: PIXI.Texture;
+    public frames: PIXI.Rectangle[] = [];
 
+    constructor(public sequenceName: string, textureAtlasName:string, frames: Array<number> = [], frameWidth : number, frameHeight : number) {
+        let tempTexure : PIXI.Texture = PIXI.utils.TextureCache[textureAtlasName];
+        this.textureAtlas = new PIXI.Texture(tempTexure.baseTexture);
+        var xFrames = Math.floor(this.textureAtlas.baseTexture.width / frameWidth);
         frames.forEach((frame:number) => {
-            let texture = new PIXI.Texture(base);
             let y = Math.floor(frame / xFrames);
             let x = frame % xFrames;
             let rect = new PIXI.Rectangle(x * frameWidth, y * frameHeight, frameWidth, frameHeight);
-            texture.frame = rect;
-            texture.rotate = 8;
-            this.textures.push(texture);
+            this.frames.push(rect);
         });
     }
-    public get Textures(): PIXI.Texture[] {
-        return this.textures;
-    }
+    
     public get FrameCount(): number {
-        return this.textures.length;
+        return this.frames.length;
     }
 }

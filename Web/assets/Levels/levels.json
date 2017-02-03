@@ -158,7 +158,20 @@
         "shape": "Circle",
         "size": 11
       }
-    }    
+    },
+    {
+      "name": "box64",
+      "displayObject": {
+        "typeName": "Sprite",
+        "texture": "assets/_distribute/box_64_03.png"
+      },
+      "body": {
+        "shape": "Box",
+        "type": 1,
+        "mass": 80,
+        "material": "box_default"
+      }
+    }
   ],
   "levels": [
     {
@@ -243,19 +256,6 @@
             }
           },
           {
-            "name": "box64a",
-            "displayObject": {
-              "typeName": "Sprite",
-              "texture": "assets/_distribute/box_64_03.png"
-            },
-            "body": {
-              "shape": "Box",
-              "type": 1,
-              "mass": 80,
-              "material": "box_default"
-            }
-          },
-          {
             "name": "balloon_vv",
             "displayObject": {
               "typeName": "Balloon"
@@ -297,7 +297,7 @@
             ]
           },
           {
-            "template": "box64a",
+            "template": "box64",
             "xy": [
               1950,
               32
@@ -336,7 +336,7 @@
             }
           },
           {
-            "template": "box64a",
+            "template": "box64",
             "xy": [
               2150,
               32
@@ -483,7 +483,7 @@
             }
           },
           {
-            "name": "box64a",
+            "name": "box64",
             "displayObject": {
               "typeName": "Sprite",
               "texture": "assets/_distribute/box_64_03.png"
@@ -758,7 +758,7 @@
             ]
           },
           {
-            "template": "box64a",
+            "template": "box64",
             "xy": [
               -132,
               32
@@ -1069,8 +1069,25 @@
             "ai": "basic_static",
             "attributes": [ 20, 15, 6000, 10 ],
             "attack": "assets/_distribute/slime_atk.png"
+          },
+          {
+            "template": "mob_short",
+            "name": "slime",
+            "xy": [ 690, 20 ],
+            "texture": "assets/_distribute/mob_slime01.png",
+            "ai": "basic_static",
+            "attributes": [ 20, 15, 6000, 10 ],
+            "attack": "assets/_distribute/slime_atk.png"
+          },
+          {
+            "template": "mob_short",
+            "name": "slime",
+            "xy": [ 800, 20 ],
+            "texture": "assets/_distribute/mob_slime01.png",
+            "ai": "basic_static",
+            "attributes": [ 20, 15, 6000, 10 ],
+            "attack": "assets/_distribute/slime_atk.png"
           }
-          
         ],
         "templates": [         
           {
@@ -1128,6 +1145,24 @@
         ],
         "entities": [
           {
+            "template": "castle_mb",
+            "xy": [ -340, 260 ]
+          },
+          {
+            "template": "sensor",
+            "xy": [ 0, 30 ],
+            "trigger": {
+              "type": "collision",
+              "text": "Find the han-shi\nKendo master,\nhe will train you.\nBeware of magic slimes!",
+              "textposition": [-20,600],
+              "questId": 202
+            }
+          },
+          {
+            "template": "box64",
+            "xy": [ 950, 32 ]
+          },
+          {
             "template": "edge",
             "name": "edge-right",
             "xy": [
@@ -1149,25 +1184,8 @@
             ]
           },
           {
-            "template": "castle_mb",
-            "xy": [ -340, 260 ]
-          },
-          {
             "template": "kendo-master",
-            "xy": [2300, 100]
-          },
-          {
-            "template": "sensor",
-            "xy": [ 0, 30 ],
-            "trigger": {
-              "type": "collision",
-              "text": "You should seek the\nhan-shi Kendo master.\nHe will train you until\nyou achieve the\nsho-dan level.",
-              "textposition": [
-                -20,
-                600
-              ],
-              "questId": 202
-            }
+            "xy": [ 2300, 100 ]
           }
         ]
       }

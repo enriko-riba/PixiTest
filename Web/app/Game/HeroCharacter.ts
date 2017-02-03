@@ -23,7 +23,6 @@ export class HeroCharacter extends AnimatedSprite {
     private movementCtrl: MovementController;
     private wp2: WorldP2;
     private worldContainer: PIXI.Container;
-
     
 
     constructor(container: PIXI.Container) {
@@ -63,7 +62,7 @@ export class HeroCharacter extends AnimatedSprite {
         this.addAnimations(new AnimationSequence("jumpright", "assets/_distribute/hero_64.png", [54, 55, 56, 57, 58, 59], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
         this.addAnimations(new AnimationSequence("jumpup", "assets/_distribute/hero_64.png", [1, 3, 4], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
         this.addAnimations(new AnimationSequence("idle", "assets/_distribute/hero_64.png", [25, 24, 40, 19, 19, 18, 19, 22, 30, 31, 1, 1, 1], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
-        this.Anchor = new PIXI.Point(0.5, 0.4);
+        this.anchor.set(0.5, 0.6);
         this.PlayAnimation("idle");
     }
 
@@ -206,7 +205,7 @@ export class HeroCharacter extends AnimatedSprite {
             var smoke: AnimatedSprite = new AnimatedSprite();
             smoke.addAnimations(new AnimationSequence("smoke", "assets/_distribute/jump_smoke.png",
                 [0, 1, 2, 3, 4, 5], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
-            smoke.Anchor = new PIXI.Point(0.5, 0.5);
+            smoke.anchor.set(0.5, 0.5);
             smoke.x = this.x;
             smoke.y = this.y - this.HERO_FRAME_SIZE / 3;
             smoke.Loop = false;

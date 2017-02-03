@@ -28,7 +28,7 @@ export class AI {
 
     protected lastFire: number = Date.now() + Math.random() * 10;    //  so that the attack is not triggered at right at init time
 
-    private attackCD: number;
+    protected attackCD: number;
 
     constructor(protected mobEntity: Mob) {
         this.attackCD = mobEntity.Attributes[AtrType.AtkCD];
@@ -51,6 +51,11 @@ export class AI {
         }
     }
 
+    public canFire() {
+        let nowMilliseconds = Date.now();
+        return (this.lastFire + this.attackCD <= nowMilliseconds);
+    };
+
     public onUpdate = (dt: number) => {
         this.calcDistance();
 
@@ -62,12 +67,10 @@ export class AI {
         if (this.targetDistance < LOCK_DISTANCE) {
             this.hasTarget = true;
 
-            //  check attack CD
-            let nowMilliseconds = Date.now();
-            let canFire = (this.lastFire + this.attackCD <= nowMilliseconds);
-            if (canFire) {
+            //  check attack CD            
+            if (this.canFire()) {
                 this.mobEntity.Attack();
-                this.lastFire = nowMilliseconds;
+                this.lastFire = Date.now();
             }
         } else {
             this.hasTarget = false;

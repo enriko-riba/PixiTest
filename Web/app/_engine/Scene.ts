@@ -9,9 +9,7 @@ export class Scene extends PIXI.Container {
     private hudScene: PIXI.Container;
     private backgroundColor: number;
     public sceneManager: SceneManager;
-
     public onActivate: () => void;
-    public onUpdate: (dt : number) => void;
     public onResize: () => void;
 
 
@@ -26,6 +24,9 @@ export class Scene extends PIXI.Container {
     }
 
     public Name: string;
+
+    public onUpdate(dt: number) : void {
+    }
 
     public get BackGroundColor():number {
         return this.backgroundColor;
@@ -84,5 +85,5 @@ export class Scene extends PIXI.Container {
 
     public set clear(clearFlag: boolean) {
         this._clear = clearFlag;
-    }
+    }   
 }

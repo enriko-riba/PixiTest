@@ -133,7 +133,7 @@ export class InGameScene extends Scene {
      * Updates physics and handles player collisions.
      * @param dt elapsed time in milliseconds
      */
-    public onUpdate = (dt: number) => {
+    public onUpdate(dt: number){
         this.wp2.update(dt);
         this.hero.update(dt);
 
@@ -158,7 +158,7 @@ export class InGameScene extends Scene {
         for (var i = 0, len = bodies.length; i < len; i++) {
             let body = bodies[i] as any;
             let displayObject: PIXI.DisplayObject = (body as any).DisplayObject as PIXI.DisplayObject;
-            if (displayObject && body.type !== p2.Body.STATIC) {
+            if (displayObject && displayObject.visible && body.type !== p2.Body.STATIC) {
                 displayObject.position.set(Math.floor(body.interpolatedPosition[0]), Math.floor(body.interpolatedPosition[1]));
                 displayObject.rotation = body.interpolatedAngle;
             }
@@ -218,15 +218,17 @@ export class InGameScene extends Scene {
     private handleInteractiveCollision(body: any): void {
         var playerStats = this.hero.PlayerStats;
         var dispObj: PIXI.DisplayObject = body.DisplayObject as PIXI.DisplayObject;
-        let now = Date.now() / 1000;
+       
 
         switch (dispObj.interactionType) {
             case 666: //    bullet
-                console.log("BUM ...bullet collision!");
                 let bullet: Bullet = dispObj as Bullet;
-                bullet.IsDead = true;
-                this.addInfoMessage(this.hero.position, `${bullet.damage} HP`);
-                this.hero.PlayerStats.increaseStat(StatType.HP, -bullet.damage);
+                if (!bullet.IsDead) {
+                    //console.log("BUM ...bullet collision, bullet isdead" + bullet.IsDead + ", bullet position: ", bullet.body.interpolatedPosition);
+                    bullet.IsDead = true;
+                    this.addInfoMessage(this.hero.position, `${bullet.damage} HP`);
+                    this.hero.PlayerStats.increaseStat(StatType.HP, -bullet.damage);
+                }
                 break;
 
             case 1: //  small coin
@@ -254,17 +256,23 @@ export class InGameScene extends Scene {
                 break;
 
             case 1000:  //  border lava   
-                if (!playerStats.buffs[1000] || playerStats.buffs[1000] < now) {
-                    this.addInfoMessage(dispObj.position, "Burn", Global.WARN_STYLE);
+                {
+                    let now = Date.now() / 1000;
+                    if (!playerStats.buffs[1000] || playerStats.buffs[1000] < now) {
+                        this.addInfoMessage(dispObj.position, "Burn", Global.WARN_STYLE);
+                    }
+                    playerStats.buffs[1000] = this.secondsFromNow(1);
                 }
-                playerStats.buffs[1000] = this.secondsFromNow(1);
                 break;
 
             case 1001:  //  lava
-                if (!playerStats.buffs[1001] || playerStats.buffs[1001] < now) {
-                    this.addInfoMessage(dispObj.position, "Burn", Global.WARN_STYLE);
+                {
+                    let now = Date.now() / 1000;
+                    if (!playerStats.buffs[1001] || playerStats.buffs[1001] < now) {
+                        this.addInfoMessage(dispObj.position, "Burn", Global.WARN_STYLE);
+                    }
+                    playerStats.buffs[1001] = this.secondsFromNow(3);
                 }
-                playerStats.buffs[1001] = this.secondsFromNow(3);
                 break;
 
             case 201:  //  kendo knowledge
@@ -291,7 +299,7 @@ export class InGameScene extends Scene {
     public emitBullet = (textureName: string, position: PIXI.Point, damage: number): Bullet => {
         let bullet = this.findDeadBullet();
         if (!bullet) {
-            console.log("creating new bullet...");
+
             //  create new bullet
             bullet = new Bullet(PIXI.loader.resources[textureName].texture, 200, 5, damage);
             bullet.anchor.set(0.5);
@@ -305,15 +313,16 @@ export class InGameScene extends Scene {
             let shape = new p2.Circle({ radius: bullet.width / 2 });
             shape.sensor = true;
             var options: p2.BodyOptions = {
-                mass: 0,
+                mass: 0.001,
                 position: [position.x, position.y],
                 angle: 0,
                 fixedRotation: true,
-                angularDamping: 0.1,
-                damping: 0.1,
+                angularDamping: 0,
+                damping: 0
             };
             let body = new p2.Body(options);
             body.type = p2.Body.KINEMATIC;
+            body.gravityScale = 0;
             body.collisionResponse = false;
             body.setDensity(0.0);
             body.addShape(shape);
@@ -321,11 +330,16 @@ export class InGameScene extends Scene {
             bullet.body = body;
 
             this.wp2.addBody(body);
+            console.log("creating new bullet, body.id: " + body.id);
+        } else {
+            console.log("recycling bullet, body.id: " + bullet.body.id);
         }
 
         bullet.position = position;
         bullet.Direction = new PIXI.Point(Global.UserInfo.position.x - position.x, Global.UserInfo.position.y - position.y);
         bullet.IsDead = false;
+        bullet.body.velocity[0] = bullet.Direction.x * bullet.velocity;
+        bullet.body.velocity[1] = bullet.Direction.y * bullet.velocity;
         return bullet;
     };
 
@@ -416,7 +430,7 @@ export class InGameScene extends Scene {
 
         if (fadeSeconds > 0 ) {
             var fade = new TWEEN.Tween(container)
-                .to({ alpha: 0.5 }, fadeSeconds)
+                .to({ alpha: 0.7 }, fadeSeconds)
                 .onComplete(() => {
                     this.worldContainer.removeChild(container);
                 });

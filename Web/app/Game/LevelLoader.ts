@@ -257,7 +257,7 @@ export class LevelLoader {
         switch (definition.typeName) {
             case "Mob":
                 let mob = new Mob(definition.texture as string);
-                mob.Anchor = new PIXI.Point(0.5, 0.5);
+                mob.anchor.set(0.5, 0.5);
                 (mob as any).typeName = "Mob";
                 dispObj = mob;
                 break;
@@ -274,7 +274,7 @@ export class LevelLoader {
                     aspr.addAnimations(aseq);
                 });
                 aspr.PlayAnimation(definition.sequences[0].name, definition.fps);
-                aspr.Anchor = new PIXI.Point(0.5, 0.5);
+                aspr.anchor.set(0.5, 0.5);
                 (aspr as any).typeName = "AnimatedSprite";
                 dispObj = aspr;
                 break;

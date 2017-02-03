@@ -3,7 +3,6 @@
  */
 export class Bullet extends PIXI.Sprite {
     private direction: PIXI.Point = new PIXI.Point();
-    private velocity: number;
     private ttl: number;
     private startTime: number;
     private isDead: boolean;
@@ -17,10 +16,9 @@ export class Bullet extends PIXI.Sprite {
      * @param ttl time to live in seconds
      * @param damage bullet hit damage
      */
-    constructor(texture: PIXI.Texture, velocity: number, ttl: number, public damage: number) {
+    constructor(texture: PIXI.Texture, public velocity: number, ttl: number, public damage: number) {
         super(texture);
 
-        this.velocity = velocity / 1000;
         this.ttl = ttl;
         this.IsDead = false;
         this.interactionType = 666;
@@ -33,6 +31,9 @@ export class Bullet extends PIXI.Sprite {
         let len = direction.x * direction.x + direction.y * direction.y;
         len = 1 / Math.sqrt(len);
         this.direction.set(direction.x * len, direction.y * len);
+    }
+    public get Direction() {
+        return this.direction;
     }
 
     public get IsDead() {
@@ -84,10 +85,10 @@ export class Bullet extends PIXI.Sprite {
         }
 
         //  update position
-        if (!this.isDead) {
-            let distance = dt * this.velocity;
-            this.body.position[0] += (distance * this.direction.x);
-            this.body.position[1] += (distance * this.direction.y);
-        }
+        //if (!this.isDead) {
+        //    let distance = dt * this.velocity;
+        //    this.body.position[0] += (distance * this.direction.x);
+        //    this.body.position[1] += (distance * this.direction.y);
+        //}
     }
 }

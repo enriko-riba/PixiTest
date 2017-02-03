@@ -14,7 +14,7 @@ export class LoaderScene extends Scene {
         this.BackGroundColor = 0x321e0d;
     }
 
-    public onUpdate = (dt: number) => {
+    public onUpdate(dt: number){
         if (this.spinner) {
             this.spinner.rotation += 0.05;
         }

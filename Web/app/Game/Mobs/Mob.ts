@@ -69,23 +69,24 @@ export class Mob extends AnimatedSprite {
     public Attack = ()=> {
         var currentSeq = this.currentSequence;
         var currentFps = this.Fps;
-        this.resetAnimation();
 
         if (this.direction == DirectionH.Left) {
             console.log("playing animation latk  ", Date.now()/1000);
-            this.PlayAnimation("latk", 0.5, false);
+            this.PlayAnimation("latk", 4, false);
         } else {
             console.log("playing animation ratk  ", Date.now()/1000);
-            this.PlayAnimation("ratk", 0.5, false);
+            this.PlayAnimation("ratk", 4, false);
         }
 
-        this.OnComplete = () => {
-            console.log("completed animation " + this.currentSequence.sequenceName, Date.now()/1000);
+        this.OnComplete = (seq: AnimationSequence) => {
             this.OnComplete = null;
+            console.log("completed animation " + seq.sequenceName, Date.now()/1000);
+            this.fireBullet();
             this.PlayAnimation(currentSeq.sequenceName, currentFps);
         };
+    }
 
-        //  emit atk 
+    private fireBullet() {
         if (this.AtkTexture.constructor === Array) {
             //  TODO: animated sprite
         } else {
@@ -105,7 +106,8 @@ export class Mob extends AnimatedSprite {
         }
     }
 
-    public onUpdate = (dt: number) => {
+    public onUpdate (dt: number) {
+        super.onUpdate(dt);
         this.ai.onUpdate(dt);
     }
 }
