@@ -311,9 +311,11 @@ export class InGameScene extends Scene {
             //  create body (sensor shape)
             //-----------------------------
             let shape = new p2.Circle({ radius: bullet.width / 2 });
+            shape.collisionGroup = WorldP2.COL_GRP_BULLET;
+            shape.collisionMask = WorldP2.COL_GRP_PLAYER | WorldP2.COL_GRP_SCENE | WorldP2.COL_GRP_GROUND;
             shape.sensor = true;
             var options: p2.BodyOptions = {
-                mass: 0.001,
+                mass: 0,
                 position: [position.x, position.y],
                 angle: 0,
                 fixedRotation: true,

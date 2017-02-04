@@ -72,18 +72,16 @@ export class Mob extends AnimatedSprite {
     public Attack = ()=> {
         var currentSeq = this.currentSequence;
         var currentFps = this.Fps;
-
         this.snd.atkMagic1();
         if (this.direction == DirectionH.Left) {
             this.PlayAnimation("latk", 10, false);
         } else {
-            //this.snd.atkMagic1();
             this.PlayAnimation("ratk", 10, false);
         }
 
         this.OnComplete = (seq: AnimationSequence) => {
             this.OnComplete = null;
-            console.log("completed animation " + seq.sequenceName, Date.now()/1000);
+            //console.log("completed animation " + seq.sequenceName, Date.now()/1000);
             this.fireBullet();
             this.PlayAnimation(currentSeq.sequenceName, currentFps);
         };

@@ -22,7 +22,8 @@
       "body": {
         "shape": "Box",
         "type": 2,
-        "material": "box_default"
+        "material": "box_default",
+        "collisionType": "ground" 
       }
     },
     {
@@ -427,10 +428,7 @@
         }
       ],
       "map": {
-        "start": [
-          -350,
-          24
-        ],
+        "start": [-350,24],
         "templates": [
           {
             "name": "platform",
@@ -445,7 +443,8 @@
             "body": {
               "shape": "Platform",
               "type": 2,
-              "material": "box_default"
+              "material": "box_default",
+              "collisionType": "ground"
             }
           },
           {
@@ -457,7 +456,8 @@
             "body": {
               "shape": "Platform",
               "type": 2,
-              "material": "box_default"
+              "material": "box_default",
+              "collisionType": "ground"
             }
           },
           {

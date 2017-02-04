@@ -13,6 +13,12 @@ export class ContactPair {
  * Takes care of the physics simulations.
  */
 export class WorldP2 {
+    static COL_GRP_PLAYER = 1;
+    static COL_GRP_NPC = 2;
+    static COL_GRP_SCENE = 4;
+    static COL_GRP_BULLET = 8;
+    static COL_GRP_GROUND = 16;
+
     public playerBody: p2.Body;
     private world: p2.World;
     private ground: p2.Body;
@@ -34,20 +40,25 @@ export class WorldP2 {
         this.world = new p2.World({
             gravity: [0, -1500]
         });
-        this.world.sleepMode = p2.World.BODY_SLEEPING;
-
         this.setupMaterials();
+        
 
+        //------------------------------------------
         // create an infinite ground plane body
+        //------------------------------------------
         this.ground = new p2.Body({
             mass: 0,
         });
         var shape = new p2.Plane();
         shape.material = this.materials.get("ground_default");
+        shape.collisionGroup = WorldP2.COL_GRP_GROUND;
+        shape.collisionMask = WorldP2.COL_GRP_SCENE | WorldP2.COL_GRP_NPC | WorldP2.COL_GRP_PLAYER | WorldP2.COL_GRP_BULLET;
         this.ground.addShape(shape);
         this.world.addBody(this.ground);
 
+        //------------------------------------------
         //  player body
+        //------------------------------------------
         this.playerBody = new p2.Body({
             mass: 40,
             position: [Global.UserInfo.position.x, Global.UserInfo.position.y],
@@ -56,10 +67,16 @@ export class WorldP2 {
         shape = new p2.Circle({
             radius: 25,
         });
+        shape.collisionGroup = WorldP2.COL_GRP_PLAYER;
+        shape.collisionMask = WorldP2.COL_GRP_GROUND | WorldP2.COL_GRP_SCENE | WorldP2.COL_GRP_NPC | WorldP2.COL_GRP_BULLET;
         shape.material = this.materials.get("player");
         this.playerBody.addShape(shape);
         this.world.addBody(this.playerBody);
 
+        //------------------------------------------
+        //  settings
+        //------------------------------------------
+        this.world.sleepMode = p2.World.BODY_SLEEPING;
         this.world.solver.iterations = 30;
         this.world.on("beginContact", this.beginContact, this);
         this.world.on("endContact", this.endContact, this);

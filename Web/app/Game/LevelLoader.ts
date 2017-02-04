@@ -6,6 +6,7 @@ import { Lava } from "./Lava";
 import { Platform } from "./Platform";
 import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
 import { Mob } from "./Mobs/Mob";
+import { WorldP2 } from "./WorldP2";
 
 export class LevelLoader {
 
@@ -62,6 +63,7 @@ export class LevelLoader {
                 }
             });
 
+            level.map.NPC = level.map.NPC || [];
             level.map.NPC.forEach((entity: IMobEntity, idx, arr) => {
 
                 //  concat attack (string | string[]
@@ -174,6 +176,11 @@ export class LevelLoader {
 
              //  body
             var p2body: p2.Body = this.buildPhysicsObject(defs.bdDef, dispObj);
+            p2body.shapes.every((s: p2.Shape) => {
+                s.collisionGroup = WorldP2.COL_GRP_SCENE;
+                s.collisionMask = WorldP2.COL_GRP_PLAYER | WorldP2.COL_GRP_GROUND | WorldP2.COL_GRP_NPC | WorldP2.COL_GRP_SCENE | WorldP2.COL_GRP_BULLET;
+                return true;
+            });
             (p2body as any).DisplayObject = dispObj;
 
             //  trigger
@@ -186,6 +193,7 @@ export class LevelLoader {
         //--------------------------------------
         //  create NPC's
         //--------------------------------------
+        level.map.NPC = level.map.NPC || [];
         level.map.NPC.forEach((entity: IMobEntity, idx, arr) => {
             let defs = this.getTemplates(templates, entity);
 
@@ -201,14 +209,17 @@ export class LevelLoader {
 
             //  body
             var p2body: p2.Body = this.buildPhysicsObject(defs.bdDef, mobDispObj);
+            p2body.shapes.every((s: p2.Shape) => {
+                s.collisionGroup = WorldP2.COL_GRP_NPC;
+                s.collisionMask = WorldP2.COL_GRP_PLAYER | WorldP2.COL_GRP_GROUND | WorldP2.COL_GRP_SCENE;
+                return true;
+            });
             (p2body as any).DisplayObject = mobDispObj;
 
             //  trigger
             if (defs.trigger) {
                 (p2body as any).Trigger = defs.trigger;
             }
-
-
             result.entities.push(p2body);
         });
         result.start = level.map.start;
