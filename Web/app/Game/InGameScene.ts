@@ -15,6 +15,7 @@ import { MOVE_TOPIC, IMoveEvent } from "./MovementController";
 import { SoundMan } from "./SoundMan";
 import { CutScene } from "./CutScene";
 import { Bullet } from "./Bullet";
+import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
 
 import "../../Scripts/pixi-particles";
 
@@ -221,16 +222,6 @@ export class InGameScene extends Scene {
        
 
         switch (dispObj.interactionType) {
-            case 666: //    bullet
-                let bullet: Bullet = dispObj as Bullet;
-                if (!bullet.IsDead) {
-                    this.snd.hitMagic1();
-                    bullet.IsDead = true;
-                    this.addInfoMessage(this.hero.position, `${-bullet.damage} HP`);
-                    this.hero.PlayerStats.increaseStat(StatType.HP, -bullet.damage);
-                }
-                break;
-
             case 1: //  small coin
                 playerStats.increaseStat(StatType.Coins, 1);
                 this.addCollectibleTween(dispObj);
@@ -323,11 +314,11 @@ export class InGameScene extends Scene {
                 damping: 0
             };
             let body = new p2.Body(options);
-            body.type = p2.Body.KINEMATIC;
-            body.gravityScale = 0;
-            body.collisionResponse = false;
-            body.setDensity(0.0);
             body.addShape(shape);
+            body.setDensity(0.0);
+            body.gravityScale = 0;
+            body.collisionResponse = true;
+            body.type = p2.Body.KINEMATIC;
             (body as any).DisplayObject = bullet;
             bullet.body = body;
 
@@ -342,6 +333,7 @@ export class InGameScene extends Scene {
         bullet.IsDead = false;
         bullet.body.velocity[0] = bullet.Direction.x * bullet.velocity;
         bullet.body.velocity[1] = bullet.Direction.y * bullet.velocity;
+
         return bullet;
     };
 
@@ -476,6 +468,8 @@ export class InGameScene extends Scene {
         this.hero.SetWorldP2(this.wp2);
         this.worldContainer.addChild(this.hero);
         this.questMngr = new QuestManager(this, this.wp2, this.hero);
+        this.wp2.on("playerContact", this.onPlayerContact, this);
+        this.wp2.on("bulletContact", this.onBulletContact, this);
     };
 
     private handleDpsChange = (event: IDpsChangeEvent) => {
@@ -619,7 +613,7 @@ export class InGameScene extends Scene {
     /**
      * Saves the current level and dumps to console.
      */
-    public saveLevel(): void {
+    private saveLevel(): void {
         var map: ILevelMap = {
             start:[],
             templates:[],
@@ -641,5 +635,49 @@ export class InGameScene extends Scene {
             }
         });
         console.log(JSON.stringify(map.entities));
+    }
+
+    /**
+     * Checks if the player has jumped on something with a high velocity and adds some smoke
+     *
+     * @param event
+     */
+    private onPlayerContact(event: any): void {
+        const SMOKE_VELOCITY: number = 425;
+        let body: p2.Body = event.body as p2.Body;
+
+        if (Math.abs(event.velocity[1]) > SMOKE_VELOCITY) {
+            var smoke: AnimatedSprite = new AnimatedSprite();
+            smoke.addAnimations(new AnimationSequence("smoke", "assets/_distribute/jump_smoke.png",
+                [0, 1, 2, 3, 4, 5], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
+            smoke.anchor.set(0.5);
+            smoke.pivot.set(0.5);
+            smoke.x = this.hero.x;
+            smoke.y = this.hero.y - this.HERO_FRAME_SIZE / 3;
+            smoke.alpha = 0.7;
+            smoke.rotation = Math.random() * Math.PI;
+            this.worldContainer.addChild(smoke);
+            smoke.OnComplete = () => this.worldContainer.removeChild(smoke);
+            smoke.PlayAnimation("smoke", 5, false);
+        }
+    }
+
+    /**
+     * Handles bullets hitting the player or obstacle.
+     *
+     * @param event
+     */
+    private onBulletContact(event: any): void {
+        let bullet: Bullet = event.bulletBody.DisplayObject as Bullet;
+        if (!bullet.IsDead) {
+            if (event.playerHit) {
+                this.snd.hitMagic1();
+                this.addInfoMessage(this.hero.position, `${-bullet.damage} HP`);
+                this.hero.PlayerStats.increaseStat(StatType.HP, -bullet.damage);
+            } else {
+                //  TODO: bullet hit obstacle, explode, whatever
+            }
+            bullet.IsDead = true;
+        }
     }
 }

@@ -177,8 +177,13 @@ export class LevelLoader {
              //  body
             var p2body: p2.Body = this.buildPhysicsObject(defs.bdDef, dispObj);
             p2body.shapes.every((s: p2.Shape) => {
-                s.collisionGroup = WorldP2.COL_GRP_SCENE;
-                s.collisionMask = WorldP2.COL_GRP_PLAYER | WorldP2.COL_GRP_GROUND | WorldP2.COL_GRP_NPC | WorldP2.COL_GRP_SCENE | WorldP2.COL_GRP_BULLET;
+                if (defs.bdDef.collisionType === "ground") {
+                    s.collisionGroup =WorldP2.COL_GRP_GROUND;
+                    s.collisionMask = WorldP2.COL_GRP_PLAYER | WorldP2.COL_GRP_NPC | WorldP2.COL_GRP_SCENE | WorldP2.COL_GRP_BULLET;
+                } else {
+                    s.collisionGroup = WorldP2.COL_GRP_SCENE;
+                    s.collisionMask = WorldP2.COL_GRP_PLAYER | WorldP2.COL_GRP_NPC | WorldP2.COL_GRP_SCENE | WorldP2.COL_GRP_GROUND;
+                }
                 return true;
             });
             (p2body as any).DisplayObject = dispObj;
@@ -528,6 +533,7 @@ export interface IMapEntity {
     texture?: string;
     interactionType?: number;
     name?: string;
+    collisionType?: string;
 }
 
 export interface IMobEntity {

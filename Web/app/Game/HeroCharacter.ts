@@ -22,12 +22,10 @@ export class HeroCharacter extends AnimatedSprite {
     private emitterBuffs: PIXI.particles.Emitter;
     private movementCtrl: MovementController;
     private wp2: WorldP2;
-    private worldContainer: PIXI.Container;
     
 
     constructor(container: PIXI.Container) {
         super();
-        this.worldContainer = container;       
         this.emitterPixies = createParticleEmitter(container, [PIXI.Texture.fromImage("assets/_distribute/star.png")]);
 
         var cfg: PIXI.particles.EmitterConfig = {
@@ -70,8 +68,7 @@ export class HeroCharacter extends AnimatedSprite {
      * Sets the physics world instance.
      */
     public SetWorldP2(wp2: WorldP2) {
-        this.wp2 = wp2;
-        this.wp2.on("playerContact", this.onPlayerContact, this);
+        this.wp2 = wp2;        
         this.movementCtrl = new MovementController(this.wp2, this);
     }
 
@@ -110,9 +107,6 @@ export class HeroCharacter extends AnimatedSprite {
      * @param dt elapsed time in milliseconds
      */
     public update = (dt: number) => {
-
-        //this.position.x = this.wp2.playerX;
-        //this.position.y = this.wp2.playerY;
         this.position.x = Global.UserInfo.position.x;
         this.position.y = Global.UserInfo.position.y;
 
@@ -191,29 +185,5 @@ export class HeroCharacter extends AnimatedSprite {
      */
     public get isJumping() {
         return this.movementCtrl.IsJumping;
-    }
-    
-
-    /**
-     * Checks if the player jumped on something with a high velocity and adds some smoke.
-     * @param event
-     */
-    private onPlayerContact(event: any): void {
-        const SMOKE_VELOCITY: number = 425;
-
-        if (Math.abs(event.velocity[1]) > SMOKE_VELOCITY) {
-            var smoke: AnimatedSprite = new AnimatedSprite();
-            smoke.addAnimations(new AnimationSequence("smoke", "assets/_distribute/jump_smoke.png",
-                [0, 1, 2, 3, 4, 5], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
-            smoke.anchor.set(0.5, 0.5);
-            smoke.x = this.x;
-            smoke.y = this.y - this.HERO_FRAME_SIZE / 3;
-            smoke.Loop = false;
-            smoke.OnComplete = () => this.worldContainer.removeChild(smoke);
-            smoke.alpha = 0.7;
-            smoke.rotation = Math.random() * Math.PI;
-            this.worldContainer.addChild(smoke);
-            smoke.PlayAnimation("smoke", 5, false);
-        }
     }
 }

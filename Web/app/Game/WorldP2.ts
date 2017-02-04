@@ -106,8 +106,6 @@ export class WorldP2 {
     public update(dt: number): void {
         //console.log("worldp2 update() dt: " + dt/1000);
         this.world.step(this.fixedTimeStep, dt/1000, 20);
-        //this.playerPosition.x = this.playerBody.interpolatedPosition[0];
-        //this.playerPosition.y = this.playerBody.interpolatedPosition[1];
         Global.UserInfo.position.x = this.playerBody.interpolatedPosition[0];
         Global.UserInfo.position.y = this.playerBody.interpolatedPosition[1];
     }
@@ -210,6 +208,21 @@ export class WorldP2 {
     //}
 
     private beginContact = (evt: any) => {
+        
+        let bullet: p2.Body = null;
+        let other: p2.Body = null;
+        if (evt.bodyA.shapes[0].collisionGroup === WorldP2.COL_GRP_BULLET) {
+            bullet = evt.bodyA;
+            other = evt.bodyB;
+        } else if (evt.bodyB.shapes[0].collisionGroup === WorldP2.COL_GRP_BULLET){
+            bullet = evt.bodyB;
+            other = evt.bodyA;
+        }
+        if (bullet) {
+            console.log("emitting bulettContact, body.id: " + bullet.id);
+            this.world.emit({ type: "bulletContact", playerHit: other === this.playerBody, bulletBody: bullet, otherBody: other });
+            return;
+        }
 
         //  check for player contacts (but only with dynamic bodies)
         if (this.playerBody === evt.bodyA) {
@@ -230,11 +243,16 @@ export class WorldP2 {
             let cp: ContactPair = new ContactPair(evt.bodyA, evt.bodyB);
             this.contactPairs.push(cp);
         }
+        
     };
 
     private endContact = (evt: any) => {
+        //  no need to update player contacts or contact pairs for bullets
+        let isBulletConntact = evt.bodyA.shapes[0].collisionGroup === WorldP2.COL_GRP_BULLET || evt.bodyB.shapes[0].collisionGroup === WorldP2.COL_GRP_BULLET;
+        if (isBulletConntact) return;
+
         //  if it is a player contact remove the foreign body from the playerBodyContacts list
-        if (this.playerBody === evt.bodyA) {
+        if (this.playerBody === evt.bodyA ) {
             var bodyIDX = this.playerBodyContacts.indexOf(evt.bodyB);
             this.playerBodyContacts.splice(bodyIDX, 1);
             this.world.emit({ type: "playerContactEnd", velocity: this.playerBody.velocity, body: evt.bodyB });

@@ -7,7 +7,7 @@ require.config({
         "knockout": "Scripts/knockout-3.4.1",
         "knockout-amd-helpers": "Scripts/knockout-amd-helpers",
         "postbox": "Scripts/knockout-postbox.min",
-        "pixi": "Scripts/pixi",
+        "pixi": "Scripts/pixi.min",
         "text": "Scripts/text",
         "sammy": "Scripts/sammy-0.7.5.min",
         "koMapping": "Scripts/knockout.mapping-latest",
