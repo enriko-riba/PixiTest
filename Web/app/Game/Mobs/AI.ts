@@ -4,12 +4,12 @@ import { Mob, AtrType, DirectionH } from "./Mob";
 /**
  * Max distance at which the target can be acquired.
  */
-let LOCK_DISTANCE = 550;
+let LOCK_DISTANCE = 800;
 
 /**
  * Max distance at which the target is tracked.
  */
-let TRACK_DISTANCE = 850;
+let TRACK_DISTANCE = 1050;
 
 /**
  * Base for all mob AI. Provides low level AI functions.

@@ -544,14 +544,8 @@
           {
             "template": "coin",
             "interactionType": 1,
-            "scale": [
-              0.7,
-              0.7
-            ],
-            "xy": [
-              100,
-              170
-            ]
+            "scale": [0.7,0.7],
+            "xy": [100,170]
           },
           {
             "template": "coin",
@@ -1000,17 +994,7 @@
             ]
           }
         ],
-        "NPC": [
-          {
-            "template": "mob_short",
-            "name": "slime",
-            "xy": [ 1850, 20 ],
-            "texture": "assets/_distribute/mob_slime01.png",
-            "ai": "basic_static",
-            "attributes": [ 20, 15, 6000, 10 ],
-            "attack": "assets/_distribute/slime_atk.png"
-          }
-        ]
+        "NPC": []
       }
     },
     {
@@ -1069,7 +1053,7 @@
           ]
         }
       ],
-
+      "assets": [ "assets/_distribute/slime_atk_exp.png" ],
       "map": {
         "start": [ 0, 24 ],
         "NPC": [
@@ -1094,14 +1078,14 @@
           {
             "template": "mob_short",
             "name": "slime",
-            "xy": [ 800, 20 ],
+            "xy": [ 820, 20 ],
             "texture": "assets/_distribute/mob_slime01.png",
             "ai": "basic_static",
             "attributes": [ 20, 15, 6000, 10 ],
             "attack": "assets/_distribute/slime_atk.png"
           }
         ],
-        "templates": [         
+        "templates": [
           {
             "name": "platform",
             "displayObject": {
@@ -1115,7 +1099,8 @@
             "body": {
               "shape": "Platform",
               "type": 2,
-              "material": "box_default"
+              "material": "box_default",
+              "collisionType": "ground"
             }
           },
           {
@@ -1127,7 +1112,8 @@
             "body": {
               "shape": "Platform",
               "type": 2,
-              "material": "box_default"
+              "material": "box_default",
+              "collisionType": "ground"
             }
           },
           {
@@ -1166,38 +1152,47 @@
             "trigger": {
               "type": "collision",
               "text": "Find the han-shi\nKendo master,\nhe will train you.\nBeware of magic slimes!",
-              "textposition": [-20,600],
+              "textposition": [ -20, 600 ],
               "questId": 202
             }
           },
           {
             "template": "box64",
-            "xy": [ 950, 32 ]
+            "xy": [ 990, 32 ]
+          },
+          {
+            "template": "coin",
+            "xy": [ 1000, 135 ],
+            "interactionType": 2
+          },
+          {
+            "template": "platform1",
+            "xy": [ 1140, 128 ],
+            "tiles": 4
+          },
+          {
+            "template": "platform",
+            "xy": [ 1280, 195 ],
+            "tiles": 4
+          },
+          {
+            "template": "kendo-master",
+            "xy": [ 7000, 140 ]
           },
           {
             "template": "edge",
             "name": "edge-right",
-            "xy": [
-              8000,
-              64
-            ]
+            "xy": [ 8000, 64 ]
           },
           {
             "template": "edge",
             "name": "edge-right2",
-            "xy": [
-              8000,
-              64
-            ],
+            "xy": [ 8000, 64 ],
             "rotation": 1.58,
             "scale": [
               2,
               1.5
             ]
-          },
-          {
-            "template": "kendo-master",
-            "xy": [ 2600, 140 ]
           }
         ]
       }

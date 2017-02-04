@@ -194,19 +194,6 @@ export class WorldP2 {
         return this.playerBodyContacts;
     }
 
-    /**
-     * Returns the players x position.
-     */
-    //public get playerX(): number {
-    //    return this.playerPosition.x;
-    //}
-    /**
-     * Returns the players x position.
-     */
-    //public get playerY(): number {
-    //    return this.playerPosition.y;
-    //}
-
     private beginContact = (evt: any) => {
         
         let bullet: p2.Body = null;

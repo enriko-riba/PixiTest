@@ -317,8 +317,8 @@ export class InGameScene extends Scene {
             body.addShape(shape);
             body.setDensity(0.0);
             body.gravityScale = 0;
-            body.collisionResponse = true;
-            body.type = p2.Body.KINEMATIC;
+            body.collisionResponse = false;
+            body.type = p2.Body.DYNAMIC;
             (body as any).DisplayObject = bullet;
             bullet.body = body;
 
@@ -675,7 +675,20 @@ export class InGameScene extends Scene {
                 this.addInfoMessage(this.hero.position, `${-bullet.damage} HP`);
                 this.hero.PlayerStats.increaseStat(StatType.HP, -bullet.damage);
             } else {
-                //  TODO: bullet hit obstacle, explode, whatever
+                var explode: AnimatedSprite = new AnimatedSprite();
+                explode.addAnimations(new AnimationSequence("exp",
+                    "assets/_distribute/slime_atk_exp.png",
+                    [0, 1, 2, 3, 4, 5], 32, 32)
+                );
+                explode.anchor.set(0.5);
+                explode.pivot.set(0.5);
+                explode.x = bullet.x;
+                explode.y = bullet.y;
+                explode.alpha = 0.7;
+                explode.rotation = Math.random() * Math.PI;
+                this.worldContainer.addChild(explode);
+                explode.OnComplete = () => this.worldContainer.removeChild(explode);
+                explode.PlayAnimation("exp", 10, false);
             }
             bullet.IsDead = true;
         }

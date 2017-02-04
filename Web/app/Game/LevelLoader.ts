@@ -37,6 +37,10 @@ export class LevelLoader {
                 assets = assets.concat(iplx.tiles);
             });
 
+            if (level.assets && level.assets.length > 0) {
+                assets = assets.concat(level.assets);
+            }
+
             //  merge global templates with level templates
             var templates = root.templates.concat(level.map.templates);
 
@@ -130,11 +134,7 @@ export class LevelLoader {
         //  create level objects
         var result: ILevel;
         if (levelDefinition) {
-            if (levelDefinition.assets && levelDefinition.assets.length > 0) {
-                //  TODO: preload assets and start level loading
-            } else {
-                result = this.createLevel(levelDefinition);
-            }
+            result = this.createLevel(levelDefinition);
         }
         return result;
     }
@@ -364,6 +364,7 @@ export class LevelLoader {
      */
     private buildPhysicsObject(definition: IBodyDefinition, dispObj: PIXI.DisplayObject): p2.Body {
         var body: p2.Body;
+        let w = 0, h = 0;
         if (definition) {
             var options: p2.BodyOptions = {
                 mass: definition.mass,
@@ -393,7 +394,6 @@ export class LevelLoader {
                     break;
 
                 case "Platform":
-                    var w, h;
                     if (definition.size) {
                         w = definition.size[0];
                         h = definition.size[1];
@@ -413,7 +413,6 @@ export class LevelLoader {
 
                 case "Box":
                     //  get the size
-                    var w, h;
                     if (definition.size) {
                         w = definition.size[0];
                         h = definition.size[1];

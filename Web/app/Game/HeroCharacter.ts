@@ -173,7 +173,7 @@ export class HeroCharacter extends AnimatedSprite {
 
     private _isBurning: boolean = false;
 
-     /**
+    /**
      * Returns true if the player is taking burn damage.
      */
     public get isBurning() {
