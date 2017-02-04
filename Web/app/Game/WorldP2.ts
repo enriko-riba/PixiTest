@@ -218,7 +218,7 @@ export class WorldP2 {
             return;
         } else if (this.playerBody === evt.bodyB) {
             this.playerBodyContacts.push(evt.bodyA);
-            this.world.emit({ type: "playerContact", velocity: this.playerBody.velocity, body: evt.bodyB });
+            this.world.emit({ type: "playerContact", velocity: this.playerBody.velocity, body: evt.bodyA });
             return;
         }
 
