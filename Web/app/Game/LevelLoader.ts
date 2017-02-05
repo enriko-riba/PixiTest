@@ -45,26 +45,39 @@ export class LevelLoader {
             var templates = root.templates.concat(level.map.templates);
 
             level.map.entities.forEach((entity: IMapEntity, idx, arr) => {
-                var entityTemplate = templates.filter((item, idx, arr) => item.name === entity.template);
-                if (entityTemplate && entityTemplate.length > 0) {
-                    var template = entityTemplate[0];
-                    var temp = $.extend(true, {}, template.displayObject);
-                    var displayObjectDefinition = $.extend(temp, entity);
-
-                    if (displayObjectDefinition.texture) {
-                        if (typeof displayObjectDefinition.texture === "string") {
-                            assets.push(displayObjectDefinition.texture);
-                        } else {
-                            assets = assets.concat(displayObjectDefinition.texture);
-                        }
-                    }
-
-                    if (displayObjectDefinition.sequences) {
-                        displayObjectDefinition.sequences.forEach((item) => {
-                            assets.push(item.texture);
-                        });
+                let defs = LevelLoader.getTemplates(templates, entity);
+                if (defs.doDef.texture) {
+                    if (typeof defs.doDef.texture === "string") {
+                        assets.push(defs.doDef.texture);
+                    } else {
+                        assets = assets.concat(defs.doDef.texture);
                     }
                 }
+                if (defs.doDef.sequences) {
+                    defs.doDef.sequences.forEach((item) => {
+                        assets.push(item.texture);
+                    });
+                }
+                //var entityTemplate = templates.filter((item, idx, arr) => item.name === entity.template);
+                //if (entityTemplate && entityTemplate.length > 0) {
+                //    var template = entityTemplate[0];
+                //    var temp = $.extend(true, {}, template.displayObject);
+                //    var displayObjectDefinition = $.extend(temp, entity);
+
+                //    if (displayObjectDefinition.texture) {
+                //        if (typeof displayObjectDefinition.texture === "string") {
+                //            assets.push(displayObjectDefinition.texture);
+                //        } else {
+                //            assets = assets.concat(displayObjectDefinition.texture);
+                //        }
+                //    }
+
+                //    if (displayObjectDefinition.sequences) {
+                //        displayObjectDefinition.sequences.forEach((item) => {
+                //            assets.push(item.texture);
+                //        });
+                //    }
+                //}
             });
 
             level.map.NPC = level.map.NPC || [];
@@ -167,7 +180,7 @@ export class LevelLoader {
         //  create display/physics object pairs
         //--------------------------------------
         level.map.entities.forEach((entity: IMapEntity, idx, arr) => {
-            let defs = this.getTemplates(templates, entity);
+            let defs = LevelLoader.getTemplates(templates, entity);
 
             //  display object
             let dispObj: PIXI.DisplayObject = this.buildDisplayObject(defs.doDef);
@@ -175,22 +188,27 @@ export class LevelLoader {
             (dispObj as any).templateName = defs.templateName;
 
              //  body
-            var p2body: p2.Body = this.buildPhysicsObject(defs.bdDef, dispObj);
-            p2body.shapes.every((s: p2.Shape) => {
-                if (defs.bdDef.collisionType === "ground") {
-                    s.collisionGroup =WorldP2.COL_GRP_GROUND;
-                    s.collisionMask = WorldP2.COL_GRP_PLAYER | WorldP2.COL_GRP_NPC | WorldP2.COL_GRP_SCENE | WorldP2.COL_GRP_BULLET;
-                } else {
-                    s.collisionGroup = WorldP2.COL_GRP_SCENE;
-                    s.collisionMask = WorldP2.COL_GRP_PLAYER | WorldP2.COL_GRP_NPC | WorldP2.COL_GRP_SCENE | WorldP2.COL_GRP_GROUND;
-                }
-                return true;
-            });
-            (p2body as any).DisplayObject = dispObj;
+            if (defs.bdDef) {
+                var p2body: p2.Body = this.buildPhysicsObject(defs.bdDef, dispObj);
+                p2body.shapes.every((s: p2.Shape) => {
+                    if (defs.bdDef.collisionType === "ground") {
+                        s.collisionGroup = WorldP2.COL_GRP_GROUND;
+                        s.collisionMask = WorldP2.COL_GRP_PLAYER | WorldP2.COL_GRP_NPC | WorldP2.COL_GRP_SCENE | WorldP2.COL_GRP_BULLET;
+                    } else {
+                        s.collisionGroup = WorldP2.COL_GRP_SCENE;
+                        s.collisionMask = WorldP2.COL_GRP_PLAYER | WorldP2.COL_GRP_NPC | WorldP2.COL_GRP_SCENE | WorldP2.COL_GRP_GROUND;
+                    }
+                    return true;
+                });
+                (p2body as any).DisplayObject = dispObj;
 
-            //  trigger
-            if (defs.trigger) {
-                (p2body as any).Trigger = defs.trigger;
+                //  trigger
+                if (defs.trigger) {
+                    (p2body as any).Trigger = defs.trigger;
+                }
+            } else {
+                p2body = new p2.Body();
+                (p2body as any).DisplayObject = dispObj;
             }
             result.entities.push(p2body);
         });
@@ -200,7 +218,7 @@ export class LevelLoader {
         //--------------------------------------
         level.map.NPC = level.map.NPC || [];
         level.map.NPC.forEach((entity: IMobEntity, idx, arr) => {
-            let defs = this.getTemplates(templates, entity);
+            let defs = LevelLoader.getTemplates(templates, entity);
 
             //  display object
             let mobDispObj: Mob = this.buildDisplayObject(defs.doDef) as Mob;
@@ -236,32 +254,38 @@ export class LevelLoader {
     * @param templates
     * @param entity
     */
-    private getTemplates(templates: Array<any>, entity: IMapEntity | IMobEntity) {
+    private static getTemplates(templates: Array<any>, entity: IMapEntity | IMobEntity) {
         let displayObjectDefinition = null;
         let bodyDefinition = null;
-
+        let template = {
+            name: null,
+            displayObject: { typeName: "Sprite"}, //    sprite is the default if no template exists
+            body: null,
+            trigger: null
+        };
         var entityTemplate = templates.filter((item, idx, arr) => item.name === entity.template);
         if (entityTemplate && entityTemplate.length > 0) {
-
-            var template = entityTemplate[0];
-            var temp = $.extend(true, {}, template.displayObject);
-            displayObjectDefinition = $.extend(temp, entity);
-            bodyDefinition = $.extend(entity, template.body);
-
-            let triggerTemplate = undefined;
-            if (template.trigger || displayObjectDefinition.trigger) {
-                triggerTemplate = $.extend(true, {}, template.trigger);
-                triggerTemplate = $.extend(true, triggerTemplate, displayObjectDefinition.trigger)
-            }
-            return {
-                templateName: template.name,
-                doDef: displayObjectDefinition,
-                bdDef: bodyDefinition,
-                trigger: triggerTemplate
-            };
+            template = entityTemplate[0];
         }
 
-        throw `Template ${entity.template} not found!`;
+        var temp = $.extend(true, {}, template.displayObject);
+        displayObjectDefinition = $.extend(temp, entity);
+        if (template.body) {
+            bodyDefinition = $.extend(entity, template.body);
+        }
+
+        let triggerTemplate = undefined;
+        if (template.trigger || displayObjectDefinition.trigger) {
+            triggerTemplate = $.extend(true, {}, template.trigger);
+            triggerTemplate = $.extend(true, triggerTemplate, displayObjectDefinition.trigger)
+        }
+        return {
+            templateName: template.name,
+            doDef: displayObjectDefinition,
+            bdDef: bodyDefinition,
+            trigger: triggerTemplate
+        };
+        //throw `Template ${entity.template} not found!`;
     }
 
     /**

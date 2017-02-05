@@ -577,7 +577,7 @@ export class InGameScene extends Scene {
                 }
             });
 
-            //  now remove display objects without bodies
+            //  now remove all other display objects except hero
             var all = this.worldContainer.children.filter((c: PIXI.DisplayObject) => c.name !== "hero");
             all.forEach((child: PIXI.DisplayObject) => {
                 this.worldContainer.removeChild(child);
@@ -589,7 +589,12 @@ export class InGameScene extends Scene {
         //--------------------------------------
         lvl.entities.forEach((body: any) => {
             this.worldContainer.addChild(body.DisplayObject);
-            this.wp2.addBody(body);
+
+            //  if entity is a simple sprite it has a "fake" body  
+            //  without any shapes, so no need to add it to world
+            if (body.shapes && body.shapes.length > 0) {
+                this.wp2.addBody(body);
+            }
         });
 
         //  add parallax backgrounds

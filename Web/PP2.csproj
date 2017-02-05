@@ -154,6 +154,7 @@
     <Content Include="assets\Images\Objects\balloon_basket_01.png" />
     <Content Include="assets\Images\Objects\boulder.png" />
     <Content Include="assets\Images\Objects\kendo-master-dojo.png" />
+    <Content Include="assets\Images\Objects\sign-skull.png" />
     <Content Include="assets\Unused\Portrait\kendo-master.png" />
     <Content Include="assets\Images\Objects\sign-exit.png" />
     <Content Include="assets\Images\Effects\slime_atk.png" />

@@ -23,7 +23,7 @@
         "shape": "Box",
         "type": 2,
         "material": "box_default",
-        "collisionType": "ground" 
+        "collisionType": "ground"
       }
     },
     {
@@ -1060,15 +1060,6 @@
           {
             "template": "mob_short",
             "name": "slime",
-            "xy": [ 600, 20 ],
-            "texture": "assets/_distribute/mob_slime01.png",
-            "ai": "basic_static",
-            "attributes": [ 20, 15, 6000, 10 ],
-            "attack": "assets/_distribute/slime_atk.png"
-          },
-          {
-            "template": "mob_short",
-            "name": "slime",
             "xy": [ 690, 20 ],
             "texture": "assets/_distribute/mob_slime01.png",
             "ai": "basic_static",
@@ -1082,6 +1073,33 @@
             "texture": "assets/_distribute/mob_slime01.png",
             "ai": "basic_static",
             "attributes": [ 20, 15, 6000, 10 ],
+            "attack": "assets/_distribute/slime_atk.png"
+          },
+          {
+            "template": "mob_short",
+            "name": "slime",
+            "xy": [ 1800, 20 ],
+            "texture": "assets/_distribute/mob_slime01.png",
+            "ai": "basic_static",
+            "attributes": [ 20, 15, 4000, 10 ],
+            "attack": "assets/_distribute/slime_atk.png"
+          },
+          {
+            "template": "mob_short",
+            "name": "slime",
+            "xy": [ 2700, 20 ],
+            "texture": "assets/_distribute/mob_slime01.png",
+            "ai": "basic_static",
+            "attributes": [ 20, 15, 4000, 10 ],
+            "attack": "assets/_distribute/slime_atk.png"
+          },
+          {
+            "template": "mob_short",
+            "name": "slime",
+            "xy": [ 2790, 20 ],
+            "texture": "assets/_distribute/mob_slime01.png",
+            "ai": "basic_static",
+            "attributes": [ 20, 15, 2000, 10 ],
             "attack": "assets/_distribute/slime_atk.png"
           }
         ],
@@ -1157,6 +1175,20 @@
             }
           },
           {
+            "template": "sensor",
+            "xy": [ 0, 30 ],
+            "trigger": {
+              "type": "collision",
+              "text": "Find the han-shi\nKendo master,\nhe will train you.\nBeware of magic slimes!",
+              "textposition": [ -20, 600 ],
+              "questId": 202
+            }
+          },
+          {
+            "texture": "assets/_distribute/sign-skull.png",
+            "xy": [ 400, 28 ]
+          },
+          {
             "template": "box64",
             "xy": [ 990, 32 ]
           },
@@ -1165,15 +1197,36 @@
             "xy": [ 1000, 135 ],
             "interactionType": 2
           },
+
+          {
+            "template": "coin",
+            "xy": [ 1156, 180 ],
+            "interactionType": 2
+          },
           {
             "template": "platform1",
-            "xy": [ 1140, 128 ],
+            "xy": [ 1140, 120 ],
             "tiles": 4
           },
           {
             "template": "platform",
-            "xy": [ 1280, 195 ],
+            "xy": [ 1290, 190 ],
             "tiles": 4
+          },
+          {
+            "template": "platform1",
+            "xy": [ 1750, 237 ],
+            "tiles": 4
+          },
+          {
+            "template": "platform",
+            "xy": [ 1900, 280 ],
+            "tiles": 5
+          },
+          {
+            "template": "platform",
+            "xy": [ 2400, 150 ],
+            "tiles": 6
           },
           {
             "template": "kendo-master",
