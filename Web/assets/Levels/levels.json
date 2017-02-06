@@ -406,6 +406,19 @@
           ]
         },
         {
+          "name": "Mid",
+          "parallaxFactor": 0.6,
+          "y": 25,
+          "scale": 1.2,
+          "tiles": [
+            "assets/_distribute/trees04.png",
+            "assets/_distribute/trees03.png",
+            "assets/_distribute/trees02.png",
+            "assets/_distribute/trees01.png",
+            "assets/_distribute/trees05.png"
+          ]
+        },
+        {
           "index": 1,
           "name": "Near",
           "parallaxFactor": 0.7,
@@ -426,6 +439,14 @@
           "y": -90,
           "tiles": [
             "assets/_distribute/ground.png"
+          ]
+        },
+        {
+          "name": "Front",
+          "parallaxFactor": 0.85,
+          "y": 30,
+          "tiles": [
+            "assets/_distribute/front01.png"
           ]
         }
       ],
@@ -1175,16 +1196,6 @@
             }
           },
           {
-            "template": "sensor",
-            "xy": [ 0, 30 ],
-            "trigger": {
-              "type": "collision",
-              "text": "Find the han-shi\nKendo master,\nhe will train you.\nBeware of magic slimes!",
-              "textposition": [ -20, 600 ],
-              "questId": 202
-            }
-          },
-          {
             "texture": "assets/_distribute/sign-skull.png",
             "xy": [ 400, 28 ]
           },
@@ -1233,14 +1244,24 @@
             "xy": [ 7000, 140 ]
           },
           {
+            "template": "sensor",
+            "xy": [ 6700, 30 ],
+            "trigger": {
+              "type": "collision",
+              "text": "I expected you,\nyoung padawan\nYour training shall begin.\nCollect ki from\n10 magic slimes!",
+              "textposition": [ -20, 600 ],
+              "questId": 203
+            }
+          },
+          {
             "template": "edge",
             "name": "edge-right",
-            "xy": [ 8000, 64 ]
+            "xy": [ 12000, 64 ]
           },
           {
             "template": "edge",
             "name": "edge-right2",
-            "xy": [ 8000, 64 ],
+            "xy": [ 12150, 64 ],
             "rotation": 1.58,
             "scale": [
               2,

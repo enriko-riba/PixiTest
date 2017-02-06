@@ -28,16 +28,25 @@ export var TXT_STYLE: PIXI.ITextStyleStyle =
         strokeThickness: 3,
         stroke: 0xcfbfbf
     };
-
+export var INFO_STYLE: PIXI.ITextStyleStyle =
+    {
+        align: "center",
+        padding: 0,
+        fontSize: "25px",
+        fontFamily: "Calibri",
+        fill: 0x905b15,
+        strokeThickness: 3,
+        stroke: 0x111111
+    };
 export var WARN_STYLE: PIXI.ITextStyleStyle =
     {
         align: "center",
         padding: 0,
         fontSize: "27px",
         fontFamily: "Calibri",
-        fill: 0xf05b15,
-        strokeThickness: 1,
-        stroke: 0xff6f6f
+        fill: 0xff0011,
+        strokeThickness: 4,
+        stroke: 0x222222
     };
 
 export var QUEST_STYLE: PIXI.ITextStyleStyle =
