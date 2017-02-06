@@ -201,8 +201,10 @@
     <Content Include="Index.cshtml" />
     <Content Include="manifest.json" />
     <Content Include="Log4Net.config" />
+    <Content Include="Privacy.cshtml" />
     <None Include="pp2-platform - FTP.pubxml" />
     <None Include="pp2-platform - Web Deploy.pubxml" />
+    <Content Include="TOS.cshtml" />
     <None Include="Properties\PublishProfiles\pp2-platform - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\pp2-platform - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
