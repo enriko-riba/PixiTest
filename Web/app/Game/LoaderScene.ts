@@ -66,7 +66,8 @@ export class LoaderScene extends Scene {
                 "assets/_distribute/gui_fs_enter.png",
                 "assets/_distribute/gui_fs_exit.png",
 
-                "assets/_distribute/hero_64.png",
+                "assets/_distribute/hero.png",
+                "assets/_distribute/hero-dead.png",
                 "assets/_distribute/Button1.png",
 
                 "assets/_distribute/heart.png",

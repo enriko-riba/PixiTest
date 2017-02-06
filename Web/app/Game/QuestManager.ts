@@ -201,6 +201,22 @@ export class QuestManager {
                             break;
                     }
                     break;
+
+                case 203:   //  han-shi Kendo master dojo: ki
+                    switch (state) {
+                        case QuestState.None:
+                            this.setQuestState(trigger.questId, QuestState.InProgress);
+                            this.previousQuestMessage = this.gameScene.addTriggerMessage(pos, trigger.text, Global.QUEST_STYLE);
+                            break;
+                        case QuestState.InProgress:
+                            if (!this.previousQuestMessage || !this.previousQuestMessage.parent) {
+                                this.previousQuestMessage = this.gameScene.addTriggerMessage(pos, trigger.text, Global.QUEST_STYLE);
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
             }
         }
     }

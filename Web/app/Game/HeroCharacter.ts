@@ -54,14 +54,13 @@ export class HeroCharacter extends AnimatedSprite {
         };
         this.emitterBuffs = createParticleEmitter(container, [PIXI.Texture.fromImage("assets/_distribute/flame.png")], cfg);
 
-        this.addAnimations(new AnimationSequence("right", "assets/_distribute/hero_64.png", [12, 13, 14, 15, 16, 17], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
-        this.addAnimations(new AnimationSequence("left", "assets/_distribute/hero_64.png", [6, 7, 8, 9, 10, 11], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
-        this.addAnimations(new AnimationSequence("jumpleft", "assets/_distribute/hero_64.png", [48, 49, 50, 51, 52, 53], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
-        this.addAnimations(new AnimationSequence("jumpright", "assets/_distribute/hero_64.png", [54, 55, 56, 57, 58, 59], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
-        this.addAnimations(new AnimationSequence("jumpup", "assets/_distribute/hero_64.png", [1, 3, 4], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
-        this.addAnimations(new AnimationSequence("idle", "assets/_distribute/hero_64.png", [25, 24, 40, 19, 19, 18, 19, 22, 30, 31, 1, 1, 1], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
-        this.anchor.set(0.5, 0.6);
-        this.PlayAnimation("idle");
+        this.addAnimations(new AnimationSequence("right", "assets/_distribute/hero.png",    [18,19,20,21,22,23], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
+        this.addAnimations(new AnimationSequence("left", "assets/_distribute/hero.png",     [12,13,14,15,16,17], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
+        this.addAnimations(new AnimationSequence("jumpleft", "assets/_distribute/hero.png", [24,25,26,27,28,29], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
+        this.addAnimations(new AnimationSequence("jumpright", "assets/_distribute/hero.png",[30,31,32,33,34,35], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
+        this.addAnimations(new AnimationSequence("jumpup", "assets/_distribute/hero.png",   [1,3,4,6], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
+        this.addAnimations(new AnimationSequence("idle", "assets/_distribute/hero.png",     [1,1,1,1,1,34,5,13,12,6,7,11,18,19,0,1,1], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
+        this.anchor.set(0.5, 0.58);
     }
 
     /**

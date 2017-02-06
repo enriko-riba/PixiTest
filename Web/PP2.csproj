@@ -75,7 +75,7 @@
     <None Include="assets\Images\Objects\Bumper_rotor_01.png" />
     <None Include="assets\Unused\chest_01.png" />
     <None Include="assets\Images\Gui\Button1.png" />
-    <None Include="assets\Images\Hero_64.png" />
+    <None Include="assets\Images\Hero.png" />
     <None Include="assets\Images\loading.png" />
     <None Include="assets\Unused\Npcs\bahamut.png" />
     <None Include="assets\Unused\Npcs\barrissoffee.png" />
@@ -147,6 +147,7 @@
     <Content Include="assets\Images\Effects\slime_atk_exp.png" />
     <Content Include="assets\Images\Gui\gui_fs_enter.png" />
     <Content Include="assets\Images\Gui\gui_fs_exit.png" />
+    <Content Include="assets\Images\Hero-dead.png" />
     <Content Include="assets\Images\Mobs\mob_skelbride01.png" />
     <Content Include="assets\Images\Mobs\mob_slime01.png" />
     <Content Include="assets\Images\Objects\balloon-vedran.png" />

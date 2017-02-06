@@ -19,6 +19,9 @@ import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
 
 import "../../Scripts/pixi-particles";
 
+let ANIMATION_FPS_NORMAL = 9;
+let ANIMATION_FPS_SLOW = 4;
+
 export function createParticleEmitter(container: PIXI.Container, textures: PIXI.Texture[], config?: PIXI.particles.EmitterConfig): PIXI.particles.Emitter {
     "use strict";
     var cfg: PIXI.particles.EmitterConfig = {
@@ -196,6 +199,21 @@ export class InGameScene extends Scene {
         //-------------------------------------------
         this.hud.heroPosition = this.hero.position;
         this.hud.onUpdate(dt);
+
+        //-------------------------------------------
+        //  check if player is dead
+        //-------------------------------------------
+        if (this.PlayerStats.getStat(StatType.HP) <= 0) {
+            this.IsHeroInteractive = false;
+            this.hero.visible = false;
+
+            var cutScene = Global.sceneMngr.GetScene("CutScene") as CutScene;
+            //cs.SetText(trigger.completedText, Global.QUEST_STYLE);
+            var backGroundTexture = Global.sceneMngr.CaptureScene();
+            cutScene.SetBackGround(backGroundTexture, this.scale);
+            cutScene.DeathScene = true;
+            Global.sceneMngr.ActivateScene(cutScene);
+        }
     };
 
     public get PlayerStats(): PlayerStats {
@@ -206,7 +224,7 @@ export class InGameScene extends Scene {
         if (this.hero.IsInteractive !== value) {
             this.hero.IsInteractive = value;
             if (!this.hero.IsInteractive) {
-                this.hero.PlayAnimation("idle");
+                this.hero.PlayAnimation("idle", ANIMATION_FPS_SLOW);
                 this.snd.idle();
             }
         }
@@ -383,14 +401,15 @@ export class InGameScene extends Scene {
      * @param style optional PIXI.ITextStyle
      */
     private addInfoMessage(position: PIXI.Point, message: string, style?: PIXI.ITextStyleStyle): void {
-        var stl = style || Global.TXT_STYLE;
+        var stl = style || Global.INFO_STYLE;
         var txtInfo = new PIXI.Text(message, stl);
         txtInfo.position.set(position.x, position.y);
         txtInfo.scale.set(1, -1);   //  scale invert since everything is upside down due to coordinate system
 
         this.worldContainer.addChild(txtInfo);
 
-        var upY = position.y + 250;
+        var dy = (position.y > Global.SCENE_HEIGHT / 2) ? - 250 : +250;
+        var upY = position.y + dy;
         var moveUp = new TWEEN.Tween(txtInfo.position)
             .to({ y: upY }, 2000);
         moveUp.start();
@@ -435,6 +454,18 @@ export class InGameScene extends Scene {
     }
 
     /**
+     * Assigns default player stats.
+     */
+    public resetPlayerStats() {
+        var playerStats = this.hero.PlayerStats;
+        playerStats.setStat(StatType.Coins, Global.UserInfo.gold);
+        playerStats.setStat(StatType.Dust, Global.UserInfo.dust);
+        playerStats.setStat(StatType.MaxHP, 150);
+        playerStats.setStat(StatType.HP, 120);
+        playerStats.setStat(StatType.MaxDust, 1000);
+    }
+
+    /**
      * Sets up the scene.
      */
     private setup(): void {
@@ -447,12 +478,7 @@ export class InGameScene extends Scene {
         //-----------------------------      
         this.hero = new HeroCharacter(this.worldContainer);
         this.hero.name = "hero";
-        var playerStats = this.hero.PlayerStats;
-        playerStats.setStat(StatType.Coins, Global.UserInfo.gold);
-        playerStats.setStat(StatType.Dust, Global.UserInfo.dust);
-        playerStats.setStat(StatType.MaxHP, 150);
-        playerStats.setStat(StatType.HP, 120);
-        playerStats.setStat(StatType.MaxDust, 1000);
+        this.resetPlayerStats();
 
         ko.postbox.subscribe<IDpsChangeEvent>(DPS_TOPIC, this.handleDpsChange);
         ko.postbox.subscribe<IMoveEvent>(MOVE_TOPIC, this.handleMoveChange);
@@ -477,44 +503,42 @@ export class InGameScene extends Scene {
     };
 
     private handleMoveChange = (event: IMoveEvent) => {
-        const ANIMATION_FPS = 10;
 
         //  adjust animation FPS based on jump/idle/isrunning flags
-        var animationFPS: number = (event.newState === MovementState.Idle || event.isJumping) ? ANIMATION_FPS / 3 : (event.isRunning ? 2 : 1) * ANIMATION_FPS;
-        this.hero.Fps = animationFPS;
+        var animationFPS: number = (event.isRunning ? 2 : 1) * ANIMATION_FPS_NORMAL;
 
         switch (event.newState) {
             case MovementState.Idle:
-                this.hero.PlayAnimation("idle");
+                this.hero.PlayAnimation("idle", ANIMATION_FPS_SLOW);
                 this.snd.idle();
                 break;
 
             case MovementState.Left:
-                this.hero.PlayAnimation("left");
+                this.hero.PlayAnimation("left", animationFPS);
                 if (!this.hero.isJumping) {
                     this.snd.walk(event.isRunning);
                 }
                 break;
 
             case MovementState.Right:
-                this.hero.PlayAnimation("right");
+                this.hero.PlayAnimation("right", animationFPS);
                 if (!this.hero.isJumping) {
                     this.snd.walk(event.isRunning);
                 }
                 break;
 
             case MovementState.JumpLeft:
-                this.hero.PlayAnimation("jumpleft");
+                this.hero.PlayAnimation("jumpleft", ANIMATION_FPS_SLOW);
                 this.snd.jump();
                 break;
 
             case MovementState.JumpRight:
-                this.hero.PlayAnimation("jumpright");
+                this.hero.PlayAnimation("jumpright", ANIMATION_FPS_SLOW);
                 this.snd.jump();
                 break;
 
             case MovementState.JumpUp:
-                this.hero.PlayAnimation("jumpup");
+                this.hero.PlayAnimation("jumpup", ANIMATION_FPS_SLOW);
                 this.snd.jump();
                 break;
         }
@@ -579,9 +603,13 @@ export class InGameScene extends Scene {
 
             //  now remove all other display objects except hero
             var all = this.worldContainer.children.filter((c: PIXI.DisplayObject) => c.name !== "hero");
-            all.forEach((child: PIXI.DisplayObject) => {
+            all.forEach((child: any) => {
                 this.worldContainer.removeChild(child);
+                if (child.body) {
+                    this.wp2.removeBody(child.body);
+                }
             });
+            this.bullets = [];
         }
 
         //--------------------------------------
@@ -605,14 +633,17 @@ export class InGameScene extends Scene {
             //        visible parallax textures. So just move it in both 
             //        directions to trigger textures recalculation
             plx.SetViewPortX(lvl.start[0]-10);
-            plx.SetViewPortX(lvl.start[0] + 10);
+            //plx.SetViewPortX(lvl.start[0] + 10);
             plx.SetViewPortX(lvl.start[0]);
         });
 
         //  set start for player
-        this.wp2.playerBody.position = lvl.start;
+        this.wp2.playerBody.position[0] = lvl.start[0];
+        this.wp2.playerBody.position[1] = lvl.start[1];
         Global.UserInfo.position.x = lvl.start[0];
         Global.UserInfo.position.y = lvl.start[1];
+        this.hero.visible = true;
+        this.resetPlayerStats();
     }
 
     /**
