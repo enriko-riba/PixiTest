@@ -108,9 +108,10 @@ export class CutScene extends Scene {
         "Life sucks and you just died!",
         "You decided to check the afterlife.\nGuess what? You are dead!",
         "Owned!\nMore luck next time.",
-        "You have died!\n\nRest in peace.",
+        "You have died!\nRest in peace.",
         "Your quest has failed.\nMay you find more peace\nin that world than\nyou found in this one.",
         "Here's a picture of your corpse.\nNot pretty!",
-        "Yep, you're dead.\n\nMaybe you should consider\nplaying a Barbie game!"
+        "Yep, you're dead.\nMaybe you should consider\nplaying a Barbie game!",
+        "Died..."
     ];
 }
