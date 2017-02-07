@@ -1,11 +1,11 @@
 ﻿import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
-import { WorldP2 } from "./WorldP2";
+import * as Global from "../Global";
+import { WorldP2 } from "../Objects/WorldP2";
+import { createParticleEmitter } from "../Scenes/InGameScene";
 import { MovementController } from "./MovementController";
 import { MovementState } from "./MovementState";
-import { createParticleEmitter } from "./InGameScene";
 import { PlayerStats, StatType } from "./PlayerStats";
 import * as ko from "knockout";
-import * as Global from "./Global";
 
 
 export var BURN_TOPIC = "burn_event";

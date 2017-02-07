@@ -1,12 +1,12 @@
 ﻿import * as Global from "./Global";
 import { Parallax } from "app/_engine/Parallax";
-import { Balloon } from "./Balloon";
-import { Bumper } from "./Bumper";
-import { Lava } from "./Lava";
-import { Platform } from "./Platform";
+import { Balloon } from "./Objects/Balloon";
+import { Bumper } from "./Objects/Bumper";
+import { Lava } from "./Objects/Lava";
+import { Platform } from "./Objects/Platform";
+import { WorldP2 } from "./Objects/WorldP2";
 import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
 import { Mob } from "./Mobs/Mob";
-import { WorldP2 } from "./WorldP2";
 
 export class LevelLoader {
 

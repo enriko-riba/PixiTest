@@ -1,11 +1,9 @@
 ﻿import { KeyboardMapper } from "app/_engine/KeyboardMapper";
+import * as Global from "../Global";
 import { MovementState } from "./MovementState";
-import { WorldP2 } from "./WorldP2";
-import { HeroCharacter } from "./HeroCharacter";
-import * as Global from "./Global";
+import { WorldP2 } from "../Objects/WorldP2";
+import { HeroCharacter } from "../Player//HeroCharacter";
 import * as ko from "knockout";
-//import * as Hammer from "hammerjs";
-//import "../../Scripts/hammer-time.min";
 
 export var MOVE_TOPIC = "move_event";
 export interface IMoveEvent {

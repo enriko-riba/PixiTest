@@ -1,11 +1,11 @@
 ﻿import * as Global from "./Global";
 import * as AjaxHelper from "app/Common/AjaxHelper";
-import { WorldP2 } from "./WorldP2";
-import { HeroCharacter } from "./HeroCharacter";
+import { WorldP2 } from "./Objects/WorldP2";
 import { ITriggerDefinition } from "./LevelLoader";
-import { InGameScene } from "./InGameScene";
-import { CutScene } from "./CutScene";
-import { StatType } from "./PlayerStats";
+import { InGameScene } from "./Scenes/InGameScene";
+import { CutScene } from "./Scenes/CutScene";
+import { HeroCharacter } from "./Player/HeroCharacter";
+import { StatType } from "./Player/PlayerStats";
 
 declare var baseUrl: string;
 

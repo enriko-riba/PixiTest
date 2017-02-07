@@ -1,24 +1,25 @@
-﻿import * as Global from "./Global";
+﻿import * as Global from "../Global";
 import * as TWEEN from "tween";
 import * as ko from "knockout";
 
 import { Scene } from "app/_engine/Scene";
 import { Parallax } from "app/_engine/Parallax";
-import { WorldP2 } from "./WorldP2";
-import { Hud } from "./Hud";
-import { LevelLoader, ILevel, ILevelMap, IMapEntity } from "./LevelLoader";
-import { DPS_TOPIC, IDpsChangeEvent, StatType, PlayerStats } from "./PlayerStats";
-import { HeroCharacter, BURN_TOPIC, IBurnEvent } from "./HeroCharacter";
-import { QuestManager, QuestState } from "./QuestManager";
-import { MovementState } from "./MovementState";
-import { MOVE_TOPIC, IMoveEvent } from "./MovementController";
-import { SoundMan } from "./SoundMan";
-import { CutScene } from "./CutScene";
-import { OptionsScene } from "./Options/OptionsScene";
-import { Bullet } from "./Bullet";
 import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
 
-import "../../Scripts/pixi-particles";
+import { Hud } from "../Hud";
+import { SoundMan } from "../SoundMan";
+import { LevelLoader, ILevel, ILevelMap, IMapEntity } from "../LevelLoader";
+import { QuestManager, QuestState } from "../QuestManager";
+import { WorldP2 } from "../Objects/WorldP2";
+import { Bullet } from "../Objects/Bullet";
+import { OptionsScene } from "./OptionsScene";
+import { DPS_TOPIC, IDpsChangeEvent, StatType, PlayerStats } from "../Player/PlayerStats";
+import { HeroCharacter, BURN_TOPIC, IBurnEvent } from "../Player/HeroCharacter";
+import { MovementState } from "../Player/MovementState";
+import { MOVE_TOPIC, IMoveEvent } from "../Player/MovementController";
+import { CutScene } from "./CutScene";
+
+import "../../../Scripts/pixi-particles";
 
 let ANIMATION_FPS_NORMAL = 9;
 let ANIMATION_FPS_SLOW = 4;

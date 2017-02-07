@@ -1,8 +1,7 @@
 ﻿import { Scene } from "app/_engine/Scene";
-import { InGameScene } from "app/Game/InGameScene";
-import { LevelLoader, ILevelMap, IMapEntity } from "./LevelLoader";
-
-import * as Global from "app/Game/Global";
+import { InGameScene } from "./InGameScene";
+import { LevelLoader, ILevelMap, IMapEntity } from "../LevelLoader";
+import * as Global from "../Global";
 import { vm } from "app/main";
 
 export class LoaderScene extends Scene {

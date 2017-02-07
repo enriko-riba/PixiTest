@@ -1,7 +1,7 @@
 ﻿import { Scene } from "app/_engine/Scene";
 import { Button } from "app/_engine/Button";
-import { InGameScene } from "app/Game/InGameScene";
-import * as Global from "app/Game/Global";
+import { InGameScene } from "./InGameScene";
+import * as Global from "../Global";
 
 /**
  *   Main options GUI.

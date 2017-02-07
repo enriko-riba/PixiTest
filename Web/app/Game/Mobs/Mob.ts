@@ -1,9 +1,9 @@
 ﻿import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
-import { AI } from "./AI";
-import { BasicStaticAI } from "./BasicStaticAI";
-import { Bullet } from "../Bullet";
+import { Bullet } from "../Objects/Bullet";
 import { SoundMan } from "../SoundMan";
 import * as Global from "../Global";
+import { AI } from "./AI";
+import { BasicStaticAI } from "./BasicStaticAI";
 
 let FRAME_SIZE: number = 48;
 

@@ -1,9 +1,8 @@
 ﻿import { Scene } from "app/_engine/Scene";
 import { Button } from "app/_engine/Button";
 import { InGameScene } from "./InGameScene";
-import { LoaderScene } from "./LoaderScene";
-import { SoundMan } from "./SoundMan";
-import * as Global from "app/Game/Global";
+import { SoundMan } from "../SoundMan";
+import * as Global from "../Global";
 
 export class CutScene extends Scene {
     private callout: PIXI.Sprite;
@@ -42,8 +41,7 @@ export class CutScene extends Scene {
             Global.BTN_WIDTH, Global.BTN_HEIGHT);
         this.btnContinue.Text = new PIXI.Text("Continue", Global.BTN_STYLE);
         this.btnContinue.onClick = () => {            
-            var loderScene = Global.sceneMngr.GetScene("Loader") as LoaderScene;
-            Global.sceneMngr.ActivateScene(loderScene);
+            Global.sceneMngr.ActivateScene("Loader");
         };
         this.addChild(this.btnContinue);
     }
@@ -107,7 +105,7 @@ export class CutScene extends Scene {
     }
 
     private deathMessages: string[] = [
-        "Life sucks and you died!",
+        "Life sucks and you just died!",
         "You decided to check the afterlife.\nGuess what? You are dead!",
         "Owned!\nMore luck next time.",
         "You have died!\n\nRest in peace.",

@@ -2,8 +2,8 @@
 import * as ko from "knockout";
 
 import { Button } from "app/_engine/Button";
-import { InGameScene, createParticleEmitter } from "./InGameScene";
-import { STATCHANGE_TOPIC, IStatChangeEvent, StatType } from "./PlayerStats";
+import { InGameScene, createParticleEmitter } from "./Scenes/InGameScene";
+import { STATCHANGE_TOPIC, IStatChangeEvent, StatType } from "./Player/PlayerStats";
 
 export class Hud extends PIXI.Container {
     constructor() {

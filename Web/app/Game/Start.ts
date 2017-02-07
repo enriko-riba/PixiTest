@@ -1,10 +1,10 @@
 ﻿import * as ko from "knockout";
-import * as Global from "app/Game/Global";
+import { vm } from "app/main";
 import { ViewModelBase, RouteNavigationData } from "app/_framework/SpaApplication";
 import { SceneManager, ISceneResizer, ISize, DefaultResizer } from "app/_engine/SceneManager";
-import { LoaderScene } from "app/Game/LoaderScene";
-import { SoundMan } from "app/Game/SoundMan";
-import { vm } from "app/main";
+import * as Global from "./Global";
+import { LoaderScene } from "./Scenes/LoaderScene";
+import { SoundMan } from "./SoundMan";
 
 class StartVM extends ViewModelBase{
 
