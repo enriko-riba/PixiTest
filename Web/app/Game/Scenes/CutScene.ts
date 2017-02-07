@@ -66,13 +66,15 @@ export class CutScene extends Scene {
                 var scale = this.deadHero.scale.x + 0.04;
                 this.deadHero.scale.set(scale);
             } else {
-                this.deathScene = false;                
+                this.deathScene = false;
                 Global.UserInfo.gamelevel--;
 
                 this.textMessage.text = this.deathMessages[0 | (Math.random() * this.deathMessages.length)];
                 this.callout.visible = true;
                 this.btnContinue.visible = true;
             }
+        } else {
+            this.deadHero.rotation += 0.005;
         }
     }
 
