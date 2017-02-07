@@ -2,6 +2,7 @@
 import { Button } from "app/_engine/Button";
 import { InGameScene } from "./InGameScene";
 import { LoaderScene } from "./LoaderScene";
+import { SoundMan } from "./SoundMan";
 import * as Global from "app/Game/Global";
 
 export class CutScene extends Scene {
@@ -16,6 +17,7 @@ export class CutScene extends Scene {
         super("CutScene");
         this.BackGroundColor = 0x1099bb;
 
+       
         this.deadHero = new PIXI.Sprite(PIXI.loader.resources["assets/_distribute/hero-dead.png"].texture);
         this.deadHero.anchor.set(0.5);
         this.deadHero.pivot.set(0.5);
@@ -31,7 +33,6 @@ export class CutScene extends Scene {
         this.textMessage.anchor.set(0.5);
         this.textMessage.position.set(0, 0);
         this.callout.addChild(this.textMessage);
-
 
         //--------------------------------
         //  btn for next level
@@ -53,6 +54,11 @@ export class CutScene extends Scene {
         this.deadHero.visible = this.deathScene;
         this.deadHero.scale.set(0.1);
         this.btnContinue.Text.text = this.deathScene ? "Retry" : "Continue";
+
+        if (this.deathScene) {
+            var deathTrackId = Global.snd.getTrack("Carrousel");
+            Global.snd.playTrack(deathTrackId);
+        }
     }
 
     public onUpdate(dt: number) {

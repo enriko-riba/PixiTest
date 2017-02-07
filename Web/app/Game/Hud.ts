@@ -45,24 +45,11 @@ export class Hud extends PIXI.Container {
 
         ko.postbox.subscribe<IStatChangeEvent>(STATCHANGE_TOPIC, this.handleStatChange);
 
-/*
-        //--------------------------------
-        //  btn for level editor support
-        //--------------------------------
-        var btnSave = new Button("assets/_distribute/Button1.png",
-            Global.SCENE_WIDTH - Global.BTN_WIDTH - 10, 10,
-            Global.BTN_WIDTH, Global.BTN_HEIGHT);
-        btnSave.Text = new PIXI.Text("Console dump", Global.BTN_STYLE);
-        btnSave.onClick = () => {
-            var igs = Global.sceneMngr.CurrentScene as InGameScene;
-            igs.saveLevel();
-        };
-        this.addChild(btnSave);
-        */
+
         var btnFullScreen = new Button("assets/_distribute/gui_fs_enter.png",
             Global.SCENE_WIDTH - 38, -24);
         this.addChild(btnFullScreen);
-        btnFullScreen.on('pointerdown', () => {
+        btnFullScreen.on('click', () => {
             this.toggleFullScreen();
             if (this.isFullScreen) {
                 btnFullScreen.SetTexture("assets/_distribute/gui_fs_exit.png");
@@ -70,6 +57,15 @@ export class Hud extends PIXI.Container {
                 btnFullScreen.SetTexture("assets/_distribute/gui_fs_enter.png");
             }
         });
+
+        var btnOptions = new Button("assets/_distribute/gui_options.png",
+            Global.SCENE_WIDTH - (38 + 32 + 6), -24);
+        this.addChild(btnOptions);
+        btnOptions.on('click', () => {
+            let opt = Global.sceneMngr.GetScene("Options");
+            Global.sceneMngr.ActivateScene(opt);
+        });
+
 
         //  HP
         {

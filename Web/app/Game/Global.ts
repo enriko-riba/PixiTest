@@ -1,9 +1,12 @@
 ﻿import { SceneManager } from "app/_engine/SceneManager";
+import { SoundMan } from "app/Game/SoundMan";
 
 export var SCENE_WIDTH: number = 1366;
 export var SCENE_HEIGHT: number = 768;
-export var BTN_WIDTH: number = 100;
-export var BTN_HEIGHT: number = 48;
+export var BTN_WIDTH: number = 90;
+export var BTN_HEIGHT: number = 40;
+
+export var BACK_COLOR = 0x3a1818;
 
 export var BTN_STYLE: PIXI.ITextStyleStyle =
     {
@@ -62,6 +65,7 @@ export var QUEST_STYLE: PIXI.ITextStyleStyle =
     };
 
 export var sceneMngr: SceneManager;
+export var snd: SoundMan;
 
 export var GameLevels: {
     root: any

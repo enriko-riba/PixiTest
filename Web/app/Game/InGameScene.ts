@@ -14,6 +14,7 @@ import { MovementState } from "./MovementState";
 import { MOVE_TOPIC, IMoveEvent } from "./MovementController";
 import { SoundMan } from "./SoundMan";
 import { CutScene } from "./CutScene";
+import { OptionsScene } from "./Options/OptionsScene";
 import { Bullet } from "./Bullet";
 import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
 
@@ -94,7 +95,6 @@ export class InGameScene extends Scene {
 
     public worldContainer: PIXI.Container;
     public hud = new Hud();
-    public snd = new SoundMan();
 
     private parallaxBackgrounds: Array<Parallax> = [];
     private wp2: WorldP2;
@@ -109,6 +109,8 @@ export class InGameScene extends Scene {
      */
     constructor() {
         super("InGame");
+
+        this.BackGroundColor = Global.BACK_COLOR;
 
         (window as any).performance = window.performance || {};
         performance.now = (function () {
@@ -225,7 +227,7 @@ export class InGameScene extends Scene {
             this.hero.IsInteractive = value;
             if (!this.hero.IsInteractive) {
                 this.hero.PlayAnimation("idle", ANIMATION_FPS_SLOW);
-                this.snd.idle();
+                Global.snd.idle();
             }
         }
     }
@@ -245,7 +247,7 @@ export class InGameScene extends Scene {
                 this.addCollectibleTween(dispObj);
                 this.addInfoMessage(dispObj.position, "+1 coin");
                 this.removeEntity(body);
-                this.snd.coin();
+                Global.snd.coin();
                 break;
 
             case 2: //  coin
@@ -253,7 +255,7 @@ export class InGameScene extends Scene {
                 this.addCollectibleTween(dispObj);
                 this.addInfoMessage(dispObj.position, "+10 coins");
                 this.removeEntity(body);
-                this.snd.coin();
+                Global.snd.coin();
                 break;
 
             case 3: //  blue gem
@@ -261,7 +263,7 @@ export class InGameScene extends Scene {
                 this.addCollectibleTween(dispObj);
                 this.addInfoMessage(dispObj.position, "+100 coins");
                 this.removeEntity(body);
-                this.snd.gem();
+                Global.snd.gem();
                 break;
 
             case 1000:  //  border lava   
@@ -288,7 +290,7 @@ export class InGameScene extends Scene {
                 this.addInfoMessage(dispObj.position, "Kendo knowledge acquired!");
                 this.addCollectibleTween(dispObj);
                 this.removeEntity(body);
-                this.snd.questItem();
+                Global.snd.questItem();
                 this.questMngr.setQuestState(201, QuestState.Completed);
                 break;
         }
@@ -463,14 +465,15 @@ export class InGameScene extends Scene {
         playerStats.setStat(StatType.MaxHP, 150);
         playerStats.setStat(StatType.HP, 120);
         playerStats.setStat(StatType.MaxDust, 1000);
+
+        this.questMngr.reset();
+        //this.snd.stopTrack();
     }
 
     /**
      * Sets up the scene.
      */
     private setup(): void {
-
-        this.BackGroundColor = 0x684123;
         PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.LINEAR;
 
         //-----------------------------
@@ -478,15 +481,11 @@ export class InGameScene extends Scene {
         //-----------------------------      
         this.hero = new HeroCharacter(this.worldContainer);
         this.hero.name = "hero";
-        this.resetPlayerStats();
 
         ko.postbox.subscribe<IDpsChangeEvent>(DPS_TOPIC, this.handleDpsChange);
         ko.postbox.subscribe<IMoveEvent>(MOVE_TOPIC, this.handleMoveChange);
         ko.postbox.subscribe<IBurnEvent>(BURN_TOPIC, this.handleBurnChange);
-
-        var cutScene = new CutScene();
-        Global.sceneMngr.AddScene(cutScene);        
-
+        
         //--------------------------------------
         //  setup physics subsystem
         //--------------------------------------
@@ -496,6 +495,11 @@ export class InGameScene extends Scene {
         this.questMngr = new QuestManager(this, this.wp2, this.hero);
         this.wp2.on("playerContact", this.onPlayerContact, this);
         this.wp2.on("bulletContact", this.onBulletContact, this);
+        
+        Global.sceneMngr.AddScene(new OptionsScene());
+        Global.sceneMngr.AddScene(new CutScene()); 
+
+        this.resetPlayerStats();
     };
 
     private handleDpsChange = (event: IDpsChangeEvent) => {
@@ -510,36 +514,36 @@ export class InGameScene extends Scene {
         switch (event.newState) {
             case MovementState.Idle:
                 this.hero.PlayAnimation("idle", ANIMATION_FPS_SLOW);
-                this.snd.idle();
+                Global.snd.idle();
                 break;
 
             case MovementState.Left:
                 this.hero.PlayAnimation("left", animationFPS);
                 if (!this.hero.isJumping) {
-                    this.snd.walk(event.isRunning);
+                    Global.snd.walk(event.isRunning);
                 }
                 break;
 
             case MovementState.Right:
                 this.hero.PlayAnimation("right", animationFPS);
                 if (!this.hero.isJumping) {
-                    this.snd.walk(event.isRunning);
+                    Global.snd.walk(event.isRunning);
                 }
                 break;
 
             case MovementState.JumpLeft:
                 this.hero.PlayAnimation("jumpleft", ANIMATION_FPS_SLOW);
-                this.snd.jump();
+                Global.snd.jump();
                 break;
 
             case MovementState.JumpRight:
                 this.hero.PlayAnimation("jumpright", ANIMATION_FPS_SLOW);
-                this.snd.jump();
+                Global.snd.jump();
                 break;
 
             case MovementState.JumpUp:
                 this.hero.PlayAnimation("jumpup", ANIMATION_FPS_SLOW);
-                this.snd.jump();
+                Global.snd.jump();
                 break;
         }
 
@@ -547,9 +551,9 @@ export class InGameScene extends Scene {
 
     private handleBurnChange = (event: IBurnEvent) => {
         if (event.isBurning) {
-            this.snd.burn();
+            Global.snd.burn();
         } else {
-            this.snd.burnStop();
+            Global.snd.burnStop();
         }
     };
 
@@ -574,7 +578,7 @@ export class InGameScene extends Scene {
             console.log("No more levels!!!");
             return;
         } else {
-            this.snd.playTrack(lvl.audioTrack||0);
+            Global.snd.playTrack(lvl.audioTrack||0);
             this.loadLevel(lvl);
             this.currentLevel = lvl;
         }
@@ -707,7 +711,7 @@ export class InGameScene extends Scene {
         let bullet: Bullet = event.bulletBody.DisplayObject as Bullet;
         if (!bullet.IsDead) {
             if (event.playerHit) {
-                this.snd.hitMagic1();
+                Global.snd.hitMagic1();
                 this.addInfoMessage(this.hero.position, `${-bullet.damage} HP`);
                 this.hero.PlayerStats.increaseStat(StatType.HP, -bullet.damage);
             } else {

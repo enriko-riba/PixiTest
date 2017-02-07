@@ -18,10 +18,17 @@ class HomeVM {
         if (Global.UserInfo.id === 0) {
             window.location.hash = "#login";
         } else {
+
+            if (Global.sceneMngr) {
+                Global.snd.stopTrack();
+                (Global as any).sceneMngr = null;
+            }
+
             vm.isLoadingVisible(false);
             (window as any).baseUrl = window.location.origin;
             this.usr_Name(Global.UserInfo.name);
             this.connectUser(Global.UserInfo.id, Global.UserInfo.name);
+
         }
     }
 

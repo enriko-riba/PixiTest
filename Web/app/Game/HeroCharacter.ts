@@ -59,7 +59,7 @@ export class HeroCharacter extends AnimatedSprite {
         this.addAnimations(new AnimationSequence("jumpleft", "assets/_distribute/hero.png", [24,25,26,27,28,29], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
         this.addAnimations(new AnimationSequence("jumpright", "assets/_distribute/hero.png",[30,31,32,33,34,35], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
         this.addAnimations(new AnimationSequence("jumpup", "assets/_distribute/hero.png",   [1,3,4,6], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
-        this.addAnimations(new AnimationSequence("idle", "assets/_distribute/hero.png",     [1,1,1,1,1,34,5,13,12,6,7,11,18,19,0,1,1], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
+        this.addAnimations(new AnimationSequence("idle", "assets/_distribute/hero.png",     [1,1,34,5,13,12,6,7,11,18,19,0,1,1], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));
         this.anchor.set(0.5, 0.58);
     }
 

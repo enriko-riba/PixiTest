@@ -11,7 +11,7 @@ export class LoaderScene extends Scene {
 
     constructor() {
         super("Loader");
-        this.BackGroundColor = 0x321e0d;
+        this.BackGroundColor = Global.BACK_COLOR;
     }
 
     public onUpdate(dt: number){
@@ -65,6 +65,11 @@ export class LoaderScene extends Scene {
             [
                 "assets/_distribute/gui_fs_enter.png",
                 "assets/_distribute/gui_fs_exit.png",
+                "assets/_distribute/gui_options.png",
+                "assets/_distribute/gui_snd_fx_off.png",
+                "assets/_distribute/gui_snd_fx_on.png",
+                "assets/_distribute/gui_snd_music_off.png",
+                "assets/_distribute/gui_snd_music_on.png",
 
                 "assets/_distribute/hero.png",
                 "assets/_distribute/hero-dead.png",

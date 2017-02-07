@@ -20,7 +20,8 @@ export class SoundMan {
     private musicTrackNames: Array<string> = [
         'assets/Audio/Two-Finger-Johnny.mp3',
         'assets/Audio/Bumbling-Burglars_Looping.mp3',
-        'assets/Audio/Techno-Dreaming_Looping.mp3'
+        'assets/Audio/Funk-Soul.mp3',
+        'assets/Audio/Carrousel.mp3'
     ];
     private musicTracks: Array<Howl> = [];
     private currentTrack: number = 0;
@@ -118,9 +119,56 @@ export class SoundMan {
         });
     }
 
+    private previousMusicVolume = 0.8;
+    private previousFxVolume = 1;
+
+    private musicVolume = 0.8;
+    private fxVolume = 1;
+
+    private isFxOn: boolean = true;
+    private isMusicOn: boolean = true;
+
+    public get MusicVolume() { return this.musicVolume; }
+    public set MusicVolume(value: number) {
+        this.musicVolume = value;
+        if (this.backgroundSnd && this.backgroundSnd.playing()) {
+            this.backgroundSnd.volume(this.musicVolume);
+        }
+    }
+
+    public get FxVolume() { return this.fxVolume; }
+    public set FxVolume(value: number) {
+        this.fxVolume = value;       
+    }
+
+
+    public get IsFxOn() { return this.isFxOn; }
+    public set IsFxOn(value: boolean) {
+        this.isFxOn = value;
+        if (!this.isFxOn) {
+            this.previousFxVolume = this.fxVolume;
+            this.FxVolume = 0;
+        } else {
+            this.FxVolume = this.previousFxVolume;
+        }
+    }
+
+    public get IsMusicOn() { return this.isMusicOn; }
+    public set IsMusicOn(value: boolean) {
+        this.isMusicOn = value;
+        if (!this.isMusicOn) {
+            this.previousMusicVolume = this.musicVolume;
+            this.MusicVolume = 0;
+        } else {
+            this.MusicVolume = this.previousMusicVolume;
+        }
+    }
+    
+
     public jump() {
         this.walkSnd.pause();
         this.jumpSnd1.play();
+        this.jumpSnd1.volume(this.fxVolume);
     }
     public idle() {
         this.walkSnd.pause();
@@ -128,24 +176,30 @@ export class SoundMan {
     public walk(isRunning?: boolean) {
         this.walkSnd.rate(isRunning ? 2.0 : 1.0)
         if (!this.walkSnd.playing()) {
+            this.walkSnd.volume(this.fxVolume);          
             this.walkSnd.play();
         }
     }
     public atkMagic1() {
+        this.atkMag1.volume(this.fxVolume);
         this.atkMag1.play();
     }
     public hitMagic1() {
+        this.hitMag1.volume(this.fxVolume);
         this.hitMag1.play();
     }
     public coin() {
+        this.coinSnd.volume(this.fxVolume);
         this.coinSnd.play();
     }
 
     public gem() {
+        this.gemSnd.volume(this.fxVolume);
         this.gemSnd.play();
     }
 
     public hurt() {
+        this.hurtSnd.volume(this.fxVolume);
         this.hurtSnd.play();
     }
 
@@ -162,17 +216,35 @@ export class SoundMan {
         this.jumpSnd1.stop();
         this.jumpSnd2.stop();
         this.burnSnd.stop();
+
+        this.winSnd.volume(this.fxVolume);
         this.winSnd.play();
     }
 
     public burn() {
         if (!this.burnSnd.playing()) {
+            this.burnSnd.volume(this.fxVolume);
             this.burnSnd.play();
         }
         this.hurt();
     }
     public burnStop() {
         this.burnSnd.stop();
+    }
+
+    public getTrack(name: string) {
+        for (var i = 0, len = this.musicTrackNames.length; i < len; i++) {
+            if (this.musicTrackNames[i].indexOf(name) >= 0) {
+                return i;
+            }
+        }
+        return -1;        
+    }
+
+    public stopTrack() {
+        if (this.backgroundSnd !== undefined) {
+            this.backgroundSnd.stop();
+        }
     }
 
     public playTrack(trackId: number) {
@@ -182,14 +254,13 @@ export class SoundMan {
         }
 
         if (this.backgroundSnd !== this.musicTracks[trackId]) {
-            this.backgroundSnd.fade(1, 0, 1000).on("fade", (id) => {
-                this.backgroundSnd.stop();
-                this.backgroundSnd = this.musicTracks[trackId];
-                this.backgroundSnd.play();
-                this.backgroundSnd.fade(0, 0.8, 1000);
-            });
+            this.backgroundSnd.stop();
+            this.backgroundSnd = this.musicTracks[trackId];
+            this.backgroundSnd.volume(this.musicVolume);
+            this.backgroundSnd.play();
         } else {
             if (!this.backgroundSnd.playing()) {
+                this.backgroundSnd.volume(this.musicVolume);
                 this.backgroundSnd.play();
             }
         }

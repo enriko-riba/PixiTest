@@ -120,6 +120,8 @@
     <Content Include="app\Home\Home.html" />
     <Content Include="app\Login\Login.html" />
     <Content Include="assets\Audio\Bumbling-Burglars_Looping.mp3" />
+    <Content Include="assets\Audio\Carrousel.mp3" />
+    <Content Include="assets\Audio\Disco-Break.mp3" />
     <Content Include="assets\Audio\effects\atk-mag01.mp3" />
     <Content Include="assets\Audio\effects\atk-mag02.mp3" />
     <Content Include="assets\Audio\effects\burn.mp3" />
@@ -132,7 +134,7 @@
     <Content Include="assets\Audio\effects\quest-item.mp3" />
     <Content Include="assets\Audio\effects\step.mp3" />
     <Content Include="assets\Audio\effects\win.mp3" />
-    <Content Include="assets\Audio\Techno-Dreaming_Looping.mp3" />
+    <Content Include="assets\Audio\Funk-Soul.mp3" />
     <Content Include="assets\Audio\Two-Finger-Johnny.mp3" />
     <None Include="assets\Images\Gui\callout.png" />
     <None Include="assets\Images\Gui\rect.png" />
@@ -147,6 +149,11 @@
     <Content Include="assets\Images\Effects\slime_atk_exp.png" />
     <Content Include="assets\Images\Gui\gui_fs_enter.png" />
     <Content Include="assets\Images\Gui\gui_fs_exit.png" />
+    <Content Include="assets\Images\Gui\gui_options.png" />
+    <Content Include="assets\Images\Gui\gui_snd_fx_off.png" />
+    <Content Include="assets\Images\Gui\gui_snd_fx_on.png" />
+    <Content Include="assets\Images\Gui\gui_snd_music_off.png" />
+    <Content Include="assets\Images\Gui\gui_snd_music_on.png" />
     <Content Include="assets\Images\Hero-dead.png" />
     <Content Include="assets\Images\Mobs\mob_skelbride01.png" />
     <Content Include="assets\Images\Mobs\mob_slime01.png" />
@@ -262,6 +269,7 @@
     <TypeScriptCompile Include="app\Game\Mobs\BasicStaticAI.ts" />
     <TypeScriptCompile Include="app\Game\Mobs\Mob.ts" />
     <TypeScriptCompile Include="app\Game\Bullet.ts" />
+    <TypeScriptCompile Include="app\Game\Options\OptionsScene.ts" />
     <TypeScriptCompile Include="app\Game\Platform.ts" />
     <TypeScriptCompile Include="app\Game\Lava.ts" />
     <TypeScriptCompile Include="app\Game\MovementController.ts" />

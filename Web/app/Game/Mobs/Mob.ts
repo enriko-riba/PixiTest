@@ -27,8 +27,7 @@ export class Mob extends AnimatedSprite {
     private attributes: number[];
     private ai: AI;
     private direction: DirectionH;
-    private emitBullet: (textureName: string, position: PIXI.Point, damage: number)=> Bullet;
-    private snd: SoundMan;
+    private emitBullet: (textureName: string, position: PIXI.Point, damage: number)=> Bullet;    
 
     constructor(private textureName: string) {
         super();
@@ -42,8 +41,7 @@ export class Mob extends AnimatedSprite {
 
         //  borrow bullet emitter and Soundman from in game scene
         var igs = Global.sceneMngr.GetScene("InGame") as any;
-        this.emitBullet = igs.emitBullet;
-        this.snd = igs.snd;
+        this.emitBullet = igs.emitBullet;        
     }
 
     public AtkTexture: string | string[];
@@ -72,7 +70,7 @@ export class Mob extends AnimatedSprite {
     public Attack = ()=> {
         var currentSeq = this.currentSequence;
         var currentFps = this.Fps;
-        this.snd.atkMagic1();
+        Global.snd.atkMagic1();
         if (this.direction == DirectionH.Left) {
             this.PlayAnimation("latk", 10, false);
         } else {

@@ -1,8 +1,9 @@
 ﻿import * as ko from "knockout";
+import * as Global from "app/Game/Global";
 import { ViewModelBase, RouteNavigationData } from "app/_framework/SpaApplication";
 import { SceneManager, ISceneResizer, ISize, DefaultResizer } from "app/_engine/SceneManager";
 import { LoaderScene } from "app/Game/LoaderScene";
-import * as Global from "app/Game/Global";
+import { SoundMan } from "app/Game/SoundMan";
 import { vm } from "app/main";
 
 class StartVM extends ViewModelBase{
@@ -27,7 +28,7 @@ class StartVM extends ViewModelBase{
             resolution: window.devicePixelRatio
         };
         (Global as any).sceneMngr = new SceneManager(Global.SCENE_WIDTH, Global.SCENE_HEIGHT, renderOptions, new CustomSceneResizer(Global.SCENE_WIDTH, Global.SCENE_HEIGHT));
-        
+        (Global as any).snd = new SoundMan(); 
         Global.sceneMngr.AddScene(new LoaderScene());
         Global.sceneMngr.ActivateScene("Loader");
     }

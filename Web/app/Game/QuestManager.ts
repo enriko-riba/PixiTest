@@ -20,6 +20,13 @@ export class QuestManager {
     }
 
     /**
+     * Resets state of all quests.
+     */
+    public reset() {
+        this.questState = [];
+    }
+
+    /**
      * Sets the quest state.
      */
     public setQuestState(questId: number, state: QuestState) {
@@ -131,7 +138,7 @@ export class QuestManager {
                             this.gameScene.worldContainer.removeChild(this.previousQuestMessage);
                             this.previousQuestMessage = this.gameScene.addTriggerMessage(pos, trigger.text, Global.QUEST_STYLE, 0);
 
-                            this.gameScene.snd.win();
+                            Global.snd.win();
 
                             var balloon = this.gameScene.worldContainer.getChildByName("balloon");
                             var anim1 = new TWEEN.Tween(balloon)
@@ -175,7 +182,7 @@ export class QuestManager {
                             this.saveUserState();
                             this.setQuestState(trigger.questId, QuestState.Finished);
                             this.gameScene.IsHeroInteractive = false;
-                            this.gameScene.snd.win();
+                            Global.snd.win();
                             this.gameScene.hud.visible = false;
                             var cs = Global.sceneMngr.GetScene("CutScene") as CutScene;
                             cs.SetText(trigger.completedText, Global.QUEST_STYLE);

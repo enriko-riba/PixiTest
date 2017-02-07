@@ -1,7 +1,7 @@
 ﻿html, body {
   margin: 0;
   color: #b7afac;
-  background-color: #321e0d;
+  background-color: #3a1818;
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; }
 
 h2, .login-message {
@@ -37,7 +37,7 @@ h2, .login-message {
   .profile-data input {
     margin-left: 70px;
     width: 100px;
-    background-color: #321e0d;
+    background-color: #3a1818;
     border-style: ridge;
     padding-left: 10px;
     color: #d9f3a2; }
