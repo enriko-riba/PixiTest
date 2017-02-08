@@ -9,19 +9,23 @@ export class CutScene extends Scene {
     private textMessage: PIXI.Text;
     private backSprite: PIXI.Sprite;
     private deathScene: boolean = false;
-    private deadHero: PIXI.Sprite;
+    private corpse: PIXI.Sprite;
     private btnContinue: Button;
-
+        
     constructor() {
         super("CutScene");
         this.BackGroundColor = 0x1099bb;
 
-       
-        this.deadHero = new PIXI.Sprite(PIXI.loader.resources["assets/_distribute/hero-dead.png"].texture);
-        this.deadHero.anchor.set(0.5);
-        this.deadHero.pivot.set(0.5);
-        this.deadHero.position.set(Global.SCENE_WIDTH/2, Global.SCENE_HEIGHT/2); 
-        this.addChild(this.deadHero);
+
+        this.corpse = new PIXI.Sprite(PIXI.loader.resources["assets/_distribute/hero-dead.png"].texture);
+        this.corpse.anchor.set(0.5);
+        this.corpse.pivot.set(0.5);
+        this.corpse.position.set(Global.SCENE_WIDTH/2, Global.SCENE_HEIGHT/2); 
+        this.addChild(this.corpse);
+
+        var blur = new PIXI.filters.BlurFilter();
+        this.corpse.filters = [blur];
+
 
         this.callout = new PIXI.Sprite(PIXI.loader.resources["assets/_distribute/rect.png"].texture);
         this.callout.anchor.set(0.5);
@@ -49,8 +53,8 @@ export class CutScene extends Scene {
     public onActivate = () => {
         this.btnContinue.visible = !this.deathScene;
         this.callout.visible = !this.deathScene;
-        this.deadHero.visible = this.deathScene;
-        this.deadHero.scale.set(0.1);
+        this.corpse.visible = this.deathScene;
+        this.corpse.scale.set(0.1);
         this.btnContinue.Text.text = this.deathScene ? "Retry" : "Continue";
 
         if (this.deathScene) {
@@ -61,10 +65,10 @@ export class CutScene extends Scene {
 
     public onUpdate(dt: number) {
         if (this.deathScene) {
-            if (this.deadHero.scale.x < 8) {
-                this.deadHero.rotation += 0.1;
-                var scale = this.deadHero.scale.x + 0.04;
-                this.deadHero.scale.set(scale);
+            if (this.corpse.scale.x < 8) {
+                this.corpse.rotation += 0.1;
+                var scale = this.corpse.scale.x + 0.04;
+                this.corpse.scale.set(scale);
             } else {
                 this.deathScene = false;
                 Global.UserInfo.gamelevel--;
@@ -74,7 +78,9 @@ export class CutScene extends Scene {
                 this.btnContinue.visible = true;
             }
         } else {
-            this.deadHero.rotation += 0.005;
+            this.corpse.rotation += 0.005;
+            var blurFilter = this.corpse.filters[0] as PIXI.filters.BlurFilter;
+            blurFilter.blur = Math.min(blurFilter.blur + 0.08, 15.0);
         }
     }
 
@@ -85,7 +91,10 @@ export class CutScene extends Scene {
         return this.deathScene;
     }
     public set DeathScene(value: boolean) {
-        this.deathScene = value;        
+        this.deathScene = value;    
+        if (this.deathScene) {
+            (this.corpse.filters[0] as PIXI.filters.BlurFilter).blur = 0;
+        }    
     }
 
 

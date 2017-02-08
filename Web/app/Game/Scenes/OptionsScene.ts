@@ -1,5 +1,6 @@
 ﻿import { Scene } from "app/_engine/Scene";
 import { Button } from "app/_engine/Button";
+import { Slider } from "app/_engine/Slider";
 import { InGameScene } from "./InGameScene";
 import * as Global from "../Global";
 
@@ -52,7 +53,10 @@ export class OptionsScene extends Scene {
         btnQuit.Text = new PIXI.Text("Quit game", Global.BTN_STYLE);
         btnQuit.onClick = () => window.location.href = "#home";
         this.addChild(btnQuit);
-        
+
+        //--------------------
+        //  fx button
+        //--------------------
         var btnFx = new Button("assets/_distribute/gui_snd_fx_on.png", HALF_BTN_WIDTH, Global.BTN_HEIGHT * 1, 32, 32);
         btnFx.onClick = () => {
             Global.snd.IsFxOn = !Global.snd.IsFxOn;
@@ -60,7 +64,12 @@ export class OptionsScene extends Scene {
             btnFx.SetTexture(tname);
         };
         this.addChild(btnFx);
+        var fxSlider = new Slider(["assets/_distribute/slider-outline.png", "assets/_distribute/slider-handle.png"], Global.BTN_WIDTH, Global.BTN_HEIGHT * 1, 150, 32);
+        this.addChild(fxSlider);
 
+        //--------------------
+        //  music button
+        //--------------------
         var btnMusic = new Button("assets/_distribute/gui_snd_music_on.png", HALF_BTN_WIDTH, Global.BTN_HEIGHT * 2, 32, 32);
         btnMusic.onClick = () => {
             Global.snd.IsMusicOn = !Global.snd.IsMusicOn;

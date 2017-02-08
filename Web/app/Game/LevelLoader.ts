@@ -34,7 +34,7 @@ export class LevelLoader {
 
         if (level) {
             level.parallax.forEach((iplx, idx, arr) => {
-                assets = assets.concat(iplx.tiles);
+                assets = assets.concat(iplx.textures);
             });
 
             if (level.assets && level.assets.length > 0) {
@@ -167,7 +167,7 @@ export class LevelLoader {
         level.parallax.forEach((iplx, idx, arr) => {
             var parallax = new Parallax(vps, iplx.parallaxFactor, iplx.scale);
             parallax.y = iplx.y;
-            parallax.setTextures(iplx.tiles);
+            parallax.setTextures(iplx.textures);
             result.parallax.push(parallax);
         });
 
@@ -357,9 +357,9 @@ export class LevelLoader {
             case "Platform":
                 let pl: Platform = null;
                 if (typeof definition.texture === "string") {
-                    pl = new Platform(definition.texture);
+                    pl = new Platform(definition.tilesX || 1, 1, [definition.texture]);
                 } else {
-                    pl = new Platform(definition.texture[0], definition.tiles || 1, definition.texture[1], definition.texture[2]);
+                    pl = new Platform(definition.tilesX || 1, definition.tilesY || 1, definition.texture);
                 }
                 dispObj = pl;
         }
@@ -492,7 +492,7 @@ export interface IParallaxDefinition {
     name: string;
     parallaxFactor: number;
     y: number;
-    tiles: string[];
+    textures: string[];
     scale?: number;
 }
 
@@ -519,7 +519,8 @@ export interface IAnimationSequence {
 export interface IDisplayObjectDefinition {
     typeName: string;
     texture: string | string[];
-    tiles?: number;
+    tilesX?: number;
+    tilesY?: number;
     xy?: number[];
     scale?: number[];
     rotation?: number;
