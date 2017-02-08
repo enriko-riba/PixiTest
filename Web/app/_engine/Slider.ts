@@ -17,27 +17,30 @@
     private requestedHeight: number = undefined;
 
     private handle: PIXI.Sprite;
+    private value: number = 0;
 
     /**
      * 
-     * @param textures array of two textures: slider outline, slider handle
+     * @param textureAtlas slider texture, two columns (outline, handle) and three rows (normal, highlight, pressed).
+     * @param sliderFrameWidth width of the second column holding the slider handle
      * @param x
      * @param y
      * @param width
      * @param height
      */
-    constructor(textures: string[], x?: number, y?: number, width?: number, height?: number) {
+    constructor(textureAtlas: string, sliderFrameWidth: number, x?: number, y?: number, width?: number, height?: number) {
         super();
         this.position.set(x || 0, y || 0);
         this.requestedHeight = height;
         this.requestedWidth = width;
 
         this.handle = new PIXI.Sprite();
+        this.handle.anchor.set(0.5);
         this.addChild(this.handle);
 
 
         //  setup slider textures
-        this.SetTexture(textures);
+        this.SetTexture(textureAtlas, sliderFrameWidth);
 
         this.buttonMode = true;
         this.interactive = true;
@@ -61,6 +64,18 @@
 
         this.IsPressed = false;
         this.applyTexture();
+
+        this.Value = 0.1;
+    }
+    public get Value() {
+        return this.value;
+    }
+    public set Value(value: number) {
+        if (this.value !== value) {
+            this.value = value;
+            let outlineSize = this.width - (this.handle.width * 2);
+            this.handle.position.x = this.handle.width + outlineSize * value;
+        }        
     }
 
     public get IsPressed() {
@@ -128,35 +143,33 @@
         this.textureHandle.frame = this.isPressed ? this.frameDownHandle : this.frameUpHandle;
     }
 
-    public SetTexture(textureNames: string[]) {
+    public SetTexture(textureName: string, handleWidth: number) {
         //  outline
-        this.textureOutline = new PIXI.Texture(PIXI.loader.resources[textureNames[0]].texture.baseTexture);
+        this.textureOutline = new PIXI.Texture(PIXI.loader.resources[textureName].texture.baseTexture);
         this.textureOutline.baseTexture.scaleMode = PIXI.SCALE_MODES.LINEAR;
         var btnHeight = this.textureOutline.height / 3;
-        var btnWidth = this.textureOutline.width;
+        var btnWidth = this.textureOutline.width - handleWidth;
         this.frameUp = new PIXI.Rectangle(0, 0 * btnHeight, btnWidth, btnHeight);
         this.frameHighlight = new PIXI.Rectangle(0, 1 * btnHeight, btnWidth, btnHeight);
         this.frameDown = new PIXI.Rectangle(0, 2 * btnHeight, btnWidth, btnHeight);
         this.texture = this.textureOutline;
-
-        
-
-        // handle
-        this.textureHandle = new PIXI.Texture(PIXI.loader.resources[textureNames[1]].texture.baseTexture);
-        this.textureHandle.baseTexture.scaleMode = PIXI.SCALE_MODES.LINEAR;
-        this.handle.texture = this.textureHandle;
 
         //  calc the scale based on desired height/width
         var scaleW = (this.requestedWidth || btnWidth) / btnWidth;
         var scaleH = (this.requestedHeight || btnHeight) / btnHeight;
         this.scale.set(scaleW, scaleH);
 
-        this.handle.scale.set(1 / scaleW, 1 / scaleH);
-        btnHeight = this.textureHandle.height / 3;
-        btnWidth = this.handle.width;
-        this.frameUpHandle = new PIXI.Rectangle(0, 0 * btnHeight, btnWidth, btnHeight);
-        this.frameHighlightHandle = new PIXI.Rectangle(0, 1 * btnHeight, btnWidth, btnHeight);
-        this.frameDownHandle = new PIXI.Rectangle(0, 2 * btnHeight, btnWidth, btnHeight);
+
+        // handle
+        this.textureHandle = new PIXI.Texture(PIXI.loader.resources[textureName].texture.baseTexture);
+        this.textureHandle.baseTexture.scaleMode = PIXI.SCALE_MODES.LINEAR;
+        this.handle.texture = this.textureHandle;
+
+        //this.handle.scale.set(1 / scaleW, 1 / scaleH);
+        
+        this.frameUpHandle = new PIXI.Rectangle(btnWidth, 0 * btnHeight, handleWidth, btnHeight);
+        this.frameHighlightHandle = new PIXI.Rectangle(btnWidth, 1 * btnHeight, handleWidth, btnHeight);
+        this.frameDownHandle = new PIXI.Rectangle(btnWidth, 2 * btnHeight, handleWidth, btnHeight);
 
     }
 }

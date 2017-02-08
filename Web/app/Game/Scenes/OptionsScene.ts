@@ -64,7 +64,7 @@ export class OptionsScene extends Scene {
             btnFx.SetTexture(tname);
         };
         this.addChild(btnFx);
-        var fxSlider = new Slider(["assets/_distribute/slider-outline.png", "assets/_distribute/slider-handle.png"], Global.BTN_WIDTH, Global.BTN_HEIGHT * 1, 150, 32);
+        var fxSlider = new Slider("assets/_distribute/slider1.png", 7, Global.BTN_WIDTH, Global.BTN_HEIGHT * 1, 150, 32);
         this.addChild(fxSlider);
 
         //--------------------
@@ -77,5 +77,7 @@ export class OptionsScene extends Scene {
             btnMusic.SetTexture(tname);
         };
         this.addChild(btnMusic);
+        var musicSlider = new Slider("assets/_distribute/slider1.png", 7, Global.BTN_WIDTH, Global.BTN_HEIGHT * 2, 150, 32);
+        this.addChild(musicSlider);
     }
 }

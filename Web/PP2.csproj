@@ -154,8 +154,7 @@
     <Content Include="assets\Images\Gui\gui_snd_fx_on.png" />
     <Content Include="assets\Images\Gui\gui_snd_music_off.png" />
     <Content Include="assets\Images\Gui\gui_snd_music_on.png" />
-    <Content Include="assets\Images\Gui\slider-handle.png" />
-    <Content Include="assets\Images\Gui\slider-outline.png" />
+    <Content Include="assets\Images\Gui\slider1.png" />
     <Content Include="assets\Images\Hero-dead.png" />
     <Content Include="assets\Images\Mobs\mob_skelbride01.png" />
     <Content Include="assets\Images\Mobs\mob_slime01.png" />
