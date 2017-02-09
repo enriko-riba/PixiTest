@@ -134,6 +134,12 @@ export class InGameScene extends Scene {
 
     public onActivate = () => {
         this.hud.visible = true;
+
+        //  special setup logic for tutorial
+        if (Global.UserInfo.gamelevel === 1) {
+            var balloon = this.worldContainer.getChildByName("balloon") as any;
+            balloon.setFollowTarget(this.hero);
+        }
     };
 
     /**

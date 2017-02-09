@@ -262,7 +262,7 @@
           {
             "template": "balloon_vv",
             "name": "balloon",
-            "xy": [ 2100, 500 ]
+            "xy": [ 2100, 580 ]
           },
           {
             "template": "box64",

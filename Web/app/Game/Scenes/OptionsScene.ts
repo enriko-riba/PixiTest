@@ -9,6 +9,8 @@ import * as Global from "../Global";
  */
 export class OptionsScene extends Scene {
 
+    private currentMusicTrack: number = 0; 
+
     /**
     *   Creates a new scene instance.
     */
@@ -18,7 +20,6 @@ export class OptionsScene extends Scene {
 
         this.setup();
     }
-
     private setup = () => {
         let HALF_BTN_WIDTH = Global.BTN_WIDTH / 2;
         let BTN_Y = Global.SCENE_HEIGHT - Global.BTN_HEIGHT - (Global.BTN_HEIGHT / 2);
@@ -31,6 +32,10 @@ export class OptionsScene extends Scene {
         btnBack.onClick = () => {
             let inGame = Global.sceneMngr.GetScene("InGame") as InGameScene;
             Global.sceneMngr.ActivateScene(inGame);
+
+            //  reset sounds
+            Global.snd.fxDemo.stop();
+            Global.snd.playTrack(this.currentMusicTrack);
         };
         this.addChild(btnBack);
 
@@ -60,12 +65,31 @@ export class OptionsScene extends Scene {
         var btnFx = new Button("assets/_distribute/gui_snd_fx_on.png", HALF_BTN_WIDTH, Global.BTN_HEIGHT * 1, 32, 32);
         btnFx.onClick = () => {
             Global.snd.IsFxOn = !Global.snd.IsFxOn;
+            if (Global.snd.IsFxOn) {
+                fxSlider.Value = 1;
+            } else {
+                fxSlider.Value = 0;
+            }
+
             let tname = "assets/_distribute/gui_snd_fx_" + (Global.snd.IsFxOn ? "on.png" : "off.png");
-            btnFx.SetTexture(tname);
+            btnFx.SetTexture(tname);            
         };
         this.addChild(btnFx);
-        var fxSlider = new Slider("assets/_distribute/slider1.png", 7, Global.BTN_WIDTH, Global.BTN_HEIGHT * 1, 150, 32);
+        var fxSlider = new Slider("assets/_distribute/slider1.png", 7, Global.BTN_WIDTH, (Global.BTN_HEIGHT * 1) + 7, 150, 18);
         this.addChild(fxSlider);
+        var fxTxt = new PIXI.Text("0", Global.QUEST_STYLE);
+        fxTxt.position.set(fxSlider.x + fxSlider.width + 20, fxSlider.y -5);
+        this.addChild(fxTxt);
+        fxSlider.on('valueChange', (v) => {
+            fxTxt.text = (v * 100).toFixed(2).toString();
+            Global.snd.FxVolume = v
+            Global.snd.fxDemo.volume(v);
+        });
+        fxSlider.on('valueChanged', (v) => {
+            Global.snd.FxVolume = v
+        });
+        fxSlider.Value = Global.snd.FxVolume;
+
 
         //--------------------
         //  music button
@@ -73,11 +97,36 @@ export class OptionsScene extends Scene {
         var btnMusic = new Button("assets/_distribute/gui_snd_music_on.png", HALF_BTN_WIDTH, Global.BTN_HEIGHT * 2, 32, 32);
         btnMusic.onClick = () => {
             Global.snd.IsMusicOn = !Global.snd.IsMusicOn;
+            if (Global.snd.IsMusicOn) {
+                musicSlider.Value = 0.8;
+            } else {
+                musicSlider.Value = 0;
+            }
+
             let tname = "assets/_distribute/gui_snd_music_" + (Global.snd.IsMusicOn ? "on.png" : "off.png");
-            btnMusic.SetTexture(tname);
+            btnMusic.SetTexture(tname);            
         };
         this.addChild(btnMusic);
-        var musicSlider = new Slider("assets/_distribute/slider1.png", 7, Global.BTN_WIDTH, Global.BTN_HEIGHT * 2, 150, 32);
+        var musicSlider = new Slider("assets/_distribute/slider1.png", 7, Global.BTN_WIDTH, Global.BTN_HEIGHT * 2 + 7, 150, 18);
         this.addChild(musicSlider);
+        var mTxt = new PIXI.Text("0", Global.QUEST_STYLE);
+        mTxt.position.set(musicSlider.x + musicSlider.width + 20, musicSlider.y -5);
+        this.addChild(mTxt);
+        musicSlider.on('valueChange', (v) => {
+            mTxt.text = (v * 100).toFixed(2).toString();
+            Global.snd.MusicVolume = v
+        });
+        musicSlider.on('valueChanged', (v) => {
+            Global.snd.MusicVolume = v
+        });
+        musicSlider.Value = Global.snd.MusicVolume;
+    }
+
+    public onActivate = ()=> {
+        this.currentMusicTrack = Global.snd.CurrentTrackId;
+        Global.snd.playTrack(Global.snd.getTrack('music-demo'));
+        Global.snd.fxDemo.play();
+        Global.snd.fxDemo.loop(true);
+        Global.snd.fxDemo.volume(Global.snd.FxVolume);
     }
 }

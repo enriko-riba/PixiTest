@@ -54,7 +54,9 @@ class HomeVM {
 
     private startGame = () => {
         this.isStartEnabled(false);
-        window.location.hash = "#pp2";
+        setTimeout(() =>
+            window.location.hash = "#pp2",
+            500);
     };
 }
 

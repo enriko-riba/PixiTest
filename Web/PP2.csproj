@@ -126,6 +126,7 @@
     <Content Include="assets\Audio\effects\atk-mag02.mp3" />
     <Content Include="assets\Audio\effects\burn.mp3" />
     <Content Include="assets\Audio\effects\coin.mp3" />
+    <Content Include="assets\Audio\effects\fx-demo.mp3" />
     <Content Include="assets\Audio\effects\gem.mp3" />
     <Content Include="assets\Audio\effects\hit-mag01.mp3" />
     <Content Include="assets\Audio\effects\hurt.mp3" />
@@ -135,6 +136,7 @@
     <Content Include="assets\Audio\effects\step.mp3" />
     <Content Include="assets\Audio\effects\win.mp3" />
     <Content Include="assets\Audio\Funk-Soul.mp3" />
+    <Content Include="assets\Audio\music-demo.mp3" />
     <Content Include="assets\Audio\Two-Finger-Johnny.mp3" />
     <None Include="assets\Images\Gui\callout.png" />
     <None Include="assets\Images\Gui\rect.png" />

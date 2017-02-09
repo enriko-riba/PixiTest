@@ -52,6 +52,9 @@ button {
   color: black;
   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
   background-color: #d9f3a2; }
+  button:disabled {
+    cursor: not-allowed;
+    color: #c8381d; }
 
 /* page not found error message */
 .error-message {

@@ -1,5 +1,6 @@
-﻿export class Slider extends PIXI.Sprite {
-    private textureOutline: PIXI.Texture;
+﻿let COLUMN_PADDING = 1;
+
+export class Slider extends PIXI.Sprite {
     private textureHandle: PIXI.Texture;
 
     private frameUp: PIXI.Rectangle;
@@ -17,7 +18,11 @@
     private requestedHeight: number = undefined;
 
     private handle: PIXI.Sprite;
+    private handleWidth: number;
     private value: number = 0;
+
+    private maxX: number;
+    private minX: number;
 
     /**
      * 
@@ -34,47 +39,59 @@
         this.requestedHeight = height;
         this.requestedWidth = width;
 
+        this.handleWidth = sliderFrameWidth;
         this.handle = new PIXI.Sprite();
-        this.handle.anchor.set(0.5);
+        this.handle.anchor.set(0);
         this.addChild(this.handle);
+        this.handle.interactive = true;
+        this.handle.buttonMode = true;
+        this.handle
+            .on('pointerdown', this.onDragStart)
+            .on('pointerup', this.onDragEnd)
+            .on('pointerupoutside', this.onDragEnd)
+            .on('pointermove', this.onDragMove)
 
+            .on('mousedown', this.onButtonDown)
+            .on('touchstart', this.onButtonDown)
+            .on('mouseup', this.onButtonUp)
+            .on('touchend', this.onButtonUp)
+            .on('mouseupoutside', this.onButtonUpOutside)
+            .on('touchendoutside', this.onButtonUpOutside)
+            .on('mouseover', this.onButtonOver)
+            .on('mouseout', this.onButtonOut)
 
         //  setup slider textures
         this.SetTexture(textureAtlas, sliderFrameWidth);
 
-        this.buttonMode = true;
-        this.interactive = true;
-
-        // set the mousedown and touchstart callback...
-        this.on('mousedown', this.onButtonDown)
-        this.on('touchstart', this.onButtonDown)
-
-        // set the mouseup and touchend callback...
-        this.on('mouseup', this.onButtonUp)
-        this.on('touchend', this.onButtonUp)
-
-        this.on('mouseupoutside', this.onButtonUpOutside)
-        this.on('touchendoutside', this.onButtonUpOutside)
-
-        // set the mouseover callback...
-        this.on('mouseover', this.onButtonOver)
-
-        // set the mouseout callback...
-        this.on('mouseout', this.onButtonOut)
+        //this.buttonMode = true;
+        //this.interactive = true;
+        
+        //this
+        //    .on('mousedown', this.onButtonDown)
+        //    .on('touchstart', this.onButtonDown)
+        //    .on('mouseup', this.onButtonUp)
+        //    .on('touchend', this.onButtonUp)
+        //    .on('mouseupoutside', this.onButtonUpOutside)
+        //    .on('touchendoutside', this.onButtonUpOutside)        
+        //    .on('mouseover', this.onButtonOver)
+        //    .on('mouseout', this.onButtonOut)
 
         this.IsPressed = false;
         this.applyTexture();
 
         this.Value = 0.1;
     }
+
+
     public get Value() {
         return this.value;
     }
     public set Value(value: number) {
         if (this.value !== value) {
-            this.value = value;
-            let outlineSize = this.width - (this.handle.width * 2);
-            this.handle.position.x = this.handle.width + outlineSize * value;
+            this.value = value;            
+            this.handle.position.x = this.maxX * value;
+            this.emit('valueChange', value);
+            this.emit('valueChanged', value);
         }        
     }
 
@@ -108,9 +125,37 @@
         console.log("onClick");
     }
 
+    private dragOffsetX: number;
+    private isDragging: boolean = false;
+
+    private getCalculatedValue() {
+        var position = this.handle.x - this.minX;
+        var pct = position / this.maxX;
+        return pct;
+    }
+
+    private onDragStart = (e) => {
+        this.isDragging = true;
+        var pos = e.data.getLocalPosition(this.handle);
+        this.dragOffsetX = pos.x;
+    }
+    private onDragEnd = (e) => {
+        this.isDragging = false;
+        this.Value = this.getCalculatedValue();
+    }
+
+    private onDragMove = (e) => {
+        if (this.isDragging) {
+            var newPosition = e.data.getLocalPosition(this.handle.parent);
+            newPosition.x -= this.dragOffsetX;
+            this.handle.x = Math.min(this.maxX, Math.max(this.minX, newPosition.x));
+            this.emit('valueChange', this.getCalculatedValue());
+        }
+    }
+
     private onButtonDown = () => {
         this.isClickStarted = true;
-        this.textureOutline.frame = this.frameDown;
+        this.texture.frame = this.frameDown;
         this.textureHandle.frame = this.frameDownHandle;
     }
 
@@ -128,7 +173,7 @@
     }
 
     private onButtonOver = () => {
-        this.textureOutline.frame = this.frameHighlight;
+        this.texture.frame = this.frameHighlight;
         this.textureHandle.frame = this.frameHighlightHandle;
     }
 
@@ -139,24 +184,24 @@
 
 
     private applyTexture() {
-        this.textureOutline.frame = this.isPressed ? this.frameDown : this.frameUp;
+        this.texture.frame = this.isPressed ? this.frameDown : this.frameUp;
         this.textureHandle.frame = this.isPressed ? this.frameDownHandle : this.frameUpHandle;
     }
 
     public SetTexture(textureName: string, handleWidth: number) {
         //  outline
-        this.textureOutline = new PIXI.Texture(PIXI.loader.resources[textureName].texture.baseTexture);
-        this.textureOutline.baseTexture.scaleMode = PIXI.SCALE_MODES.LINEAR;
-        var btnHeight = this.textureOutline.height / 3;
-        var btnWidth = this.textureOutline.width - handleWidth;
-        this.frameUp = new PIXI.Rectangle(0, 0 * btnHeight, btnWidth, btnHeight);
-        this.frameHighlight = new PIXI.Rectangle(0, 1 * btnHeight, btnWidth, btnHeight);
-        this.frameDown = new PIXI.Rectangle(0, 2 * btnHeight, btnWidth, btnHeight);
-        this.texture = this.textureOutline;
+        this.texture = new PIXI.Texture(PIXI.loader.resources[textureName].texture.baseTexture);
+        this.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.LINEAR;
+        
+        var frameHeight = this.texture.height / 3;
+        var frameWidth = this.texture.width - handleWidth - 1;
+        this.frameUp = new PIXI.Rectangle(0, 0 * frameHeight, frameWidth, frameHeight);
+        this.frameHighlight = new PIXI.Rectangle(0, 1 * frameHeight, frameWidth, frameHeight);
+        this.frameDown = new PIXI.Rectangle(0, 2 * frameHeight, frameWidth, frameHeight);
 
         //  calc the scale based on desired height/width
-        var scaleW = (this.requestedWidth || btnWidth) / btnWidth;
-        var scaleH = (this.requestedHeight || btnHeight) / btnHeight;
+        var scaleW = (this.requestedWidth || frameWidth) / frameWidth;
+        var scaleH = (this.requestedHeight || frameHeight) / frameHeight;
         this.scale.set(scaleW, scaleH);
 
 
@@ -165,11 +210,13 @@
         this.textureHandle.baseTexture.scaleMode = PIXI.SCALE_MODES.LINEAR;
         this.handle.texture = this.textureHandle;
 
-        //this.handle.scale.set(1 / scaleW, 1 / scaleH);
-        
-        this.frameUpHandle = new PIXI.Rectangle(btnWidth, 0 * btnHeight, handleWidth, btnHeight);
-        this.frameHighlightHandle = new PIXI.Rectangle(btnWidth, 1 * btnHeight, handleWidth, btnHeight);
-        this.frameDownHandle = new PIXI.Rectangle(btnWidth, 2 * btnHeight, handleWidth, btnHeight);
+        var x = frameWidth + COLUMN_PADDING; //  texture elements are separated by padding pixels
+        this.frameUpHandle = new PIXI.Rectangle(x, 0 * frameHeight, handleWidth, frameHeight);
+        this.frameHighlightHandle = new PIXI.Rectangle(x, 1 * frameHeight, handleWidth, frameHeight);
+        this.frameDownHandle = new PIXI.Rectangle(x, 2 * frameHeight, handleWidth, frameHeight);
 
+
+        this.maxX = (this.texture.width - this.handleWidth - this.handleWidth - COLUMN_PADDING - COLUMN_PADDING);
+        this.minX = 0;//COLUMN_PADDING;
     }
 }

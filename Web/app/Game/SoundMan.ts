@@ -15,13 +15,17 @@ export class SoundMan {
     private atkMag1: Howl;
     private hitMag1: Howl;
 
+    private fxDemoSnd: Howl;
+
     private questItemSnd: Howl;
 
     private musicTrackNames: Array<string> = [
         'assets/Audio/Two-Finger-Johnny.mp3',
         'assets/Audio/Bumbling-Burglars_Looping.mp3',
         'assets/Audio/Funk-Soul.mp3',
-        'assets/Audio/Carrousel.mp3'
+        'assets/Audio/Carrousel.mp3',
+
+        'assets/Audio/music-demo.mp3',
     ];
     private musicTracks: Array<Howl> = [];
     private currentTrack: number = 0;
@@ -117,6 +121,14 @@ export class SoundMan {
             loop: false,
             volume: 1
         });
+
+        this.fxDemoSnd = new Howl({
+            src: ['assets/Audio/effects/fx-demo.mp3'],
+            preload: true,
+            autoplay: false,
+            loop: false,
+            volume: 1
+        });
     }
 
     private previousMusicVolume = 0.8;
@@ -163,7 +175,15 @@ export class SoundMan {
             this.MusicVolume = this.previousMusicVolume;
         }
     }
-    
+
+    public get CurrentTrackId() {
+        return this.currentTrack;
+    }
+
+
+    public get fxDemo() {
+        return this.fxDemoSnd;
+    }
 
     public jump() {
         this.walkSnd.pause();
@@ -264,5 +284,6 @@ export class SoundMan {
                 this.backgroundSnd.play();
             }
         }
+        this.currentTrack = trackId;
     }
 }

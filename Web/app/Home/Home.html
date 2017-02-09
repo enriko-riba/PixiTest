@@ -37,7 +37,7 @@
         </div>
     </div>
     <div class="commands" >
-        <button data-bind="click: startGame, enable: isStartEnabled">Start Game</button>
+        <button data-bind="click: startGame, enable: isStartEnabled"><span data-bind="text: isStartEnabled() ? 'Start Game': 'Please wait...'"></span></button>
     </div>
 
     <div class="fb-like"

@@ -70,6 +70,11 @@ button {
     color: black;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     background-color: $data-color;
+
+    &:disabled{
+        cursor: not-allowed;
+        color: #c8381d;
+    }
 }
 
 /* page not found error message */

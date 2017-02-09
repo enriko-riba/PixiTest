@@ -141,6 +141,7 @@ export class QuestManager {
                             Global.snd.win();
 
                             var balloon = this.gameScene.worldContainer.getChildByName("balloon");
+                            (balloon as any).setFollowTarget(null); // prevent following the hero
                             var anim1 = new TWEEN.Tween(balloon)
                                 .to({ x: dispObj.position.x }, 3000).start();
 
