@@ -137,9 +137,6 @@ export class SoundMan {
     private musicVolume = 0.8;
     private fxVolume = 1;
 
-    private isFxOn: boolean = true;
-    private isMusicOn: boolean = true;
-
     public get MusicVolume() { return this.musicVolume; }
     public set MusicVolume(value: number) {
         this.musicVolume = value;
@@ -154,10 +151,9 @@ export class SoundMan {
     }
 
 
-    public get IsFxOn() { return this.isFxOn; }
+    public get IsFxOn() { return this.fxVolume > 0.0; }
     public set IsFxOn(value: boolean) {
-        this.isFxOn = value;
-        if (!this.isFxOn) {
+        if (!value) {
             this.previousFxVolume = this.fxVolume;
             this.FxVolume = 0;
         } else {
@@ -165,10 +161,9 @@ export class SoundMan {
         }
     }
 
-    public get IsMusicOn() { return this.isMusicOn; }
+    public get IsMusicOn() { return this.musicVolume > 0.0; }
     public set IsMusicOn(value: boolean) {
-        this.isMusicOn = value;
-        if (!this.isMusicOn) {
+        if (!value) {
             this.previousMusicVolume = this.musicVolume;
             this.MusicVolume = 0;
         } else {

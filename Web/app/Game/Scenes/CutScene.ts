@@ -11,25 +11,26 @@ export class CutScene extends Scene {
     private deathScene: boolean = false;
     private corpse: PIXI.Sprite;
     private btnContinue: Button;
-        
+
+    private corpseBlurFilter: PIXI.filters.BlurFilter;
+
     constructor() {
         super("CutScene");
         this.BackGroundColor = 0x1099bb;
 
-
         this.corpse = new PIXI.Sprite(PIXI.loader.resources["assets/_distribute/hero-dead.png"].texture);
         this.corpse.anchor.set(0.5);
         this.corpse.pivot.set(0.5);
-        this.corpse.position.set(Global.SCENE_WIDTH/2, Global.SCENE_HEIGHT/2); 
+        this.corpse.position.set(Global.SCENE_WIDTH / 2, Global.SCENE_HEIGHT / 2);
         this.addChild(this.corpse);
 
-        var blur = new PIXI.filters.BlurFilter();
-        this.corpse.filters = [blur];
+        this.corpseBlurFilter = new PIXI.filters.BlurFilter();
+        this.corpse.filters = [this.corpseBlurFilter];
 
 
         this.callout = new PIXI.Sprite(PIXI.loader.resources["assets/_distribute/rect.png"].texture);
         this.callout.anchor.set(0.5);
-        this.callout.position.set(Global.SCENE_WIDTH / 2, Global.SCENE_HEIGHT / 2);
+        this.callout.position.set(Global.SCENE_WIDTH / 2, Global.SCENE_HEIGHT / 5);
         this.addChild(this.callout);
 
         this.textMessage = new PIXI.Text("");
@@ -41,10 +42,12 @@ export class CutScene extends Scene {
         //  btn for next level
         //--------------------------------
         this.btnContinue = new Button("assets/_distribute/Button1.png",
-            (Global.SCENE_WIDTH - Global.BTN_WIDTH) / 2, (Global.SCENE_HEIGHT - Global.BTN_HEIGHT + this.callout.height + 30) / 2,
+            (Global.SCENE_WIDTH - Global.BTN_WIDTH) / 2,
+            //(Global.SCENE_HEIGHT - Global.BTN_HEIGHT + this.callout.height + 30) / 2,
+            this.callout.height,
             Global.BTN_WIDTH, Global.BTN_HEIGHT);
         this.btnContinue.Text = new PIXI.Text("Continue", Global.BTN_STYLE);
-        this.btnContinue.onClick = () => {            
+        this.btnContinue.onClick = () => {
             Global.sceneMngr.ActivateScene("Loader");
         };
         this.addChild(this.btnContinue);
@@ -65,23 +68,24 @@ export class CutScene extends Scene {
 
     public onUpdate(dt: number) {
         if (this.deathScene) {
-            if (this.corpse.scale.x < 5) {
-                this.corpse.rotation += 0.1;
-                var scale = this.corpse.scale.x + 0.04;
+            if (this.corpse.scale.x < 3) {
+                this.corpse.rotation += 0.03;
+                var scale = this.corpse.scale.x + 0.02;
                 this.corpse.scale.set(scale);
             } else {
+                //  death msg & retry btn
                 this.deathScene = false;
                 Global.UserInfo.gamelevel--;
-
                 this.textMessage.text = this.deathMessages[0 | (Math.random() * this.deathMessages.length)];
                 this.callout.visible = true;
                 this.btnContinue.visible = true;
             }
         } else {
-            this.corpse.rotation += 0.005;
-            var blurFilter = this.corpse.filters[0] as PIXI.filters.BlurFilter;
-            blurFilter.blur = Math.min(blurFilter.blur + 0.08, 15.0);
+            this.corpse.rotation += 0.005;           
         }
+
+        var blr = Math.max(5, this.corpseBlurFilter.blur + 0.00004);
+        this.corpseBlurFilter.blur = blr;
     }
 
     /**
@@ -91,14 +95,19 @@ export class CutScene extends Scene {
         return this.deathScene;
     }
     public set DeathScene(value: boolean) {
-        this.deathScene = value;    
+        this.deathScene = value;
         if (this.deathScene) {
-            (this.corpse.filters[0] as PIXI.filters.BlurFilter).blur = 0;
-        }    
+            this.corpseBlurFilter.blur = 0;
+            var clm = new PIXI.filters.ColorMatrixFilter();
+            clm.sepia();
+            this.backSprite.filters = [clm];
+        } else {
+            this.backSprite.filters = null;
+        }
     }
 
 
-    public SetBackGround(texture : PIXI.RenderTexture, scale) {
+    public SetBackGround(texture: PIXI.RenderTexture, scale) {
         if (!this.backSprite) {
             this.backSprite = new PIXI.Sprite(texture);
             this.addChildAt(this.backSprite, 0);

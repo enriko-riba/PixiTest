@@ -112,13 +112,11 @@
         this.textureHighlight = new PIXI.Texture(atlasTexture.baseTexture, new PIXI.Rectangle(0, 1 * btnHeight, btnWidth, btnHeight));
         this.textureDown = new PIXI.Texture(atlasTexture.baseTexture, new PIXI.Rectangle(0, 2 * btnHeight, btnWidth, btnHeight));
 
-        //this.textureUp.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
-        //this.textureHighlight.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
-        //this.textureDown.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
-
         //  calc the scale based on desired height/width
         var scaleW = (this.requestedWidth || btnWidth ) / btnWidth;
         var scaleH = (this.requestedHeight || btnHeight) / btnHeight;
         this.scale.set(scaleW, scaleH);
+
+        this.applyTexture();
     }
 }

@@ -70,23 +70,26 @@ export class OptionsScene extends Scene {
             } else {
                 fxSlider.Value = 0;
             }
-
-            let tname = "assets/_distribute/gui_snd_fx_" + (Global.snd.IsFxOn ? "on.png" : "off.png");
-            btnFx.SetTexture(tname);            
         };
         this.addChild(btnFx);
+
         var fxSlider = new Slider("assets/_distribute/slider1.png", 7, Global.BTN_WIDTH, (Global.BTN_HEIGHT * 1) + 7, 150, 18);
         this.addChild(fxSlider);
+
         var fxTxt = new PIXI.Text("0", Global.QUEST_STYLE);
         fxTxt.position.set(fxSlider.x + fxSlider.width + 20, fxSlider.y -5);
         this.addChild(fxTxt);
+
         fxSlider.on('valueChange', (v) => {
             fxTxt.text = (v * 100).toFixed(2).toString();
-            Global.snd.FxVolume = v
+            Global.snd.FxVolume = v;
             Global.snd.fxDemo.volume(v);
         });
         fxSlider.on('valueChanged', (v) => {
-            Global.snd.FxVolume = v
+            //Global.snd.FxVolume = v;
+            Global.snd.fxDemo.volume(v);
+            let tname = "assets/_distribute/gui_snd_fx_" + (Global.snd.IsFxOn ? "on.png" : "off.png");
+            btnFx.SetTexture(tname);  
         });
         fxSlider.Value = Global.snd.FxVolume;
 
@@ -102,22 +105,24 @@ export class OptionsScene extends Scene {
             } else {
                 musicSlider.Value = 0;
             }
-
-            let tname = "assets/_distribute/gui_snd_music_" + (Global.snd.IsMusicOn ? "on.png" : "off.png");
-            btnMusic.SetTexture(tname);            
         };
         this.addChild(btnMusic);
+
         var musicSlider = new Slider("assets/_distribute/slider1.png", 7, Global.BTN_WIDTH, Global.BTN_HEIGHT * 2 + 7, 150, 18);
         this.addChild(musicSlider);
+
         var mTxt = new PIXI.Text("0", Global.QUEST_STYLE);
         mTxt.position.set(musicSlider.x + musicSlider.width + 20, musicSlider.y -5);
         this.addChild(mTxt);
+
         musicSlider.on('valueChange', (v) => {
             mTxt.text = (v * 100).toFixed(2).toString();
-            Global.snd.MusicVolume = v
+            Global.snd.MusicVolume = v;
         });
         musicSlider.on('valueChanged', (v) => {
-            Global.snd.MusicVolume = v
+            //Global.snd.MusicVolume = v;
+            let tname = "assets/_distribute/gui_snd_music_" + (Global.snd.IsMusicOn ? "on.png" : "off.png");
+            btnMusic.SetTexture(tname); 
         });
         musicSlider.Value = Global.snd.MusicVolume;
     }

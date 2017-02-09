@@ -49,14 +49,7 @@ export class Slider extends PIXI.Sprite {
             .on('pointerdown', this.onDragStart)
             .on('pointerup', this.onDragEnd)
             .on('pointerupoutside', this.onDragEnd)
-            .on('pointermove', this.onDragMove)
-
-            .on('mousedown', this.onButtonDown)
-            .on('touchstart', this.onButtonDown)
-            .on('mouseup', this.onButtonUp)
-            .on('touchend', this.onButtonUp)
-            .on('mouseupoutside', this.onButtonUpOutside)
-            .on('touchendoutside', this.onButtonUpOutside)
+            .on('pointermove', this.onDragMove)                   
             .on('mouseover', this.onButtonOver)
             .on('mouseout', this.onButtonOut)
 
@@ -66,15 +59,12 @@ export class Slider extends PIXI.Sprite {
         //this.buttonMode = true;
         //this.interactive = true;
         
-        //this
-        //    .on('mousedown', this.onButtonDown)
-        //    .on('touchstart', this.onButtonDown)
-        //    .on('mouseup', this.onButtonUp)
-        //    .on('touchend', this.onButtonUp)
-        //    .on('mouseupoutside', this.onButtonUpOutside)
-        //    .on('touchendoutside', this.onButtonUpOutside)        
-        //    .on('mouseover', this.onButtonOver)
-        //    .on('mouseout', this.onButtonOut)
+        this
+            .on('pointerdown', this.onButtonDown)
+            .on('pointerup', this.onButtonUp)
+            .on('pointerupoutside', this.onButtonUpOutside);      
+            //.on('mouseover', this.onButtonOver)
+            //.on('mouseout', this.onButtonOut)
 
         this.IsPressed = false;
         this.applyTexture();
@@ -131,7 +121,7 @@ export class Slider extends PIXI.Sprite {
     private getCalculatedValue() {
         var position = this.handle.x - this.minX;
         var pct = position / this.maxX;
-        return pct;
+        return this.precise_round(pct, 2);
     }
 
     private onDragStart = (e) => {
@@ -151,6 +141,12 @@ export class Slider extends PIXI.Sprite {
             this.handle.x = Math.min(this.maxX, Math.max(this.minX, newPosition.x));
             this.emit('valueChange', this.getCalculatedValue());
         }
+    }
+
+    private precise_round(num, decimals) : number {
+        var t = Math.pow(10, decimals);
+        var result = (Math.round((num * t) + (decimals > 0 ? 1 : 0) * ((Math as any).sign(num) * (10 / Math.pow(100, decimals)))) / t).toFixed(decimals);
+        return parseFloat(result);
     }
 
     private onButtonDown = () => {
