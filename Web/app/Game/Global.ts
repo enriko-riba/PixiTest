@@ -60,7 +60,7 @@ export var QUEST_STYLE: PIXI.ITextStyleStyle =
         fontFamily: "Futura",
         fill: 0x79ff33,
         strokeThickness: 3,
-        stroke: 0x06160f,
+        stroke: 0x021602,
         dropShadow: false
     };
 

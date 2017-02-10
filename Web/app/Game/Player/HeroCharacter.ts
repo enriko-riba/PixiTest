@@ -99,6 +99,12 @@ export class HeroCharacter extends AnimatedSprite {
         return this.playerStats.getStat(StatType.Dust) > 1;
     }
 
+    /**
+     * Returns if the player learned jump attacks.
+     */
+    public get CanJumpAttack(): boolean {
+        return this.playerStats.HasJumpAtack;
+    }
     
 
     /**

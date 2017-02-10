@@ -70,7 +70,7 @@ export class CutScene extends Scene {
         if (this.deathScene) {
             if (this.corpse.scale.x < 3) {
                 this.corpse.rotation += 0.03;
-                var scale = this.corpse.scale.x + 0.02;
+                var scale = this.corpse.scale.x + 0.01;
                 this.corpse.scale.set(scale);
             } else {
                 //  death msg & retry btn

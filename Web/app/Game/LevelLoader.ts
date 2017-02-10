@@ -231,6 +231,7 @@ export class LevelLoader {
             mobDispObj.AtkTexture = entity.attack;
 
             //  body
+            defs.bdDef.material = defs.bdDef.material || "mob_default";
             var p2body: p2.Body = this.buildPhysicsObject(defs.bdDef, mobDispObj);
             p2body.shapes.every((s: p2.Shape) => {
                 s.collisionGroup = WorldP2.COL_GRP_NPC;

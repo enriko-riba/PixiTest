@@ -271,12 +271,12 @@
               "questId": 1,
               "type": "distance",
               "distance": 100,
-              "text": "Hello there,\nI will teach you the\nbasics. Follow my\ninstructions and you\nwill be fine.",
+              "text": "Hello there,\nI will teach you the basics.\nFollow my instructions and you will be fine.",
               "textposition": [
                 -155,
                 600
               ],
-              "completedText": "OK lad,\nuse 'w' or space to jump.\nand 'a', 'd' or arrows\nto move!"
+              "completedText": "OK lad,\nuse 'w' or space to jump. and 'a', 'd' or arrows to move!"
             }
           },
           {
@@ -289,9 +289,9 @@
             "trigger": {
               "questId": 2,
               "type": "collision",
-              "text": "Excellent,\nTo run hold shift.\nIf running you can\njump higher and longer!",
+              "text": "Excellent,\nTo run hold shift.\nIf running you can jump higher and longer!",
               "textposition": [ -300, 550 ],
-              "completedText": "OK,\nnow run to the exit\nsign on the east!"
+              "completedText": "OK,\nnow run to the exit sign on the east!"
             }
           },
           {
@@ -418,13 +418,13 @@
             },
             "trigger": {
               "type": "collision",
-              "text": "You shall not pass\nunless you bring\nme knowledge\nabout Kendo!",
+              "text": "You shall not pass...unless you bring me\nknowledge of Kendo!",
               "textposition": [
                 -370,
-                450
+                400
               ],
               "questId": 201,
-              "completedText": "What? Could it be...\nYou have the Kendo knowledge I need so much!\n\nYou can proceed now."
+              "completedText": "What? Could it be...\nYou have the Kendo knowledge I need so much!\n\nYou must be the chosen one, proceed now!"
             }
           },
           {
@@ -1026,7 +1026,7 @@
             "xy": [ 0, 30 ],
             "trigger": {
               "type": "collision",
-              "text": "Find the han-shi\nKendo master,\nhe will train you.\nBeware of magic slimes!",
+              "text": "Find our Hanshi - the great Kendo master,\nhe will train you. His dojo is on the east.\n\n\nBeware of magic slimes!",
               "textposition": [ -20, 600 ],
               "questId": 202
             }
@@ -1083,7 +1083,7 @@
             "xy": [ 6700, 30 ],
             "trigger": {
               "type": "collision",
-              "text": "I expected you,\nyoung padawan\nYour training shall begin.\nCollect ki from\n10 magic slimes!",
+              "text": "I expected you, young padawan. Time is short\nand your training must begin immediately.\n\nYour first lesson: Oji waza - attack techniques.\nJump on the enemy and press 's' or down.\n\n\nLets practice, collect 10 ki from magic slimes!",
               "textposition": [ -20, 600 ],
               "questId": 203
             }

@@ -35,6 +35,14 @@ export class PlayerStats {
     private accumulator: number = 0.0;
     private dpsDecreaseAmount: number = 0;
 
+    private exp: number = 0;
+
+    private atr_points: number = 0;
+    private attributes: Array<number> = [];
+
+    private hasJumpAttack: boolean = false;
+    private hasMagicAttack: boolean = false;
+
     constructor() {
         this.stats[StatType.Coins] = 0;
         this.stats[StatType.MaxHP] = 0;
@@ -97,6 +105,14 @@ export class PlayerStats {
             }
         }
     };
+
+    public get HasJumpAtack() {
+        return this.hasJumpAttack;
+    }
+    public set HasJumpAtack(value: boolean) {
+        this.hasJumpAttack = value;
+    }
+
 
     public setStat(type: StatType, value: number) {
         this.updateEvent(type, value);

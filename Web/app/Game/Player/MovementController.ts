@@ -16,7 +16,10 @@ export interface IMoveEvent {
 export class MovementController {
     private readonly VELOCITY = 150;
     private readonly JUMP_FORCE = 16700;
+    private readonly JUMP_ATTACK_FORCE = -10000;
+
     private nextJumpAllowed: number = 0;
+    private nextJumpDownAllowed: number = 0;
 
     private world: WorldP2;
     private hero: HeroCharacter;
@@ -58,11 +61,11 @@ export class MovementController {
      * Sets if the player can interact via controls.
      */
     public set isInteractive(newValue: boolean) {
-        this._isInteractive = newValue;  
-        if(!this._isInteractive) {
+        this._isInteractive = newValue;
+        if (!this._isInteractive) {
             this.isRunning = false;
             this.movementState = MovementState.Idle;
-        }      
+        }
     }
 
     private touchJump = (ev: any) => {
@@ -98,13 +101,13 @@ export class MovementController {
     private getLocalCoordinates(ev: any) {
         var bb = ev.target.getBoundingClientRect();
         var pos = {
-            x: (ev.center.x - bb.left) / bb.width ,
-            y: (ev.center.y - bb.top) / bb.height ,
+            x: (ev.center.x - bb.left) / bb.width,
+            y: (ev.center.y - bb.top) / bb.height,
         }
         return pos;
     }
 
-    public get IsJumping():boolean {
+    public get IsJumping(): boolean {
         return this.isJumping;
     }
 
@@ -135,32 +138,74 @@ export class MovementController {
         this.world.clearContactsForBody(this.world.playerBody);
     }
 
-    public update(dt: number):void {
+    public StartJumpDown(): void {
+        switch (this.movementState) {
+            case MovementState.Left:
+            case MovementState.JumpLeft:
+                this.newState = MovementState.JumpDownLeft;
+                break;
+
+            case MovementState.Right:
+            case MovementState.JumpRight:
+                this.newState = MovementState.JumpDownRight;
+                break;
+
+            default:
+                this.newState = MovementState.JumpDown;
+                break;
+        }
+        console.log("state change: " + MovementState[this.movementState] + " -> " + MovementState[this.newState]);
+        this.movementState = this.newState;
+
+        var forceVector: number[] = [0, this.JUMP_ATTACK_FORCE];
+        this.world.playerBody.applyImpulse(forceVector);
+        this.nextJumpDownAllowed = performance.now() + 2500;
+
+        ko.postbox.publish<IMoveEvent>(MOVE_TOPIC, {
+            newState: this.newState,
+            oldState: this.movementState,
+            isJumping: true,
+            isRunning: false // makes no difference during jumps
+        });
+    }
+
+    public update(dt: number): void {
 
         const KEY_A: number = 65;
         const KEY_D: number = 68;
         const KEY_W: number = 87;
+        const KEY_S: number = 83;
+
         const KEY_SHIFT: number = 16;
         const KEY_LEFT: number = 37;
         const KEY_RIGHT: number = 39;
         const KEY_UP: number = 38;
+        const KEY_DOWN: number = 40;
         const SPACE: number = 32;
 
-        var nonSensors = this.world.playerContacts.filter((body, idx) => body.shapes[0].sensor !== true);
-        this.isJumping = Math.abs(this.world.playerBody.velocity[1]) > 0.01 && nonSensors.length === 0;
+        var isMovingVerticalyp = Math.abs(this.world.playerBody.velocity[1]) > 0.01;
+        if (isMovingVerticalyp) {
+            let hasOnlySensorContacts = this.world.playerContacts.every((body, idx) => body.shapes[0].sensor);
+            this.isJumping = hasOnlySensorContacts;
+        } else {
+            this.isJumping = false;
+        }
 
-        //  no movement while jumping
-        if (this.isJumping) {
+        //  no movement (except jump down) while jumping
+        if (this.isJumping && this._isInteractive) {
+            if ((this.kbd.IsKeyDown(KEY_S) || this.kbd.IsKeyDown(KEY_DOWN)) && this.hero.CanJumpAttack && this.nextJumpDownAllowed < performance.now()) {
+                this.StartJumpDown();
+            }
             return;
+
         } else {
             //  calculate the horizontal velocity
-            var v : number = this.calcMovementVelocity();
+            var v: number = this.calcMovementVelocity();
             this.world.playerBody.velocity[0] = v;
         }
 
-        
         var newIsJumping: boolean = false;
-        var newIsRunning: boolean = this.kbd.IsKeyDown(KEY_SHIFT) && this.hero.CanRun && this._isInteractive;
+        var newIsRunning: boolean = this.kbd.IsKeyDown(KEY_SHIFT) && this.hero.CanRun && this._isInteractive;        
 
         if (this.kbd.IsKeyDown(KEY_A) || this.kbd.IsKeyDown(KEY_LEFT) || this.isTouchLeft) {
             this.newState = MovementState.Left;
@@ -172,17 +217,17 @@ export class MovementController {
         if ((this.kbd.IsKeyDown(KEY_W) || this.kbd.IsKeyDown(KEY_UP) || this.kbd.IsKeyDown(SPACE) || this.isTouchJump) && this.CanJump) {
             if (this.movementState === MovementState.Left) {
                 this.newState = MovementState.JumpLeft;
-            }else if (this.movementState === MovementState.Right) {
+            } else if (this.movementState === MovementState.Right) {
                 this.newState = MovementState.JumpRight;
-            }else if (this.movementState === MovementState.Idle) {
+            } else if (this.movementState === MovementState.Idle) {
                 this.newState = MovementState.JumpUp;
                 newIsRunning = false;
             }
         }
 
         //  has state changed
-        if (this.newState !== this.movementState || newIsRunning!= this.IsRunning) {
-            console.log("state change: " + MovementState[this.movementState] + " -> " + MovementState[this.newState]);
+        if (this.newState !== this.movementState || newIsRunning != this.IsRunning) {
+            //console.log("state change: " + MovementState[this.movementState] + " -> " + MovementState[this.newState]);
             switch (this.newState) {
                 case MovementState.JumpLeft:
                     newIsJumping = true;
@@ -204,7 +249,7 @@ export class MovementController {
                 isRunning: newIsRunning
             });
         }
-       
+
         //  update new states
         this.movementState = this.newState;
         this.isRunning = newIsRunning;
@@ -213,14 +258,14 @@ export class MovementController {
     }
 
     private calcMovementVelocity(): number {
-        var direction:number = 0;
+        var direction: number = 0;
         if (this.movementState === MovementState.Left || this.movementState === MovementState.JumpLeft) {
             direction = -1;
         } else if (this.movementState === MovementState.Right || this.movementState === MovementState.JumpRight) {
             direction = 1;
         }
 
-        var velocity : number = direction * this.VELOCITY * (this.IsRunning ? 2 : 1.0);
+        var velocity: number = direction * this.VELOCITY * (this.IsRunning ? 2 : 1.0);
         return velocity;
     }
 }

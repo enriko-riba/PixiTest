@@ -350,9 +350,9 @@ export class InGameScene extends Scene {
             bullet.body = body;
 
             this.wp2.addBody(body);
-            console.log("creating new bullet, body.id: " + body.id);
+            // console.log("creating new bullet, body.id: " + body.id);
         } else {
-            console.log("recycling bullet, body.id: " + bullet.body.id);
+            // console.log("recycling bullet, body.id: " + bullet.body.id);
         }
 
         bullet.position = position;
@@ -440,19 +440,19 @@ export class InGameScene extends Scene {
      * @param style PIXI.ITextStyle
      * @param fadeSeconds optional number of milliseconds the message should linger
      */
-    public addTriggerMessage(position: PIXI.Point, message: string, style: PIXI.ITextStyleStyle, fadeSeconds: number = 8000): PIXI.Sprite {
-        var container = new PIXI.Sprite(PIXI.loader.resources["assets/_distribute/callout.png"].texture);
+    public addTriggerMessage(position: PIXI.Point, message: string, style: PIXI.ITextStyleStyle, fadeMillis: number = 8000): PIXI.Sprite {
+        var container = new PIXI.Sprite(PIXI.loader.resources["assets/_distribute/rect.png"].texture);
         container.position.set(position.x, position.y);
         container.scale.set(1, -1);   //  scale invert since everything is upside down due to coordinate system
         this.worldContainer.addChild(container);
 
         var txtInfo = new PIXI.Text(message, style);
-        txtInfo.position.set(60, 80);
+        txtInfo.position.set(40, 20);
         container.addChild(txtInfo);
 
-        if (fadeSeconds > 0 ) {
+        if (fadeMillis > 0 ) {
             var fade = new TWEEN.Tween(container)
-                .to({ alpha: 0.7 }, fadeSeconds)
+                .to({ alpha: 0.8 }, fadeMillis)
                 .onComplete(() => {
                     this.worldContainer.removeChild(container);
                 });
@@ -551,6 +551,12 @@ export class InGameScene extends Scene {
             case MovementState.JumpUp:
                 this.hero.PlayAnimation("jumpup", ANIMATION_FPS_SLOW);
                 Global.snd.jump();
+                break;
+
+            case MovementState.JumpDownRight:
+            case MovementState.JumpDownLeft:
+            case MovementState.JumpDown:
+                console.log("Implement Jump attack animation!!!");
                 break;
         }
 
@@ -691,9 +697,20 @@ export class InGameScene extends Scene {
      */
     private onPlayerContact(event: any): void {
         const SMOKE_VELOCITY: number = 425;
-        let body: p2.Body = event.body as p2.Body;
+        const ATTACK_VELOCITY: number = 800;
 
-        if (Math.abs(event.velocity[1]) > SMOKE_VELOCITY) {
+        let body: p2.Body = event.body as p2.Body;
+        let verticalVelocity = Math.abs(event.velocity[1])
+        if (verticalVelocity > 0) {
+            console.log("Vert velocity: " + verticalVelocity);
+        }
+
+        if (verticalVelocity > ATTACK_VELOCITY) {
+            //  check collision vs mobs
+            if (body.shapes[0].collisionGroup === WorldP2.COL_GRP_NPC) {
+                console.log("Mob hit!");
+            }
+        } else if (verticalVelocity > SMOKE_VELOCITY) {
             var smoke: AnimatedSprite = new AnimatedSprite();
             smoke.addAnimations(new AnimationSequence("smoke", "assets/_distribute/jump_smoke.png",
                 [0, 1, 2, 3, 4, 5], this.HERO_FRAME_SIZE, this.HERO_FRAME_SIZE));

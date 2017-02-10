@@ -194,7 +194,7 @@ export class QuestManager {
                     }
                     break;
 
-                case 202:   //  seek the han-shi Kendo master
+                case 202:   //  seek the hanshi Kendo master
                     switch (state) {
                         case QuestState.None:
                             this.setQuestState(trigger.questId, QuestState.InProgress);
@@ -210,15 +210,17 @@ export class QuestManager {
                     }
                     break;
 
-                case 203:   //  han-shi Kendo master dojo: ki
+                case 203:   //  hanshi Kendo master dojo: obtain Oji waza + collect 10 ki
                     switch (state) {
                         case QuestState.None:
                             this.setQuestState(trigger.questId, QuestState.InProgress);
-                            this.previousQuestMessage = this.gameScene.addTriggerMessage(pos, trigger.text, Global.QUEST_STYLE);
+                            this.previousQuestMessage = this.gameScene.addTriggerMessage(pos, trigger.text, Global.QUEST_STYLE, 20000);
+                            this.hero.PlayerStats.HasJumpAtack = true;
                             break;
+
                         case QuestState.InProgress:
                             if (!this.previousQuestMessage || !this.previousQuestMessage.parent) {
-                                this.previousQuestMessage = this.gameScene.addTriggerMessage(pos, trigger.text, Global.QUEST_STYLE);
+                                this.previousQuestMessage = this.gameScene.addTriggerMessage(pos, trigger.text, Global.QUEST_STYLE, 20000);
                             }
                             break;
                         default:
@@ -249,7 +251,8 @@ export class QuestManager {
             ExternalId: Global.UserInfo.id,
             Gold: this.gameScene.PlayerStats.getStat(StatType.Coins),
             Dust: Math.floor(this.gameScene.PlayerStats.getStat(StatType.Dust)),
-            LastLevel: Global.UserInfo.gamelevel
+            LastLevel: Global.UserInfo.gamelevel,
+            // TODO: add sending attributes, skills, exp etc
         };
         AjaxHelper.Post(baseUrl + "/api/user/save", model, (data, status) => {
             console.log("connectUser() response", data);            

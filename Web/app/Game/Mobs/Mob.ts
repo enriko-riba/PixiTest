@@ -44,6 +44,9 @@ export class Mob extends AnimatedSprite {
         this.emitBullet = igs.emitBullet;        
     }
 
+    /**
+     * texture used for attacks emitted by the mob.
+     */
     public AtkTexture: string | string[];
 
     public get Direction(): DirectionH {
@@ -79,7 +82,6 @@ export class Mob extends AnimatedSprite {
 
         this.OnComplete = (seq: AnimationSequence) => {
             this.OnComplete = null;
-            //console.log("completed animation " + seq.sequenceName, Date.now()/1000);
             this.fireBullet();
             this.PlayAnimation(currentSeq.sequenceName, currentFps);
         };
