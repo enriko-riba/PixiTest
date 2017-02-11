@@ -130,7 +130,9 @@
     <Content Include="assets\Audio\effects\fx-demo.mp3" />
     <Content Include="assets\Audio\effects\gem.mp3" />
     <Content Include="assets\Audio\effects\hit-mag01.mp3" />
+    <Content Include="assets\Audio\effects\hit-mag02.mp3" />
     <Content Include="assets\Audio\effects\hurt.mp3" />
+    <Content Include="assets\Audio\effects\jump-atk.mp3" />
     <Content Include="assets\Audio\effects\jump1.mp3" />
     <Content Include="assets\Audio\effects\jump2.mp3" />
     <Content Include="assets\Audio\effects\quest-item.mp3" />
@@ -140,7 +142,6 @@
     <Content Include="assets\Audio\Funk-Soul.mp3" />
     <Content Include="assets\Audio\music-demo.mp3" />
     <Content Include="assets\Audio\Two-Finger-Johnny.mp3" />
-    <None Include="assets\Images\Gui\callout.png" />
     <None Include="assets\Images\Gui\rect.png" />
     <None Include="assets\Images\Objects\castle-mbanovic.png" />
     <None Include="assets\Images\Objects\flame.png" />

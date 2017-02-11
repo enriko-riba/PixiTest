@@ -9,6 +9,7 @@ export class ContactPair {
     constructor(public BodyA: p2.Body, public BodyB: p2.Body) { }
 }
 
+
 /**
  * Takes care of the physics simulations.
  */
@@ -18,6 +19,7 @@ export class WorldP2 {
     static COL_GRP_SCENE = 4;
     static COL_GRP_BULLET = 8;
     static COL_GRP_GROUND = 16;
+    
 
     public playerBody: p2.Body;
     private world: p2.World;
@@ -60,7 +62,7 @@ export class WorldP2 {
         //  player body
         //------------------------------------------
         this.playerBody = new p2.Body({
-            mass: 40,
+            mass: 38,
             position: [Global.UserInfo.position.x, Global.UserInfo.position.y],
             fixedRotation: true,
         });
@@ -299,7 +301,7 @@ export class WorldP2 {
             this.materials.get("mob_default"),
             {
                 friction: 0.2,
-                restitution: 0.75,
+                restitution: 0.4,
                 stiffness: p2.Equation.DEFAULT_STIFFNESS,
                 relaxation: p2.Equation.DEFAULT_RELAXATION,
                 frictionStiffness: p2.Equation.DEFAULT_STIFFNESS,
@@ -341,7 +343,7 @@ export class WorldP2 {
             this.materials.get("box_default"),
             this.materials.get("ground_default"),
             {
-                friction: 0.7,
+                friction: 0.8,
                 restitution: 0.3,
                 stiffness: p2.Equation.DEFAULT_STIFFNESS,
                 relaxation: p2.Equation.DEFAULT_RELAXATION,

@@ -14,6 +14,8 @@ export class SoundMan {
     private winSnd: Howl;
     private atkMag1: Howl;
     private hitMag1: Howl;
+    private jumpAtk: Howl;
+    private woosh: Howl;
 
     private fxDemoSnd: Howl;
 
@@ -121,7 +123,20 @@ export class SoundMan {
             loop: false,
             volume: 1
         });
-
+        this.jumpAtk = new Howl({
+            src: ['assets/Audio/effects/jump-atk.mp3'],
+            preload: true,
+            autoplay: false,
+            loop: false,
+            volume: 1
+        });
+        this.woosh = new Howl({
+            src: ['assets/Audio/effects/woosh.mp3'],
+            preload: true,
+            autoplay: false,
+            loop: false,
+            volume: 1
+        });
         this.fxDemoSnd = new Howl({
             src: ['assets/Audio/effects/fx-demo.mp3'],
             preload: true,
@@ -180,6 +195,12 @@ export class SoundMan {
         return this.fxDemoSnd;
     }
 
+    public jumpAttack() {
+        this.walkSnd.pause();
+        this.jumpAtk.play();
+        this.jumpAtk.volume(this.fxVolume);
+    }
+
     public jump() {
         this.walkSnd.pause();
         this.jumpSnd1.play();
@@ -203,6 +224,12 @@ export class SoundMan {
         this.hitMag1.volume(this.fxVolume);
         this.hitMag1.play();
     }
+
+    public bulletHitWall() {
+        this.woosh.volume(this.fxVolume);
+        this.woosh.play();
+    }
+
     public coin() {
         this.coinSnd.volume(this.fxVolume);
         this.coinSnd.play();

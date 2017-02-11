@@ -324,7 +324,6 @@
             "trigger": {
               "type": "collision",
               "text": "Well done!",
-              "textposition": [ -820, 400 ],
               "questId": 3
             }
           },

@@ -554,9 +554,18 @@ export class InGameScene extends Scene {
                 break;
 
             case MovementState.JumpDownRight:
+                this.hero.PlayAnimation("jumpdownright", ANIMATION_FPS_SLOW);
+                Global.snd.jumpAttack();
+                break;
+
             case MovementState.JumpDownLeft:
+                this.hero.PlayAnimation("jumpdownleft", ANIMATION_FPS_SLOW);
+                Global.snd.jumpAttack();
+                break;
+
             case MovementState.JumpDown:
-                console.log("Implement Jump attack animation!!!");
+                this.hero.PlayAnimation("jumpdown", ANIMATION_FPS_SLOW);
+                Global.snd.jumpAttack();
                 break;
         }
 
@@ -739,6 +748,8 @@ export class InGameScene extends Scene {
                 this.addInfoMessage(this.hero.position, `${-bullet.damage} HP`);
                 this.hero.PlayerStats.increaseStat(StatType.HP, -bullet.damage);
             } else {
+
+                //  recycle explode animations
                 var explode: AnimatedSprite = new AnimatedSprite();
                 explode.addAnimations(new AnimationSequence("exp",
                     "assets/_distribute/slime_atk_exp.png",
@@ -753,6 +764,7 @@ export class InGameScene extends Scene {
                 this.worldContainer.addChild(explode);
                 explode.OnComplete = () => this.worldContainer.removeChild(explode);
                 explode.PlayAnimation("exp", 10, false);
+                Global.snd.bulletHitWall();
             }
             bullet.IsDead = true;
         }

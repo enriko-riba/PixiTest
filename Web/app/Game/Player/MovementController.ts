@@ -1,8 +1,8 @@
 ﻿import { KeyboardMapper } from "app/_engine/KeyboardMapper";
-import * as Global from "../Global";
 import { MovementState } from "./MovementState";
 import { WorldP2 } from "../Objects/WorldP2";
 import { HeroCharacter } from "../Player//HeroCharacter";
+import * as Global from "../Global";
 import * as ko from "knockout";
 
 export var MOVE_TOPIC = "move_event";
@@ -15,8 +15,8 @@ export interface IMoveEvent {
 
 export class MovementController {
     private readonly VELOCITY = 150;
-    private readonly JUMP_FORCE = 16700;
-    private readonly JUMP_ATTACK_FORCE = -10000;
+    private readonly JUMP_FORCE = 17000;
+    private readonly JUMP_ATTACK_FORCE = -12000;
 
     private nextJumpAllowed: number = 0;
     private nextJumpDownAllowed: number = 0;
@@ -37,20 +37,10 @@ export class MovementController {
     constructor(world: WorldP2, hero: HeroCharacter) {
         this.world = world;
         this.hero = hero;
-
-        /*
-        var myElement = document.getElementById("stage");
-        var mc = new Hammer.Manager(myElement);
-
-        mc.add(new Hammer.Pan({ event: 'pan', direction: Hammer.DIRECTION_UP }));
-        mc.on("pan", this.touchJump);
-
-        mc.add(new Hammer.Press({ event: 'press', time: 25, interval: 25 }));
-        mc.on("press", this.touchMove);
-        */
     }
 
     private _isInteractive: boolean = true;
+
     /**
      * Returns if the player can interact via controls.
      */
@@ -66,45 +56,6 @@ export class MovementController {
             this.isRunning = false;
             this.movementState = MovementState.Idle;
         }
-    }
-
-    private touchJump = (ev: any) => {
-        if (this._isInteractive) {
-            console.log("touchJump event", ev);
-            this.isTouchJump = true;
-        }
-    }
-
-    private touchMove = (ev: any) => {
-        if (this._isInteractive) {
-            console.log("touch event", ev);
-
-            var pos = this.getLocalCoordinates(ev);
-            let newDirection = (pos.x > 0.5) ? MovementState.Right : MovementState.Left;
-            let shouldStop = (newDirection === MovementState.Left && this.isTouchRight) ||
-                (newDirection === MovementState.Right && this.isTouchLeft);
-            if (shouldStop) {
-                this.isTouchRight = false;
-                this.isTouchLeft = false;
-            } else {
-                this.isTouchRight = (newDirection === MovementState.Right);
-                this.isTouchLeft = (newDirection === MovementState.Left);
-            }
-        }
-    }
-
-    /**
-     * Returns the target element x,y normalized coordinates (in [0,1] range) from a touch event.
-     *
-     * @param ev the hammerjs touch event
-     */
-    private getLocalCoordinates(ev: any) {
-        var bb = ev.target.getBoundingClientRect();
-        var pos = {
-            x: (ev.center.x - bb.left) / bb.width,
-            y: (ev.center.y - bb.top) / bb.height,
-        }
-        return pos;
     }
 
     public get IsJumping(): boolean {
@@ -129,9 +80,9 @@ export class MovementController {
         if (direction === MovementState.JumpUp) {
             forceVector = [0, this.JUMP_FORCE];
         } else if (direction === MovementState.JumpLeft) {
-            forceVector = [-this.JUMP_FORCE * 0.125, this.JUMP_FORCE];
+            forceVector = [-this.JUMP_FORCE * 0.120, this.JUMP_FORCE];
         } else if (direction === MovementState.JumpRight) {
-            forceVector = [this.JUMP_FORCE * 0.125, this.JUMP_FORCE];
+            forceVector = [this.JUMP_FORCE * 0.120, this.JUMP_FORCE];
         }
         this.world.playerBody.applyImpulse(forceVector);
         this.nextJumpAllowed = performance.now() + 450;
@@ -158,6 +109,7 @@ export class MovementController {
         this.movementState = this.newState;
 
         var forceVector: number[] = [0, this.JUMP_ATTACK_FORCE];
+        this.world.playerBody.setZeroForce();
         this.world.playerBody.applyImpulse(forceVector);
         this.nextJumpDownAllowed = performance.now() + 2500;
 
