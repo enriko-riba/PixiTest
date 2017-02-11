@@ -12,7 +12,6 @@ export class Slider extends PIXI.Sprite {
     private frameDownHandle: PIXI.Rectangle;
 
     private isPressed: boolean;
-    private isClickStarted: boolean;
     private text: PIXI.Text;
     private requestedWidth: number = undefined;
     private requestedHeight: number = undefined;
@@ -49,22 +48,22 @@ export class Slider extends PIXI.Sprite {
             .on('pointerdown', this.onDragStart)
             .on('pointerup', this.onDragEnd)
             .on('pointerupoutside', this.onDragEnd)
-            .on('pointermove', this.onDragMove)                   
-            .on('mouseover', this.onButtonOver)
-            .on('mouseout', this.onButtonOut)
+            .on('pointermove', this.onDragMove);
+           
 
         //  setup slider textures
         this.SetTexture(textureAtlas, sliderFrameWidth);
 
-        //this.buttonMode = true;
-        //this.interactive = true;
+        this.buttonMode = true;
+        this.interactive = true;
         
         this
             .on('pointerdown', this.onButtonDown)
             .on('pointerup', this.onButtonUp)
-            .on('pointerupoutside', this.onButtonUpOutside);      
-            //.on('mouseover', this.onButtonOver)
-            //.on('mouseout', this.onButtonOut)
+            .on('pointertap', this.onClick)
+            .on('pointerupoutside', this.onButtonUpOutside)
+            .on('mouseover', this.onButtonOver)
+            .on('mouseout', this.onButtonOut);
 
         this.IsPressed = false;
         this.applyTexture();
@@ -111,8 +110,9 @@ export class Slider extends PIXI.Sprite {
     }
 
 
-    public onClick = () => {
-        console.log("onClick");
+    public onClick = (e) => {
+        this.setSliderFromeEvent(e);
+        return false;
     }
 
     private dragOffsetX: number;
@@ -132,51 +132,59 @@ export class Slider extends PIXI.Sprite {
     private onDragEnd = (e) => {
         this.isDragging = false;
         this.Value = this.getCalculatedValue();
+        e.stopped = true;
     }
 
-    private onDragMove = (e) => {
+    private onDragMove = (e:Event) => {
         if (this.isDragging) {
-            var newPosition = e.data.getLocalPosition(this.handle.parent);
-            newPosition.x -= this.dragOffsetX;
-            this.handle.x = Math.min(this.maxX, Math.max(this.minX, newPosition.x));
-            this.emit('valueChange', this.getCalculatedValue());
+            //var newPosition = e.data.getLocalPosition(this.handle.parent);
+            //newPosition.x -= this.dragOffsetX;
+            //this.handle.x = Math.min(this.maxX, Math.max(this.minX, newPosition.x));
+            //this.emit('valueChange', this.getCalculatedValue());
+            this.setSliderFromeEvent(e);
+            return false;
         }
     }
 
-    private precise_round(num, decimals) : number {
+    private setSliderFromeEvent(e) {
+        var newPosition = e.data.getLocalPosition(this.handle.parent);
+        if (this.isDragging && this.dragOffsetX) {
+            newPosition.x -= this.dragOffsetX;
+        }
+        this.handle.x = Math.min(this.maxX, Math.max(this.minX, newPosition.x));
+        this.emit('valueChange', this.getCalculatedValue());
+    }
+    private precise_round(num, decimals): number {
         var t = Math.pow(10, decimals);
         var result = (Math.round((num * t) + (decimals > 0 ? 1 : 0) * ((Math as any).sign(num) * (10 / Math.pow(100, decimals)))) / t).toFixed(decimals);
         return parseFloat(result);
     }
 
     private onButtonDown = () => {
-        this.isClickStarted = true;
         this.texture.frame = this.frameDown;
         this.textureHandle.frame = this.frameDownHandle;
-    }
+    };
 
-    private onButtonUp = () => {
-        if (this.isClickStarted) {
-            this.isClickStarted = false;
-            this.onClick();
-        }
+    private onButtonUp = (e) => {
+        //if (this.isClickStarted) {
+        //    this.isClickStarted = false;
+        //    this.onClick(e);
+        //}
         this.applyTexture();
-    }
+    };
 
     private onButtonUpOutside = () => {
         this.applyTexture();
-        this.isClickStarted = false;
-    }
+    };
 
     private onButtonOver = () => {
         this.texture.frame = this.frameHighlight;
         this.textureHandle.frame = this.frameHighlightHandle;
-    }
+    };
 
     private onButtonOut = () => {
-        this.isClickStarted = false;
         this.applyTexture();
-    }
+    };
 
 
     private applyTexture() {

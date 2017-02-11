@@ -56,7 +56,7 @@ class HomeVM {
         this.isStartEnabled(false);
         setTimeout(() =>
             window.location.hash = "#pp2",
-            500);
+            200);
     };
 }
 

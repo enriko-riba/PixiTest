@@ -304,12 +304,18 @@ export class InGameScene extends Scene {
     }
 
     /**
-     * Removes an entity from the stage.
+     * Removes an entity from the p2 world and sets its DisplayObject to null.
+     * If the removeDisplayObject is true the display object will be also removed from the worldContainer
+     *
      * @param body
+     * @param removeDisplayObject
      */
-    public removeEntity(body: any): void {
+    public removeEntity(body: p2.Body, removeDisplayObject: boolean = false): void {
         this.wp2.removeBody(body);
-        body.DisplayObject = null;
+        if (removeDisplayObject) {
+            this.worldContainer.removeChild((body as any).DisplayObject);
+        }
+        (body as any).DisplayObject = null;
     }
 
 
@@ -705,8 +711,8 @@ export class InGameScene extends Scene {
      * @param event
      */
     private onPlayerContact(event: any): void {
-        const SMOKE_VELOCITY: number = 425;
-        const ATTACK_VELOCITY: number = 800;
+        const SMOKE_VELOCITY: number = 430;
+        const ATTACK_VELOCITY: number = 600;
 
         let body: p2.Body = event.body as p2.Body;
         let verticalVelocity = Math.abs(event.velocity[1])
@@ -718,6 +724,8 @@ export class InGameScene extends Scene {
             //  check collision vs mobs
             if (body.shapes[0].collisionGroup === WorldP2.COL_GRP_NPC) {
                 console.log("Mob hit!");
+                this.removeEntity(body, true);
+                //  TODO: add animation, recycle mob, increase exp, mob drop 
             }
         } else if (verticalVelocity > SMOKE_VELOCITY) {
             var smoke: AnimatedSprite = new AnimatedSprite();

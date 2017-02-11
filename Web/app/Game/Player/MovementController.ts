@@ -16,7 +16,7 @@ export interface IMoveEvent {
 export class MovementController {
     private readonly VELOCITY = 150;
     private readonly JUMP_FORCE = 17000;
-    private readonly JUMP_ATTACK_FORCE = -12000;
+    private readonly JUMP_ATTACK_FORCE = -13000;
 
     private nextJumpAllowed: number = 0;
     private nextJumpDownAllowed: number = 0;
@@ -111,7 +111,7 @@ export class MovementController {
         var forceVector: number[] = [0, this.JUMP_ATTACK_FORCE];
         this.world.playerBody.setZeroForce();
         this.world.playerBody.applyImpulse(forceVector);
-        this.nextJumpDownAllowed = performance.now() + 2500;
+        this.nextJumpDownAllowed = performance.now() + 1000;
 
         ko.postbox.publish<IMoveEvent>(MOVE_TOPIC, {
             newState: this.newState,
