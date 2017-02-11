@@ -560,17 +560,17 @@ export class InGameScene extends Scene {
                 break;
 
             case MovementState.JumpDownRight:
-                this.hero.PlayAnimation("jumpdownright", ANIMATION_FPS_SLOW);
+                this.hero.PlayAnimation("jumpdownright", ANIMATION_FPS_NORMAL);
                 Global.snd.jumpAttack();
                 break;
 
             case MovementState.JumpDownLeft:
-                this.hero.PlayAnimation("jumpdownleft", ANIMATION_FPS_SLOW);
+                this.hero.PlayAnimation("jumpdownleft", ANIMATION_FPS_NORMAL);
                 Global.snd.jumpAttack();
                 break;
 
             case MovementState.JumpDown:
-                this.hero.PlayAnimation("jumpdown", ANIMATION_FPS_SLOW);
+                this.hero.PlayAnimation("jumpdown", ANIMATION_FPS_NORMAL);
                 Global.snd.jumpAttack();
                 break;
         }

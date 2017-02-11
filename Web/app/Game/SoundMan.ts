@@ -197,6 +197,7 @@ export class SoundMan {
 
     public jumpAttack() {
         this.walkSnd.pause();
+        this.jumpAtk.loop(false);
         this.jumpAtk.play();
         this.jumpAtk.volume(this.fxVolume);
     }
