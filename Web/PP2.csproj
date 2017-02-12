@@ -204,9 +204,7 @@
     <Content Include="app\Route-not-found\route-not-found.html" />
     <Content Include="app\_templates\component-modal.html" />
     <Content Include="Content\Site.scss" />
-    <Content Include="assets\Levels\levels.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <AdditionalFiles Include="assets\Levels\levels.json" />
     <None Include="assets\premultiply_alpha.bat" />
     <None Include="compilerconfig.json" />
     <None Include="compilerconfig.json.defaults">
