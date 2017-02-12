@@ -76,7 +76,7 @@ export class OptionsScene extends Scene {
         this.addChild(fxSlider);
 
         var fxTxt = new PIXI.Text("0", Global.QUEST_STYLE);
-        fxTxt.position.set(fxSlider.x + fxSlider.width + 20, fxSlider.y - 5);
+        fxTxt.position.set(fxSlider.x + fxSlider.width + 20, fxSlider.y + 2);
         this.addChild(fxTxt);
 
         fxSlider.on('valueChange', (v:number) => {
@@ -110,7 +110,7 @@ export class OptionsScene extends Scene {
         this.addChild(musicSlider);
 
         var mTxt = new PIXI.Text("0", Global.QUEST_STYLE);
-        mTxt.position.set(musicSlider.x + musicSlider.width + 20, musicSlider.y - 5);
+        mTxt.position.set(musicSlider.x + musicSlider.width + 20, musicSlider.y + 2);
         this.addChild(mTxt);
 
         musicSlider.on('valueChange', (v:number) => {

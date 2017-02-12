@@ -7,6 +7,7 @@ export enum StatType {
     MaxDust,
     Dust,
     Coins,
+    Exp
 }
 
 export enum DpsType {
@@ -35,8 +36,6 @@ export class PlayerStats {
     private accumulator: number = 0.0;
     private dpsDecreaseAmount: number = 0;
 
-    private exp: number = 0;
-
     private atr_points: number = 0;
     private attributes: Array<number> = [];
 
@@ -49,6 +48,7 @@ export class PlayerStats {
         this.stats[StatType.HP] = 0;
         this.stats[StatType.MaxDust] = 0;
         this.stats[StatType.Dust] = 0;
+        this.stats[StatType.Exp] = 0;
     }
 
     /**

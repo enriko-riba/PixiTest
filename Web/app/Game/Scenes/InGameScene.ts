@@ -5,7 +5,7 @@ import * as ko from "knockout";
 import { Scene } from "app/_engine/Scene";
 import { Parallax } from "app/_engine/Parallax";
 import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
-
+import { Mob, AtrType } from "../Mobs/Mob";
 import { Hud } from "../Hud";
 import { SoundMan } from "../SoundMan";
 import { LevelLoader, ILevel, ILevelMap, IMapEntity } from "../LevelLoader";
@@ -273,6 +273,23 @@ export class InGameScene extends Scene {
                 Global.snd.gem();
                 break;
 
+                //------------------------------------
+                //  QUEST ITEMS 200-999
+                //------------------------------------
+
+            case 201:  //  kendo knowledge
+                this.addInfoMessage(dispObj.position, "Kendo knowledge acquired!");
+                this.addCollectibleTween(dispObj);
+                this.removeEntity(body);
+                Global.snd.questItem();
+                this.questMngr.setQuestState(201, QuestState.Completed);
+                break;
+
+
+                //------------------------------------
+                //  OBJECTS DOING DAMAGE 1000-1999
+                //------------------------------------
+
             case 1000:  //  border lava   
                 {
                     let now = Date.now() / 1000;
@@ -292,15 +309,40 @@ export class InGameScene extends Scene {
                     playerStats.buffs[1001] = this.secondsFromNow(3);
                 }
                 break;
-
-            case 201:  //  kendo knowledge
-                this.addInfoMessage(dispObj.position, "Kendo knowledge acquired!");
-                this.addCollectibleTween(dispObj);
-                this.removeEntity(body);
-                Global.snd.questItem();
-                this.questMngr.setQuestState(201, QuestState.Completed);
-                break;
+          
+                
+            default:
+                //-----------------------------------------------------
+                //  MOBS 2000 - 2999
+                //  Note: mobs don't have the interactionType property 
+                //  because only some contacts are important (jump etc).
+                //  Instead this function is called manually for mobs.
+                //-----------------------------------------------------
+                if (dispObj.interactionType >= 2000 && dispObj.interactionType < 3000) {
+                    var mob: Mob = body.DisplayObject as Mob;
+                    if (mob.ShouldInteract) {
+                        this.handleMobInteraction(mob, dispObj.interactionType, body);
+                    }                    
+                }
         }
+    }
+
+    /**
+     * Handles interaction with mobs (mob kill).
+     * @param mob
+     * @param mobType
+     * @param body
+     */
+    private handleMobInteraction(mob: Mob, mobType: number, body: p2.Body) {
+        var playerStats = this.hero.PlayerStats;
+        var exp = mob.Attributes[AtrType.HP] / 2;
+        playerStats.increaseStat(StatType.Exp, exp);
+
+        //  TODO: generate drop
+
+        this.addInfoMessage(mob.position, `+${exp} exp`);
+        this.removeEntity(body, true);
+        //  TODO: play sound ?  Global.snd.XXX();
     }
 
     /**
@@ -342,7 +384,7 @@ export class InGameScene extends Scene {
                 mass: 0,
                 position: [position.x, position.y],
                 angle: 0,
-                fixedRotation: true,
+                fixedRotation: false,
                 angularDamping: 0,
                 damping: 0
             };
@@ -350,11 +392,11 @@ export class InGameScene extends Scene {
             body.addShape(shape);
             body.setDensity(0.0);
             body.gravityScale = 0;
+            body.angularVelocity = 2;
             body.collisionResponse = false;
             body.type = p2.Body.DYNAMIC;
             (body as any).DisplayObject = bullet;
             bullet.body = body;
-
             this.wp2.addBody(body);
             // console.log("creating new bullet, body.id: " + body.id);
         } else {
@@ -468,20 +510,7 @@ export class InGameScene extends Scene {
         return container;
     }
 
-    /**
-     * Assigns default player stats.
-     */
-    public resetPlayerStats() {
-        var playerStats = this.hero.PlayerStats;
-        playerStats.setStat(StatType.Coins, Global.UserInfo.gold);
-        playerStats.setStat(StatType.Dust, Global.UserInfo.dust);
-        playerStats.setStat(StatType.MaxHP, 150);
-        playerStats.setStat(StatType.HP, 120);
-        playerStats.setStat(StatType.MaxDust, 1000);
-
-        this.questMngr.reset();
-        //this.snd.stopTrack();
-    }
+   
 
     /**
      * Sets up the scene.
@@ -559,6 +588,7 @@ export class InGameScene extends Scene {
                 Global.snd.jump();
                 break;
 
+            //  TODO: jmpdown sound should be a kiai or banzai like sound - not a hit sound
             case MovementState.JumpDownRight:
                 this.hero.PlayAnimation("jumpdownright", ANIMATION_FPS_NORMAL);
                 Global.snd.jumpAttack();
@@ -594,6 +624,20 @@ export class InGameScene extends Scene {
         now += seconds;
         return now;
     };
+
+    /**
+    * Assigns default player stats.
+    */
+    public resetPlayerStats() {
+        var playerStats = this.hero.PlayerStats;
+        playerStats.setStat(StatType.Coins, Global.UserInfo.gold);
+        playerStats.setStat(StatType.Dust, Global.UserInfo.dust);
+        playerStats.setStat(StatType.MaxHP, 150);
+        playerStats.setStat(StatType.HP, 120);
+        playerStats.setStat(StatType.MaxDust, 1000);
+
+        this.questMngr.reset();
+    }
 
     /**
      *  Invokes the level loading.
@@ -706,7 +750,8 @@ export class InGameScene extends Scene {
     }
 
     /**
-     * Checks if the player has jumped on something with a high velocity and adds some smoke
+     * Checks if the player has jumped on something with a high velocity.
+     * Adds smoke for ground contacts and handles mob collision for npc's.
      *
      * @param event
      */
@@ -716,7 +761,7 @@ export class InGameScene extends Scene {
 
         let body: p2.Body = event.body as p2.Body;
         let verticalVelocity = Math.abs(event.velocity[1])
-        if (verticalVelocity > 0) {
+        if (verticalVelocity > 200) {
             console.log("Vert velocity: " + verticalVelocity);
         }
 
@@ -724,8 +769,8 @@ export class InGameScene extends Scene {
             //  check collision vs mobs
             if (body.shapes[0].collisionGroup === WorldP2.COL_GRP_NPC) {
                 console.log("Mob hit!");
-                this.removeEntity(body, true);
-                //  TODO: add animation, recycle mob, increase exp, mob drop 
+                (body as any).DisplayObject.ShouldInteract = true;
+                this.handleInteractiveCollision(body);
             }
         } else if (verticalVelocity > SMOKE_VELOCITY) {
             var smoke: AnimatedSprite = new AnimatedSprite();

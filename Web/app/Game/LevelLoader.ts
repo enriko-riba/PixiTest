@@ -232,7 +232,7 @@ export class LevelLoader {
 
             //  body
             defs.bdDef.material = defs.bdDef.material || "mob_default";
-            var p2body: p2.Body = this.buildPhysicsObject(defs.bdDef, mobDispObj);
+            var p2body: p2.Body = this.buildPhysicsObject(defs.bdDef, mobDispObj, true);
             p2body.shapes.every((s: p2.Shape) => {
                 s.collisionGroup = WorldP2.COL_GRP_NPC;
                 s.collisionMask = WorldP2.COL_GRP_PLAYER | WorldP2.COL_GRP_GROUND | WorldP2.COL_GRP_SCENE;
@@ -386,8 +386,10 @@ export class LevelLoader {
      * Creates a physics body and shape from the definition.
      * @param definition
      * @param dispObj the display object to retrieve the defaults from.
+     * @param preventSensor if true a non sensor body will be created (this is to support mobs
+     *                      that must have normal bodies but als an interactinType.
      */
-    private buildPhysicsObject(definition: IBodyDefinition, dispObj: PIXI.DisplayObject): p2.Body {
+    private buildPhysicsObject(definition: IBodyDefinition, dispObj: PIXI.DisplayObject, preventSensor: boolean = false): p2.Body {
         var body: p2.Body;
         let w = 0, h = 0;
         if (definition) {
@@ -463,7 +465,7 @@ export class LevelLoader {
                 (shape as any).materialName = definition.material;
             }
 
-            if (!!dispObj.interactionType) {
+            if (!preventSensor && !!dispObj.interactionType) {
                 shape.sensor = true;
                 body.type = p2.Body.STATIC;
                 body.collisionResponse = false;

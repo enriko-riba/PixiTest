@@ -39,7 +39,7 @@ export class Mob extends AnimatedSprite {
         this.PlayAnimation("left", 2);   
         this.direction = DirectionH.Left;  
 
-        //  borrow bullet emitter and Soundman from in game scene
+        //  borrow bullet emitter from in game scene
         var igs = Global.sceneMngr.GetScene("InGame") as any;
         this.emitBullet = igs.emitBullet;        
     }
@@ -48,6 +48,12 @@ export class Mob extends AnimatedSprite {
      * texture used for attacks emitted by the mob.
      */
     public AtkTexture: string | string[];
+
+    /**
+     *  This is to prevent the regular interactionType handler to trigger on mob collisions.
+     *  We want the mob to interact only under certain circumstances (e.g. players jump attack )
+     */
+    public ShouldInteract: boolean = false;
 
     public get Direction(): DirectionH {
         return this.direction;

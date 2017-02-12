@@ -112,6 +112,7 @@ export class Slider extends PIXI.Sprite {
 
     public onClick = (e) => {
         this.setSliderFromeEvent(e);
+        this.Value = this.getCalculatedValue();
         return false;
     }
 
@@ -137,10 +138,6 @@ export class Slider extends PIXI.Sprite {
 
     private onDragMove = (e:Event) => {
         if (this.isDragging) {
-            //var newPosition = e.data.getLocalPosition(this.handle.parent);
-            //newPosition.x -= this.dragOffsetX;
-            //this.handle.x = Math.min(this.maxX, Math.max(this.minX, newPosition.x));
-            //this.emit('valueChange', this.getCalculatedValue());
             this.setSliderFromeEvent(e);
             return false;
         }
@@ -166,10 +163,6 @@ export class Slider extends PIXI.Sprite {
     };
 
     private onButtonUp = (e) => {
-        //if (this.isClickStarted) {
-        //    this.isClickStarted = false;
-        //    this.onClick(e);
-        //}
         this.applyTexture();
     };
 
