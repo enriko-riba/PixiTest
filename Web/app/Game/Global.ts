@@ -82,18 +82,20 @@ export var GameLevels: {
 } = { root: "" };
 
 export var UserInfo: {
-            id: number;
-            name: string;
-            gold: number;
-            dust: number;
-            gamelevel: number;
-            position: PIXI.Point;
-        } = {
-                id: 0,
-                name: "",
-                gold: 0,
-                dust: 0,
-                gamelevel: 0,
-                position: new PIXI.Point()
-            };
+    id: number;
+    name: string;
+    gold: number;
+    dust: number;
+    exp: number;
+    gamelevel: number;
+    position: PIXI.Point;
+} = {
+        id: 0,
+        name: "",
+        gold: 0,
+        dust: 0,
+        exp: 0,
+        gamelevel: 0,
+        position: new PIXI.Point()
+    };
 

@@ -251,6 +251,7 @@ export class QuestManager {
             ExternalId: Global.UserInfo.id,
             Gold: this.gameScene.PlayerStats.getStat(StatType.Coins),
             Dust: Math.floor(this.gameScene.PlayerStats.getStat(StatType.Dust)),
+            Exp: this.gameScene.PlayerStats.getStat(StatType.Exp),
             LastLevel: Global.UserInfo.gamelevel,
             // TODO: add sending attributes, skills, exp etc
         };

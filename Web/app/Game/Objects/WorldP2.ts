@@ -315,8 +315,8 @@ export class WorldP2 {
             this.materials.get("player"),
             this.materials.get("box_default"),
             {
-                friction: 0.6,
-                restitution: 0.25,
+                friction: 0.75,
+                restitution: 0.2,
                 stiffness: p2.Equation.DEFAULT_STIFFNESS,
                 relaxation: p2.Equation.DEFAULT_RELAXATION,
                 frictionStiffness: p2.Equation.DEFAULT_STIFFNESS,

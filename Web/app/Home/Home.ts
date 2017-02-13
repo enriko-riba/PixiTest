@@ -10,6 +10,7 @@ class HomeVM {
     private usr_GameLevel = ko.observable<string>("");
     private usr_Gold = ko.observable<string>("");
     private usr_Dust = ko.observable<string>("");
+    private usr_Exp = ko.observable<string>("");
     private usr_MaxHP = ko.observable<string>("");
     private hasProfileData = ko.observable<boolean>(false);
     private isStartEnabled = ko.observable<boolean>(true);
@@ -41,12 +42,14 @@ class HomeVM {
             Global.UserInfo.gold = data.Gold;
             Global.UserInfo.gamelevel = data.LastLevel;
             Global.UserInfo.dust = data.Dust;
+            Global.UserInfo.exp = data.Exp;
 
             //  for GUI binding
             this.usr_Name(data.Name);
             this.usr_GameLevel(data.LastLevel);
             this.usr_Gold(data.Gold);
             this.usr_Dust(`${data.Dust}/1000`);
+            this.usr_Exp(data.Exp);
             this.usr_MaxHP("120/150");
             this.hasProfileData(true);
         });

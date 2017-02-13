@@ -55,6 +55,7 @@
                     user.LastLevel = model.LastLevel;
                     user.Gold = model.Gold;
                     user.Dust = model.Dust;
+                    user.Exp = model.Exp;
                     await docDb.SaveDocumentAsync("realm", user);
                 }
                 else

@@ -8,6 +8,7 @@
 
         public int Gold { get; set; }
         public int Dust { get; set; }
+        public int Exp { get; set; }
         public int LastLevel { get; set; }
 
         public override string ToString() => $"[Id: {ExternalId}, {Name}]";

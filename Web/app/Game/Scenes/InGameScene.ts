@@ -350,8 +350,9 @@ export class InGameScene extends Scene {
         //  TODO: generate drop
 
         this.addInfoMessage(mob.position, `+${exp} exp`, Global.INFO2_STYLE);
+
+        Global.snd.mobSquish();
         this.removeEntity(body, true);
-        //  TODO: play sound ?  Global.snd.XXX();
     }
 
     /**
@@ -641,6 +642,7 @@ export class InGameScene extends Scene {
         var playerStats = this.hero.PlayerStats;
         playerStats.setStat(StatType.Coins, Global.UserInfo.gold);
         playerStats.setStat(StatType.Dust, Global.UserInfo.dust);
+        playerStats.setStat(StatType.Exp, Global.UserInfo.exp);
         playerStats.setStat(StatType.MaxHP, 150);
         playerStats.setStat(StatType.HP, 120);
         playerStats.setStat(StatType.MaxDust, 1000);

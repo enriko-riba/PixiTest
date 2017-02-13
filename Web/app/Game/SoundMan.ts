@@ -16,6 +16,7 @@ export class SoundMan {
     private hitMag1: Howl;
     private jumpAtk: Howl;
     private woosh: Howl;
+    private squish: Howl;
 
     private fxDemoSnd: Howl;
 
@@ -137,6 +138,14 @@ export class SoundMan {
             loop: false,
             volume: 1
         });
+        this.squish = new Howl({
+            src: ['assets/Audio/effects/mob-squish.mp3'],
+            preload: true,
+            autoplay: false,
+            loop: false,
+            volume: 1
+        });
+
         this.fxDemoSnd = new Howl({
             src: ['assets/Audio/effects/fx-demo.mp3'],
             preload: true,
@@ -224,6 +233,11 @@ export class SoundMan {
     public hitMagic1() {
         this.hitMag1.volume(this.fxVolume);
         this.hitMag1.play();
+    }
+
+    public mobSquish() {
+        this.squish.volume(this.fxVolume);
+        this.squish.play();
     }
 
     public bulletHitWall() {

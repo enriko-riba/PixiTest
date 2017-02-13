@@ -135,6 +135,7 @@
     <Content Include="assets\Audio\effects\jump-atk.mp3" />
     <Content Include="assets\Audio\effects\jump1.mp3" />
     <Content Include="assets\Audio\effects\jump2.mp3" />
+    <Content Include="assets\Audio\effects\mob-squish.mp3" />
     <Content Include="assets\Audio\effects\quest-item.mp3" />
     <Content Include="assets\Audio\effects\step.mp3" />
     <Content Include="assets\Audio\effects\win.mp3" />
@@ -416,7 +417,6 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Server\DocumentDB.cs" />
-    <Compile Include="Server\Models\LoginResponse.cs" />
     <Compile Include="Server\Models\User.cs" />
     <Compile Include="Server\Models\UserDataBindingModel.cs" />
   </ItemGroup>
