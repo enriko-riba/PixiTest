@@ -283,6 +283,13 @@ export class InGameScene extends Scene {
                 this.removeEntity(body);
                 Global.snd.questItem();
                 this.questMngr.setQuestState(201, QuestState.Completed);
+
+                //  reward exp
+                let pt = new PIXI.Point(dispObj.x, dispObj.y);
+                pt.y += 50;
+                let exp = 100;
+                playerStats.increaseStat(StatType.Exp, exp);
+                this.addInfoMessage(pt, `+${exp} exp`, Global.INFO2_STYLE);
                 break;
 
 
@@ -312,12 +319,14 @@ export class InGameScene extends Scene {
           
                 
             default:
-                //-----------------------------------------------------
+                //----------------------------------------------------------
                 //  MOBS 2000 - 2999
-                //  Note: mobs don't have the interactionType property 
-                //  because only some contacts are important (jump etc).
-                //  Instead this function is called manually for mobs.
-                //-----------------------------------------------------
+                //  Note: mobs don't interact on collision because only 
+                //  some contacts are important (jump etc). Therefore
+                //  handleInteractiveCollision() is called manually and
+                //  the callee must set the mob.ShouldInteract to exclude
+                //  standard collision logic.
+                //----------------------------------------------------------
                 if (dispObj.interactionType >= 2000 && dispObj.interactionType < 3000) {
                     var mob: Mob = body.DisplayObject as Mob;
                     if (mob.ShouldInteract) {
@@ -340,7 +349,7 @@ export class InGameScene extends Scene {
 
         //  TODO: generate drop
 
-        this.addInfoMessage(mob.position, `+${exp} exp`);
+        this.addInfoMessage(mob.position, `+${exp} exp`, Global.INFO2_STYLE);
         this.removeEntity(body, true);
         //  TODO: play sound ?  Global.snd.XXX();
     }

@@ -41,6 +41,16 @@ export var INFO_STYLE: PIXI.ITextStyleStyle =
         strokeThickness: 3,
         stroke: 0x111111
     };
+export var INFO2_STYLE: PIXI.ITextStyleStyle =
+    {
+        align: "center",
+        padding: 0,
+        fontSize: "24px",
+        fontFamily: "Calibri",
+        fill: 0x84c202,
+        strokeThickness: 3,
+        stroke: 0x111111
+    };
 export var WARN_STYLE: PIXI.ITextStyleStyle =
     {
         align: "center",
