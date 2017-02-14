@@ -7,7 +7,7 @@
       },
       "body": {
         "shape": "Box",
-        "size": [ 64, 64 ]
+        "size": [ 64, 256 ]
       }
     },
     {
@@ -154,6 +154,13 @@
       "body": {
         "shape": "Circle",
         "size": 11
+      },
+      "drop": {
+        "chance": 0.3,
+        "entity": {
+          "template": "coin",
+          "interactionType": 1
+        }
       }
     },
     {
@@ -300,27 +307,27 @@
           },
           {
             "template": "platform-desert",
-            "xy": [ 2210, 175 ],
+            "xy": [ 2210, 185 ],
             "tilesX": 3
           },
           {
             "template": "platform1-desert",
-            "xy": [ 2650, 220 ]
+            "xy": [ 2650, 230 ]
           },
           {
             "template": "platform-desert",
-            "xy": [ 2830, 275 ],
+            "xy": [ 2830, 285 ],
             "tilesX": 4,
             "tilesY": 3
           },
 
           {
             "template": "platform1-desert",
-            "xy": [ 3270, 320 ]
+            "xy": [ 3270, 330 ]
           },
           {
             "template": "exit",
-            "xy": [ 3322, 350 ],
+            "xy": [ 3322, 360 ],
             "trigger": {
               "type": "collision",
               "text": "Well done!",
@@ -418,10 +425,7 @@
             "trigger": {
               "type": "collision",
               "text": "You shall not pass...unless you bring me\nknowledge of Kendo!",
-              "textposition": [
-                -370,
-                400
-              ],
+              "textposition": [-370,400],
               "questId": 201,
               "completedText": "What? Could it be...\nYou have the Kendo knowledge I need so much!\n\nYou must be the chosen one, proceed now!"
             }
@@ -486,110 +490,68 @@
           {
             "template": "coin",
             "interactionType": 1,
-            "scale": [
-              0.7,
-              0.7
-            ],
-            "xy": [
-              160,
-              170
-            ]
+            "scale": [0.7,0.7],
+            "xy": [160,170]
           },
           {
             "template": "gem",
             "interactionType": 3,
-            "xy": [
-              200,
-              350
-            ]
+            "xy": [200,350]
           },
           {
             "template": "coin",
             "interactionType": 2,
-            "xy": [
-              940,
-              340
-            ]
+            "xy": [940,340]
           },
           {
             "template": "coin",
             "interactionType": 2,
-            "xy": [
-              970,
-              350
-            ]
+            "xy": [970,350]
           },
           {
             "template": "coin",
             "interactionType": 2,
-            "xy": [
-              1000,
-              350
-            ]
+            "xy": [1000,350]
           },
           {
             "template": "coin",
             "interactionType": 2,
-            "xy": [
-              1030,
-              340
-            ]
+            "xy": [1030,340]
           },
           {
             "template": "coin",
             "interactionType": 2,
-            "xy": [
-              1060,
-              330
-            ]
+            "xy": [1060,330]
           },
           {
             "template": "coin",
             "interactionType": 2,
-            "xy": [
-              1452,
-              340
-            ]
+            "xy": [1452,340]
           },
           {
             "template": "coin",
             "interactionType": 2,
-            "xy": [
-              1482,
-              350
-            ]
+            "xy": [1482,350]
           },
           {
             "template": "coin",
             "interactionType": 2,
-            "xy": [
-              1512,
-              350
-            ]
+            "xy": [1512,350]
           },
           {
             "template": "coin",
             "interactionType": 2,
-            "xy": [
-              1542,
-              340
-            ]
+            "xy": [1542,340]
           },
           {
             "template": "coin",
             "interactionType": 2,
-            "xy": [
-              1572,
-              330
-            ]
+            "xy": [1572,330]
           },
           {
             "template": "gem",
             "interactionType": 3,
-            "xy": [
-              1632,
-              370
-            ]
+            "xy": [1632,370]
           },
           {
             "template": "platform-desert",
@@ -625,7 +587,7 @@
           },
           {
             "template": "platform1-desert",
-            "xy": [3190,570]
+            "xy": [3190,580]
           },
           {
             "template": "platform-desert",
@@ -946,8 +908,8 @@
           {
             "template": "mob_short",
             "name": "slime",
-            "interactionType":  2000,
-            "xy": [ 690, 20 ],
+            "interactionType": 2000,
+            "xy": [ 690, 10 ],
             "texture": "assets/_distribute/mob_slime01.png",
             "ai": "basic_static",
             "attributes": [ 20, 15, 6000, 10 ],
@@ -957,7 +919,7 @@
             "template": "mob_short",
             "name": "slime",
             "interactionType": 2000,
-            "xy": [ 820, 20 ],
+            "xy": [ 820, 10 ],
             "texture": "assets/_distribute/mob_slime01.png",
             "ai": "basic_static",
             "attributes": [ 20, 15, 6000, 10 ],
@@ -967,7 +929,7 @@
             "template": "mob_short",
             "name": "slime",
             "interactionType": 2000,
-            "xy": [ 1800, 20 ],
+            "xy": [ 1800, 10 ],
             "texture": "assets/_distribute/mob_slime01.png",
             "ai": "basic_static",
             "attributes": [ 20, 15, 4000, 10 ],
@@ -977,7 +939,7 @@
             "template": "mob_short",
             "name": "slime",
             "interactionType": 2001,
-            "xy": [ 2700, 20 ],
+            "xy": [ 2700, 10 ],
             "texture": "assets/_distribute/mob_slime01.png",
             "ai": "basic_static",
             "attributes": [ 20, 15, 4000, 10 ],
@@ -987,11 +949,39 @@
             "template": "mob_short",
             "name": "slime",
             "interactionType": 2001,
-            "xy": [ 2790, 20 ],
+            "xy": [ 2790, 10 ],
             "texture": "assets/_distribute/mob_slime01.png",
             "ai": "basic_static",
             "attributes": [ 20, 15, 2000, 10 ],
             "attack": "assets/_distribute/slime_atk.png"
+          },
+          {
+            "template": "mob_short",
+            "name": "slime",
+            "interactionType": 2001,
+            "xy": [ 2990, 10 ],
+            "texture": "assets/_distribute/mob_slime01.png",
+            "ai": "basic_static",
+            "attributes": [ 20, 15, 2000, 10 ],
+            "attack": "assets/_distribute/slime_atk.png"
+          },
+          {
+            "type": "spawn_point",
+            "name": "spawn_p_202",
+            "xy": [ 4000, 10 ],
+            "area": 600,
+            "maxMobCount": 5,
+            "respawnSeconds": 5,
+            "isActive": false,
+            "entity": {
+              "template": "mob_short",
+              "name": "slime",
+              "interactionType": 2000,
+              "texture": "assets/_distribute/mob_slime01.png",
+              "ai": "basic_static",
+              "attributes": [ 40, 15, 3000, 10 ],
+              "attack": "assets/_distribute/slime_atk.png"
+            }
           }
         ],
         "templates": [         

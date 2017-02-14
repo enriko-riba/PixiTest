@@ -57,55 +57,42 @@ export class LevelLoader {
                     defs.doDef.sequences.forEach((item) => {
                         assets.push(item.texture);
                     });
-                }
-                //var entityTemplate = templates.filter((item, idx, arr) => item.name === entity.template);
-                //if (entityTemplate && entityTemplate.length > 0) {
-                //    var template = entityTemplate[0];
-                //    var temp = $.extend(true, {}, template.displayObject);
-                //    var displayObjectDefinition = $.extend(temp, entity);
-
-                //    if (displayObjectDefinition.texture) {
-                //        if (typeof displayObjectDefinition.texture === "string") {
-                //            assets.push(displayObjectDefinition.texture);
-                //        } else {
-                //            assets = assets.concat(displayObjectDefinition.texture);
-                //        }
-                //    }
-
-                //    if (displayObjectDefinition.sequences) {
-                //        displayObjectDefinition.sequences.forEach((item) => {
-                //            assets.push(item.texture);
-                //        });
-                //    }
-                //}
+                }                
             });
 
             level.map.NPC = level.map.NPC || [];
-            level.map.NPC.forEach((entity: IMobEntity, idx, arr) => {
+            level.map.NPC.forEach((npc:ITemplateOrSpawnPoint, idx, arr) => {
+                //  check if its a template or spawn_point
+                if (npc.type && npc.type==="spawn_point"){
 
-                //  concat attack (string | string[]
-                assets = assets.concat(entity.attack);
+                } else {
+                    //  this is an entity definition
+                    let entity: IMobEntity = npc as IMobEntity;
 
-                var entityTemplate = templates.filter((item, idx, arr) => item.name === entity.template);
-                if (entityTemplate && entityTemplate.length > 0) {                    
-                    var template = entityTemplate[0];
-                    var temp = $.extend(true, {}, template.displayObject);
-                    var displayObjectDefinition = $.extend(temp, entity);
+                    //  concat attack (string | string[])
+                    assets = assets.concat(entity.attack);
 
-                    if (displayObjectDefinition.texture) {
-                        if (typeof displayObjectDefinition.texture === "string") {
-                            assets.push(displayObjectDefinition.texture);
-                        } else {
-                            assets = assets.concat(displayObjectDefinition.texture);
+                    var entityTemplate = templates.filter((item, idx, arr) => item.name === entity.template);
+                    if (entityTemplate && entityTemplate.length > 0) {
+                        var template = entityTemplate[0];
+                        var temp = $.extend(true, {}, template.displayObject);
+                        var displayObjectDefinition = $.extend(temp, entity);
+
+                        if (displayObjectDefinition.texture) {
+                            if (typeof displayObjectDefinition.texture === "string") {
+                                assets.push(displayObjectDefinition.texture);
+                            } else {
+                                assets = assets.concat(displayObjectDefinition.texture);
+                            }
+                        }
+
+                        if (displayObjectDefinition.sequences) {
+                            displayObjectDefinition.sequences.forEach((item) => {
+                                assets.push(item.texture);
+                            });
                         }
                     }
-
-                    if (displayObjectDefinition.sequences) {
-                        displayObjectDefinition.sequences.forEach((item) => {
-                            assets.push(item.texture);
-                        });
-                    }
-                }                
+                }               
             });
         }
 
@@ -157,7 +144,8 @@ export class LevelLoader {
             parallax: [],
             entities: [],
             start: [],
-            audioTrack: level.audioTrack
+            audioTrack: level.audioTrack,
+            templates: []
         };
 
         //--------------------------------------
@@ -175,41 +163,13 @@ export class LevelLoader {
         //  merge global with level templates
         //--------------------------------------
         var templates = Global.GameLevels.root.templates.concat(level.map.templates);
+        result.templates = templates;
 
         //--------------------------------------
         //  create display/physics object pairs
         //--------------------------------------
         level.map.entities.forEach((entity: IMapEntity, idx, arr) => {
-            let defs = LevelLoader.getTemplates(templates, entity);
-
-            //  display object
-            let dispObj: PIXI.DisplayObject = this.buildDisplayObject(defs.doDef);
-            dispObj.name = entity.name;
-            (dispObj as any).templateName = defs.templateName;
-
-             //  body
-            if (defs.bdDef) {
-                var p2body: p2.Body = this.buildPhysicsObject(defs.bdDef, dispObj);
-                p2body.shapes.every((s: p2.Shape) => {
-                    if (defs.bdDef.collisionType === "ground") {
-                        s.collisionGroup = WorldP2.COL_GRP_GROUND;
-                        s.collisionMask = WorldP2.COL_GRP_PLAYER | WorldP2.COL_GRP_NPC | WorldP2.COL_GRP_SCENE | WorldP2.COL_GRP_BULLET;
-                    } else {
-                        s.collisionGroup = WorldP2.COL_GRP_SCENE;
-                        s.collisionMask = WorldP2.COL_GRP_PLAYER | WorldP2.COL_GRP_NPC | WorldP2.COL_GRP_SCENE | WorldP2.COL_GRP_GROUND;
-                    }
-                    return true;
-                });
-                (p2body as any).DisplayObject = dispObj;
-
-                //  trigger
-                if (defs.trigger) {
-                    (p2body as any).Trigger = defs.trigger;
-                }
-            } else {
-                p2body = new p2.Body();
-                (p2body as any).DisplayObject = dispObj;
-            }
+            let p2body = LevelLoader.createEntity(templates, entity);            
             result.entities.push(p2body);
         });
 
@@ -217,37 +177,83 @@ export class LevelLoader {
         //  create NPC's
         //--------------------------------------
         level.map.NPC = level.map.NPC || [];
-        level.map.NPC.forEach((entity: IMobEntity, idx, arr) => {
-            let defs = LevelLoader.getTemplates(templates, entity);
+        level.map.NPC.forEach((npc: ITemplateOrSpawnPoint, idx, arr) => {
+            if (npc.type && npc.type === "spawn_point") {
+                //  TODO: implement
+            } else {
+                let entity: IMobEntity = npc as IMobEntity;
+                let p2body = LevelLoader.createMob(templates, entity);                
+                result.entities.push(p2body);
+            }
+        });
+        result.start = level.map.start;
+        return result;
+    }
 
-            //  display object
-            let mobDispObj: Mob = this.buildDisplayObject(defs.doDef) as Mob;
-            mobDispObj.name = entity.name;
-            (mobDispObj as any).templateName = defs.templateName;
+    public static createEntity(templates: Array<any>, entity: IMapEntity): p2.Body {
+        let defs = LevelLoader.getTemplates(templates, entity);
 
-            // attributes and AI
-            mobDispObj.Attributes = entity.attributes || [];
-            mobDispObj.CreateAI(entity.ai || "basic_static");
-            mobDispObj.AtkTexture = entity.attack;
+        //  display object
+        let dispObj: PIXI.DisplayObject = LevelLoader.buildDisplayObject(defs.doDef);
+        dispObj.name = entity.name;
+        (dispObj as any).templateName = defs.templateName;
 
-            //  body
-            defs.bdDef.material = defs.bdDef.material || "mob_default";
-            var p2body: p2.Body = this.buildPhysicsObject(defs.bdDef, mobDispObj, true);
+        //  body
+        var p2body: p2.Body;
+        if (defs.bdDef) {
+            p2body = LevelLoader.buildPhysicsObject(defs.bdDef, dispObj);
             p2body.shapes.every((s: p2.Shape) => {
-                s.collisionGroup = WorldP2.COL_GRP_NPC;
-                s.collisionMask = WorldP2.COL_GRP_PLAYER | WorldP2.COL_GRP_GROUND | WorldP2.COL_GRP_SCENE;
+                if (defs.bdDef.collisionType === "ground") {
+                    s.collisionGroup = WorldP2.COL_GRP_GROUND;
+                    s.collisionMask = WorldP2.COL_GRP_PLAYER | WorldP2.COL_GRP_NPC | WorldP2.COL_GRP_SCENE | WorldP2.COL_GRP_BULLET;
+                } else {
+                    s.collisionGroup = WorldP2.COL_GRP_SCENE;
+                    s.collisionMask = WorldP2.COL_GRP_PLAYER | WorldP2.COL_GRP_NPC | WorldP2.COL_GRP_SCENE | WorldP2.COL_GRP_GROUND;
+                }
                 return true;
             });
-            (p2body as any).DisplayObject = mobDispObj;
+            (p2body as any).DisplayObject = dispObj;
 
             //  trigger
             if (defs.trigger) {
                 (p2body as any).Trigger = defs.trigger;
             }
-            result.entities.push(p2body);
+        } else {
+            p2body = new p2.Body();
+            (p2body as any).DisplayObject = dispObj;
+        }
+        return p2body;
+    }
+
+    public static createMob(templates: Array<any>, entity: IMobEntity): p2.Body {
+        let defs = LevelLoader.getTemplates(templates, entity);
+
+        //  display object
+        let mobDispObj: Mob = LevelLoader.buildDisplayObject(defs.doDef) as Mob;
+        mobDispObj.name = entity.name;
+        (mobDispObj as any).templateName = defs.templateName;
+
+        // attributes and AI
+        mobDispObj.Attributes = entity.attributes || [];
+        mobDispObj.CreateAI(entity.ai || "basic_static");
+        mobDispObj.AtkTexture = entity.attack;
+
+        //  body        
+        defs.bdDef.material = defs.bdDef.material || "mob_default";
+        var p2body: p2.Body = LevelLoader.buildPhysicsObject(defs.bdDef, mobDispObj, true);
+        p2body.shapes.every((s: p2.Shape) => {
+            s.collisionGroup = WorldP2.COL_GRP_NPC;
+            s.collisionMask = WorldP2.COL_GRP_PLAYER | WorldP2.COL_GRP_GROUND | WorldP2.COL_GRP_SCENE;
+            return true;
         });
-        result.start = level.map.start;
-        return result;
+        (p2body as any).DisplayObject = mobDispObj;
+
+        //  trigger
+        if (defs.trigger) {
+            (p2body as any).Trigger = defs.trigger;
+        }
+
+        return p2body;
     }
 
    /**
@@ -262,15 +268,18 @@ export class LevelLoader {
             name: null,
             displayObject: { typeName: "Sprite"}, //    sprite is the default if no template exists
             body: null,
-            trigger: null
+            trigger: null,
+            drop: null
         };
         var entityTemplate = templates.filter((item, idx, arr) => item.name === entity.template);
         if (entityTemplate && entityTemplate.length > 0) {
             template = entityTemplate[0];
         }
-
-        var temp = $.extend(true, {}, template.displayObject);
+        var temp = $.extend(true, {}, template.displayObject);        
         displayObjectDefinition = $.extend(temp, entity);
+        if (template.drop) {
+            displayObjectDefinition.drop = $.extend(true, {}, template.drop);
+        }
         if (template.body) {
             bodyDefinition = $.extend(entity, template.body);
         }
@@ -285,15 +294,14 @@ export class LevelLoader {
             doDef: displayObjectDefinition,
             bdDef: bodyDefinition,
             trigger: triggerTemplate
-        };
-        //throw `Template ${entity.template} not found!`;
+        };        
     }
 
     /**
      * Creates a display object from the definition.
      * @param definition
      */
-    private buildDisplayObject(definition: IDisplayObjectDefinition): PIXI.DisplayObject {
+    private static buildDisplayObject(definition: IDisplayObjectDefinition): PIXI.DisplayObject {
         var dispObj: PIXI.DisplayObject;
         switch (definition.typeName) {
             case "Mob":
@@ -378,7 +386,9 @@ export class LevelLoader {
         if (definition.interactionType) {
             dispObj.interactionType = definition.interactionType;
         }
-
+        if (definition.drop) {
+            dispObj.drop = definition.drop;
+        }
         return dispObj;
     }
 
@@ -389,7 +399,7 @@ export class LevelLoader {
      * @param preventSensor if true a non sensor body will be created (this is to support mobs
      *                      that must have normal bodies but als an interactinType.
      */
-    private buildPhysicsObject(definition: IBodyDefinition, dispObj: PIXI.DisplayObject, preventSensor: boolean = false): p2.Body {
+    private static buildPhysicsObject(definition: IBodyDefinition, dispObj: PIXI.DisplayObject, preventSensor: boolean = false): p2.Body {
         var body: p2.Body;
         let w = 0, h = 0;
         if (definition) {
@@ -489,6 +499,13 @@ export interface ILevel {
     entities: p2.Body[];
     start: number[];
     audioTrack?: number;
+
+
+    /**
+     * Calculated array that is a union of global templates
+     * and current level templates. It is set inside the createLevel()
+     */
+    templates: ITemplate[];
 }
 
 export interface IParallaxDefinition {
@@ -534,6 +551,7 @@ export interface IDisplayObjectDefinition {
     visible?: boolean;
     fps?: number;
     sequences?: IAnimationSequence[];
+    drop?: IDrop;
 }
 
 export interface ITriggerDefinition {
@@ -545,11 +563,17 @@ export interface ITriggerDefinition {
     completedText?: string;
 }
 
+export interface IDrop {
+    chance: number;
+    entity: IMapEntity;
+}
+
 export interface ITemplate {
     name: string;
     displayObject: IDisplayObjectDefinition;
-    body: IBodyDefinition;
-    trigger: ITriggerDefinition;
+    body?: IBodyDefinition;
+    trigger?: ITriggerDefinition;
+    drop?: IDrop;
 }
 
 export interface IMapEntity {
@@ -563,6 +587,10 @@ export interface IMapEntity {
     collisionType?: string;
 }
 
+export interface ITemplateOrSpawnPoint {
+    type?: string;
+}
+
 export interface IMobEntity {
     template: string;
     xy?: number[];
@@ -573,6 +601,7 @@ export interface IMobEntity {
     attributes: number[];
     ai: string;
     attack: string | string[];
+    drop?: IDrop;
 }
 
 export interface ILevelMap {

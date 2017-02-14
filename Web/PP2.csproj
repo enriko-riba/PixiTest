@@ -164,7 +164,6 @@
     <None Include="assets\Images\Hero-dead.png" />
     <None Include="assets\Images\Mobs\mob_skelbride01.png" />
     <None Include="assets\Images\Mobs\mob_slime01.png" />
-    <None Include="assets\Unused\balloon-vedran.png" />
     <None Include="assets\Images\Objects\balloon_01.png" />
     <None Include="assets\Images\Objects\balloon_basket_01.png" />
     <None Include="assets\Images\Objects\boulder.png" />
@@ -205,7 +204,7 @@
     <Content Include="app\Route-not-found\route-not-found.html" />
     <Content Include="app\_templates\component-modal.html" />
     <Content Include="Content\Site.scss" />
-    <AdditionalFiles Include="assets\Levels\levels.json" />
+    <Content Include="assets\Levels\levels.json" />
     <None Include="assets\premultiply_alpha.bat" />
     <None Include="compilerconfig.json" />
     <None Include="compilerconfig.json.defaults">
@@ -268,6 +267,7 @@
   <ItemGroup>
     <TypeScriptCompile Include="app\Common\AjaxHelper.ts" />
     <TypeScriptCompile Include="app\Common\error-handler.ts" />
+    <TypeScriptCompile Include="app\Game\Mobs\SpawnPoint.ts" />
     <TypeScriptCompile Include="app\Game\Objects\Balloon.ts" />
     <TypeScriptCompile Include="app\Game\Objects\Bumper.ts" />
     <TypeScriptCompile Include="app\Game\Player\HeroCharacter.ts" />

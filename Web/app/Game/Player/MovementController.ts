@@ -16,7 +16,7 @@ export interface IMoveEvent {
 export class MovementController {
     private readonly VELOCITY = 150;
     private readonly JUMP_FORCE = 17000;
-    private readonly JUMP_ATTACK_FORCE = -13000;
+    private readonly JUMP_ATTACK_FORCE = -14000;
 
     private nextJumpAllowed: number = 0;
     private nextJumpDownAllowed: number = 0;

@@ -49,7 +49,7 @@ export var INFO2_STYLE: PIXI.ITextStyleStyle =
         fontFamily: "Calibri",
         fill: 0x84c202,
         strokeThickness: 3,
-        stroke: 0x111111
+        stroke: 0x112111
     };
 export var WARN_STYLE: PIXI.ITextStyleStyle =
     {

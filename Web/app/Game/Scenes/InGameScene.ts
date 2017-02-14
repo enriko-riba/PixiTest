@@ -343,16 +343,45 @@ export class InGameScene extends Scene {
      * @param body
      */
     private handleMobInteraction(mob: Mob, mobType: number, body: p2.Body) {
+        let dispObj = (body as any).DisplayObject as PIXI.DisplayObject;
+
+        //  generate drop
+        if (dispObj.drop) {
+            let isDropping = Math.random() <= dispObj.drop.chance;
+            if (isDropping) {
+                var dropItemBody = LevelLoader.createEntity(this.currentLevel.templates, dispObj.drop.entity);
+
+                //  add only display object to scene at mob position
+                let dropItemDispObj = (dropItemBody as any).DisplayObject as PIXI.DisplayObject;
+                dropItemDispObj.x = mob.x;
+                dropItemDispObj.y = mob.y;
+                this.worldContainer.addChild(dropItemDispObj);
+
+                //  tween from mob position to random position near hero
+                let x = this.hero.x + (Math.random() * 100) - 50;
+                let y = this.hero.y + 50
+                var movePosition = new TWEEN.Tween(dropItemDispObj.position)
+                    .to({ x: x, y: y }, 800)
+                    .onComplete(() => {
+                        dropItemBody.position = [x, y];
+                        this.wp2.addBody(dropItemBody);
+                    });
+                movePosition.start();
+            }
+        }
+
+        //  prevent interaction in next frames (until the mob is completely removed)
+        mob.ShouldInteract = false; 
+        this.removeEntity(body);
+        mob.OnComplete = ()=> this.worldContainer.removeChild(dispObj);
+        mob.Squish();
+        Global.snd.mobSquish();
+
+        //  add exp
         var playerStats = this.hero.PlayerStats;
         var exp = mob.Attributes[AtrType.HP] / 2;
         playerStats.increaseStat(StatType.Exp, exp);
-
-        //  TODO: generate drop
-
         this.addInfoMessage(mob.position, `+${exp} exp`, Global.INFO2_STYLE);
-
-        Global.snd.mobSquish();
-        this.removeEntity(body, true);
     }
 
     /**
@@ -768,11 +797,11 @@ export class InGameScene extends Scene {
      */
     private onPlayerContact(event: any): void {
         const SMOKE_VELOCITY: number = 430;
-        const ATTACK_VELOCITY: number = 600;
+        const ATTACK_VELOCITY: number = 545;
 
         let body: p2.Body = event.body as p2.Body;
         let verticalVelocity = Math.abs(event.velocity[1])
-        if (verticalVelocity > 200) {
+        if (verticalVelocity > 400) {
             console.log("Vert velocity: " + verticalVelocity);
         }
 

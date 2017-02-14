@@ -119,10 +119,17 @@ export class PlayerStats {
         ko.postbox.publish<IStatChangeEvent>(STATCHANGE_TOPIC, this.scevent);
         this.stats[type] = value;
     }
-    public increaseStat(type: StatType, value: number) {
-        this.updateEvent(type, this.stats[type] + value);
-        ko.postbox.publish<IStatChangeEvent>(STATCHANGE_TOPIC, this.scevent);
+    public increaseStat(type: StatType, value: number, maxValue?: number) {
         this.stats[type] += value;
+        if (maxValue && this.stats[type] > maxValue) {
+            this.stats[type] = maxValue;
+        }
+        if (this.stats[type] < 0) {
+            this.stats[type] = 0;
+        }
+
+        this.updateEvent(type, this.stats[type]);
+        ko.postbox.publish<IStatChangeEvent>(STATCHANGE_TOPIC, this.scevent);        
     }
     public getStat(type: StatType): number {
         return this.stats[type];

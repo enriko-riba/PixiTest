@@ -4,6 +4,21 @@
   background-color: #3a1010;
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; }
 
+.padded-page {
+  padding: 40px; }
+
+.tab-content {
+  margin: 0 0 15px 0; }
+
+p {
+  color: #f4f4b9;
+  display: block;
+  padding-top: 6px;
+  -webkit-margin-before: 1em;
+  -webkit-margin-after: 1em;
+  -webkit-margin-start: 0px;
+  -webkit-margin-end: 0px; }
+
 h2, .login-message {
   font-size: 1.7em;
   color: #dbc646;

@@ -35,7 +35,9 @@ export class Mob extends AnimatedSprite {
         this.addAnimations(new AnimationSequence("left", textureName, [0, 1, 2], FRAME_SIZE, FRAME_SIZE));
         this.addAnimations(new AnimationSequence("right", textureName, [3, 4, 5], FRAME_SIZE, FRAME_SIZE));
         this.addAnimations(new AnimationSequence("latk", textureName, [6, 7, 8], FRAME_SIZE, FRAME_SIZE));
-        this.addAnimations(new AnimationSequence("ratk", textureName, [9, 10 , 11], FRAME_SIZE, FRAME_SIZE));
+        this.addAnimations(new AnimationSequence("ratk", textureName, [9, 10, 11], FRAME_SIZE, FRAME_SIZE));
+        this.addAnimations(new AnimationSequence("lsquish", textureName, [12, 13, 14, 15, 16, 17], FRAME_SIZE, FRAME_SIZE));
+        this.addAnimations(new AnimationSequence("rsquish", textureName, [18, 19, 20, 21, 22, 23], FRAME_SIZE, FRAME_SIZE));
         this.PlayAnimation("left", 2);   
         this.direction = DirectionH.Left;  
 
@@ -43,6 +45,8 @@ export class Mob extends AnimatedSprite {
         var igs = Global.sceneMngr.GetScene("InGame") as any;
         this.emitBullet = igs.emitBullet;        
     }
+
+    public IsDead: boolean = false;
 
     /**
      * texture used for attacks emitted by the mob.
@@ -54,6 +58,12 @@ export class Mob extends AnimatedSprite {
      *  We want the mob to interact only under certain circumstances (e.g. players jump attack )
      */
     public ShouldInteract: boolean = false;
+
+    public Squish() {     
+        this.IsDead = true;   
+        var aname = (this.direction == DirectionH.Left ? "lsquish" : "rsquish");
+        this.PlayAnimation(aname, 12, false);
+    }
 
     public get Direction(): DirectionH {
         return this.direction;
@@ -113,8 +123,11 @@ export class Mob extends AnimatedSprite {
         }
     }
 
-    public onUpdate (dt: number) {
+    public onUpdate(dt: number) {
         super.onUpdate(dt);
-        this.ai.onUpdate(dt);
+
+        if (!this.IsDead) {
+            this.ai.onUpdate(dt);
+        }
     }
 }

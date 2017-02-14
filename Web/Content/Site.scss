@@ -1,54 +1,74 @@
 ﻿$back-color: #3a1010;
-$title-color:#dbc646;
+$title-color: #dbc646;
 $color: #b7afac;
-$data-color:#d9f3a2;
+$data-color: #d9f3a2;
 
 html, body {
     margin: 0;
     color: $color;
-    background-color:$back-color;
+    background-color: $back-color;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
+.padded-page {
+    padding: 40px;
+}
 
-h2,.login-message {
+.tab-content {
+    margin: 0 0 15px 0;    
+}
+
+p {
+    color: #f4f4b9;
+    display: block;
+    padding-top: 6px;
+    -webkit-margin-before: 1em;
+    -webkit-margin-after: 1em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+}
+
+
+h2, .login-message {
     font-size: 1.7em;
     color: $title-color;
     margin: 30px 20px;
 }
 
-.greeting{
+.greeting {
     color: $color;
     margin: 10px 20px;
     font-size: 1.3em;
 
-    span{
-        font-weight:700;
+    span {
+        font-weight: 700;
         color: $data-color;
     }
 }
 
-.subtitle{
+.subtitle {
     font-size: 24px;
     text-align: center;
     color: $title-color;
 }
 
-.profile-data{
+.profile-data {
     display: inline-block;
     border: solid 2px $color;
     margin: 10px 20px;
     font-size: 1.15em;
     width: 260px;
 
-    div{
+    div {
         padding: 10px 25px;
     }
+
     label {
-      position: absolute;
-      width: 150px;
-      left: 30px;
+        position: absolute;
+        width: 150px;
+        left: 30px;
     }
+
     input {
         margin-left: 70px;
         width: 100px;
@@ -56,7 +76,7 @@ h2,.login-message {
         border-style: ridge;
         padding-left: 10px;
         color: $data-color;
-     }
+    }
 }
 
 .commands {
@@ -71,98 +91,120 @@ button {
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     background-color: $data-color;
 
-    &:disabled{
+    &:disabled {
         cursor: not-allowed;
         color: #c8381d;
     }
 }
 
 /* page not found error message */
-.error-message{
+.error-message {
     font-size: 18px;
     color: #ff0000;
 }
 
-.route-not-found{
-	color: #d829e0;
+.route-not-found {
+    color: #d829e0;
 }
 
-.loading-profile{  
-  margin:0;
-  padding-top: 200px;  
-  font-size:28px;
-  text-align: center;
-  color:$color;  
-  transition: visibility 0s linear 0.1s,opacity 0.8s ease;
+.loading-profile {
+    margin: 0;
+    padding-top: 200px;
+    font-size: 28px;
+    text-align: center;
+    color: $color;
+    transition: visibility 0s linear 0.1s,opacity 0.8s ease;
 }
 
-.loading-text{  
-  margin:0;
-  padding-top: 200px;  
-  font-size:40px;
-  text-align: center;
-  color:$color;  
-  transition: visibility 0s linear 0.1s,opacity 0.8s ease;
+.loading-text {
+    margin: 0;
+    padding-top: 200px;
+    font-size: 40px;
+    text-align: center;
+    color: $color;
+    transition: visibility 0s linear 0.1s,opacity 0.8s ease;
 }
 
 .sk-cube-grid {
-  width: 140px;
-  height: 140px;
-  margin: 100px auto;
+    width: 140px;
+    height: 140px;
+    margin: 100px auto;
 }
 
 .sk-cube-grid .sk-cube {
-  width: 33%;
-  height: 33%;
-  background-color: $color;
-  float: left;
-  -webkit-animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
-          animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out; 
+    width: 33%;
+    height: 33%;
+    background-color: $color;
+    float: left;
+    -webkit-animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
+    animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
 }
+
 .sk-cube-grid .sk-cube1 {
-  -webkit-animation-delay: 0.2s;
-          animation-delay: 0.2s; }
+    -webkit-animation-delay: 0.2s;
+    animation-delay: 0.2s;
+}
+
 .sk-cube-grid .sk-cube2 {
-  -webkit-animation-delay: 0.3s;
-          animation-delay: 0.3s; }
+    -webkit-animation-delay: 0.3s;
+    animation-delay: 0.3s;
+}
+
 .sk-cube-grid .sk-cube3 {
-  -webkit-animation-delay: 0.4s;
-          animation-delay: 0.4s; }
+    -webkit-animation-delay: 0.4s;
+    animation-delay: 0.4s;
+}
+
 .sk-cube-grid .sk-cube4 {
-  -webkit-animation-delay: 0.1s;
-          animation-delay: 0.1s; }
+    -webkit-animation-delay: 0.1s;
+    animation-delay: 0.1s;
+}
+
 .sk-cube-grid .sk-cube5 {
-  -webkit-animation-delay: 0.2s;
-          animation-delay: 0.2s; }
+    -webkit-animation-delay: 0.2s;
+    animation-delay: 0.2s;
+}
+
 .sk-cube-grid .sk-cube6 {
-  -webkit-animation-delay: 0.3s;
-          animation-delay: 0.3s; }
+    -webkit-animation-delay: 0.3s;
+    animation-delay: 0.3s;
+}
+
 .sk-cube-grid .sk-cube7 {
-  -webkit-animation-delay: 0s;
-          animation-delay: 0s; }
+    -webkit-animation-delay: 0s;
+    animation-delay: 0s;
+}
+
 .sk-cube-grid .sk-cube8 {
-  -webkit-animation-delay: 0.1s;
-          animation-delay: 0.1s; }
+    -webkit-animation-delay: 0.1s;
+    animation-delay: 0.1s;
+}
+
 .sk-cube-grid .sk-cube9 {
-  -webkit-animation-delay: 0.2s;
-          animation-delay: 0.2s; }
+    -webkit-animation-delay: 0.2s;
+    animation-delay: 0.2s;
+}
 
 @-webkit-keyframes sk-cubeGridScaleDelay {
-  0%, 70%, 100% {
-    -webkit-transform: scale3D(1, 1, 1);
-            transform: scale3D(1, 1, 1);
-  } 35% {
-    -webkit-transform: scale3D(0, 0, 1);
-            transform: scale3D(0, 0, 1); 
-  }
+    0%, 70%, 100% {
+        -webkit-transform: scale3D(1, 1, 1);
+        transform: scale3D(1, 1, 1);
+    }
+
+    35% {
+        -webkit-transform: scale3D(0, 0, 1);
+        transform: scale3D(0, 0, 1);
+    }
 }
 
 @keyframes sk-cubeGridScaleDelay {
-  0%, 70%, 100% {
-    -webkit-transform: scale3D(1, 1, 1);
-            transform: scale3D(1, 1, 1);
-  } 35% {
-    -webkit-transform: scale3D(0, 0, 1);
-            transform: scale3D(0, 0, 1);
-  } 
+    0%, 70%, 100% {
+        -webkit-transform: scale3D(1, 1, 1);
+        transform: scale3D(1, 1, 1);
+    }
+
+    35% {
+        -webkit-transform: scale3D(0, 0, 1);
+        transform: scale3D(0, 0, 1);
+    }
 }
