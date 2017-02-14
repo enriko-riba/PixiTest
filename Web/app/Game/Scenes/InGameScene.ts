@@ -350,23 +350,7 @@ export class InGameScene extends Scene {
             let isDropping = Math.random() <= dispObj.drop.chance;
             if (isDropping) {
                 var dropItemBody = LevelLoader.createEntity(this.currentLevel.templates, dispObj.drop.entity);
-
-                //  add only display object to scene at mob position
-                let dropItemDispObj = (dropItemBody as any).DisplayObject as PIXI.DisplayObject;
-                dropItemDispObj.x = mob.x;
-                dropItemDispObj.y = mob.y;
-                this.worldContainer.addChild(dropItemDispObj);
-
-                //  tween from mob position to random position near hero
-                let x = this.hero.x + (Math.random() * 100) - 50;
-                let y = this.hero.y + 50
-                var movePosition = new TWEEN.Tween(dropItemDispObj.position)
-                    .to({ x: x, y: y }, 800)
-                    .onComplete(() => {
-                        dropItemBody.position = [x, y];
-                        this.wp2.addBody(dropItemBody);
-                    });
-                movePosition.start();
+                this.addDropItem(mob, dropItemBody);
             }
         }
 
@@ -462,7 +446,43 @@ export class InGameScene extends Scene {
     }
 
 
+    /**
+     * Starts an animation tween and removes the display object from scene.
+     * @param dispObj
+     */
+    private addDropItem(mob: Mob, itemBody: p2.Body): void {
+        let dispObj = (itemBody as any).DisplayObject as PIXI.DisplayObject;
+        dispObj.x = mob.x;
+        dispObj.y = mob.y;
+        this.worldContainer.addChild(dispObj);
 
+        //  tween from mob position to random position near hero
+        var orgScaleX = dispObj.scale.x;
+        var orgScaleY = dispObj.scale.y;
+        var upX = dispObj.position.x + 45;
+        var upY = dispObj.position.y + 160;
+
+        var endX = this.hero.x + (Math.random() * 100) - 50;;
+        var endY = this.hero.y + 50;
+
+        var moveUp = new TWEEN.Tween(dispObj.position)
+            .to({ x: upX, y: upY }, 500);
+
+        var scale = new TWEEN.Tween(dispObj.scale)
+            .to({ x: 1.6, y: 1.6 }, 300)
+            .easing(TWEEN.Easing.Linear.None);
+
+        var moveAway = new TWEEN.Tween(dispObj.position)
+            .to({ x: endX, y: endY }, 300)
+            .easing(TWEEN.Easing.Back.In)
+            .onComplete(() => {
+                dispObj.scale.set(orgScaleX, orgScaleY);
+                itemBody.position = [endX, endY];
+                this.wp2.addBody(itemBody);
+            });
+
+        moveUp.chain(scale, moveAway).start();
+    }
 
     /**
      * Starts an animation tween and removes the display object from scene.

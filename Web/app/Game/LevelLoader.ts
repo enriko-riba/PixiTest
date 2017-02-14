@@ -88,7 +88,10 @@ export class LevelLoader {
 
                         if (displayObjectDefinition.sequences) {
                             displayObjectDefinition.sequences.forEach((item) => {
-                                assets.push(item.texture);
+                                //  add only if texture exists
+                                if (item.texture) {
+                                    assets.push(item.texture);
+                                }
                             });
                         }
                     }
@@ -306,6 +309,19 @@ export class LevelLoader {
         switch (definition.typeName) {
             case "Mob":
                 let mob = new Mob(definition.texture as string);
+                //  if animations are defined in the json replace the built-in mob animations
+                if (definition.sequences) {
+                    mob.clearAnimations();
+                    definition.sequences.forEach((seq, idx, arr) => {
+                        var textureName = seq.texture || definition.texture;
+                        var aseq = new AnimationSequence(seq.name, textureName as string, seq.frames, seq.framesize[0], seq.framesize[1]);
+                        mob.addAnimations(aseq);
+                    });
+                    mob.PlayAnimation(definition.sequences[0].name);
+                }
+                if (definition.fps) {
+                    mob.Fps = definition.fps;
+                }
                 mob.anchor.set(0.5, 0.5);
                 (mob as any).typeName = "Mob";
                 dispObj = mob;

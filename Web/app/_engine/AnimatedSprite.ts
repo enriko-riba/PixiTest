@@ -23,6 +23,12 @@ export class AnimatedSprite extends PIXI.Sprite {
         });
     }
 
+    public clearAnimations() {
+        this.Stop();
+        this.currentSequence = null;
+        this.animations.clear();
+    }
+
     public PlayAnimation = (name: string, fps?: number, loop = true) :void => {
         if (!this.currentSequence || this.currentSequence.sequenceName !== name) {
             this.resetAnimation();
@@ -80,6 +86,7 @@ export class AnimatedSprite extends PIXI.Sprite {
     }
     public set Fps(fps: number) {
         this.fps = fps;
+        if (fps < 2) debugger;
     }    
     public set Loop(isLooping: boolean) {
         this.isLooping = isLooping;

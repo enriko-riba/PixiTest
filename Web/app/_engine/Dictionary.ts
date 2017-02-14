@@ -39,4 +39,9 @@ export class Dictionary<T> {
         }
         return this.get(key);
     }
+
+    public clear() {
+        this._keys = [];
+        this._values = {};
+    }
 }

@@ -38,7 +38,7 @@ export class Mob extends AnimatedSprite {
         this.addAnimations(new AnimationSequence("ratk", textureName, [9, 10, 11], FRAME_SIZE, FRAME_SIZE));
         this.addAnimations(new AnimationSequence("lsquish", textureName, [12, 13, 14, 15, 16, 17], FRAME_SIZE, FRAME_SIZE));
         this.addAnimations(new AnimationSequence("rsquish", textureName, [18, 19, 20, 21, 22, 23], FRAME_SIZE, FRAME_SIZE));
-        this.PlayAnimation("left", 2);   
+        this.PlayAnimation("left");   
         this.direction = DirectionH.Left;  
 
         //  borrow bullet emitter from in game scene
@@ -72,9 +72,9 @@ export class Mob extends AnimatedSprite {
         if (this.direction != dir) {
             this.direction = dir;
             if (dir === DirectionH.Left) {
-                this.PlayAnimation("left", 1);
+                this.PlayAnimation("left");
             } else {
-                this.PlayAnimation("right", 1);
+                this.PlayAnimation("right");
             }
         }
     }

@@ -149,7 +149,8 @@
     {
       "name": "mob_short",
       "displayObject": {
-        "typeName": "Mob"
+        "typeName": "Mob",
+        "fps": 2
       },
       "body": {
         "shape": "Circle",
@@ -161,6 +162,39 @@
           "template": "coin",
           "interactionType": 1
         }
+      }
+    },
+    {
+      "name": "mob_bird",
+      "displayObject": {
+        "typeName": "Mob",
+        "fps": 4,
+        "sequences": [
+          {
+            "name": "left",
+            "frames": [ 0, 1, 2, 3 ],
+            "framesize": [ 64, 64 ]
+          },
+          {
+            "name": "right",
+            "frames": [ 4, 5, 6, 7 ],
+            "framesize": [ 64, 64 ]
+          },
+          {
+            "name": "latk",
+            "frames": [ 4, 5 ],
+            "framesize": [ 64, 64 ]
+          },
+          {
+            "name": "ratk",
+            "frames": [ 0, 1 ],
+            "framesize": [ 64, 64 ]
+          }
+        ]
+      },
+      "body": {
+        "shape": "Circle",
+        "size": 32
       }
     },
     {
@@ -966,6 +1000,16 @@
             "attack": "assets/_distribute/slime_atk.png"
           },
           {
+            "template": "mob_bird",
+            "name": "phoenix",
+            "interactionType": 2002,
+            "xy": [ 3190, 500 ],
+            "texture": "assets/_distribute/mob_phoenix01.png",
+            "attack": "assets/_distribute/slime_atk.png",
+            "ai": "basic_static",
+            "attributes": [ 20, 15, 2000, 10 ]
+          },
+          {
             "type": "spawn_point",
             "name": "spawn_p_202",
             "xy": [ 4000, 10 ],
@@ -978,9 +1022,9 @@
               "name": "slime",
               "interactionType": 2000,
               "texture": "assets/_distribute/mob_slime01.png",
+              "attack": "assets/_distribute/slime_atk.png",
               "ai": "basic_static",
-              "attributes": [ 40, 15, 3000, 10 ],
-              "attack": "assets/_distribute/slime_atk.png"
+              "attributes": [ 40, 15, 3000, 10 ]
             }
           }
         ],
@@ -1046,7 +1090,7 @@
           },
           {
             "template": "platform1-desert",
-            "xy": [ 1140, 120 ]            
+            "xy": [ 1140, 120 ]
           },
           {
             "template": "platform-desert",
@@ -1055,7 +1099,7 @@
           },
           {
             "template": "platform1-desert",
-            "xy": [ 1750, 237 ]            
+            "xy": [ 1750, 237 ]
           },
           {
             "template": "platform-desert",
@@ -1065,8 +1109,14 @@
           },
           {
             "template": "platform-desert",
-            "xy": [ 2400, 150 ],
+            "xy": [ 2400, 170 ],
             "tilesX": 6
+          },
+          {
+            "template": "platform-desert",
+            "xy": [ 2980, 250 ],
+            "tilesX": 2,
+            "tilesY": 2
           },
           {
             "template": "kendo-master",

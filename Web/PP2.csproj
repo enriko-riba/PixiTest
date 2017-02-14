@@ -81,7 +81,7 @@
     <None Include="assets\Unused\Npcs\barrissoffee.png" />
     <None Include="assets\Unused\Npcs\ifrit.png" />
     <None Include="assets\Unused\Npcs\leviathan.png" />
-    <None Include="assets\Unused\Npcs\phoenix.png" />
+    <None Include="assets\Images\Mobs\mob_phoenix01.png" />
     <None Include="assets\Unused\Npcs\tonberry.png" />
     <None Include="assets\Images\background\trees01.png" />
     <None Include="assets\Images\background\trees02.png" />
@@ -181,6 +181,7 @@
     <Content Include="assets\README.txt" />
     <None Include="assets\Unused\Portrait\port-vgikic.png" />
     <None Include="assets\Unused\Portrait\port-vvucetic.png" />
+    <Content Include="assets\Unused\Npcs\phoenix.png" />
     <Content Include="browserconfig.xml" />
     <Content Include="Content\Site.css">
       <DependentUpon>Site.scss</DependentUpon>
