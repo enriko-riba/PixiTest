@@ -7,6 +7,7 @@ import { Platform } from "./Objects/Platform";
 import { WorldP2 } from "./Objects/WorldP2";
 import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
 import { Mob } from "./Mobs/Mob";
+import { SpawnPoint } from "./Mobs/Spawnpoint";
 
 export class LevelLoader {
 
@@ -148,7 +149,8 @@ export class LevelLoader {
             entities: [],
             start: [],
             audioTrack: level.audioTrack,
-            templates: []
+            templates: [],
+            spawnPoints: []
         };
 
         //--------------------------------------
@@ -183,6 +185,9 @@ export class LevelLoader {
         level.map.NPC.forEach((npc: ITemplateOrSpawnPoint, idx, arr) => {
             if (npc.type && npc.type === "spawn_point") {
                 //  TODO: implement
+                let sp = npc as ISpawnPoint;
+                let entity = sp.entity;
+                result.spawnPoints.push(new SpawnPoint(sp.name, sp.xy[0], sp.xy[1], sp.area, sp.maxMobCount, sp.respawnSeconds, sp.entity));
             } else {
                 let entity: IMobEntity = npc as IMobEntity;
                 let p2body = LevelLoader.createMob(templates, entity);                
@@ -515,7 +520,7 @@ export interface ILevel {
     entities: p2.Body[];
     start: number[];
     audioTrack?: number;
-
+    spawnPoints?: SpawnPoint[];
 
     /**
      * Calculated array that is a union of global templates
@@ -601,6 +606,17 @@ export interface IMapEntity {
     interactionType?: number;
     name?: string;
     collisionType?: string;
+}
+
+export interface ISpawnPoint {
+    name: string;
+    xy: number[];
+    area: number;
+    maxMobCount: number;
+    respawnSeconds: number;
+    isActive?: boolean;
+    entity: IMobEntity;
+
 }
 
 export interface ITemplateOrSpawnPoint {

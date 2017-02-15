@@ -168,7 +168,7 @@
       "name": "mob_bird",
       "displayObject": {
         "typeName": "Mob",
-        "fps": 4,
+        "fps": 5,
         "sequences": [
           {
             "name": "left",
@@ -182,12 +182,12 @@
           },
           {
             "name": "latk",
-            "frames": [ 4, 5 ],
+            "frames": [ 4,5 ],
             "framesize": [ 64, 64 ]
           },
           {
             "name": "ratk",
-            "frames": [ 0, 1 ],
+            "frames": [ 0,1 ],
             "framesize": [ 64, 64 ]
           }
         ]
@@ -1003,7 +1003,7 @@
             "template": "mob_bird",
             "name": "phoenix",
             "interactionType": 2002,
-            "xy": [ 3190, 500 ],
+            "xy": [ 3190, 600 ],
             "texture": "assets/_distribute/mob_phoenix01.png",
             "attack": "assets/_distribute/slime_atk.png",
             "ai": "basic_static",
@@ -1012,19 +1012,19 @@
           {
             "type": "spawn_point",
             "name": "spawn_p_202",
-            "xy": [ 4000, 10 ],
-            "area": 600,
+            "xy": [ 4500, 10 ],
+            "area": 2000,
             "maxMobCount": 5,
             "respawnSeconds": 5,
             "isActive": false,
             "entity": {
               "template": "mob_short",
               "name": "slime",
-              "interactionType": 2000,
+              "interactionType": 6000,
               "texture": "assets/_distribute/mob_slime01.png",
               "attack": "assets/_distribute/slime_atk.png",
               "ai": "basic_static",
-              "attributes": [ 40, 15, 3000, 10 ]
+              "attributes": [ 40, 5, 3000, 10 ]
             }
           }
         ],
@@ -1116,6 +1116,12 @@
             "template": "platform-desert",
             "xy": [ 2980, 250 ],
             "tilesX": 2,
+            "tilesY": 2
+          },
+          {
+            "template": "platform-desert",
+            "xy": [ 3340, 310 ],
+            "tilesX": 1,
             "tilesY": 2
           },
           {

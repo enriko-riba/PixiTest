@@ -203,6 +203,15 @@ export class InGameScene extends Scene {
             }
         };
 
+
+        //-------------------------------------------
+        //  Spawn points
+        //-------------------------------------------
+        for (var i = 0, len = this.currentLevel.spawnPoints.length; i < len; i++) {
+            this.currentLevel.spawnPoints[i].onUpdate(dt);
+        }
+
+
         //-------------------------------------------
         //  finally update the hud
         //-------------------------------------------
@@ -217,7 +226,6 @@ export class InGameScene extends Scene {
             this.hero.visible = false;
 
             var cutScene = Global.sceneMngr.GetScene("CutScene") as CutScene;
-            //cs.SetText(trigger.completedText, Global.QUEST_STYLE);
             var backGroundTexture = Global.sceneMngr.CaptureScene();
             cutScene.SetBackGround(backGroundTexture, this.scale);
             cutScene.DeathScene = true;
@@ -462,7 +470,7 @@ export class InGameScene extends Scene {
         var upX = dispObj.position.x + 45;
         var upY = dispObj.position.y + 160;
 
-        var endX = this.hero.x + (Math.random() * 100) - 50;;
+        var endX = this.hero.x + (Math.random() * 100) - 50;
         var endY = this.hero.y + 50;
 
         var moveUp = new TWEEN.Tween(dispObj.position)
@@ -825,13 +833,11 @@ export class InGameScene extends Scene {
             console.log("Vert velocity: " + verticalVelocity);
         }
 
-        if (verticalVelocity > ATTACK_VELOCITY) {
+        if (verticalVelocity > ATTACK_VELOCITY && body.shapes[0].collisionGroup === WorldP2.COL_GRP_NPC) {
             //  check collision vs mobs
-            if (body.shapes[0].collisionGroup === WorldP2.COL_GRP_NPC) {
-                console.log("Mob hit!");
-                (body as any).DisplayObject.ShouldInteract = true;
-                this.handleInteractiveCollision(body);
-            }
+            console.log("Mob hit!");
+            (body as any).DisplayObject.ShouldInteract = true;
+            this.handleInteractiveCollision(body);
         } else if (verticalVelocity > SMOKE_VELOCITY) {
             var smoke: AnimatedSprite = new AnimatedSprite();
             smoke.addAnimations(new AnimationSequence("smoke", "assets/_distribute/jump_smoke.png",
@@ -839,7 +845,7 @@ export class InGameScene extends Scene {
             smoke.anchor.set(0.5);
             smoke.pivot.set(0.5);
             smoke.x = this.hero.x;
-            smoke.y = this.hero.y - this.HERO_FRAME_SIZE / 3;
+            smoke.y = this.hero.y - 25;
             smoke.alpha = 0.7;
             smoke.rotation = Math.random() * Math.PI;
             this.worldContainer.addChild(smoke);

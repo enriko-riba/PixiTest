@@ -24,6 +24,8 @@ export enum DirectionH {
  */
 export class Mob extends AnimatedSprite {
 
+    private onDeath: () => void;
+    private isDead: boolean = false;
     private attributes: number[];
     private ai: AI;
     private direction: DirectionH;
@@ -46,7 +48,25 @@ export class Mob extends AnimatedSprite {
         this.emitBullet = igs.emitBullet;        
     }
 
-    public IsDead: boolean = false;
+    public get IsDead() {
+        return this.isDead;
+    }
+    public set IsDead(value: boolean) {
+        if (value != this.isDead) {
+            this.isDead = value;
+            if (this.isDead && this.onDeath) {
+                this.onDeath();
+            }
+        }
+    }
+
+    public set OnDeath(cb: () => void) {
+        this.onDeath = cb;
+    }
+    public get OnDeath(): () => void {
+        return this.onDeath;
+    }
+
 
     /**
      * texture used for attacks emitted by the mob.
@@ -91,9 +111,9 @@ export class Mob extends AnimatedSprite {
         var currentFps = this.Fps;
         Global.snd.atkMagic1();
         if (this.direction == DirectionH.Left) {
-            this.PlayAnimation("latk", 10, false);
+            this.PlayAnimation("latk", currentFps, false);
         } else {
-            this.PlayAnimation("ratk", 10, false);
+            this.PlayAnimation("ratk", currentFps, false);
         }
 
         this.OnComplete = (seq: AnimationSequence) => {
