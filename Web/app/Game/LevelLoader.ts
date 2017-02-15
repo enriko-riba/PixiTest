@@ -286,7 +286,7 @@ export class LevelLoader {
         var temp = $.extend(true, {}, template.displayObject);        
         displayObjectDefinition = $.extend(temp, entity);
         if (template.drop) {
-            displayObjectDefinition.drop = $.extend(true, {}, template.drop);
+            displayObjectDefinition.drop = $.extend(true, displayObjectDefinition.drop, template.drop);
         }
         if (template.body) {
             bodyDefinition = $.extend(entity, template.body);
