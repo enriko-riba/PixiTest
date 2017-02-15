@@ -436,6 +436,7 @@ export class InGameScene extends Scene {
 
         bullet.position = position;
         bullet.Direction = new PIXI.Point(Global.UserInfo.position.x - position.x, Global.UserInfo.position.y - position.y);
+        bullet.damage = damage;
         bullet.IsDead = false;
         bullet.body.velocity[0] = bullet.Direction.x * bullet.velocity;
         bullet.body.velocity[1] = bullet.Direction.y * bullet.velocity;

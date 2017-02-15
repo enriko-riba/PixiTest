@@ -1020,11 +1020,11 @@
             "entity": {
               "template": "mob_short",
               "name": "slime",
-              "interactionType": 6000,
+              "interactionType": 2002,
               "texture": "assets/_distribute/mob_slime01.png",
               "attack": "assets/_distribute/slime_atk.png",
               "ai": "basic_static",
-              "attributes": [ 40, 5, 3000, 10 ]
+              "attributes": [ 40, 5, 6000, 10 ]
             }
           }
         ],
