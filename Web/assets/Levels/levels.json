@@ -1018,24 +1018,13 @@
             "respawnSeconds": 5,
             "isActive": false,
             "entity": {
-              "template": "mob_short",
-              "name": "slime",
-              "interactionType": 2002,
-              "texture": "assets/_distribute/mob_slime01.png",
-              "attack": "assets/_distribute/slime_atk.png",
-              "ai": "basic_static",
-              "attributes": [ 40, 5, 6000, 10 ],
-              "drop": {
-                "chance": 0.8,
-                "entity": {
-                  "template": "coin",
-                  "interactionType": 1
-                }
-              }
+              "template": "ki_slime",
+              "name": "ki_slime",
+              "ai": "basic_static"
             }
           }
         ],
-        "templates": [         
+        "templates": [
           {
             "name": "castle_mb",
             "displayObject": {
@@ -1046,6 +1035,28 @@
               "shape": "Box",
               "type": 2,
               "material": "box_default"
+            }
+          },
+          {
+            "name": "ki_slime",
+            "displayObject": {
+              "typeName": "Mob",
+              "texture": "assets/_distribute/mob_slime01.png",
+              "attack": "assets/_distribute/slime_atk.png",
+              "fps": 2,
+              "interactionType": 2002,
+              "attributes": [ 40, 5, 6000, 10 ]
+            },
+            "body": {
+              "shape": "Circle",
+              "size": 11
+            },
+            "drop": {
+              "chance": 0.8,
+              "entity": {
+                "texture": "assets/_distribute/ki.png",
+                "interactionType": 202
+              }
             }
           },
           {

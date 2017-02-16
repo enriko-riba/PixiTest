@@ -292,14 +292,21 @@ export class InGameScene extends Scene {
                 Global.snd.questItem();
                 this.questMngr.setQuestState(201, QuestState.Completed);
 
-                //  reward exp
-                let pt = new PIXI.Point(dispObj.x, dispObj.y);
-                pt.y += 50;
+                //  reward exp               
                 let exp = 100;
                 playerStats.increaseStat(StatType.Exp, exp);
+                let pt = new PIXI.Point(dispObj.x, dispObj.y);
+                pt.y += 50;
                 this.addInfoMessage(pt, `+${exp} exp`, Global.INFO2_STYLE);
                 break;
 
+            case 202:  //  KI
+                this.addInfoMessage(dispObj.position, "1 Ki acquired!");
+                this.addCollectibleTween(dispObj);
+                this.removeEntity(body);
+                Global.snd.questItem();
+                //  TODO: quest manager
+                break;
 
                 //------------------------------------
                 //  OBJECTS DOING DAMAGE 1000-1999

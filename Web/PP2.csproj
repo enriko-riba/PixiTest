@@ -178,6 +178,7 @@
     <None Include="assets\Unused\Portrait\port-isakoman.png" />
     <None Include="assets\Unused\Portrait\port-ivucicevic.png" />
     <None Include="assets\Unused\Portrait\port-mbanovic.png" />
+    <Content Include="assets\Images\Objects\ki.png" />
     <Content Include="assets\README.txt" />
     <None Include="assets\Unused\Portrait\port-vgikic.png" />
     <None Include="assets\Unused\Portrait\port-vvucetic.png" />
