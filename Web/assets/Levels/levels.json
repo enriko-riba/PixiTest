@@ -935,7 +935,7 @@
           ]
         }
       ],
-      "assets": [ "assets/_distribute/slime_atk_exp.png" ],
+      "assets": [ "assets/_distribute/slime_atk_exp.png"],
       "map": {
         "start": [ 0, 24 ],
         "NPC": [
@@ -1038,6 +1038,27 @@
             }
           },
           {
+            "name": "ki_item",
+            "displayObject": {
+              "typeName": "AnimatedSprite",
+              "fps": 4,
+              "sequences": [
+                {
+                  "name": "spin",
+                  "texture": "assets/_distribute/ki.png",
+                  "frames": [ 0, 1, 2, 3],
+                  "framesize": [ 64, 64 ]
+                }
+              ],
+              "scale": [0.5, 0.5],
+              "interactionType": 202
+            },
+            "body": {
+              "shape": "Circle",
+              "size": 32
+            }
+          },
+          {
             "name": "ki_slime",
             "displayObject": {
               "typeName": "Mob",
@@ -1054,8 +1075,7 @@
             "drop": {
               "chance": 0.8,
               "entity": {
-                "texture": "assets/_distribute/ki.png",
-                "interactionType": 202
+                "template": "ki_item"
               }
             }
           },

@@ -45,6 +45,26 @@ export class LevelLoader {
             //  merge global templates with level templates
             var templates = root.templates.concat(level.map.templates);
 
+            // add all textures from templates (we don't need to have entities referencing the template if they are in a spawn)
+            level.map.templates.forEach((tos: ITemplateOrSpawnPoint, idx, arr) => {
+                if (!tos.type || tos.type !== "spawn_point") {
+                    let templ = tos as ITemplate;
+                    let dispObj = templ.displayObject;
+                    if (dispObj.texture) {
+                        if (typeof dispObj.texture === "string") {
+                            assets.push(dispObj.texture);
+                        } else {
+                            assets = assets.concat(dispObj.texture);
+                        }
+                    }
+                    if (dispObj.sequences) {
+                        dispObj.sequences.forEach((item) => {
+                            assets.push(item.texture);
+                        });
+                    }     
+                }
+            });
+
             level.map.entities.forEach((entity: IMapEntity, idx, arr) => {
                 let defs = LevelLoader.getTemplates(templates, entity);
                 if (defs.doDef.texture) {
@@ -62,13 +82,13 @@ export class LevelLoader {
             });
 
             level.map.NPC = level.map.NPC || [];
-            level.map.NPC.forEach((npc:ITemplateOrSpawnPoint, idx, arr) => {
+            level.map.NPC.forEach((tos:ITemplateOrSpawnPoint, idx, arr) => {
                 //  check if its a template or spawn_point
-                if (npc.type && npc.type==="spawn_point"){
+                if (tos.type && tos.type==="spawn_point"){
 
                 } else {
                     //  this is an entity definition
-                    let entity: IMobEntity = npc as IMobEntity;
+                    let entity: IMobEntity = tos as IMobEntity;
 
                     //  concat attack (string | string[])
                     assets = assets.concat(entity.attack);
@@ -242,9 +262,9 @@ export class LevelLoader {
         (mobDispObj as any).templateName = defs.templateName;
 
         // attributes and AI
-        mobDispObj.Attributes = entity.attributes || [];
+        mobDispObj.Attributes = entity.attributes || defs.doDef.attributes || [];
         mobDispObj.CreateAI(entity.ai || "basic_static");
-        mobDispObj.AtkTexture = entity.attack;
+        mobDispObj.AtkTexture = entity.attack || defs.doDef.attack;
 
         //  body        
         defs.bdDef.material = defs.bdDef.material || "mob_default";

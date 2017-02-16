@@ -1,0 +1,35 @@
+﻿{
+  "quests": [
+    {
+      "id": -1,
+      "welcomeMsg": "",
+      "objectiveMsg": "",
+      "completedMsg": "",
+      "finishedMsg": "",
+      "ItemId": -1,
+      "rewardExp": 0,
+      "rewardCoins": 0
+    },
+
+    {
+      "id": 1,
+      "welcomeMsg": "Hello there,\nI will teach you the basics.\nFollow my instructions and you will be fine.",
+      "objectiveMsg": "",
+      "completedMsg": "OK lad,\nuse 'w' or space to jump. and 'a', 'd' or arrows to move!",
+      "finishedMsg": "",
+      "ItemId": -1,
+      "rewardExp": 0,
+      "rewardCoins": 0
+    },
+    {
+      "id": 2,
+      "welcomeMsg": "",
+      "objectiveMsg": "Now jump on that big box.",
+      "completedMsg": "Excellent,\nTo run hold shift.\nIf running you can jump higher and longer!",
+      "finishedMsg": "OK,\nnow run to the exit sign on the east!",
+      "ItemId": -1,
+      "rewardExp": 0,
+      "rewardCoins": 0
+    }
+  ]
+}

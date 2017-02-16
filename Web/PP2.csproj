@@ -29,6 +29,7 @@
     <None Include="assets\Images\background\Canyon.png" />
     <None Include="assets\Images\background\ground.png" />
     <None Include="assets\Images\background\Mountains.png" />
+    <Content Include="assets\Levels\quests.json" />
     <None Include="assets\Unused\trees01_dbg.png" />
     <None Include="assets\Unused\trees02_dbg.png" />
     <None Include="assets\Unused\trees03_dbg.png" />
@@ -274,6 +275,8 @@
     <TypeScriptCompile Include="app\Game\Objects\Bumper.ts" />
     <TypeScriptCompile Include="app\Game\Player\HeroCharacter.ts" />
     <TypeScriptCompile Include="app\Game\Hud.ts" />
+    <TypeScriptCompile Include="app\Game\QuestSystem\Quest.ts" />
+    <TypeScriptCompile Include="app\Game\QuestSystem\QuestState.ts" />
     <TypeScriptCompile Include="app\Game\Scenes\CutScene.ts" />
     <TypeScriptCompile Include="app\Game\Mobs\AI.ts" />
     <TypeScriptCompile Include="app\Game\Mobs\BasicStaticAI.ts" />
@@ -286,7 +289,7 @@
     <TypeScriptCompile Include="app\Game\Player\JumpController.ts" />
     <TypeScriptCompile Include="app\Game\LevelLoader.ts" />
     <TypeScriptCompile Include="app\Game\Player\MovementState.ts" />
-    <TypeScriptCompile Include="app\Game\QuestManager.ts" />
+    <TypeScriptCompile Include="app\Game\QuestSystem\QuestManager.ts" />
     <TypeScriptCompile Include="app\Game\SoundMan.ts" />
     <TypeScriptCompile Include="app\Game\Player\PlayerStats.ts" />
     <TypeScriptCompile Include="app\Game\Objects\WorldP2.ts" />

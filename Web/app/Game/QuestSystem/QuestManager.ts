@@ -1,11 +1,12 @@
-﻿import * as Global from "./Global";
+﻿import * as Global from "../Global";
 import * as AjaxHelper from "app/Common/AjaxHelper";
-import { WorldP2 } from "./Objects/WorldP2";
-import { ITriggerDefinition } from "./LevelLoader";
-import { InGameScene } from "./Scenes/InGameScene";
-import { CutScene } from "./Scenes/CutScene";
-import { HeroCharacter } from "./Player/HeroCharacter";
-import { StatType } from "./Player/PlayerStats";
+import { QuestState } from "./QuestState";
+import { WorldP2 } from "../Objects/WorldP2";
+import { ITriggerDefinition } from "../LevelLoader";
+import { InGameScene } from "../Scenes/InGameScene";
+import { CutScene } from "../Scenes/CutScene";
+import { HeroCharacter } from "../Player/HeroCharacter";
+import { StatType } from "../Player/PlayerStats";
 
 declare var baseUrl: string;
 
@@ -249,9 +250,9 @@ export class QuestManager {
     private saveUserState() {
         let model = {
             ExternalId: Global.UserInfo.id,
-            Gold: this.gameScene.PlayerStats.getStat(StatType.Coins),
-            Dust: Math.floor(this.gameScene.PlayerStats.getStat(StatType.Dust)),
-            Exp: this.gameScene.PlayerStats.getStat(StatType.Exp),
+            Gold: this.hero.PlayerStats.getStat(StatType.Coins),
+            Dust: Math.floor(this.hero.PlayerStats.getStat(StatType.Dust)),
+            Exp: this.hero.PlayerStats.getStat(StatType.Exp),
             LastLevel: Global.UserInfo.gamelevel,
             // TODO: add sending attributes, skills, exp etc
         };
@@ -261,22 +262,3 @@ export class QuestManager {
     }
 }
 
-
-export enum QuestState {
-    None,
-
-    /**
-     *  Quest has been started.
-     */
-    InProgress,
-
-    /**
-     *  Quest items/conditions have been completed.
-     */
-    Completed,
-
-    /**
-     *  Quest has been finished.
-     */
-    Finished
-}

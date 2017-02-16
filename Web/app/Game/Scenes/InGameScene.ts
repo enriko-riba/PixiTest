@@ -9,7 +9,8 @@ import { Mob, AtrType } from "../Mobs/Mob";
 import { Hud } from "../Hud";
 import { SoundMan } from "../SoundMan";
 import { LevelLoader, ILevel, ILevelMap, IMapEntity } from "../LevelLoader";
-import { QuestManager, QuestState } from "../QuestManager";
+import { QuestManager } from "../QuestSystem/QuestManager";
+import { QuestState } from "../QuestSystem/QuestState";
 import { WorldP2 } from "../Objects/WorldP2";
 import { Bullet } from "../Objects/Bullet";
 import { OptionsScene } from "./OptionsScene";
@@ -221,7 +222,7 @@ export class InGameScene extends Scene {
         //-------------------------------------------
         //  check if player is dead
         //-------------------------------------------
-        if (this.PlayerStats.getStat(StatType.HP) <= 0) {
+        if (this.hero.PlayerStats.getStat(StatType.HP) <= 0) {
             this.IsHeroInteractive = false;
             this.hero.visible = false;
 
@@ -232,10 +233,6 @@ export class InGameScene extends Scene {
             Global.sceneMngr.ActivateScene(cutScene);
         }
     };
-
-    public get PlayerStats(): PlayerStats {
-        return this.hero.PlayerStats;
-    }
 
     public set IsHeroInteractive(value: boolean) {
         if (this.hero.IsInteractive !== value) {
@@ -342,22 +339,21 @@ export class InGameScene extends Scene {
                 //  the callee must set the mob.ShouldInteract to exclude
                 //  standard collision logic.
                 //----------------------------------------------------------
-                if (dispObj.interactionType >= 2000 && dispObj.interactionType < 3000) {
-                    var mob: Mob = body.DisplayObject as Mob;
-                    if (mob.ShouldInteract) {
-                        this.handleMobInteraction(mob, dispObj.interactionType, body);
-                    }                    
-                }
+                //if (dispObj.interactionType >= 2000 && dispObj.interactionType < 3000) {
+                //    var mob: Mob = body.DisplayObject as Mob;
+                //    if (mob.ShouldInteract) {
+                //        this.handleMobInteraction(mob, dispObj.interactionType, body);
+                //    }                    
+                //}
         }
     }
 
     /**
      * Handles interaction with mobs (mob kill).
      * @param mob
-     * @param mobType
      * @param body
      */
-    private handleMobInteraction(mob: Mob, mobType: number, body: p2.Body) {
+    private handleMobInteraction(mob: Mob, body: p2.Body) {
         let dispObj = (body as any).DisplayObject as PIXI.DisplayObject;
 
         //  generate drop
@@ -482,14 +478,14 @@ export class InGameScene extends Scene {
         var endY = this.hero.y + 50;
 
         var moveUp = new TWEEN.Tween(dispObj.position)
-            .to({ x: upX, y: upY }, 500);
+            .to({ x: upX, y: upY }, 400);
 
         var scale = new TWEEN.Tween(dispObj.scale)
-            .to({ x: 1.6, y: 1.6 }, 300)
+            .to({ x: orgScaleX + 0.4, y: orgScaleX + 0.4 }, 350)
             .easing(TWEEN.Easing.Linear.None);
 
         var moveAway = new TWEEN.Tween(dispObj.position)
-            .to({ x: endX, y: endY }, 300)
+            .to({ x: endX, y: endY }, 350)
             .easing(TWEEN.Easing.Back.In)
             .onComplete(() => {
                 dispObj.scale.set(orgScaleX, orgScaleY);
@@ -504,7 +500,9 @@ export class InGameScene extends Scene {
      * Starts an animation tween and removes the display object from scene.
      * @param dispObj
      */
-    private addCollectibleTween(dispObj: PIXI.DisplayObject):void {
+    private addCollectibleTween(dispObj: PIXI.DisplayObject): void {
+        var orgScaleX = dispObj.scale.x;
+        var orgScaleY = dispObj.scale.y;
         var upX = dispObj.position.x + 45;
         var upY = dispObj.position.y + 160;
 
@@ -515,7 +513,7 @@ export class InGameScene extends Scene {
             .to({ x: upX, y: upY }, 150);
 
         var scale = new TWEEN.Tween(dispObj.scale)
-            .to({ x: 1.6, y: 1.6 }, 500)
+            .to({ x: orgScaleX + 0.6, y: orgScaleX + 0.6 }, 500)
             .easing(TWEEN.Easing.Linear.None);
 
         var moveAway = new TWEEN.Tween(dispObj.position)
@@ -844,8 +842,8 @@ export class InGameScene extends Scene {
         if (verticalVelocity > ATTACK_VELOCITY && body.shapes[0].collisionGroup === WorldP2.COL_GRP_NPC) {
             //  check collision vs mobs
             console.log("Mob hit!");
-            (body as any).DisplayObject.ShouldInteract = true;
-            this.handleInteractiveCollision(body);
+            var mob: Mob = (body as any).DisplayObject as Mob;
+            this.handleMobInteraction(mob, body);
         } else if (verticalVelocity > SMOKE_VELOCITY) {
             var smoke: AnimatedSprite = new AnimatedSprite();
             smoke.addAnimations(new AnimationSequence("smoke", "assets/_distribute/jump_smoke.png",
