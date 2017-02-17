@@ -123,7 +123,7 @@
       "body": {
         "shape": "Box",
         "type": 4,
-        "material": "box_default"
+        "material": "box_highfriction"
       }
     },
     {
@@ -311,13 +311,7 @@
             "trigger": {
               "questId": 1,
               "type": "distance",
-              "distance": 100,
-              "text": "Hello there,\nI will teach you the basics.\nFollow my instructions and you will be fine.",
-              "textposition": [
-                -155,
-                600
-              ],
-              "completedText": "OK lad,\nuse 'w' or space to jump. and 'a', 'd' or arrows to move!"
+              "distance": 200            
             }
           },
           {
@@ -329,10 +323,7 @@
             "xy": [ 2050, 128 ],
             "trigger": {
               "questId": 2,
-              "type": "collision",
-              "text": "Excellent,\nTo run hold shift.\nIf running you can jump higher and longer!",
-              "textposition": [ -300, 550 ],
-              "completedText": "OK,\nnow run to the exit sign on the east!"
+              "type": "collision"             
             }
           },
           {
@@ -363,8 +354,7 @@
             "template": "exit",
             "xy": [ 3322, 360 ],
             "trigger": {
-              "type": "collision",
-              "text": "Well done!",
+              "type": "collision",              
               "questId": 3
             }
           },
@@ -458,10 +448,7 @@
             },
             "trigger": {
               "type": "collision",
-              "text": "You shall not pass...unless you bring me\nknowledge of Kendo!",
-              "textposition": [-370,400],
-              "questId": 201,
-              "completedText": "What? Could it be...\nYou have the Kendo knowledge I need so much!\n\nYou must be the chosen one, proceed now!"
+              "questId": 201
             }
           },
           {
@@ -1041,7 +1028,7 @@
             "name": "ki_item",
             "displayObject": {
               "typeName": "AnimatedSprite",
-              "fps": 4,
+              "fps": 8,
               "sequences": [
                 {
                   "name": "spin",
@@ -1102,8 +1089,6 @@
             "xy": [ 0, 30 ],
             "trigger": {
               "type": "collision",
-              "text": "Find our Hanshi - the great Kendo master,\nhe will train you. His dojo is on the east.\n\n\nBeware of magic slimes!",
-              "textposition": [ -20, 600 ],
               "questId": 202
             }
           },
@@ -1168,11 +1153,19 @@
           },
           {
             "template": "sensor",
+            "xy": [ 6680, 30 ],
+            "trigger": {
+              "type": "collision",
+              "questId": 202,
+              "state": 3,
+              "desc":  "Finish quest 202 when near dojo"
+            }
+          },
+          {
+            "template": "sensor",
             "xy": [ 6700, 30 ],
             "trigger": {
               "type": "collision",
-              "text": "I expected you, young padawan. Time is short\nand your training must begin immediately.\n\nYour first lesson: Oji waza - attack techniques.\nJump on the enemy and press 's' or down.\n\n\nLets practice, collect 10 ki from magic slimes!",
-              "textposition": [ -20, 600 ],
               "questId": 203
             }
           },

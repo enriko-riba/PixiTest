@@ -48,11 +48,7 @@ export class Balloon extends PIXI.Container {
             if (distance > 250) {
                 var closer = new TWEEN.Tween(this.position)
                     .to({ x: this.followTarget.x }, 4000).start();
-            }
-            var msg = this.parent.getChildByName("TriggerMessage");
-            if (msg) {                
-                msg.x = this.x + 150;
-            }
+            }           
         }
     };    
 }

@@ -30,32 +30,39 @@ export class LoaderScene extends Scene {
         //------------------------------------------------------
         PIXI.loader.reset();
         PIXI.loader.add("assets/_distribute/loading.png")
-            .load(this.downloadNextLevel);
+            .load(this.downloadDefinitions);
 
-        //  this hides the loading HTML text
-        vm.isLoadingVisible(false);
+       
     };
 
-    private downloadNextLevel = (): void => {
-        Global.UserInfo.gamelevel += 1;
-        console.log(`downloading level ${Global.UserInfo.gamelevel}...`);
+    /**
+     *  Downloads JSON files and invokes next level loading.
+     */
+    private downloadDefinitions = (): void => {
 
-        PIXI.loader.reset();
-        PIXI.loader.add("assets/levels/levels.json")
-                   .load(this.downloadAssets);
-
-        //   add a loading spinner
+        //   first add a loading spinner
         var loadingTexture = PIXI.Texture.fromImage("assets/_distribute/loading.png");
         this.spinner = new PIXI.Sprite(loadingTexture);
         this.spinner.position.set(500, 350);
         this.spinner.anchor.set(0.5, 0.5);
         this.spinner.scale.set(0.5);
         this.addChild(this.spinner);
+        //  this hides the loading HTML text
+        vm.isLoadingVisible(false);
+
+        PIXI.loader.reset();
+        PIXI.loader.add(["assets/levels/quests.json", "assets/levels/levels.json"])
+            .load(() => {
+                Global.GameLevels.root = PIXI.loader.resources["assets/levels/levels.json"].data;
+                var questsObj = PIXI.loader.resources["assets/levels/quests.json"].data;
+                Global.GameLevels.root.quests = questsObj.quests;
+                this.downloadNextLevel();
+            });
     }
 
-    private downloadAssets = ():void => {
-        console.log("Initializing...");
-        Global.GameLevels.root = PIXI.loader.resources["assets/levels/levels.json"].data;
+    private downloadNextLevel = (): void => {
+        Global.UserInfo.gamelevel += 1;
+        console.log(`downloading level ${Global.UserInfo.gamelevel}...`);
         
         let assets: string[] = LevelLoader.GetLevelAssets(Global.GameLevels.root as any, Global.UserInfo.gamelevel);
 

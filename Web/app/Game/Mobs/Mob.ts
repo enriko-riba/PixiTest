@@ -73,12 +73,6 @@ export class Mob extends AnimatedSprite {
      */
     public AtkTexture: string | string[];
 
-    /**
-     *  This is to prevent the regular interactionType handler to trigger on mob collisions.
-     *  We want the mob to interact only under certain circumstances (e.g. players jump attack )
-     */
-    public ShouldInteract: boolean = false;
-
     public Squish() {     
         this.IsDead = true;   
         var aname = (this.direction == DirectionH.Left ? "lsquish" : "rsquish");

@@ -278,6 +278,7 @@ export class WorldP2 {
         this.materials.set("player", new p2.Material(p2.Material.idCounter++));
         this.materials.set("ground_default", new p2.Material(p2.Material.idCounter++));
         this.materials.set("box_default", new p2.Material(p2.Material.idCounter++));
+        this.materials.set("box_highfriction", new p2.Material(p2.Material.idCounter++));
         this.materials.set("mob_default", new p2.Material(p2.Material.idCounter++));
         this.materials.set("bumper", new p2.Material(p2.Material.idCounter++));
 
@@ -325,11 +326,25 @@ export class WorldP2 {
             });
         this.world.addContactMaterial(playerBoxContactMaterial);
 
+        var playerBoxHighFirctContactMaterial = new p2.ContactMaterial(
+            this.materials.get("player"),
+            this.materials.get("box_highfriction"),
+            {
+                friction: 0.90,
+                restitution: 0.15,
+                stiffness: p2.Equation.DEFAULT_STIFFNESS,
+                relaxation: p2.Equation.DEFAULT_RELAXATION,
+                frictionStiffness: p2.Equation.DEFAULT_STIFFNESS,
+                frictionRelaxation: p2.Equation.DEFAULT_RELAXATION,
+                surfaceVelocity: 0
+            });
+        this.world.addContactMaterial(playerBoxHighFirctContactMaterial);
+
         var playerBumperContactMaterial = new p2.ContactMaterial(
             this.materials.get("player"),
             this.materials.get("bumper"),
             {
-                friction: 0.7,
+                friction: 0.75,
                 restitution: 0.8,
                 stiffness: Number.MAX_VALUE,
                 relaxation: p2.Equation.DEFAULT_RELAXATION,

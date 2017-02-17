@@ -78,8 +78,8 @@ export var sceneMngr: SceneManager;
 export var snd: SoundMan;
 
 export var GameLevels: {
-    root: any
-} = { root: "" };
+    root: any;
+} = { root: {} };
 
 export var UserInfo: {
     id: number;

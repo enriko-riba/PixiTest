@@ -97,10 +97,10 @@ export class InGameScene extends Scene {
 
     public worldContainer: PIXI.Container;
     public hud = new Hud();
+    public wp2: WorldP2;
+    public hero: HeroCharacter;
 
     private parallaxBackgrounds: Array<Parallax> = [];
-    private wp2: WorldP2;
-    private hero: HeroCharacter;
 
     private levelLoader = new LevelLoader();
     private currentLevel: ILevel;
@@ -129,7 +129,6 @@ export class InGameScene extends Scene {
         this.addChild(this.worldContainer);
 
         this.HudOverlay = this.hud;
-        this.hud.position.set(5, 25);
         this.setup();
     }
 
@@ -290,11 +289,11 @@ export class InGameScene extends Scene {
                 this.questMngr.setQuestState(201, QuestState.Completed);
 
                 //  reward exp               
-                let exp = 100;
-                playerStats.increaseStat(StatType.Exp, exp);
-                let pt = new PIXI.Point(dispObj.x, dispObj.y);
-                pt.y += 50;
-                this.addInfoMessage(pt, `+${exp} exp`, Global.INFO2_STYLE);
+                //let exp = 100;
+                //playerStats.increaseStat(StatType.Exp, exp);
+                //let pt = new PIXI.Point(dispObj.x, dispObj.y);
+                //pt.y += 50;
+                //this.addInfoMessage(pt, `+${exp} exp`, Global.INFO2_STYLE);
                 break;
 
             case 202:  //  KI
@@ -311,7 +310,7 @@ export class InGameScene extends Scene {
 
             case 1000:  //  border lava   
                 {
-                    let now = Date.now() / 1000;
+                    let now = performance.now() / 1000;
                     if (!playerStats.buffs[1000] || playerStats.buffs[1000] < now) {
                         this.addInfoMessage(dispObj.position, "Burn", Global.WARN_STYLE);
                     }
@@ -321,7 +320,7 @@ export class InGameScene extends Scene {
 
             case 1001:  //  lava
                 {
-                    let now = Date.now() / 1000;
+                    let now = performance.now() / 1000;
                     if (!playerStats.buffs[1001] || playerStats.buffs[1001] < now) {
                         this.addInfoMessage(dispObj.position, "Burn", Global.WARN_STYLE);
                     }
@@ -365,8 +364,6 @@ export class InGameScene extends Scene {
             }
         }
 
-        //  prevent interaction in next frames (until the mob is completely removed)
-        mob.ShouldInteract = false; 
         this.removeEntity(body);
         mob.OnComplete = ()=> this.worldContainer.removeChild(dispObj);
         mob.Squish();
@@ -459,7 +456,7 @@ export class InGameScene extends Scene {
 
 
     /**
-     * Starts an animation tween and removes the display object from scene.
+     * Adds an drop item to the scene with a tween animation.
      * @param dispObj
      */
     private addDropItem(mob: Mob, itemBody: p2.Body): void {
@@ -530,7 +527,7 @@ export class InGameScene extends Scene {
      * @param message the message to be added
      * @param style optional PIXI.ITextStyle
      */
-    private addInfoMessage(position: PIXI.Point, message: string, style?: PIXI.ITextStyleStyle): void {
+    public addInfoMessage(position: PIXI.Point, message: string, style?: PIXI.ITextStyleStyle): void {
         var stl = style || Global.INFO_STYLE;
         var txtInfo = new PIXI.Text(message, stl);
         txtInfo.position.set(position.x, position.y);
@@ -555,37 +552,6 @@ export class InGameScene extends Scene {
     }
 
     /**
-     * Adds a balloon call-out message.
-     * @param position the start position of the message
-     * @param message the message to be added
-     * @param style PIXI.ITextStyle
-     * @param fadeSeconds optional number of milliseconds the message should linger
-     */
-    public addTriggerMessage(position: PIXI.Point, message: string, style: PIXI.ITextStyleStyle, fadeMillis: number = 8000): PIXI.Sprite {
-        var container = new PIXI.Sprite(PIXI.loader.resources["assets/_distribute/rect.png"].texture);
-        container.position.set(position.x, position.y);
-        container.scale.set(1, -1);   //  scale invert since everything is upside down due to coordinate system
-        this.worldContainer.addChild(container);
-
-        var txtInfo = new PIXI.Text(message, style);
-        txtInfo.position.set(40, 20);
-        container.addChild(txtInfo);
-
-        if (fadeMillis > 0 ) {
-            var fade = new TWEEN.Tween(container)
-                .to({ alpha: 0.8 }, fadeMillis)
-                .onComplete(() => {
-                    this.worldContainer.removeChild(container);
-                });
-            fade.start();
-        }
-        container.name = "TriggerMessage";
-        return container;
-    }
-
-   
-
-    /**
      * Sets up the scene.
      */
     private setup(): void {
@@ -607,7 +573,7 @@ export class InGameScene extends Scene {
         this.wp2 = new WorldP2();
         this.hero.SetWorldP2(this.wp2);
         this.worldContainer.addChild(this.hero);
-        this.questMngr = new QuestManager(this, this.wp2, this.hero);
+        this.questMngr = new QuestManager(this);
         this.wp2.on("playerContact", this.onPlayerContact, this);
         this.wp2.on("bulletContact", this.onBulletContact, this);
         
@@ -693,7 +659,7 @@ export class InGameScene extends Scene {
      * @param seconds
      */
     private secondsFromNow(seconds: number): number {
-        var now = Date.now() / 1000;
+        var now = performance.now() / 1000;
         now += seconds;
         return now;
     };

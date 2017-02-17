@@ -26,7 +26,7 @@ export class AI {
      */
     protected targetDistance: number;
 
-    protected lastFire: number = Date.now() + Math.random() * 10;    //  so that the attack is not triggered at right at init time
+    protected lastFire: number = performance.now() + Math.random() * 10;    //  so that the attack is not triggered at right at init time
 
     protected attackCD: number;
 
@@ -52,7 +52,7 @@ export class AI {
     }
 
     public canFire() {
-        let nowMilliseconds = Date.now();
+        let nowMilliseconds = performance.now();
         return (this.lastFire + this.attackCD <= nowMilliseconds);
     };
 
@@ -70,7 +70,7 @@ export class AI {
             //  check attack CD            
             if (this.canFire()) {
                 this.mobEntity.Attack();
-                this.lastFire = Date.now();
+                this.lastFire = performance.now();
             }
         } else {
             this.hasTarget = false;

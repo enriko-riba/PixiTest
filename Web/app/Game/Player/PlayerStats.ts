@@ -58,7 +58,7 @@ export class PlayerStats {
     public onUpdate = (dt: number) => {
 
         let INTERVAL = 500;
-        var now = Date.now() / 1000;
+        var now = performance.now() / 1000;
 
         //  accumulate dps
         for (let i = 1000, len = this.buffs.length; i < len; i++){

@@ -50,7 +50,7 @@ export class Bullet extends PIXI.Sprite {
                     this.body.velocity = [0, 0];
                 }
             } else {
-                this.startTime = Date.now() / 1000;
+                this.startTime = performance.now() / 1000;
                 if (this.body) {
                     this.body.position = [this.position.x, this.position.y];
                 }
@@ -76,7 +76,7 @@ export class Bullet extends PIXI.Sprite {
     public onUpdate = (dt: number) => {
         // TTL expiry
         if (!this.isDead) {
-            let now = Date.now() / 1000;
+            let now = performance.now() / 1000;
             let ellapsed = now - this.startTime;
             this.IsDead = this.ttl < ellapsed;
         }

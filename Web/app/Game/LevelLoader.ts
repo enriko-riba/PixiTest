@@ -599,10 +599,9 @@ export interface IDisplayObjectDefinition {
 export interface ITriggerDefinition {
     type: string;
     distance?: number;
-    text: string;
-    textposition: number[];
     questId?: number;
-    completedText?: string;
+    state?: number;
+    desc?: string;
 }
 
 export interface IDrop {

@@ -15,5 +15,10 @@ export enum QuestState {
     /**
      *  Quest has been finished.
      */
-    Finished
+    Finished,
+
+    /**
+     *  Quest has been finished and reward awarded.
+     */
+    Rewarded,
 }

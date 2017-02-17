@@ -168,7 +168,7 @@ export class HeroCharacter extends AnimatedSprite {
         //  check if is burning
         //--------------------------
         let wasBurning = this._isBurning;
-        let now = Date.now() / 1000;
+        let now = performance.now() / 1000;
         this._isBurning = this.playerStats.buffs[1000] > now || this.playerStats.buffs[1001] > now;
         this.emitterBuffs.emit = this._isBurning;
         this.alpha = (this._isBurning) ? 0.7 : 1;

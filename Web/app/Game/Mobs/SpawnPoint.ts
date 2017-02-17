@@ -19,7 +19,7 @@ export class SpawnPoint {
         private entity: any,
         private active: boolean = true){
 
-        this.nextSpawn = Date.now() / 1000;
+        this.nextSpawn = performance.now() / 1000;
        
     }
 
@@ -30,7 +30,7 @@ export class SpawnPoint {
         if (this.active && this.mobCount < this.maxMobCount) {
 
             //  is it time to respawn?
-            var now = Date.now() / 1000;
+            var now = performance.now() / 1000;
             if (this.nextSpawn <= now) {
 
                 //  grab the level templates if not present
@@ -59,7 +59,7 @@ export class SpawnPoint {
                 }
 
                 this.mobCount++;
-                this.nextSpawn = (Date.now() / 1000) + this.respawnSeconds;
+                this.nextSpawn = (performance.now() / 1000) + this.respawnSeconds;
             }
         }
     }

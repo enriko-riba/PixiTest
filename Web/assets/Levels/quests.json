@@ -16,9 +16,9 @@
       "welcomeMsg": "Hello there,\nI will teach you the basics.\nFollow my instructions and you will be fine.",
       "objectiveMsg": "",
       "completedMsg": "OK lad,\nuse 'w' or space to jump. and 'a', 'd' or arrows to move!",
-      "finishedMsg": "",
+      "finishedMsg": "Now jump on that big box.",
       "ItemId": -1,
-      "rewardExp": 0,
+      "rewardExp": 50,
       "rewardCoins": 0
     },
     {
@@ -28,29 +28,49 @@
       "completedMsg": "Excellent,\nTo run hold shift.\nIf running you can jump higher and longer!",
       "finishedMsg": "",
       "ItemId": -1,
-      "rewardExp": 0,
+      "rewardExp": 50,
       "rewardCoins": 0
     },
     {
       "id": 3,
-      "welcomeMsg": "OK,\nnow run to the exit sign on the east!",
+      "welcomeMsg": "Now run to the exit sign on the east!",
       "objectiveMsg": "Go to the exit sign on the east.",
       "completedMsg": "Well done!",
-      "finishedMsg": "",
+      "finishedMsg": "Listen up lad,\nYou did well...for a n00b.\n\nThe time is running out.\nNow hurry to the white castle.\nThe real adventure merely begins!",
       "ItemId": -1,
-      "rewardExp": 0,
-      "rewardCoins": 0
+      "rewardExp": 100,
+      "rewardCoins": 50
     },
     {
-      "id": -1,
+      "id": 201,
       "welcomeMsg": "You shall not pass...unless you bring me\nknowledge of Kendo!",
       "objectiveMsg": "Find the Kendo knowledge",
       "completedMsg": "",
       "finishedMsg": "What? Could it be...\nYou have the Kendo knowledge I need so much!\n\nYou must be the chosen one, proceed now!",
       "ItemId": -1,
-      "rewardExp": 0,
-      "rewardCoins": 0
+      "rewardExp": 100,
+      "rewardCoins": 100
     },
-    
+    {
+      "id": 202,
+      "welcomeMsg": "Find our Hanshi - the great Kendo master,\nhe will train you. His dojo is on the east.\n\n\nBeware of magic slimes!",
+      "objectiveMsg": "Find the Kendo master and hes dojo on the east",
+      "completedMsg": "",
+      "finishedMsg": "",
+      "ItemId": -1,
+      "rewardExp": 100,
+      "rewardCoins": 50
+    },
+    {
+      "id": 203,
+      "welcomeMsg": "I expected you, young padawan. Time is short\nand your training must begin immediately.\n\nYour first lesson: Oji waza - attack techniques.\nJump on the enemy and press 's' or down.\n\n\nLets practice, collect 10 ki from magic slimes!",
+      "objectiveMsg": "Collect 10 Ki from magic slimes",
+      "completedMsg": "",
+      "finishedMsg": "",
+      "ItemId": 202,
+      "rewardExp": 1000,
+      "rewardCoins": 500
+    }
+
   ]
 }

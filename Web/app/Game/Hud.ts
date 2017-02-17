@@ -22,6 +22,10 @@ export class Hud extends PIXI.Container {
 
     private emitter: PIXI.particles.Emitter;
 
+
+    private questRect: PIXI.Sprite;
+    private txtQuestMessage: PIXI.Text;
+
     private get isFullScreen(): boolean {
         var doc: any = document;
         return !(!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement);
@@ -46,8 +50,7 @@ export class Hud extends PIXI.Container {
         ko.postbox.subscribe<IStatChangeEvent>(STATCHANGE_TOPIC, this.handleStatChange);
 
 
-        var btnFullScreen = new Button("assets/_distribute/gui_fs_enter.png",
-            Global.SCENE_WIDTH - 38, -24);
+        var btnFullScreen = new Button("assets/_distribute/gui_fs_enter.png", Global.SCENE_WIDTH - 36, 4);
         this.addChild(btnFullScreen);
         btnFullScreen.on('click', () => {
             this.toggleFullScreen();
@@ -58,8 +61,7 @@ export class Hud extends PIXI.Container {
             }
         });
 
-        var btnOptions = new Button("assets/_distribute/gui_options.png",
-            Global.SCENE_WIDTH - (38 + 32 + 6), -24);
+        var btnOptions = new Button("assets/_distribute/gui_options.png", Global.SCENE_WIDTH - (36 + 32 + 4), 4);
         this.addChild(btnOptions);
         btnOptions.on('click', () => {
             let opt = Global.sceneMngr.GetScene("Options");
@@ -136,6 +138,17 @@ export class Hud extends PIXI.Container {
         this.txtLevel.resolution = window.devicePixelRatio;
         this.txtPlayerPosition = new PIXI.Text("", Global.TXT_STYLE);
         this.txtPlayerPosition.resolution = window.devicePixelRatio;
+
+        //  callout for quest message
+        this.questRect = new PIXI.Sprite(PIXI.Texture.fromImage("assets/_distribute/rect.png"));
+        this.questRect.position.set(Global.SCENE_WIDTH - this.questRect.width - 4, 40);
+        this.questRect.name = "TriggerMessage";
+        this.addChild(this.questRect);
+
+        this.txtQuestMessage = new PIXI.Text("Hello world", Global.QUEST_STYLE);
+        this.txtQuestMessage.resolution = window.devicePixelRatio;
+        this.txtQuestMessage.position.set(20, 20);
+        this.questRect.addChild(this.txtQuestMessage);
     }
 
     private handleStatChange = (event: IStatChangeEvent) => {
@@ -158,8 +171,31 @@ export class Hud extends PIXI.Container {
         }
     };
 
+    /**
+     * Displays the quest message in the quest rectangle.
+     * @param msg
+     * @param ttlMilis
+     */
+    public setQuestMessage(msg: string, ttlMilis: number = 8000, onCompleteCB: ()=> void = null) {
+        this.txtQuestMessage.text = msg;
+        this.questRect.visible = true;
+        this.questMsgEndTime = performance.now() + ttlMilis;
+        this.onCompleteCB = onCompleteCB;
+    }
+
+    private questMsgEndTime = 0;
+    private onCompleteCB?: () => void;
+
     public onUpdate(dt: number): void {
         this.txtPlayerPosition.text = `${this.heroPosition.x.toFixed(0)}, ${this.heroPosition.y.toFixed(0)}`;
         this.emitter.update(dt * 0.001);
+
+        //  turn off the quest message
+        if (this.questRect.visible && this.questMsgEndTime < performance.now()) {
+            this.questRect.visible = false;
+            if (this.onCompleteCB) {
+                this.onCompleteCB();
+            }
+        }
     }
 }

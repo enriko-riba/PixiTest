@@ -148,6 +148,9 @@ export class MovementController {
             if ((this.kbd.IsKeyDown(KEY_S) || this.kbd.IsKeyDown(KEY_DOWN)) && this.hero.CanJumpAttack && this.nextJumpDownAllowed < performance.now()) {
                 this.StartJumpDown();
             }
+            //  calculate the horizontal velocity
+            var v: number = this.calcMovementVelocity();
+            this.world.playerBody.velocity[0] += v;
             return;
 
         } else {
@@ -155,7 +158,9 @@ export class MovementController {
             var v: number = this.calcMovementVelocity();
             this.world.playerBody.velocity[0] = v;
         }
+       
 
+        
         var newIsJumping: boolean = false;
         var newIsRunning: boolean = this.kbd.IsKeyDown(KEY_SHIFT) && this.hero.CanRun && this._isInteractive;        
 
@@ -217,7 +222,12 @@ export class MovementController {
             direction = 1;
         }
 
-        var velocity: number = direction * this.VELOCITY * (this.IsRunning ? 2 : 1.0);
-        return velocity;
+        if (this.IsJumping) {
+            //  allow for some minimal horizontal movement (this is to prevent getting stuck in air if between two bodies with friction and no contacts)
+            return direction;
+        } else {
+            var velocity: number = direction * this.VELOCITY * (this.IsRunning ? 2 : 1.0);
+            return velocity;
+        }
     }
 }
