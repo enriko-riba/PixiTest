@@ -68,7 +68,7 @@ export class CutScene extends Scene {
 
     public onUpdate(dt: number) {
         if (this.deathScene) {
-            if (this.corpse.scale.x < 3) {
+            if (this.corpse.scale.x < 2.5) {
                 this.corpse.rotation += 0.03;
                 var scale = this.corpse.scale.x + 0.01;
                 this.corpse.scale.set(scale);

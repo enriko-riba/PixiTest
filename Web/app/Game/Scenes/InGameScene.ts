@@ -28,50 +28,50 @@ let ANIMATION_FPS_SLOW = 4;
 export function createParticleEmitter(container: PIXI.Container, textures: PIXI.Texture[], config?: PIXI.particles.EmitterConfig): PIXI.particles.Emitter {
     "use strict";
     var cfg: PIXI.particles.EmitterConfig = {
-            "alpha": {
-                "start": 0.8,
-                "end": 0.03
-            },
-            "color": {
-                start: "#dcff09",
-                end: "#9f1f1f"
-            },
-            "scale": {
-                "start": 0.1,
-                "end": 0.4,
-                "minimumScaleMultiplier": 1
-            },
-            "speed": {
-                "start": 40,
-                "end": 3,
-                "minimumSpeedMultiplier": 1
-            },
-            "acceleration": new PIXI.Point(),
-            "startRotation": {
-                "min": 0,
-                "max": 360
-            },
-            "rotationSpeed": {
-                "min": 5,
-                "max": 20
-            },
-            "lifetime": {
-                "min": 0.4,
-                "max": 1.0
-            },
-            "blendMode": "add",
-            "frequency": 0.01,
-            "emitterLifetime": -1,
-            "maxParticles": 200,
-            "pos": new PIXI.Point(0, -24),
-            "addAtBack": false,
-            "spawnType": "circle",
-            "spawnCircle": {
-                "x": 0,
-                "y": 0,
-                "r": 10
-            }
-        };
+        "alpha": {
+            "start": 0.8,
+            "end": 0.03
+        },
+        "color": {
+            start: "#dcff09",
+            end: "#9f1f1f"
+        },
+        "scale": {
+            "start": 0.1,
+            "end": 0.4,
+            "minimumScaleMultiplier": 1
+        },
+        "speed": {
+            "start": 40,
+            "end": 3,
+            "minimumSpeedMultiplier": 1
+        },
+        "acceleration": new PIXI.Point(),
+        "startRotation": {
+            "min": 0,
+            "max": 360
+        },
+        "rotationSpeed": {
+            "min": 5,
+            "max": 20
+        },
+        "lifetime": {
+            "min": 0.4,
+            "max": 1.0
+        },
+        "blendMode": "add",
+        "frequency": 0.01,
+        "emitterLifetime": -1,
+        "maxParticles": 200,
+        "pos": new PIXI.Point(0, -24),
+        "addAtBack": false,
+        "spawnType": "circle",
+        "spawnCircle": {
+            "x": 0,
+            "y": 0,
+            "r": 10
+        }
+    };
     if (config) {
         cfg = $.extend(cfg, config);
     }
@@ -146,7 +146,7 @@ export class InGameScene extends Scene {
      * Updates physics and handles player collisions.
      * @param dt elapsed time in milliseconds
      */
-    public onUpdate(dt: number){
+    public onUpdate(dt: number) {
         this.wp2.update(dt);
         this.hero.update(dt);
 
@@ -176,7 +176,16 @@ export class InGameScene extends Scene {
                 displayObject.rotation = body.interpolatedAngle;
             }
 
-            this.questMngr.checkTriggerCondition(body);
+            if (body.Trigger && body.Trigger.type === "distance") {
+                if (this.questMngr.canActivateTrigger(body.Trigger)) {
+                    let x = this.hero.position.x - body.position[0];
+                    let y = this.hero.position.y - body.position[1];
+                    let distance = Math.sqrt(x * x + y * y);
+                    if (body.Trigger.distance >= distance) {
+                        this.questMngr.handleTriggerEvent(body);
+                    }
+                }
+            }
         }
 
         //-------------------------------------------
@@ -250,7 +259,7 @@ export class InGameScene extends Scene {
     private handleInteractiveCollision(body: any): void {
         var playerStats = this.hero.PlayerStats;
         var dispObj: PIXI.DisplayObject = body.DisplayObject as PIXI.DisplayObject;
-       
+
 
         switch (dispObj.interactionType) {
             case 1: //  small coin
@@ -277,23 +286,16 @@ export class InGameScene extends Scene {
                 Global.snd.gem();
                 break;
 
-                //------------------------------------
-                //  QUEST ITEMS 200-999
-                //------------------------------------
+            //------------------------------------
+            //  QUEST ITEMS 200-999
+            //------------------------------------
 
             case 201:  //  kendo knowledge
                 this.addInfoMessage(dispObj.position, "Kendo knowledge acquired!");
                 this.addCollectibleTween(dispObj);
                 this.removeEntity(body);
                 Global.snd.questItem();
-                this.questMngr.setQuestState(201, QuestState.Completed);
-
-                //  reward exp               
-                //let exp = 100;
-                //playerStats.increaseStat(StatType.Exp, exp);
-                //let pt = new PIXI.Point(dispObj.x, dispObj.y);
-                //pt.y += 50;
-                //this.addInfoMessage(pt, `+${exp} exp`, Global.INFO2_STYLE);
+                this.questMngr.acquireItem(201);
                 break;
 
             case 202:  //  KI
@@ -301,12 +303,13 @@ export class InGameScene extends Scene {
                 this.addCollectibleTween(dispObj);
                 this.removeEntity(body);
                 Global.snd.questItem();
+                this.questMngr.acquireItem(202);
                 //  TODO: quest manager
                 break;
 
-                //------------------------------------
-                //  OBJECTS DOING DAMAGE 1000-1999
-                //------------------------------------
+            //------------------------------------
+            //  OBJECTS DOING DAMAGE 1000-1999
+            //------------------------------------
 
             case 1000:  //  border lava   
                 {
@@ -327,23 +330,23 @@ export class InGameScene extends Scene {
                     playerStats.buffs[1001] = this.secondsFromNow(3);
                 }
                 break;
-          
-                
+
+
             default:
-                //----------------------------------------------------------
-                //  MOBS 2000 - 2999
-                //  Note: mobs don't interact on collision because only 
-                //  some contacts are important (jump etc). Therefore
-                //  handleInteractiveCollision() is called manually and
-                //  the callee must set the mob.ShouldInteract to exclude
-                //  standard collision logic.
-                //----------------------------------------------------------
-                //if (dispObj.interactionType >= 2000 && dispObj.interactionType < 3000) {
-                //    var mob: Mob = body.DisplayObject as Mob;
-                //    if (mob.ShouldInteract) {
-                //        this.handleMobInteraction(mob, dispObj.interactionType, body);
-                //    }                    
-                //}
+            //----------------------------------------------------------
+            //  MOBS 2000 - 2999
+            //  Note: mobs don't interact on collision because only 
+            //  some contacts are important (jump etc). Therefore
+            //  handleInteractiveCollision() is called manually and
+            //  the callee must set the mob.ShouldInteract to exclude
+            //  standard collision logic.
+            //----------------------------------------------------------
+            //if (dispObj.interactionType >= 2000 && dispObj.interactionType < 3000) {
+            //    var mob: Mob = body.DisplayObject as Mob;
+            //    if (mob.ShouldInteract) {
+            //        this.handleMobInteraction(mob, dispObj.interactionType, body);
+            //    }                    
+            //}
         }
     }
 
@@ -365,7 +368,7 @@ export class InGameScene extends Scene {
         }
 
         this.removeEntity(body);
-        mob.OnComplete = ()=> this.worldContainer.removeChild(dispObj);
+        mob.OnComplete = () => this.worldContainer.removeChild(dispObj);
         mob.Squish();
         Global.snd.mobSquish();
 
@@ -445,7 +448,7 @@ export class InGameScene extends Scene {
     };
 
     private findDeadBullet = (): Bullet => {
-        for (var i = 0, len = this.bullets.length; i < len; i++){
+        for (var i = 0, len = this.bullets.length; i < len; i++) {
             let blt = this.bullets[i];
             if (blt.IsDead) {
                 return blt;
@@ -522,6 +525,31 @@ export class InGameScene extends Scene {
     }
 
     /**
+     * Ads text message about acquired quest items.
+     * @param message the message to be added
+     * @param style optional PIXI.ITextStyle
+     */
+    public addQuestItemMessage(message: string, style?: PIXI.ITextStyleStyle): void {
+        var stl = style || Global.QUEST_ITEM_STYLE;
+        var txtInfo = new PIXI.Text(message, stl);
+        txtInfo.anchor.set(0.5, 0.5);
+        txtInfo.position.set(this.hero.x, Global.SCENE_HEIGHT - 250);
+        txtInfo.scale.set(1, -1);   //  scale invert since everything is upside down due to coordinate system
+
+        this.worldContainer.addChild(txtInfo);
+
+        var scale = new TWEEN.Tween(txtInfo.scale)
+            .to({ x: 1.6, y: -1.6 }, 2200)
+            .easing(TWEEN.Easing.Linear.None);
+
+        var fade = new TWEEN.Tween(txtInfo)
+            .to({ alpha: 0 }, 3000)
+            .onComplete(() => this.worldContainer.removeChild(txtInfo));
+        scale.chain(fade).start();
+    }
+
+
+    /**
      * Starts an animation tween with informational text moving upwards from the given position.
      * @param position the start position of the message
      * @param message the message to be added
@@ -546,8 +574,8 @@ export class InGameScene extends Scene {
             .easing(TWEEN.Easing.Linear.None);
 
         var fade = new TWEEN.Tween(txtInfo)
-            .to({alpha: 0}, 3000)
-            .onComplete(() => this.worldContainer.removeChild(txtInfo));;
+            .to({ alpha: 0 }, 3000)
+            .onComplete(() => this.worldContainer.removeChild(txtInfo));
         scale.chain(fade).start();
     }
 
@@ -566,7 +594,7 @@ export class InGameScene extends Scene {
         ko.postbox.subscribe<IDpsChangeEvent>(DPS_TOPIC, this.handleDpsChange);
         ko.postbox.subscribe<IMoveEvent>(MOVE_TOPIC, this.handleMoveChange);
         ko.postbox.subscribe<IBurnEvent>(BURN_TOPIC, this.handleBurnChange);
-        
+
         //--------------------------------------
         //  setup physics subsystem
         //--------------------------------------
@@ -576,9 +604,9 @@ export class InGameScene extends Scene {
         this.questMngr = new QuestManager(this);
         this.wp2.on("playerContact", this.onPlayerContact, this);
         this.wp2.on("bulletContact", this.onBulletContact, this);
-        
+
         Global.sceneMngr.AddScene(new OptionsScene());
-        Global.sceneMngr.AddScene(new CutScene()); 
+        Global.sceneMngr.AddScene(new CutScene());
 
         this.resetPlayerStats();
     };
@@ -690,7 +718,7 @@ export class InGameScene extends Scene {
             console.log("No more levels!!!");
             return;
         } else {
-            Global.snd.playTrack(lvl.audioTrack||0);
+            Global.snd.playTrack(lvl.audioTrack || 0);
             this.loadLevel(lvl);
             this.currentLevel = lvl;
         }
@@ -748,7 +776,7 @@ export class InGameScene extends Scene {
             //  TODO: there is a bug not initially calculating all viewport  
             //        visible parallax textures. So just move it in both 
             //        directions to trigger textures recalculation
-            plx.SetViewPortX(lvl.start[0]-10);
+            plx.SetViewPortX(lvl.start[0] - 10);
             //plx.SetViewPortX(lvl.start[0] + 10);
             plx.SetViewPortX(lvl.start[0]);
         });
@@ -767,10 +795,10 @@ export class InGameScene extends Scene {
      */
     private saveLevel(): void {
         var map: ILevelMap = {
-            start:[],
-            templates:[],
+            start: [],
+            templates: [],
             entities: [],
-            NPC:[]
+            NPC: []
         };
 
         this.wp2.bodies.forEach((body: any) => {

@@ -29,56 +29,53 @@ export class QuestManager {
     }
 
     /**
-     * Sets the quest state.
+     * 
+     * @param itemId
      */
-    public setQuestState(questId: number, state: QuestState) {
-        this.questState[questId] = state;
-    }
-
-    /**
-     * Gets the quest state.
-     */
-    public getQuestState(questId: number): QuestState {
-        return this.questState[questId] || QuestState.None;
-    }
-
-    /**
-     * checks if the body has any trigger conditions.
-     * If the conditions are met the trigger is executed.
-     */
-    public checkTriggerCondition = (body: any) => {
-        if (!body.Trigger) {
-            return;
-        }
-
-        var t = body.Trigger.type;
-        switch (t) {
-            case "collision":
-                break;
-
-            case "distance":
-                let x = this.gameScene.hero.position.x - body.position[0];
-                let y = this.gameScene.hero.position.y - body.position[1];
-                let distance = Math.sqrt(x * x + y * y);
-                if (body.Trigger.distance >= distance) {
-                    this.handleTriggerEvent(body);
+    public acquireItem(itemId: number) {
+        //  find if there is an unfinished quest depending on that item
+        let quest = this.findQuestWithItem(itemId);
+        if (quest) {
+            quest.itemsCollected++;
+            this.gameScene.addQuestItemMessage(`+${quest.itemsCollected} / ${quest.itemsNeeded}`);
+            if (quest.itemsCollected >= quest.itemsNeeded) {
+                this.setQuestState(quest.id, QuestState.Completed);
+                if (quest.completedMsg) {
+                    this.gameScene.hud.setQuestMessage(quest.completedMsg);
                 }
-                break;
+            }
         }
-    };
+    }
+
+    /**
+     * Checks if a trigger can be activated. 
+     * @param trigger
+     */
+    public canActivateTrigger(trigger: ITriggerDefinition): boolean {
+        if (!trigger || !trigger.questId) {
+            return false;
+        }
+
+        let TEN_SECONDS = 10000;
+        let nextAllowedTime = (trigger.lastActive || 0) + TEN_SECONDS;
+        return nextAllowedTime < performance.now();
+    }
 
     /**
      * Handles level events triggers.
      * @param body
      */
     public handleTriggerEvent(body: any): void {
+        let TEN_SECONDS = 10000;
         var dispObj: PIXI.DisplayObject = body.DisplayObject as PIXI.DisplayObject;
 
         var trigger: ITriggerDefinition = body.Trigger;
         var pos = new PIXI.Point(dispObj.position.x, dispObj.position.y);
         let state = Math.max(this.getQuestState(trigger.questId), trigger.state || 0);
 
-        if (trigger.questId) {
+        // react only if trigger has quest id and its last active time is older than 10 seconds 
+        if (this.canActivateTrigger(trigger)) {
+            trigger.lastActive = performance.now();
 
             var hud = this.gameScene.hud;
             let quest: Quest = this.findQuest(trigger.questId);
@@ -148,7 +145,7 @@ export class QuestManager {
                     break;
 
                 case 201:   //  Kendo knowledge
-                    this.genericQuestHandler(quest, state, [
+                    this.genericQuestHandler(quest, state, trigger, [
                         () => {
                             let item = this.gameScene.worldContainer.getChildByName("quest_item_201");
                             item.visible = true;
@@ -173,11 +170,11 @@ export class QuestManager {
                     break;
 
                 case 202:   //  seek the hanshi Kendo master
-                    this.genericQuestHandler(quest, state);
+                    this.genericQuestHandler(quest, state, trigger);
                     break;
 
                 case 203:   //  hanshi Kendo master dojo: obtain Oji waza + collect 10 ki
-                    this.genericQuestHandler(quest, state, [
+                    this.genericQuestHandler(quest, state, trigger, [
                         () => {this.gameScene.hero.PlayerStats.HasJumpAtack = true;},
                         () => { },
                         () => { },
@@ -188,7 +185,7 @@ export class QuestManager {
         }
     }
 
-    private genericQuestHandler(quest: Quest, state: QuestState, actions?: Array<() => void>) {
+    private genericQuestHandler(quest: Quest, state: QuestState, trigger: ITriggerDefinition, actions?: Array<() => void>) {
         var hud = this.gameScene.hud;
         var hero = this.gameScene.hero;
 
@@ -198,24 +195,26 @@ export class QuestManager {
                 hud.setQuestMessage(quest.welcomeMsg);
                 break;
             case QuestState.InProgress:
-                hud.setQuestMessage(quest.welcomeMsg);
+                hud.setQuestMessage(quest.objectiveMsg);
                 break;
             case QuestState.Completed:
-                hud.setQuestMessage(quest.completedMsg);
+                if (quest.itemId && quest.itemsCollected >= quest.itemsNeeded) { //  if the acquireItem has set quest to completed move to next stated
+                    this.setQuestState(quest.id, QuestState.Finished);
+                    trigger.lastActive = 0;
+                } else { 
+                    hud.setQuestMessage(quest.completedMsg);
+                }
                 break;
             case QuestState.Finished:
                 hud.setQuestMessage(quest.finishedMsg);
                 if (quest.rewardExp) {
                     hero.PlayerStats.increaseStat(StatType.Exp, quest.rewardExp);
-                    let pt = new PIXI.Point(hero.x, hero.y);
-                    pt.y += 50;
+                    let pt = new PIXI.Point(hero.x, hero.y + 50);
                     this.gameScene.addInfoMessage(pt, `+${quest.rewardExp} exp`, Global.INFO2_STYLE);
                 }
                 if (quest.rewardCoins) {
                     hero.PlayerStats.increaseStat(StatType.Exp, quest.rewardExp);
-                    let pt = new PIXI.Point(hero.x, hero.y);
-                    pt.y += 100;
-                    pt.x += 50;
+                    let pt = new PIXI.Point(hero.x+ 50, hero.y + 100);
                     this.gameScene.addInfoMessage(pt, `+${quest.rewardCoins} coins`);
                 }
                 this.setQuestState(quest.id, QuestState.Rewarded);
@@ -232,6 +231,32 @@ export class QuestManager {
         });
         var quest: Quest = quests[0];
         return quest;
+    }
+
+    private findQuestWithItem(itemId: number): Quest {
+        var quests = Global.GameLevels.root.quests.filter((q: Quest) => {
+            let state = this.getQuestState(q.id);
+            return q.itemId === itemId && state < QuestState.Completed;
+        });
+        if (quests.length > 0) {
+            return quests[0];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+    * Sets the quest state.
+    */
+    private setQuestState(questId: number, state: QuestState) {
+        this.questState[questId] = state;
+    }
+
+    /**
+     * Gets the quest state.
+     */
+    private getQuestState(questId: number): QuestState {
+        return this.questState[questId] || QuestState.None;
     }
 
     /**

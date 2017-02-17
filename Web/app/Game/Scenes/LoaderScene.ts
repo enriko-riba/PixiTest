@@ -1,8 +1,9 @@
 ﻿import { Scene } from "app/_engine/Scene";
 import { InGameScene } from "./InGameScene";
 import { LevelLoader, ILevelMap, IMapEntity } from "../LevelLoader";
-import * as Global from "../Global";
 import { vm } from "app/main";
+import { Quest } from "../QuestSystem/Quest";
+import * as Global from "../Global";
 
 export class LoaderScene extends Scene {
     private loadingMessage: PIXI.Text;
@@ -55,7 +56,15 @@ export class LoaderScene extends Scene {
             .load(() => {
                 Global.GameLevels.root = PIXI.loader.resources["assets/levels/levels.json"].data;
                 var questsObj = PIXI.loader.resources["assets/levels/quests.json"].data;
-                Global.GameLevels.root.quests = questsObj.quests;
+                Global.GameLevels.root.quests = questsObj.quests as Array<Quest>;
+                Global.GameLevels.root.quests.every((q: Quest) => {
+                    q.itemId = q.itemId || 0;
+                    q.itemsNeeded = q.itemsNeeded || 0;
+                    q.itemsCollected = 0;
+                    q.rewardCoins = q.rewardCoins || 0;
+                    q.rewardExp = q.rewardExp || 0;
+                    return true;
+                });
                 this.downloadNextLevel();
             });
     }

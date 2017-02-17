@@ -10,12 +10,17 @@ export class Quest {
     public state: QuestState = QuestState.None;
 
     /**
-     * Item's interaction type, used only for item collect quests
+     * Item's interaction type, used only for item collect quests.
      */
     public itemId: number;
 
     /**
-     * Number of items collected, used only for item collect quests
+     * Number of items needed to finish the quest.
+     */
+    public itemsNeeded: number;
+
+    /**
+     * Number of items collected, used only for item collect quests.
      */
     public itemsCollected: number;
 

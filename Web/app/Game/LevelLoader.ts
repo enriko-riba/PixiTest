@@ -8,6 +8,7 @@ import { WorldP2 } from "./Objects/WorldP2";
 import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
 import { Mob } from "./Mobs/Mob";
 import { SpawnPoint } from "./Mobs/Spawnpoint";
+import { Quest } from "./QuestSystem/Quest";
 
 export class LevelLoader {
 
@@ -602,6 +603,11 @@ export interface ITriggerDefinition {
     questId?: number;
     state?: number;
     desc?: string;
+
+    /*
+     * Created during run time to prevent trigger actions each frame
+     */
+    lastActive?: number;
 }
 
 export interface IDrop {
@@ -675,4 +681,5 @@ export interface ILevelDefinition {
 export interface IRootObject {
     templates: ITemplate[];
     levels: ILevelDefinition[];
+    quests: Quest[];
 }
