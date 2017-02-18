@@ -1,6 +1,6 @@
 /*!
- * pixi.js - v4.3.4
- * Compiled Thu, 19 Jan 2017 21:38:46 UTC
+ * pixi.js - v4.3.5
+ * Compiled Fri, 10 Feb 2017 13:25:25 UTC
  *
  * pixi.js is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -8048,7 +8048,7 @@ exports.__esModule = true;
  * @name VERSION
  * @type {string}
  */
-var VERSION = exports.VERSION = '4.3.4';
+var VERSION = exports.VERSION = '4.3.5';
 
 /**
  * Two Pi.
@@ -18282,20 +18282,22 @@ var FilterManager = function (_WebGLManager) {
 
         renderer.bindShader(shader);
 
+        // free unit 0 for us, doesn't matter what was there
+        // don't try to restore it, because syncUniforms can upload it to another slot
+        // and it'll be a problem
+        var tex = this.renderer.emptyTextures[0];
+
+        this.renderer.boundTextures[0] = tex;
         // this syncs the pixi filters  uniforms with glsl uniforms
         this.syncUniforms(shader, filter);
 
         renderer.state.setBlendMode(filter.blendMode);
-
-        // temporary bypass cache..
-        var tex = this.renderer.boundTextures[0];
 
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, input.texture.texture);
 
         this.quad.vao.draw(this.renderer.gl.TRIANGLES, 6, 0);
 
-        // restore cache.
         gl.bindTexture(gl.TEXTURE_2D, tex._glTextures[this.renderer.CONTEXT_UID].texture);
     };
 
