@@ -48,6 +48,8 @@ export class Mob extends AnimatedSprite {
         this.emitBullet = igs.emitBullet;        
     }
 
+    public IsLoading: boolean = false;
+
     public get IsDead() {
         return this.isDead;
     }
@@ -145,7 +147,7 @@ export class Mob extends AnimatedSprite {
     public onUpdate(dt: number) {
         super.onUpdate(dt);
 
-        if (!this.IsDead) {
+        if (!this.IsDead && !this.IsLoading) {
             this.ai.onUpdate(dt);
         }
     }

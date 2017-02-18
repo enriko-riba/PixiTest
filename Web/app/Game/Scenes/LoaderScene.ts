@@ -102,6 +102,8 @@ export class LoaderScene extends Scene {
                 "assets/_distribute/balloon_basket_01.png",
 
                 "assets/_distribute/flame.png",
+                "assets/_distribute/load.png",
+                "assets/_distribute/hit.png",
                 "assets/_distribute/rect.png"
             ]
         );
@@ -115,8 +117,8 @@ export class LoaderScene extends Scene {
 
     private onProgress = (loader, resource: PIXI.loaders.Resource) => {
         var progress = loader.progress as number;
-        console.log("progress: " + progress.toFixed(2) + "%, asset: " + resource.name);
-        this.loadingMessage.text = "Loading " + progress.toFixed(2) + " %";
+        console.log("progress: " + progress.toFixed(0) + "%, asset: " + resource.name);
+        this.loadingMessage.text = "Loading " + progress.toFixed(0) + " %";
     };
 
     private onAssetsLoaded = () => {

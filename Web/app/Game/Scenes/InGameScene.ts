@@ -841,7 +841,9 @@ export class InGameScene extends Scene {
             //  check collision vs mobs
             console.log("Mob hit!");
             var mob: Mob = (body as any).DisplayObject as Mob;
-            this.handleMobInteraction(mob, body);
+            if (!mob.IsLoading) {
+                this.handleMobInteraction(mob, body);
+            }
         } else if (verticalVelocity > SMOKE_VELOCITY) {
             var smoke: AnimatedSprite = new AnimatedSprite();
             smoke.addAnimations(new AnimationSequence("smoke", "assets/_distribute/jump_smoke.png",

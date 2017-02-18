@@ -1,6 +1,7 @@
 ﻿import { LevelLoader } from "../LevelLoader";
 import { WorldP2 } from "../Objects/WorldP2";
 import { Mob } from "../Mobs/Mob";
+import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
 import * as Global from "../Global";
 
 export class SpawnPoint {
@@ -42,7 +43,7 @@ export class SpawnPoint {
                 }
 
                 var mobBody = LevelLoader.createMob(this.templates, this.entity);
-                let dispObj = (mobBody as any).DisplayObject as PIXI.DisplayObject;
+                let dispObj = (mobBody as any).DisplayObject as Mob;
 
                 let x = this.x + (Math.random() * this.area) - (this.area / 2);
                 let y = this.y;
@@ -51,7 +52,23 @@ export class SpawnPoint {
                 this.wp2.addBody(mobBody);
 
                 dispObj.position.set(x, y);
+                dispObj.visible = false;
+                dispObj.IsLoading = true;
                 this.worldContainer.addChild(dispObj);
+
+                let loadSpr = new AnimatedSprite();
+                loadSpr.addAnimations(new AnimationSequence("load", "assets/_distribute/load.png", [0, 1, 2, 3], 64, 64));
+                loadSpr.anchor.set(0.5);
+                loadSpr.position.set(x, y+10);
+                loadSpr.PlayAnimation("load", 4, true);
+                //loadSpr.scale.set(1, -1);
+                this.worldContainer.addChild(loadSpr);
+
+                setTimeout(() => {
+                    this.worldContainer.removeChild(loadSpr);
+                    dispObj.IsLoading = false;
+                    dispObj.visible = true;
+                }, 3000);
 
                 (dispObj as Mob).OnDeath = () => {
                     console.log("mob died");

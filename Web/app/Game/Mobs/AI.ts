@@ -26,7 +26,7 @@ export class AI {
      */
     protected targetDistance: number;
 
-    protected lastFire: number = performance.now() + Math.random() * 10;    //  so that the attack is not triggered at right at init time
+    protected lastFire: number = 0;//performance.now() + Math.random() * 10;    //  so that the attack is not triggered at init time
 
     protected attackCD: number;
 
