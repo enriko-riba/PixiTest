@@ -43,7 +43,7 @@ export class SoundMan {
                 preload: true,
                 autoplay: false,
                 loop: true,
-                volume: 0.8
+                volume: 0.6
             }));
         }
 
@@ -155,10 +155,10 @@ export class SoundMan {
         });
     }
 
-    private previousMusicVolume = 0.8;
+    private previousMusicVolume = 0.6;
     private previousFxVolume = 1;
 
-    private musicVolume = 0.8;
+    private musicVolume = 0.6;
     private fxVolume = 1;
 
     public get MusicVolume() { return this.musicVolume; }

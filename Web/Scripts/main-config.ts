@@ -5,7 +5,7 @@ require.config({
     paths: {
         "jquery": "Scripts/jquery-3.1.1.min",
         "knockout": "Scripts/knockout-3.4.1",
-        "knockout-amd-helpers": "Scripts/knockout-amd-helpers",
+        "knockout-amd-helpers": "Scripts/knockout-amd-helpers.min",
         "postbox": "Scripts/knockout-postbox.min",
         "pixi": "Scripts/pixi.min",
         "text": "Scripts/text",
@@ -16,8 +16,6 @@ require.config({
         "howler": "Scripts/howler.min",
 
         "tween": "../../Scripts/Tween",
-        //"hammertime": "../../Scripts/hammer-time.min",
-        //"hammerjs": "../../Scripts/hammer.min",
         "p2": "../../Scripts/p2",
 
         "FB": "//connect.facebook.net/en_US/sdk",

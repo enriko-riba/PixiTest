@@ -150,7 +150,7 @@
       "name": "mob_short",
       "displayObject": {
         "typeName": "Mob",
-        "fps": 2
+        "fps": 4
       },
       "body": {
         "shape": "Circle",
@@ -1037,7 +1037,7 @@
                   "framesize": [ 64, 64 ]
                 }
               ],
-              "scale": [0.5, 0.5],
+              "scale": [0.3, 0.3],
               "interactionType": 202
             },
             "body": {

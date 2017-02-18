@@ -100,7 +100,7 @@ export class OptionsScene extends Scene {
         btnMusic.onClick = () => {
             Global.snd.IsMusicOn = !Global.snd.IsMusicOn;
             if (Global.snd.IsMusicOn) {
-                musicSlider.Value = 0.8;
+                musicSlider.Value = 0.6;
             } else {
                 musicSlider.Value = 0;
             }

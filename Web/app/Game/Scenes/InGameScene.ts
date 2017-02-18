@@ -464,33 +464,38 @@ export class InGameScene extends Scene {
     private addDropItem(mob: Mob, itemBody: p2.Body): void {
         let dispObj = (itemBody as any).DisplayObject as PIXI.DisplayObject;
         dispObj.x = mob.x;
-        dispObj.y = mob.y;
+        dispObj.y = mob.y + 40;        
         this.worldContainer.addChild(dispObj);
 
         //  tween from mob position to random position near hero
-        var orgScaleX = dispObj.scale.x;
-        var orgScaleY = dispObj.scale.y;
-        var upX = dispObj.position.x + 45;
-        var upY = dispObj.position.y + 160;
+        var upX = dispObj.position.x + 75;
+        var upY = dispObj.position.y + 200;
 
-        var endX = this.hero.x + (Math.random() * 100) - 50;
-        var endY = this.hero.y + 50;
+        
 
         var moveUp = new TWEEN.Tween(dispObj.position)
-            .to({ x: upX, y: upY }, 400);
+            .to({ x: upX, y: upY }, 400)
+            .onComplete(() => {
+                itemBody.position = [dispObj.position.x, dispObj.position.y];
+                this.wp2.addBody(itemBody)
+            });
 
+
+        var orgScaleX = dispObj.scale.x;
+        var orgScaleY = dispObj.scale.y;
         var scale = new TWEEN.Tween(dispObj.scale)
-            .to({ x: orgScaleX + 0.4, y: orgScaleX + 0.4 }, 350)
+            .to({ x: orgScaleX + 0.3, y: orgScaleX + 0.3 }, 350)
             .easing(TWEEN.Easing.Linear.None);
 
+        var endX = this.hero.x;
+        var endY = this.hero.y + 10;
         var moveAway = new TWEEN.Tween(dispObj.position)
             .to({ x: endX, y: endY }, 350)
             .easing(TWEEN.Easing.Back.In)
-            .onComplete(() => {
-                dispObj.scale.set(orgScaleX, orgScaleY);
-                itemBody.position = [endX, endY];
-                this.wp2.addBody(itemBody);
-            });
+            .onUpdate((pos: PIXI.Point) => {
+                itemBody.position = [dispObj.position.x, dispObj.position.y];
+            })
+            .onComplete(() => dispObj.scale.set(orgScaleX, orgScaleY));
 
         moveUp.chain(scale, moveAway).start();
     }
@@ -512,7 +517,7 @@ export class InGameScene extends Scene {
             .to({ x: upX, y: upY }, 150);
 
         var scale = new TWEEN.Tween(dispObj.scale)
-            .to({ x: orgScaleX + 0.6, y: orgScaleX + 0.6 }, 500)
+            .to({ x: orgScaleX + 0.5, y: orgScaleX + 0.5 }, 500)
             .easing(TWEEN.Easing.Linear.None);
 
         var moveAway = new TWEEN.Tween(dispObj.position)
@@ -532,13 +537,13 @@ export class InGameScene extends Scene {
         var stl = style || Global.QUEST_ITEM_STYLE;
         var txtInfo = new PIXI.Text(message, stl);
         txtInfo.anchor.set(0.5, 0.5);
-        txtInfo.position.set(this.hero.x, Global.SCENE_HEIGHT - 250);
+        txtInfo.position.set(this.hero.x, Global.SCENE_HEIGHT - 150);
         txtInfo.scale.set(1, -1);   //  scale invert since everything is upside down due to coordinate system
 
         this.worldContainer.addChild(txtInfo);
 
         var scale = new TWEEN.Tween(txtInfo.scale)
-            .to({ x: 1.6, y: -1.6 }, 2200)
+            .to({ x: 1.8, y: -1.8 }, 2200)
             .easing(TWEEN.Easing.Linear.None);
 
         var fade = new TWEEN.Tween(txtInfo)

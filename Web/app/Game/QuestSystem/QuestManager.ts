@@ -37,7 +37,7 @@ export class QuestManager {
         let quest = this.findQuestWithItem(itemId);
         if (quest) {
             quest.itemsCollected++;
-            this.gameScene.addQuestItemMessage(`+${quest.itemsCollected} / ${quest.itemsNeeded}`);
+            this.gameScene.addQuestItemMessage(`collected ${quest.itemsCollected} / ${quest.itemsNeeded}`);
             if (quest.itemsCollected >= quest.itemsNeeded) {
                 this.setQuestState(quest.id, QuestState.Completed);
                 if (quest.completedMsg) {
@@ -73,7 +73,7 @@ export class QuestManager {
         var pos = new PIXI.Point(dispObj.position.x, dispObj.position.y);
         let state = Math.max(this.getQuestState(trigger.questId), trigger.state || 0);
 
-        // react only if trigger has quest id and its last active time is older than 10 seconds 
+        // react only if trigger has quest id and last active is older than 10 seconds 
         if (this.canActivateTrigger(trigger)) {
             trigger.lastActive = performance.now();
 
@@ -173,7 +173,7 @@ export class QuestManager {
                     this.genericQuestHandler(quest, state, trigger);
                     break;
 
-                case 203:   //  hanshi Kendo master dojo: obtain Oji waza + collect 10 ki
+                case 203:   //  hanshi Kendo master dojo: collect 10 ki
                     this.genericQuestHandler(quest, state, trigger, [
                         () => {this.gameScene.hero.PlayerStats.HasJumpAtack = true;},
                         () => { },
@@ -207,6 +207,7 @@ export class QuestManager {
                 break;
             case QuestState.Finished:
                 hud.setQuestMessage(quest.finishedMsg);
+                Global.snd.questItem();
                 if (quest.rewardExp) {
                     hero.PlayerStats.increaseStat(StatType.Exp, quest.rewardExp);
                     let pt = new PIXI.Point(hero.x, hero.y + 50);

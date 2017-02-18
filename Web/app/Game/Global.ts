@@ -57,10 +57,10 @@ export var QUEST_ITEM_STYLE: PIXI.ITextStyleStyle =
     {
         align: "center",
         padding: 0,
-        fontSize: "24px",
+        fontSize: "28px",
         fontFamily: "Calibri",
         fill: 0x84c2f2,
-        strokeThickness: 3,
+        strokeThickness: 4,
         stroke: 0x111121
     };
 export var WARN_STYLE: PIXI.ITextStyleStyle =
