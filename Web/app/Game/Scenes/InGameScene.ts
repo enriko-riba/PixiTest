@@ -368,8 +368,7 @@ export class InGameScene extends Scene {
         }
 
         this.removeEntity(body);
-        mob.OnComplete = () => this.worldContainer.removeChild(dispObj);
-        mob.Squish();
+        mob.Squish(() => this.worldContainer.removeChild(dispObj));
         Global.snd.mobSquish();
 
         //  add exp

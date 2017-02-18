@@ -73,9 +73,14 @@ export class Mob extends AnimatedSprite {
      */
     public AtkTexture: string | string[];
 
-    public Squish() {     
+    /**
+     * Kills the mob, plays squish animation and invokes the optional call back
+     * @param cb
+     */
+    public Squish(cb?: () => void) {     
         this.IsDead = true;   
         var aname = (this.direction == DirectionH.Left ? "lsquish" : "rsquish");
+        this.OnComplete = cb;
         this.PlayAnimation(aname, 12, false);
     }
 
