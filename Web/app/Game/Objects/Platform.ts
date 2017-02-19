@@ -78,23 +78,46 @@ export class Platform extends PIXI.Container {
         //--------------------------
         let xTiles = tilesX + 2;
         if (tilesY > 1) {
-            for (var x = 0; x < xTiles; x++) {
-                var name: string;
-                if (x === 0) {
-                    name = textureNameBtmLeft;
-                } else if (x === xTiles - 1) {
-                    name = textureNameBtmRight;
-                } else {
-                    name = textureNameBtmMid;
-                }
 
-                for (var y = 1; y < tilesY; y++) {                    
-                    texture = PIXI.loader.resources[name].texture;
-                    spr = new PIXI.Sprite(texture);
-                    spr.position.set(x * spr.width, y * spr.height);
-                    this.addChild(spr);
-                }
-            }
+            let h = texture.height * (tilesY-1);
+
+            //  left bot texture
+            texture = PIXI.Texture.fromImage(textureNameBtmLeft, false, PIXI.SCALE_MODES.LINEAR);
+            spr = new PIXI.extras.TilingSprite(texture, texture.width, h);
+            spr.position.set(0, texture.height);
+            this.addChild(spr);
+
+            //  mid bot texture
+            texture = PIXI.Texture.fromImage(textureNameBtmMid, false, PIXI.SCALE_MODES.NEAREST);
+            spr = new PIXI.extras.TilingSprite(texture, texture.width * tilesX, h);
+            spr.position.set(texture.width, texture.height);
+            this.addChild(spr);
+
+            //  right bot texture
+            texture = PIXI.Texture.fromImage(textureNameBtmRight, false, PIXI.SCALE_MODES.NEAREST);
+            spr = new PIXI.extras.TilingSprite(texture, texture.width, h);
+            spr.position.set(texture.width * (tilesX+1), texture.height);
+            this.addChild(spr);
+
+            //for (var x = 0; x < xTiles; x++) {
+            //    var name: string;
+            //    if (x === 0) {
+            //        name = textureNameBtmLeft;
+
+
+            //    } else if (x === xTiles - 1) {
+            //        name = textureNameBtmRight;
+            //    } else {
+            //        name = textureNameBtmMid;
+            //    }
+
+            //    for (var y = 1; y < tilesY; y++) {                    
+            //        texture = PIXI.loader.resources[name].texture;
+            //        spr = new PIXI.Sprite(texture);
+            //        spr.position.set(x * spr.width, y * spr.height);
+            //        this.addChild(spr);
+            //    }
+            //}
         }
     }
 }

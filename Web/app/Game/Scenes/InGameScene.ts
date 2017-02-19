@@ -153,8 +153,8 @@ export class InGameScene extends Scene {
         //-------------------------------------------
         //  update world container position
         //-------------------------------------------        
-        this.worldContainer.x = -this.hero.x + this.SCENE_HALF_WIDTH;
-        this.worldContainer.y = Global.SCENE_HEIGHT - 70;
+        this.worldContainer.x = (-this.hero.x + this.SCENE_HALF_WIDTH) | 0;
+        this.worldContainer.y = (Global.SCENE_HEIGHT - 70) | 0;
 
         //-------------------------------------------
         //  update parallax
