@@ -1138,14 +1138,44 @@
           {
             "template": "platform-desert",
             "xy": [ 2980, 250 ],
-            "tilesX": 2,
+            "tilesX": 4,
             "tilesY": 2
           },
           {
+            "template": "lava",
+            "texture": "assets/_distribute/lava-border-l.png",
+            "interactionType": 1000,
+            "xy": [ 3044, 190 ]
+          },
+          {
+            "template": "lava",
+            "interactionType": 1001,
+            "xy": [ 3108, 190 ]
+          },
+          {
+            "template": "lava",
+            "texture": "assets/_distribute/lava-border-r.png",
+            "interactionType": 1000,
+            "xy": [ 3172, 190 ]
+          },
+          {
             "template": "platform-desert",
-            "xy": [ 3340, 310 ],
+            "xy": [ 3468, 310 ],
             "tilesX": 1,
             "tilesY": 2
+          },
+          {
+            "template": "platform1-desert",
+            "xy": [ 3730, 255 ]
+          },
+          {
+            "template": "platform1-desert",
+            "xy": [ 3850, 230 ]
+          },
+          {
+            "template": "platform-desert",
+            "xy": [ 4000, 180 ],
+            "tilesX": 5
           },
           {
             "template": "kendo-master",
@@ -1158,7 +1188,7 @@
               "type": "collision",
               "questId": 202,
               "state": 3,
-              "desc":  "Finish quest 202 when near dojo"
+              "desc": "Finish quest 202 when near dojo"
             }
           },
           {
