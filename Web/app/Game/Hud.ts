@@ -140,13 +140,13 @@ export class Hud extends PIXI.Container {
         {
             let pnl = new PIXI.Sprite(PIXI.loader.resources["assets/_distribute/exp_panel.png"].texture);
             pnl.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.LINEAR;
-            pnl.position.set(5, Global.SCENE_HEIGHT - pnl.height - 2);
+            pnl.position.set(0, Global.SCENE_HEIGHT - pnl.height);
             this.addChild(pnl);
 
             this.expFiller = new PIXI.Sprite(PIXI.loader.resources["assets/_distribute/exp_fill.png"].texture);
-            this.expFiller.position.set(2, 2);
+            this.expFiller.position.set(3, 3);
             pnl.addChild(this.expFiller);
-            this.fillLen = pnl.width - 4;// 4 pixels for left/right border;
+            this.fillLen = pnl.width - 6; // 3 pixels for left/right border;
 
             this.txtExp = new PIXI.Text("100 / 1000", Global.TXT_SMALL_STYLE);
             this.txtExp.pivot.set(0.5); 
