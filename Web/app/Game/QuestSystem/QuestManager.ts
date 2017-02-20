@@ -57,7 +57,7 @@ export class QuestManager {
         }
 
         let TEN_SECONDS = 10000;
-        let nextAllowedTime = (trigger.lastActive || 0) + TEN_SECONDS;
+        let nextAllowedTime = (trigger.lastActive || -TEN_SECONDS) + TEN_SECONDS;
         return nextAllowedTime < performance.now();
     }
 

@@ -1053,7 +1053,8 @@
               "attack": "assets/_distribute/slime_atk.png",
               "fps": 4,
               "interactionType": 2002,
-              "attributes": [ 40, 5, 6000, 10 ]
+              "attributes": [ 40, 5, 6000, 10 ],
+              "tint":  "0xaa80ff"
             },
             "body": {
               "shape": "Circle",

@@ -106,6 +106,14 @@ export class InGameScene extends Scene {
     private currentLevel: ILevel;
     private questMngr: QuestManager;
 
+    private shakeGroundYFilter: PIXI.filters.BlurYFilter;
+    private shakeDuration: number = 0;
+    private shakeEnd: number = 0;
+    private nextShake: number = 0;
+    private magnitude: number = 0;
+    private shakeX: number;
+    private shakeY: number;
+
     /**
      *   Creates a new scene instance.
      */
@@ -141,7 +149,7 @@ export class InGameScene extends Scene {
             balloon.setFollowTarget(this.hero);
         }
     };
-
+    
     /**
      * Updates physics and handles player collisions.
      * @param dt elapsed time in milliseconds
@@ -150,11 +158,13 @@ export class InGameScene extends Scene {
         this.wp2.update(dt);
         this.hero.update(dt);
 
+        var now = performance.now();
+
         //-------------------------------------------
         //  update world container position
         //-------------------------------------------        
-        this.worldContainer.x = (-this.hero.x + this.SCENE_HALF_WIDTH) | 0;
-        this.worldContainer.y = (Global.SCENE_HEIGHT - 70) | 0;
+        this.worldContainer.x = (this.SCENE_HALF_WIDTH - this.hero.x);
+        this.worldContainer.y = (Global.SCENE_HEIGHT - 70);
 
         //-------------------------------------------
         //  update parallax
@@ -162,7 +172,6 @@ export class InGameScene extends Scene {
         for (var i = 0; i < this.parallaxBackgrounds.length; i++) {
             this.parallaxBackgrounds[i].SetViewPortX(this.hero.x);
         }
-
 
         //-------------------------------------------
         //  update entities position
@@ -212,7 +221,6 @@ export class InGameScene extends Scene {
             }
         };
 
-
         //-------------------------------------------
         //  Spawn points
         //-------------------------------------------
@@ -220,9 +228,8 @@ export class InGameScene extends Scene {
             this.currentLevel.spawnPoints[i].onUpdate(dt);
         }
 
-
         //-------------------------------------------
-        //  finally update the hud
+        //  update the hud
         //-------------------------------------------
         this.hud.heroPosition = this.hero.position;
         this.hud.onUpdate(dt);
@@ -239,8 +246,36 @@ export class InGameScene extends Scene {
             cutScene.SetBackGround(backGroundTexture, this.scale);
             cutScene.DeathScene = true;
             Global.sceneMngr.ActivateScene(cutScene);
+        } else if (this.shakeEnd >= now) {
+            if (this.nextShake <= now) {
+                //  original start position
+                let x = (this.SCENE_HALF_WIDTH - this.hero.x);
+                let y = (Global.SCENE_HEIGHT - 70);
+
+                this.shakeX = x + this.randomRange(-this.magnitude / 2, this.magnitude / 2);
+                this.shakeY = y + this.randomRange(-this.magnitude, this.magnitude);
+                //console.log("shake: " + this.shakeX + ", " + this.shakeY, this.magnitude, this.shakeEnd);
+
+                //  reduce for next shake
+                this.magnitude -= this.magnitude / this.SHAKE_COUNT;
+                this.nextShake = now + this.shakeDuration;
+            }
+
+            this.worldContainer.x = this.shakeX;
+            this.worldContainer.y = this.shakeY;
         }
     };
+    private SHAKE_COUNT = 15;
+    private randomRange(min: number, max: number) {
+        return min + (Math.random() * (max - min));
+    }
+
+    private startGroundShake(milliSeconds: number, magnitudeInPixels: number) {
+        this.shakeEnd = performance.now() + milliSeconds;
+        this.magnitude = magnitudeInPixels;
+        this.shakeDuration = milliSeconds / this.SHAKE_COUNT;
+    }
+
 
     public set IsHeroInteractive(value: boolean) {
         if (this.hero.IsInteractive !== value) {
@@ -837,12 +872,17 @@ export class InGameScene extends Scene {
             console.log("Vert velocity: " + verticalVelocity);
         }
 
-        if (verticalVelocity > ATTACK_VELOCITY && body.shapes[0].collisionGroup === WorldP2.COL_GRP_NPC) {
+        if (verticalVelocity > ATTACK_VELOCITY) {
             //  check collision vs mobs
-            console.log("Mob hit!");
+            //console.log("Mob hit!");
             var mob: Mob = (body as any).DisplayObject as Mob;
-            if (!mob.IsLoading) {
-                this.handleMobInteraction(mob, body);
+            if (mob instanceof Mob) {
+                if (!mob.IsLoading) {
+                    this.handleMobInteraction(mob, body);
+                }
+            }
+            if (this.hero.MovementState > MovementState.JumpUp){
+                this.startGroundShake(400, 6);
             }
         } else if (verticalVelocity > SMOKE_VELOCITY) {
             var smoke: AnimatedSprite = new AnimatedSprite();

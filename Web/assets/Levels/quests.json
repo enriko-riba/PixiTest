@@ -14,9 +14,9 @@
 
     {
       "id": 1,
-      "welcomeMsg": "Hello there,\nI will teach you the basics.\nFollow my instructions and you will be fine.",
+      "welcomeMsg": "Hello there,\nI will teach you the basics.\n\nFollow my instructions and\nyou will be fine.",
       "objectiveMsg": "",
-      "completedMsg": "OK lad,\nuse 'w' or space to jump. and 'a', 'd' or arrows to move!",
+      "completedMsg": "OK lad,\n\nuse 'w' or space to jump\nand 'a', 'd' to move!",
       "finishedMsg": "Now jump on that big box.",
       "rewardExp": 50,
       "rewardCoins": 0
@@ -25,7 +25,7 @@
       "id": 2,
       "welcomeMsg": "Now jump on that big box.",
       "objectiveMsg": "Jump on the big box.",
-      "completedMsg": "Excellent,\nTo run hold shift.\nIf running you can jump higher and longer!",
+      "completedMsg": "Excellent,\n\nTo run hold shift.\nIf running you can jump much\nhigher and longer!",
       "finishedMsg": "",
       "rewardExp": 50,
       "rewardCoins": 0
@@ -41,10 +41,10 @@
     },
     {
       "id": 201,
-      "welcomeMsg": "You shall not pass...unless you bring me\nknowledge of Kendo!",
-      "objectiveMsg": "Find the Kendo knowledge",
-      "completedMsg": "",
-      "finishedMsg": "What? Could it be...\nYou have the Kendo knowledge I need so much!\n\nYou must be the chosen one, proceed now!",
+      "welcomeMsg": "You shall not pass...unless you\nbring me knowledge of Kendo!",
+      "objectiveMsg": "Find the Kendo knowledge.",
+      "completedMsg": "Return to the white castle.",
+      "finishedMsg": "What? Could it be...\nI need so much this knowledge!\n\nYou must be the chosen one,\nproceed now!",
       "itemId": 201,
       "itemsNeeded": 1,
       "rewardExp": 100,
@@ -52,8 +52,8 @@
     },
     {
       "id": 202,
-      "welcomeMsg": "Find our Hanshi - the great Kendo master,\nhe will train you. His dojo is on the east.\n\n\nBeware of magic slimes!",
-      "objectiveMsg": "Find the Kendo master and his dojo on the east",
+      "welcomeMsg": "Find Hanshi - the great Kendo master,\nhe will train you.\nHis dojo is on the east.\n\n\nBeware of magic slimes!",
+      "objectiveMsg": "Find the Kendo master in his dojo on\n the east.",
       "completedMsg": "",
       "finishedMsg": "",
       "rewardExp": 100,
@@ -61,10 +61,10 @@
     },
     {
       "id": 203,
-      "welcomeMsg": "I expected you!\nFirst lesson: Fumikomi-ashi (jump attack).\nJump on the enemy and press 's' or down.\n\n\nLets practice Fumikomi-ashi,\ncollect 10 ki from magic slimes!",
-      "objectiveMsg": "Collect 10 Ki from magic slimes",
+      "welcomeMsg": "I expected you, we must hurry!\nYour first lesson will be:\nFumikomi-ashi (jump attack).\nJump on the enemy and press 's'.\n\n\nLets practice Fumikomi-ashi,\ncollect 10 ki from magic slimes!",
+      "objectiveMsg": "Collect 10 Ki from magic slimes.",
       "completedMsg": "Quest completed!\nHurry back to the dojo!",
-      "finishedMsg": "I saw little girls performing better Fumikomi-ashi.\nYou show no potential, but since you are the only\none around, lets practice some more.",
+      "finishedMsg": "I saw little girls performing better.\n\nYou show no potential...\nbut still, lets practice some more.",
       "itemId": 202,
       "itemsNeeded": 10,
       "rewardExp": 1000,

@@ -19,6 +19,7 @@ export class Hud extends PIXI.Container {
     private txtCoins: PIXI.Text;
     private txtDust: PIXI.Text;
     private txtHP: PIXI.Text;
+    private txtExp: PIXI.Text;
 
     private emitter: PIXI.particles.Emitter;
 
@@ -133,6 +134,23 @@ export class Hud extends PIXI.Container {
             this.addChild(spr);
         }
 
+        //  Exp
+        {
+            let pnl = new PIXI.Sprite(PIXI.loader.resources["assets/_distribute/exp_panel.png"].texture);
+            pnl.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.LINEAR;
+            pnl.position.set(5, Global.SCENE_HEIGHT - pnl.height - 2);
+            //pnl.scale.set(2, 1);
+            this.addChild(pnl);
+
+            this.txtExp = new PIXI.Text("100 / 1000", Global.TXT_SMALL_STYLE);
+            this.txtExp.pivot.set(0.5); 
+            this.txtExp.anchor.set(0, 1);            
+            this.txtExp.resolution = window.devicePixelRatio;
+            this.txtExp.position = new PIXI.Point(10, pnl.height);
+            pnl.addChild(this.txtExp);
+        }
+
+
         //  TODO: remove or make a hud for lvl, position
         this.txtLevel = new PIXI.Text("1", Global.TXT_STYLE);
         this.txtLevel.resolution = window.devicePixelRatio;
@@ -141,13 +159,13 @@ export class Hud extends PIXI.Container {
 
         //  callout for quest message
         this.questRect = new PIXI.Sprite(PIXI.Texture.fromImage("assets/_distribute/rect.png"));
-        this.questRect.position.set(Global.SCENE_WIDTH - this.questRect.width - 4, 40);
+        this.questRect.position.set(Global.SCENE_WIDTH - this.questRect.width - 4, Global.SCENE_HEIGHT - this.questRect.height - 4);
         this.questRect.name = "TriggerMessage";
         this.addChild(this.questRect);
 
         this.txtQuestMessage = new PIXI.Text("Hello world", Global.QUEST_STYLE);
         this.txtQuestMessage.resolution = window.devicePixelRatio;
-        this.txtQuestMessage.position.set(20, 20);
+        this.txtQuestMessage.position.set(25, 25);
         this.questRect.addChild(this.txtQuestMessage);
     }
 
@@ -167,6 +185,9 @@ export class Hud extends PIXI.Container {
                 break;
             case StatType.MaxHP:
                 this.txtHP.text = `${Math.round(event.Stats[StatType.HP])} / ${event.NewValue}`;
+                break;
+            case StatType.Exp:
+                this.txtExp.text = `${Math.round(event.NewValue)} / ${event.NewValue}`;
                 break;
         }
     };

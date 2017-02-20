@@ -126,7 +126,7 @@ export class CutScene extends Scene {
 
     private deathMessages: string[] = [
         "Life sucks and you just died!",
-        "You decided to check the afterlife.\nGuess what? You are dead!",
+        "You decided to check the\nafterlife. Guess what?\n\nYou are dead!",
         "Owned!\nMore luck next time.",
         "You have died!\nRest in peace.",
         "Your quest has failed.\nMay you find more peace\nin that world than\nyou found in this one.",

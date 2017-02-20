@@ -68,6 +68,13 @@ export class HeroCharacter extends AnimatedSprite {
     }
 
     /**
+     *  Returns the current movement state.
+     */
+    public get MovementState() {
+        return this.movementCtrl.MovementState;
+    }
+
+    /**
      * Sets the physics world instance.
      */
     public SetWorldP2(wp2: WorldP2) {

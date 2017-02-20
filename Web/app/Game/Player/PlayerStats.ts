@@ -41,6 +41,7 @@ export class PlayerStats {
 
     private hasJumpAttack: boolean = false;
     private hasMagicAttack: boolean = false;
+    private expTable: Array<number> = [];
 
     constructor() {
         this.stats[StatType.Coins] = 0;
@@ -49,6 +50,13 @@ export class PlayerStats {
         this.stats[StatType.MaxDust] = 0;
         this.stats[StatType.Dust] = 0;
         this.stats[StatType.Exp] = 0;
+
+
+        let diff = 1000;
+        this.expTable[0] = 0;
+        for (var i = 1; i < 10000; i++) {
+            this.expTable[i] = this.expTable[i-1] + (i*diff);
+        }
     }
 
     /**

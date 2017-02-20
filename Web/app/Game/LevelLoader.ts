@@ -432,6 +432,9 @@ export class LevelLoader {
         if (definition.drop) {
             dispObj.drop = definition.drop;
         }
+        if (definition.tint) {
+            (dispObj as any).tint = parseInt(definition.tint, 16);
+        }
         return dispObj;
     }
 
@@ -590,7 +593,7 @@ export interface IDisplayObjectDefinition {
     pivot?: number;
     anchor?: number;
     interactionType?: number;
-    tint?: number;
+    tint?: string;
     visible?: boolean;
     fps?: number;
     sequences?: IAnimationSequence[];

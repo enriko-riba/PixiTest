@@ -32,6 +32,17 @@ export var TXT_STYLE: PIXI.ITextStyleStyle =
         strokeThickness: 3,
         stroke: 0xcfbfbf
     };
+export var TXT_SMALL_STYLE: PIXI.ITextStyleStyle =
+    {
+        align: "center",
+        padding: 0,
+        fontSize: "10px",
+        fontFamily: "Calibri",
+        fill: 0x8585aa,
+        strokeThickness: 4,
+        stroke: 0x111111
+    };
+
 export var INFO_STYLE: PIXI.ITextStyleStyle =
     {
         align: "center",
@@ -79,11 +90,13 @@ export var QUEST_STYLE: PIXI.ITextStyleStyle =
         align: "left",
         padding: 0,
         fontSize: "21px",
-        fontFamily: "Futura",
-        fill: 0x79ff33,
-        strokeThickness: 3,
-        stroke: 0x021602,
-        dropShadow: false
+        fontFamily: "Calibri",
+        fill: 0x8a3333,
+        strokeThickness: 4,
+        stroke: 0xefefff,
+        dropShadow: true,
+        dropShadowDistance: 7,
+        dropShadowBlur:8
     };
 
 export var sceneMngr: SceneManager;
