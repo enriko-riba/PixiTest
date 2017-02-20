@@ -31,6 +31,7 @@
     <None Include="assets\Images\background\Mountains.png" />
     <Content Include="assets\Images\Effects\hit.png" />
     <Content Include="assets\Images\Effects\load.png" />
+    <Content Include="assets\Images\Gui\exp_fill.png" />
     <Content Include="assets\Images\Gui\exp_panel.png" />
     <Content Include="assets\Levels\quests.json" />
     <None Include="assets\Unused\trees01_dbg.png" />

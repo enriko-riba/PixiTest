@@ -3,7 +3,7 @@ import * as ko from "knockout";
 
 import { Button } from "app/_engine/Button";
 import { InGameScene, createParticleEmitter } from "./Scenes/InGameScene";
-import { STATCHANGE_TOPIC, IStatChangeEvent, StatType } from "./Player/PlayerStats";
+import { STATCHANGE_TOPIC, LEVELUP_TOPIC, IStatChangeEvent, StatType } from "./Player/PlayerStats";
 
 export class Hud extends PIXI.Container {
     constructor() {
@@ -20,6 +20,7 @@ export class Hud extends PIXI.Container {
     private txtDust: PIXI.Text;
     private txtHP: PIXI.Text;
     private txtExp: PIXI.Text;
+    private expFiller: PIXI.Sprite;
 
     private emitter: PIXI.particles.Emitter;
 
@@ -49,6 +50,7 @@ export class Hud extends PIXI.Container {
     private setup(): void {
 
         ko.postbox.subscribe<IStatChangeEvent>(STATCHANGE_TOPIC, this.handleStatChange);
+        ko.postbox.subscribe<IStatChangeEvent>(LEVELUP_TOPIC, this.handleLevelUp);
 
 
         var btnFullScreen = new Button("assets/_distribute/gui_fs_enter.png", Global.SCENE_WIDTH - 36, 4);
@@ -139,8 +141,12 @@ export class Hud extends PIXI.Container {
             let pnl = new PIXI.Sprite(PIXI.loader.resources["assets/_distribute/exp_panel.png"].texture);
             pnl.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.LINEAR;
             pnl.position.set(5, Global.SCENE_HEIGHT - pnl.height - 2);
-            //pnl.scale.set(2, 1);
             this.addChild(pnl);
+
+            this.expFiller = new PIXI.Sprite(PIXI.loader.resources["assets/_distribute/exp_fill.png"].texture);
+            this.expFiller.position.set(2, 2);
+            pnl.addChild(this.expFiller);
+            this.fillLen = pnl.width - 4;// 4 pixels for left/right border;
 
             this.txtExp = new PIXI.Text("100 / 1000", Global.TXT_SMALL_STYLE);
             this.txtExp.pivot.set(0.5); 
@@ -148,6 +154,7 @@ export class Hud extends PIXI.Container {
             this.txtExp.resolution = window.devicePixelRatio;
             this.txtExp.position = new PIXI.Point(10, pnl.height);
             pnl.addChild(this.txtExp);
+
         }
 
 
@@ -187,10 +194,22 @@ export class Hud extends PIXI.Container {
                 this.txtHP.text = `${Math.round(event.Stats[StatType.HP])} / ${event.NewValue}`;
                 break;
             case StatType.Exp:
-                this.txtExp.text = `${Math.round(event.NewValue)} / ${event.NewValue}`;
+                this.renderExp(event);
                 break;
         }
     };
+
+    private handleLevelUp = (event: IStatChangeEvent) => {
+        this.renderExp(event);
+        //  TODO: show level up GUI icon
+    };
+
+    private fillLen: number;
+    private renderExp(event: IStatChangeEvent) {
+        var pct = event.Stats[StatType.LevelExp] / event.Stats[StatType.MaxExp];
+        this.expFiller.width = (this.fillLen * pct)|0;
+        this.txtExp.text = `${Math.round(event.Stats[StatType.LevelExp])} / ${event.Stats[StatType.MaxExp]}`;
+    }
 
     /**
      * Displays the quest message in the quest rectangle.
