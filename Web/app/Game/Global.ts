@@ -92,7 +92,7 @@ export var QUEST_STYLE: PIXI.ITextStyleStyle =
     {
         align: "left",
         padding: 0,
-        fontSize: "24px",
+        fontSize: "26px",
         fontFamily: ff,
         fill: 0x8a3333,
         strokeThickness: 3,
