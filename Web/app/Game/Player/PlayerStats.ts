@@ -9,11 +9,14 @@ export enum StatType {
     Dust,
 
     Coins,
+    Gold,           //  not used
 
+    LevelExp,       // calculate value: current level exp, starts from 0 each level
+    LevelMaxExp,    // calculated value: current level exp needed to reach next level 
+    TotalExp,       // total exp  
 
-    MaxExp,   // calculated value: current level exp needed to reach next level 
-    LevelExp, // calculate value: current level exp, starts from 0 each level
-    Exp,      // total exp   
+    
+    CharacterLevel, // calculated value: current char level based on total experience
 }
 
 export enum DpsType {
@@ -33,7 +36,6 @@ export interface IDpsChangeEvent {
     Amount: number;
 }
 
-export var LEVELUP_TOPIC = "level_up";
 export var STATCHANGE_TOPIC = "stat_changed";
 export var DPS_TOPIC = "dps_changed";
 
@@ -48,10 +50,10 @@ export class PlayerStats {
 
     private hasJumpAttack: boolean = false;
     private hasMagicAttack: boolean = false;
-    private expLevel: number = 0;
+    private characterLevel: number = 0;
     private expForNextLevel: number = 0;
 
-    public static expTable: Array<number> = [];
+    public static expForLevel: Array<number> = [];
 
     constructor() {
         this.stats[StatType.Coins] = 0;
@@ -59,13 +61,13 @@ export class PlayerStats {
         this.stats[StatType.HP] = 0;
         this.stats[StatType.MaxDust] = 0;
         this.stats[StatType.Dust] = 0;
-        this.stats[StatType.Exp] = 0;
+        this.stats[StatType.TotalExp] = 0;
 
 
         let diff = 1000;
-        PlayerStats.expTable[0] = 0;
+        PlayerStats.expForLevel[0] = 0;
         for (var i = 1; i < 10000; i++) {
-            PlayerStats.expTable[i] = PlayerStats.expTable[i-1] + (i*diff);
+            PlayerStats.expForLevel[i] = PlayerStats.expForLevel[i - 1] + (i * diff);
         }
     }
 
@@ -74,8 +76,8 @@ export class PlayerStats {
      * @param exp
      */
     public static findExpLevel(exp: number) {
-        for (var i = 0, len = PlayerStats.expTable.length; i < len; i++) {
-            if (exp < PlayerStats.expTable[i]) {
+        for (var i = 0, len = PlayerStats.expForLevel.length; i < len; i++) {
+            if (exp < PlayerStats.expForLevel[i]) {
                 return i - 1;
             }
         }
@@ -91,7 +93,7 @@ export class PlayerStats {
         var now = performance.now() / 1000;
 
         //  accumulate dps
-        for (let i = 1000, len = this.buffs.length; i < len; i++){
+        for (let i = 1000, len = this.buffs.length; i < len; i++) {
             if (this.buffs[i] && this.buffs[i] > now) {
                 let dps = 0;
                 switch (i) {
@@ -128,7 +130,7 @@ export class PlayerStats {
                 let event = {
                     OldValue: this.stats[StatType.HP],
                     Amount: -amount
-                };               
+                };
                 ko.postbox.publish<IDpsChangeEvent>(DPS_TOPIC, event);
                 this.increaseStat(StatType.HP, -amount);
                 this.dpsDecreaseAmount -= amount;
@@ -146,47 +148,57 @@ export class PlayerStats {
 
     public setStat(type: StatType, value: number) {
         this.stats[type] = value;
-        if (type === StatType.Exp) {
-            this.expLevel = PlayerStats.findExpLevel(value);
-            this.stats[StatType.MaxExp] = PlayerStats.expTable[this.expLevel + 1] - PlayerStats.expTable[this.expLevel];
-            this.stats[StatType.LevelExp] = this.stats[StatType.Exp] - PlayerStats.expTable[this.expLevel];
-            this.expForNextLevel = PlayerStats.expTable[this.expLevel + 1];
-        } 
+        if (type === StatType.TotalExp) {
+            this.characterLevel = PlayerStats.findExpLevel(value);
+            this.stats[StatType.LevelMaxExp] = PlayerStats.expForLevel[this.characterLevel + 1] - PlayerStats.expForLevel[this.characterLevel];
+            this.stats[StatType.LevelExp] = this.stats[StatType.TotalExp] - PlayerStats.expForLevel[this.characterLevel];
+            this.expForNextLevel = PlayerStats.expForLevel[this.characterLevel + 1];
+        }
         this.updateEvent(type, value);
         ko.postbox.publish<IStatChangeEvent>(STATCHANGE_TOPIC, this.scevent);
     }
 
     public increaseStat(type: StatType, value: number, maxValue?: number) {
 
-        this.updateEvent(type, this.stats[type]);
-        this.stats[type] += value;
-
-        if (maxValue && this.stats[type] > maxValue) {
-            this.stats[type] = maxValue;
+        var newValue = this.stats[type] + value;
+        if (maxValue && newValue > maxValue) {
+            newValue = maxValue;
         }
-        if (this.stats[type] < 0) {
-            this.stats[type] = 0;
+        if (newValue < 0) {
+            newValue = 0;
         }
 
-        //  exp 
-        if (type === StatType.Exp) {
-            this.stats[StatType.LevelExp] = this.stats[StatType.Exp] - PlayerStats.expTable[this.expLevel];
-        }
-        ko.postbox.publish<IStatChangeEvent>(STATCHANGE_TOPIC, this.scevent);    
+        this.updateEvent(type, newValue);
+        this.stats[type] = newValue;
 
-        //  level up check  
-        if (type === StatType.Exp && this.stats[type] >= this.expForNextLevel) {
-            this.expLevel = PlayerStats.findExpLevel(this.stats[type]);
-            this.stats[StatType.MaxExp] = PlayerStats.expTable[this.expLevel + 1] - PlayerStats.expTable[this.expLevel];
-            this.stats[StatType.LevelExp] = this.stats[StatType.Exp] - PlayerStats.expTable[this.expLevel];
-            this.expForNextLevel = PlayerStats.expTable[this.expLevel + 1];
 
-            this.scevent.Type = type;
-            this.scevent.OldValue = this.expLevel-1;
-            this.scevent.NewValue = this.expLevel;
-            this.scevent.Stats = this.stats;
-            ko.postbox.publish<IStatChangeEvent>(LEVELUP_TOPIC, this.scevent);
-        }
+        //  special logic for experience
+        if (type === StatType.TotalExp) {
+            this.stats[StatType.LevelExp] = newValue - PlayerStats.expForLevel[this.characterLevel];
+
+            //  level up check
+            if (newValue >= this.expForNextLevel) {
+                this.characterLevel = PlayerStats.findExpLevel(newValue);
+                this.expForNextLevel = PlayerStats.expForLevel[this.characterLevel + 1];
+
+                this.stats[StatType.LevelMaxExp] = this.expForNextLevel - PlayerStats.expForLevel[this.characterLevel];
+                this.stats[StatType.LevelExp] = newValue - PlayerStats.expForLevel[this.characterLevel];
+
+                this.scevent.Type = StatType.CharacterLevel;
+                this.scevent.OldValue = this.characterLevel - 1;
+                this.scevent.NewValue = this.characterLevel;
+                this.scevent.Stats = this.stats;
+                ko.postbox.publish<IStatChangeEvent>(STATCHANGE_TOPIC, this.scevent);
+
+                //  fix regular stat change event (for exp)
+                this.scevent.Type = type;
+                this.scevent.OldValue = 0;
+                this.scevent.NewValue = this.stats[StatType.LevelExp];
+                this.scevent.Stats = this.stats;
+            } 
+        } 
+
+        ko.postbox.publish<IStatChangeEvent>(STATCHANGE_TOPIC, this.scevent);
     }
 
     public getStat(type: StatType): number {
@@ -197,6 +209,18 @@ export class PlayerStats {
      *   Stores timestamps (Unix timestamps in seconds with fractions) when the buff elapses.
      */
     public buffs: Array<number> = [];
+
+    /**
+     * Searches the exp level starting from the current exp level.
+     * @param exp
+     */
+    private findExpLevelInternal(exp: number) {
+        for (var i = this.characterLevel, len = PlayerStats.expForLevel.length; i < len; i++) {
+            if (exp < PlayerStats.expForLevel[i]) {
+                return i - 1;
+            }
+        }
+    }
 
     private scevent: IStatChangeEvent = {
         Type: StatType.Coins,

@@ -91,6 +91,8 @@ export class QuestManager {
                             hud.setQuestMessage(quest.completedMsg, 4000, () => {
                                 this.gameScene.IsHeroInteractive = true;
                                 this.setQuestState(trigger.questId, QuestState.Finished);
+                                this.giveRewards(quest);
+
                                 this.setQuestState(trigger.questId + 1, QuestState.InProgress);
                                 quest = this.findQuest(trigger.questId + 1);
                                 hud.setQuestMessage(quest.welcomeMsg, 4000);
@@ -100,19 +102,21 @@ export class QuestManager {
                     break;
 
                 case 2: //  intro - jump on box task
-                    if (this.getQuestState(1) === QuestState.Finished) {
+                    if (this.getQuestState(1) > QuestState.Finished) {
                         if (state === QuestState.InProgress) {
                             this.setQuestState(trigger.questId, QuestState.Completed);
                             this.gameScene.IsHeroInteractive = false;
                             hud.setQuestMessage(quest.completedMsg, 4000, () => {
                                 this.gameScene.IsHeroInteractive = true;
                                 this.setQuestState(trigger.questId, QuestState.Finished);
+                                this.giveRewards(quest);
+
                                 //  start quest 3
                                 quest = this.findQuest(trigger.questId + 1);
                                 this.setQuestState(trigger.questId + 1, QuestState.InProgress);
-                                //hud.setQuestMessage(quest.welcomeMsg, 4000);
+                                hud.setQuestMessage(quest.welcomeMsg);
                             });
-                        } else if (state == QuestState.Finished) {
+                        } else if (state >= QuestState.Finished) {
                             quest = this.findQuest(trigger.questId + 1);
                             hud.setQuestMessage(quest.welcomeMsg, 4000);
                         }
@@ -121,10 +125,12 @@ export class QuestManager {
 
                 case 3: //  intro - exit sign                                           
                     if (state === QuestState.InProgress) {
-                        this.saveUserState();
                         this.setQuestState(trigger.questId, QuestState.Finished);
+                        this.giveRewards(quest);
                         this.gameScene.IsHeroInteractive = false;
                         hud.setQuestMessage(quest.completedMsg);
+
+                        this.saveUserState(true);
 
                         Global.snd.win();
                         var balloon = this.gameScene.worldContainer.getChildByName("balloon");
@@ -150,14 +156,17 @@ export class QuestManager {
                             let item = this.gameScene.worldContainer.getChildByName("quest_item_201");
                             item.visible = true;
                             var lock: any = this.findBodyByName("lock");
-                            this.gameScene.worldContainer.removeChild(lock.DisplayObject);
-                            this.gameScene.removeEntity(lock);
+                            //this.gameScene.worldContainer.removeChild(lock.DisplayObject);
+                            this.gameScene.removeEntity(lock, true);
                         },
                         () => { },
                         () => {
-                            this.saveUserState();
                             this.setQuestState(trigger.questId, QuestState.Finished);
+                            this.giveRewards(quest);
                             this.gameScene.IsHeroInteractive = false;
+
+                            this.saveUserState(true);
+
                             Global.snd.win();
                             this.gameScene.hud.visible = false;
                             var cs = Global.sceneMngr.GetScene("CutScene") as CutScene;
@@ -175,7 +184,7 @@ export class QuestManager {
 
                 case 203:   //  hanshi Kendo master dojo: collect 10 ki
                     this.genericQuestHandler(quest, state, trigger, [
-                        () => {this.gameScene.hero.PlayerStats.HasJumpAtack = true;},
+                        () => { Global.stats.HasJumpAtack = true;},
                         () => { },
                         () => { },
                         () => { }
@@ -187,7 +196,6 @@ export class QuestManager {
 
     private genericQuestHandler(quest: Quest, state: QuestState, trigger: ITriggerDefinition, actions?: Array<() => void>) {
         var hud = this.gameScene.hud;
-        var hero = this.gameScene.hero;
 
         switch (state) {
             case QuestState.None:
@@ -207,23 +215,28 @@ export class QuestManager {
                 break;
             case QuestState.Finished:
                 hud.setQuestMessage(quest.finishedMsg);
-                Global.snd.questItem();
-                if (quest.rewardExp) {
-                    hero.PlayerStats.increaseStat(StatType.Exp, quest.rewardExp);
-                    let pt = new PIXI.Point(hero.x, hero.y + 50);
-                    this.gameScene.addInfoMessage(pt, `+${quest.rewardExp} exp`, Global.INFO2_STYLE);
-                }
-                if (quest.rewardCoins) {
-                    hero.PlayerStats.increaseStat(StatType.Exp, quest.rewardExp);
-                    let pt = new PIXI.Point(hero.x+ 50, hero.y + 100);
-                    this.gameScene.addInfoMessage(pt, `+${quest.rewardCoins} coins`);
-                }
-                this.setQuestState(quest.id, QuestState.Rewarded);
+                this.giveRewards(quest);
                 break;
         }
         if (actions && actions[state]) {
             actions[state]();
         }
+    }
+
+    private giveRewards(quest: Quest) {
+        var hero = this.gameScene.hero;
+        Global.snd.questItem();
+        if (quest.rewardExp) {
+            Global.stats.increaseStat(StatType.TotalExp, quest.rewardExp);
+            let pt = new PIXI.Point(hero.x, hero.y + 50);
+            this.gameScene.addInfoMessage(pt, `+${quest.rewardExp} exp`, Global.INFO2_STYLE);
+        }
+        if (quest.rewardCoins) {
+            Global.stats.increaseStat(StatType.Coins, quest.rewardCoins);
+            let pt = new PIXI.Point(hero.x + 50, hero.y + 100);
+            this.gameScene.addInfoMessage(pt, `+${quest.rewardCoins} coins`);
+        }
+        this.setQuestState(quest.id, QuestState.Rewarded);
     }
 
     private findQuest(questId: number): Quest {
@@ -236,8 +249,11 @@ export class QuestManager {
 
     private findQuestWithItem(itemId: number): Quest {
         var quests = Global.GameLevels.root.quests.filter((q: Quest) => {
-            let state = this.getQuestState(q.id);
-            return q.itemId === itemId && state < QuestState.Completed;
+            if (q.itemId === itemId) {
+                let state = this.getQuestState(q.id);
+                return state < QuestState.Completed && state > QuestState.None;
+            }            
+            return false;
         });
         if (quests.length > 0) {
             return quests[0];
@@ -275,12 +291,16 @@ export class QuestManager {
         return foundBody;
     }
 
-    private saveUserState() {
+    private saveUserState(isLevelCompleted: boolean) {
+        if (isLevelCompleted) {
+            Global.UserInfo.gamelevel += 1;
+        }
         let model = {
             ExternalId: Global.UserInfo.id,
-            Gold: this.gameScene.hero.PlayerStats.getStat(StatType.Coins),
-            Dust: Math.floor(this.gameScene.hero.PlayerStats.getStat(StatType.Dust)),
-            Exp: this.gameScene.hero.PlayerStats.getStat(StatType.Exp),
+            Coins: Global.stats.getStat(StatType.Coins),
+            Gold: Global.stats.getStat(StatType.Gold),
+            Dust: Math.floor(Global.stats.getStat(StatType.Dust)),
+            Exp: Global.stats.getStat(StatType.TotalExp),
             LastLevel: Global.UserInfo.gamelevel,
             // TODO: add sending attributes, skills, exp etc
         };

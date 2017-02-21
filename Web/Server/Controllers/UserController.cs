@@ -54,6 +54,7 @@
                     //  TODO: update user with new data
                     user.LastLevel = model.LastLevel;
                     user.Gold = model.Gold;
+                    user.Coins= model.Coins;
                     user.Dust = model.Dust;
                     user.Exp = model.Exp;
                     await docDb.SaveDocumentAsync("realm", user);
@@ -64,6 +65,30 @@
                     throw new System.ArgumentException("mode.ExternalId not found");
                 }
                 return Ok(user);
+            }
+            catch (System.Exception ex)
+            {
+                log.Error(ex);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Returns user game data.
+        /// </summary>
+        /// <param name="id"></param>
+        [Route("api/user/data")]
+        [HttpGet]
+        public async Task<User> GetUserData(string id)
+        {
+            User user = null;
+            try
+            {
+                // get user
+                var docDb = await docDbFactory.CreateDB("testDB");
+                var qry = docDb.CreateQuery<User>("realm").Where(u => u.ExternalId == id);
+                user = qry.AsEnumerable().FirstOrDefault();                
+                return user;
             }
             catch (System.Exception ex)
             {

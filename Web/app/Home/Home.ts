@@ -9,6 +9,7 @@ class HomeVM {
     private usr_Name = ko.observable<string>("");
     private usr_GameLevel = ko.observable<string>("");
     private usr_Gold = ko.observable<string>("");
+    private usr_Coins= ko.observable<string>("");
     private usr_Dust = ko.observable<string>("");
     private usr_Exp = ko.observable<string>("");
     private usr_MaxHP = ko.observable<string>("");
@@ -39,6 +40,7 @@ class HomeVM {
             console.log("connectUser() response", data);
 
             //  for game logic
+            Global.UserInfo.coins = data.Coins;
             Global.UserInfo.gold = data.Gold;
             Global.UserInfo.gamelevel = data.LastLevel;
             Global.UserInfo.dust = data.Dust;
@@ -48,6 +50,7 @@ class HomeVM {
             this.usr_Name(data.Name);
             this.usr_GameLevel(data.LastLevel);
             this.usr_Gold(data.Gold);
+            this.usr_Coins(data.Coins);
             this.usr_Dust(`${data.Dust}/1000`);
             this.usr_Exp(data.Exp);
             this.usr_MaxHP("120/150");

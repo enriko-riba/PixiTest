@@ -16,7 +16,7 @@ export interface IBurnEvent {
 
 export class HeroCharacter extends AnimatedSprite {
     private readonly HERO_FRAME_SIZE: number = 64;
-    private readonly playerStats = new PlayerStats();
+   
 
     private emitterPixies: PIXI.particles.Emitter;
     private emitterBuffs: PIXI.particles.Emitter;
@@ -96,25 +96,19 @@ export class HeroCharacter extends AnimatedSprite {
         this.movementCtrl.isInteractive = newValue;
     }
 
-    /**
-     * Returns the player statistics object.
-     */
-    public get PlayerStats(): PlayerStats {
-        return this.playerStats;
-    }
 
     /**
      * Returns if the player attributes allow running.
      */
     public get CanRun(): boolean {
-        return this.playerStats.getStat(StatType.Dust) > 1;
+        return Global.stats.getStat(StatType.Dust) > 1;
     }
 
     /**
      * Returns if the player learned jump attacks.
      */
     public get CanJumpAttack(): boolean {
-        return this.playerStats.HasJumpAtack;
+        return Global.stats.HasJumpAtack;
     }
     
 
@@ -163,7 +157,7 @@ export class HeroCharacter extends AnimatedSprite {
         //  check if running
         //--------------------------
         if (this.movementCtrl.IsRunning && this.movementCtrl.MovementState !== MovementState.Idle) {
-            this.playerStats.increaseStat(StatType.Dust, -dt * 0.005);   //  5/sec
+            Global.stats.increaseStat(StatType.Dust, -dt * 0.005);   //  5/sec
             let angle = 8;
             let degree = Math.PI * 2 * angle / 360;
             this.rotation = (this.movementCtrl.MovementState === MovementState.Left) ? degree : -degree;
@@ -176,7 +170,7 @@ export class HeroCharacter extends AnimatedSprite {
         //--------------------------
         let wasBurning = this._isBurning;
         let now = performance.now() / 1000;
-        this._isBurning = this.playerStats.buffs[1000] > now || this.playerStats.buffs[1001] > now;
+        this._isBurning = Global.stats.buffs[1000] > now || Global.stats.buffs[1001] > now;
         this.emitterBuffs.emit = this._isBurning;
         this.alpha = (this._isBurning) ? 0.7 : 1;
 
@@ -184,7 +178,7 @@ export class HeroCharacter extends AnimatedSprite {
             ko.postbox.publish<IBurnEvent>(BURN_TOPIC, {wasBurning: wasBurning, isBurning: this._isBurning});
         }
 
-        this.playerStats.onUpdate(dt);
+        Global.stats.onUpdate(dt);
     };
 
     private _isBurning: boolean = false;

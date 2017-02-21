@@ -1,6 +1,9 @@
-﻿import * as Global from "../Global";
+﻿declare var baseUrl: string;
+
+import * as Global from "../Global";
 import * as TWEEN from "tween";
 import * as ko from "knockout";
+import * as AjaxHelper from "app/Common/AjaxHelper";
 
 import { Scene } from "app/_engine/Scene";
 import { Parallax } from "app/_engine/Parallax";
@@ -144,7 +147,7 @@ export class InGameScene extends Scene {
         this.hud.visible = true;
 
         //  special setup logic for tutorial
-        if (Global.UserInfo.gamelevel === 1) {
+        if (Global.UserInfo.gamelevel === 0) {
             var balloon = this.worldContainer.getChildByName("balloon") as any;
             balloon.setFollowTarget(this.hero);
         }
@@ -237,7 +240,7 @@ export class InGameScene extends Scene {
         //-------------------------------------------
         //  check if player is dead
         //-------------------------------------------
-        if (this.hero.PlayerStats.getStat(StatType.HP) <= 0) {
+        if (Global.stats.getStat(StatType.HP) <= 0) {
             this.IsHeroInteractive = false;
             this.hero.visible = false;
 
@@ -291,14 +294,13 @@ export class InGameScene extends Scene {
      * Handles player collision with interactive objects.
      * @param body
      */
-    private handleInteractiveCollision(body: any): void {
-        var playerStats = this.hero.PlayerStats;
+    private handleInteractiveCollision(body: any): void {        
         var dispObj: PIXI.DisplayObject = body.DisplayObject as PIXI.DisplayObject;
 
 
         switch (dispObj.interactionType) {
             case 1: //  small coin
-                playerStats.increaseStat(StatType.Coins, 1);
+                Global.stats.increaseStat(StatType.Coins, 1);
                 this.addCollectibleTween(dispObj);
                 this.addInfoMessage(dispObj.position, "+1 coin");
                 this.removeEntity(body);
@@ -306,7 +308,7 @@ export class InGameScene extends Scene {
                 break;
 
             case 2: //  coin
-                playerStats.increaseStat(StatType.Coins, 10);
+                Global.stats.increaseStat(StatType.Coins, 10);
                 this.addCollectibleTween(dispObj);
                 this.addInfoMessage(dispObj.position, "+10 coins");
                 this.removeEntity(body);
@@ -314,7 +316,7 @@ export class InGameScene extends Scene {
                 break;
 
             case 3: //  blue gem
-                playerStats.increaseStat(StatType.Coins, 100);
+                Global.stats.increaseStat(StatType.Coins, 100);
                 this.addCollectibleTween(dispObj);
                 this.addInfoMessage(dispObj.position, "+100 coins");
                 this.removeEntity(body);
@@ -349,20 +351,20 @@ export class InGameScene extends Scene {
             case 1000:  //  border lava   
                 {
                     let now = performance.now() / 1000;
-                    if (!playerStats.buffs[1000] || playerStats.buffs[1000] < now) {
+                    if (!Global.stats.buffs[1000] || Global.stats.buffs[1000] < now) {
                         this.addInfoMessage(dispObj.position, "Burn", Global.WARN_STYLE);
                     }
-                    playerStats.buffs[1000] = this.secondsFromNow(1);
+                    Global.stats.buffs[1000] = this.secondsFromNow(1);
                 }
                 break;
 
             case 1001:  //  lava
                 {
                     let now = performance.now() / 1000;
-                    if (!playerStats.buffs[1001] || playerStats.buffs[1001] < now) {
+                    if (!Global.stats.buffs[1001] || Global.stats.buffs[1001] < now) {
                         this.addInfoMessage(dispObj.position, "Burn", Global.WARN_STYLE);
                     }
-                    playerStats.buffs[1001] = this.secondsFromNow(3);
+                    Global.stats.buffs[1001] = this.secondsFromNow(3);
                 }
                 break;
 
@@ -406,10 +408,9 @@ export class InGameScene extends Scene {
         mob.Squish(() => this.worldContainer.removeChild(dispObj));
         Global.snd.mobSquish();
 
-        //  add exp
-        var playerStats = this.hero.PlayerStats;
+        //  add exp       
         var exp = mob.Attributes[AtrType.HP] / 2;
-        playerStats.increaseStat(StatType.Exp, exp);
+        Global.stats.increaseStat(StatType.TotalExp, exp);
         this.addInfoMessage(mob.position, `+${exp} exp`, Global.INFO2_STYLE);
     }
 
@@ -626,7 +627,7 @@ export class InGameScene extends Scene {
 
         //-----------------------------
         //  setup hero
-        //-----------------------------      
+        //-----------------------------     
         this.hero = new HeroCharacter(this.worldContainer);
         this.hero.name = "hero";
 
@@ -647,7 +648,7 @@ export class InGameScene extends Scene {
         Global.sceneMngr.AddScene(new OptionsScene());
         Global.sceneMngr.AddScene(new CutScene());
 
-        this.resetPlayerStats();
+        //this.resetPlayerStats();
     };
 
     private handleDpsChange = (event: IDpsChangeEvent) => {
@@ -734,16 +735,36 @@ export class InGameScene extends Scene {
     /**
     * Assigns default player stats.
     */
-    public resetPlayerStats() {
-        var playerStats = this.hero.PlayerStats;
-        playerStats.setStat(StatType.Coins, Global.UserInfo.gold);
-        playerStats.setStat(StatType.Dust, Global.UserInfo.dust);
-        playerStats.setStat(StatType.Exp, Global.UserInfo.exp);
-        playerStats.setStat(StatType.MaxHP, 150);
-        playerStats.setStat(StatType.HP, 120);
-        playerStats.setStat(StatType.MaxDust, 1000);
+    public resetPlayerStats(): JQueryDeferred<boolean> {
+        var promise = $.Deferred();
 
-        this.questMngr.reset();
+        let model = { id: Global.UserInfo.id};
+        AjaxHelper.GetWithData(baseUrl + "/api/user/data", model, (data, status) => {
+            console.log("resetPlayerStats() response", data);
+
+            Global.UserInfo.coins = data.Coins;
+            Global.UserInfo.gold = data.Gold;
+            Global.UserInfo.gamelevel = data.LastLevel;
+            Global.UserInfo.dust = data.Dust;
+            Global.UserInfo.exp = data.Exp;
+
+            Global.stats.setStat(StatType.Coins, Global.UserInfo.coins);
+            Global.stats.setStat(StatType.Gold, Global.UserInfo.gold);
+
+            Global.stats.setStat(StatType.MaxDust, 1000);
+            Global.stats.setStat(StatType.Dust, Global.UserInfo.dust);
+
+            Global.stats.setStat(StatType.TotalExp, Global.UserInfo.exp);
+
+            Global.stats.setStat(StatType.MaxHP, 150);
+            Global.stats.setStat(StatType.HP, 120);
+
+            this.questMngr.reset();
+           
+            promise.resolve(true);
+        });
+
+        return promise;
     }
 
     /**
@@ -768,6 +789,8 @@ export class InGameScene extends Scene {
      * @param id
      */
     private loadLevel(lvl: ILevel) {
+        this.IsHeroInteractive = false;
+        this.hero.visible = false;
 
         //--------------------------------------
         //  remove all entities except hero
@@ -787,11 +810,9 @@ export class InGameScene extends Scene {
             //  now remove all other display objects except hero
             var all = this.worldContainer.children.filter((c: PIXI.DisplayObject) => c.name !== "hero");
             all.forEach((child: any) => {
-                this.worldContainer.removeChild(child);
-                if (child.body) {
-                    this.wp2.removeBody(child.body);
-                }
+                this.worldContainer.removeChild(child);                
             });
+            this.wp2.clearLevel();
             this.bullets = [];
         }
 
@@ -825,8 +846,12 @@ export class InGameScene extends Scene {
         this.wp2.playerBody.position[1] = lvl.start[1];
         Global.UserInfo.position.x = lvl.start[0];
         Global.UserInfo.position.y = lvl.start[1];
-        this.hero.visible = true;
-        this.resetPlayerStats();
+
+        this.resetPlayerStats().done(() => {
+            this.hero.visible = true;
+            this.IsHeroInteractive = true;
+            Global.sceneMngr.ActivateScene(this);
+        });
     }
 
     /**
@@ -911,7 +936,7 @@ export class InGameScene extends Scene {
             if (event.playerHit) {
                 Global.snd.hitMagic1();
                 this.addInfoMessage(this.hero.position, `${-bullet.damage} HP`);
-                this.hero.PlayerStats.increaseStat(StatType.HP, -bullet.damage);
+                Global.stats.increaseStat(StatType.HP, -bullet.damage);
             } else {
 
                 //  recycle explode animations

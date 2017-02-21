@@ -31,9 +31,7 @@ export class LoaderScene extends Scene {
         //------------------------------------------------------
         PIXI.loader.reset();
         PIXI.loader.add("assets/_distribute/loading.png")
-            .load(this.downloadDefinitions);
-
-       
+            .load(this.downloadDefinitions);       
     };
 
     /**
@@ -70,7 +68,7 @@ export class LoaderScene extends Scene {
     }
 
     private downloadNextLevel = (): void => {
-        Global.UserInfo.gamelevel += 1;
+        //Global.UserInfo.gamelevel += 1;
         console.log(`downloading level ${Global.UserInfo.gamelevel}...`);
         
         let assets: string[] = LevelLoader.GetLevelAssets(Global.GameLevels.root as any, Global.UserInfo.gamelevel);
@@ -96,6 +94,7 @@ export class LoaderScene extends Scene {
                 "assets/_distribute/stat_panel.png",
                 "assets/_distribute/exp_panel.png",
                 "assets/_distribute/exp_fill.png",
+                "assets/_distribute/exp_prefill.png",
 
                 "assets/_distribute/jump_smoke.png",
                 "assets/_distribute/bumper_rotor_01.png",
@@ -144,8 +143,8 @@ export class LoaderScene extends Scene {
         //  setTimeout is only to make the "100%" noticeable
         setTimeout(() => {
             this.removeChild(this.loadingMessage);            
-            inGame.IsHeroInteractive = true;            
-            Global.sceneMngr.ActivateScene("InGame");
+            //inGame.IsHeroInteractive = true;            
+            //Global.sceneMngr.ActivateScene("InGame");
         }, 500);
     };
 }

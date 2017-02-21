@@ -1,6 +1,7 @@
 ﻿import { SceneManager } from "app/_engine/SceneManager";
 import { SoundMan } from "app/Game/SoundMan";
 import { IRootObject } from "./LevelLoader";
+import { PlayerStats } from "./Player/PlayerStats";
 
 export var SCENE_WIDTH: number = 1366;
 export var SCENE_HEIGHT: number = 768;
@@ -36,11 +37,11 @@ export var TXT_SMALL_STYLE: PIXI.ITextStyleStyle =
     {
         align: "center",
         padding: 0,
-        fontSize: "10px",
+        fontSize: "13px",
         fontFamily: "Calibri",
-        fill: 0x8585aa,
+        fill: 0x111111,
         strokeThickness: 4,
-        stroke: 0x111111
+        stroke: 0xffffff
     };
 
 export var INFO_STYLE: PIXI.ITextStyleStyle =
@@ -101,6 +102,7 @@ export var QUEST_STYLE: PIXI.ITextStyleStyle =
 
 export var sceneMngr: SceneManager;
 export var snd: SoundMan;
+export var stats: PlayerStats = new PlayerStats(); 
 
 export var GameLevels: {
     root: IRootObject;
@@ -115,6 +117,7 @@ export var GameLevels: {
 export var UserInfo: {
     id: number;
     name: string;
+    coins: number;
     gold: number;
     dust: number;
     exp: number;
@@ -123,6 +126,7 @@ export var UserInfo: {
 } = {
         id: 0,
         name: "",
+        coins: 0,
         gold: 0,
         dust: 0,
         exp: 0,

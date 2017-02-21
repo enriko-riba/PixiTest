@@ -43,7 +43,7 @@ export class OptionsScene extends Scene {
         btnRestart.onClick = () => {
             //  repeat level (loader increases the level)
             this.resetSounds();
-            Global.UserInfo.gamelevel--;
+            //Global.UserInfo.gamelevel--;
             Global.sceneMngr.ActivateScene("Loader");
         };
 

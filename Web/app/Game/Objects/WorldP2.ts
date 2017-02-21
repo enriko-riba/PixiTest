@@ -85,6 +85,19 @@ export class WorldP2 {
     }
 
     /**
+     * Removes all bodies except the player body and ground plane.
+     */
+    public clearLevel() {
+        var bodies = this.world.bodies;
+        for (var i = bodies.length-1; i >=0; i--) {
+            let b = bodies[i];
+            if (b !== this.playerBody && b !== this.ground) {
+                this.world.removeBody(b);
+            }
+        }       
+    }
+
+    /**
      * Returns the world bodies.
      */
     public get bodies(): Array<p2.Body> {

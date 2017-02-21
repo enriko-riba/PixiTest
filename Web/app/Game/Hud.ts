@@ -3,7 +3,7 @@ import * as ko from "knockout";
 
 import { Button } from "app/_engine/Button";
 import { InGameScene, createParticleEmitter } from "./Scenes/InGameScene";
-import { STATCHANGE_TOPIC, LEVELUP_TOPIC, IStatChangeEvent, StatType } from "./Player/PlayerStats";
+import { STATCHANGE_TOPIC, IStatChangeEvent, StatType } from "./Player/PlayerStats";
 
 export class Hud extends PIXI.Container {
     constructor() {
@@ -20,6 +20,7 @@ export class Hud extends PIXI.Container {
     private txtDust: PIXI.Text;
     private txtHP: PIXI.Text;
     private txtExp: PIXI.Text;
+    private expPreFiller: PIXI.Sprite;
     private expFiller: PIXI.Sprite;
 
     private emitter: PIXI.particles.Emitter;
@@ -50,8 +51,6 @@ export class Hud extends PIXI.Container {
     private setup(): void {
 
         ko.postbox.subscribe<IStatChangeEvent>(STATCHANGE_TOPIC, this.handleStatChange);
-        ko.postbox.subscribe<IStatChangeEvent>(LEVELUP_TOPIC, this.handleLevelUp);
-
 
         var btnFullScreen = new Button("assets/_distribute/gui_fs_enter.png", Global.SCENE_WIDTH - 36, 4);
         this.addChild(btnFullScreen);
@@ -104,15 +103,15 @@ export class Hud extends PIXI.Container {
 
             this.txtDust = new PIXI.Text("0", Global.TXT_STYLE);
             this.txtDust.resolution = window.devicePixelRatio;
-            this.txtDust.position = new PIXI.Point(80, y+15);
+            this.txtDust.position = new PIXI.Point(80, y + 15);
             this.addChild(this.txtDust);
 
-            this.emitter = createParticleEmitter(pnl, [PIXI.Texture.fromImage("assets/_distribute/star.png")], { spawnCircle: { x:0, y: 0, r: 20 }});
+            this.emitter = createParticleEmitter(pnl, [PIXI.Texture.fromImage("assets/_distribute/star.png")], { spawnCircle: { x: 0, y: 0, r: 20 } });
             this.emitter.ownerPos.set(65, 90);
             this.emitter.startSpeed = 15;
             this.emitter.maxLifetime = 0.6;
             this.emitter.maxParticles = 50;
-            this.emitter.emit = true;           
+            this.emitter.emit = true;
         }
 
         //  coins
@@ -143,16 +142,23 @@ export class Hud extends PIXI.Container {
             pnl.position.set(0, Global.SCENE_HEIGHT - pnl.height);
             this.addChild(pnl);
 
+            //  pre filler rect
+            this.expPreFiller = new PIXI.Sprite(PIXI.loader.resources["assets/_distribute/exp_prefill.png"].texture);
+            this.expPreFiller.position.set(3, 3);
+            pnl.addChild(this.expPreFiller);
+
+            //  filler rect
             this.expFiller = new PIXI.Sprite(PIXI.loader.resources["assets/_distribute/exp_fill.png"].texture);
             this.expFiller.position.set(3, 3);
             pnl.addChild(this.expFiller);
             this.fillLen = pnl.width - 6; // 3 pixels for left/right border;
 
-            this.txtExp = new PIXI.Text("100 / 1000", Global.TXT_SMALL_STYLE);
-            this.txtExp.pivot.set(0.5); 
-            this.txtExp.anchor.set(0, 1);            
+
+            this.txtExp = new PIXI.Text("0 / 1000", Global.TXT_SMALL_STYLE);
+            this.txtExp.pivot.set(0.5);
+            this.txtExp.anchor.set(0.5);
             this.txtExp.resolution = window.devicePixelRatio;
-            this.txtExp.position = new PIXI.Point(10, pnl.height);
+            this.txtExp.position = new PIXI.Point(pnl.width / 2, pnl.height/2);
             pnl.addChild(this.txtExp);
 
         }
@@ -193,22 +199,50 @@ export class Hud extends PIXI.Container {
             case StatType.MaxHP:
                 this.txtHP.text = `${Math.round(event.Stats[StatType.HP])} / ${event.NewValue}`;
                 break;
-            case StatType.Exp:
+            case StatType.TotalExp:
                 this.renderExp(event);
+                break;
+            case StatType.CharacterLevel:
+                this.handleLevelUp(event);
                 break;
         }
     };
 
     private handleLevelUp = (event: IStatChangeEvent) => {
-        this.renderExp(event);
+        this.txtExp.text = `${Math.round(event.Stats[StatType.LevelExp])} / ${event.Stats[StatType.LevelMaxExp]}`;
+        this.expFiller.width = 1;
         //  TODO: show level up GUI icon
     };
 
     private fillLen: number;
     private renderExp(event: IStatChangeEvent) {
-        var pct = event.Stats[StatType.LevelExp] / event.Stats[StatType.MaxExp];
-        this.expFiller.width = (this.fillLen * pct)|0;
-        this.txtExp.text = `${Math.round(event.Stats[StatType.LevelExp])} / ${event.Stats[StatType.MaxExp]}`;
+        var pct = Math.min(event.Stats[StatType.LevelExp] / event.Stats[StatType.LevelMaxExp], 1.0);
+
+        //  special case during level up
+        if (pct === 0) {
+            this.expFiller.width = 1;
+            this.expPreFiller.position.x = 1 + this.expFiller.x;
+            return;
+        }
+
+        this.expPreFiller.position.x = this.expFiller.width + this.expFiller.x;
+        var targetWidth = (this.fillLen * pct) | 0;
+
+        var diff = targetWidth - this.expFiller.width;
+
+        //  tween pre-fill width
+        this.expPreFiller.width = 1;
+        var preFillTween = new TWEEN.Tween(this.expPreFiller)
+            .to({ width: diff }, 500)
+            .easing(TWEEN.Easing.Linear.None);
+
+        var fillTween = new TWEEN.Tween(this.expFiller)
+            .to({ width: targetWidth }, 600)
+            .easing(TWEEN.Easing.Bounce.Out);
+        preFillTween.chain(fillTween).start();
+
+        //this.expFiller.width = (this.fillLen * pct)|0;
+        this.txtExp.text = `${Math.round(event.Stats[StatType.LevelExp])} / ${event.Stats[StatType.LevelMaxExp]}`;
     }
 
     /**
@@ -216,7 +250,7 @@ export class Hud extends PIXI.Container {
      * @param msg
      * @param ttlMilis
      */
-    public setQuestMessage(msg: string, ttlMilis: number = 8000, onCompleteCB: ()=> void = null) {
+    public setQuestMessage(msg: string, ttlMilis: number = 8000, onCompleteCB: () => void = null) {
         this.txtQuestMessage.text = msg;
         this.questRect.visible = true;
         this.questMsgEndTime = performance.now() + ttlMilis;

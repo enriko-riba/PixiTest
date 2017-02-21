@@ -75,7 +75,6 @@ export class CutScene extends Scene {
             } else {
                 //  death msg & retry btn
                 this.deathScene = false;
-                Global.UserInfo.gamelevel--;
                 this.textMessage.text = this.deathMessages[0 | (Math.random() * this.deathMessages.length)];
                 this.callout.visible = true;
                 this.btnContinue.visible = true;
@@ -130,7 +129,7 @@ export class CutScene extends Scene {
         "Owned!\nMore luck next time.",
         "You have died!\nRest in peace.",
         "Your quest has failed.\nMay you find more peace\nin that world than\nyou found in this one.",
-        "Here's a picture of your corpse.\nNot pretty!",
+        "Here's a picture of\nyour corpse.\n\nNot pretty!",
         "Yep, you're dead.\nMaybe you should consider\nplaying a Barbie game!",
         "Died..."
     ];

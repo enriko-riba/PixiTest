@@ -145,25 +145,7 @@
       "body": {
         "shape": "Box"
       }
-    },
-    {
-      "name": "mob_short",
-      "displayObject": {
-        "typeName": "Mob",
-        "fps": 4
-      },
-      "body": {
-        "shape": "Circle",
-        "size": 11
-      },
-      "drop": {
-        "chance": 0.3,
-        "entity": {
-          "template": "coin",
-          "interactionType": 1
-        }
-      }
-    },
+    },    
     {
       "name": "mob_bird",
       "displayObject": {
@@ -233,7 +215,7 @@
   ],
   "levels": [
     {
-      "id": 1,
+      "id": 0,
       "name": "Intro",
       "audioTrack": 1,
       "parallax": [
@@ -374,7 +356,7 @@
       }
     },
     {
-      "id": 2,
+      "id": 1,
       "name": "Kendo",
       "audioTrack": 0,
       "parallax": [
@@ -867,7 +849,7 @@
       }
     },
     {
-      "id": 3,
+      "id": 2,
       "name": "KendoMaster",
       "audioTrack": 2,
       "parallax": [
@@ -927,64 +909,40 @@
         "start": [ 0, 24 ],
         "NPC": [
           {
-            "template": "mob_short",
+            "template": "slime",
             "name": "slime",
-            "interactionType": 2000,
-            "xy": [ 690, 10 ],
-            "texture": "assets/_distribute/mob_slime01.png",
-            "ai": "basic_static",
-            "attributes": [ 20, 15, 6000, 10 ],
-            "attack": "assets/_distribute/slime_atk.png"
+            "xy": [ 690, 10 ]
           },
           {
-            "template": "mob_short",
+            "template": "slime",
             "name": "slime",
-            "interactionType": 2000,
-            "xy": [ 820, 10 ],
-            "texture": "assets/_distribute/mob_slime01.png",
-            "ai": "basic_static",
-            "attributes": [ 20, 15, 6000, 10 ],
-            "attack": "assets/_distribute/slime_atk.png"
+            "xy": [ 820, 10 ]
           },
           {
-            "template": "mob_short",
+            "template": "slime",
             "name": "slime",
-            "interactionType": 2000,
-            "xy": [ 1800, 10 ],
-            "texture": "assets/_distribute/mob_slime01.png",
-            "ai": "basic_static",
-            "attributes": [ 20, 15, 4000, 10 ],
-            "attack": "assets/_distribute/slime_atk.png"
+            "xy": [ 1800, 10 ]
           },
           {
-            "template": "mob_short",
+            "template": "slime",
             "name": "slime",
-            "interactionType": 2001,
             "xy": [ 2700, 10 ],
-            "texture": "assets/_distribute/mob_slime01.png",
-            "ai": "basic_static",
-            "attributes": [ 20, 15, 4000, 10 ],
-            "attack": "assets/_distribute/slime_atk.png"
+            "interactionType": 2001,
+            "attributes": [ 70, 15, 4000, 10 ]
           },
           {
-            "template": "mob_short",
+            "template": "slime",
             "name": "slime",
-            "interactionType": 2001,
             "xy": [ 2790, 10 ],
-            "texture": "assets/_distribute/mob_slime01.png",
-            "ai": "basic_static",
-            "attributes": [ 20, 15, 2000, 10 ],
-            "attack": "assets/_distribute/slime_atk.png"
+            "interactionType": 2001,
+            "attributes": [ 70, 15, 2000, 10 ]
           },
           {
-            "template": "mob_short",
+            "template": "slime",
             "name": "slime",
-            "interactionType": 2001,
             "xy": [ 2990, 10 ],
-            "texture": "assets/_distribute/mob_slime01.png",
-            "ai": "basic_static",
-            "attributes": [ 20, 15, 2000, 10 ],
-            "attack": "assets/_distribute/slime_atk.png"
+            "interactionType": 2001,
+            "attributes": [ 70, 15, 2000, 10 ]
           },
           {
             "template": "mob_bird",
@@ -1025,6 +983,29 @@
             }
           },
           {
+            "name": "slime",
+            "displayObject": {
+              "typeName": "Mob",
+              "fps": 4,
+              "texture": "assets/_distribute/mob_slime01.png",
+              "attack": "assets/_distribute/slime_atk.png",
+              "interactionType": 2000,
+              "attributes": [ 60, 15, 6000, 10 ],
+              "ai": "basic_static"
+            },
+            "body": {
+              "shape": "Circle",
+              "size": 11
+            },
+            "drop": {
+              "chance": 0.3,
+              "entity": {
+                "template": "coin",
+                "interactionType": 1
+              }
+            }
+          },
+          {
             "name": "ki_item",
             "displayObject": {
               "typeName": "AnimatedSprite",
@@ -1033,11 +1014,11 @@
                 {
                   "name": "spin",
                   "texture": "assets/_distribute/ki.png",
-                  "frames": [ 0, 1, 2, 3],
+                  "frames": [ 0, 1, 2, 3 ],
                   "framesize": [ 64, 64 ]
                 }
               ],
-              "scale": [0.3, 0.3],
+              "scale": [ 0.3, 0.3 ],
               "interactionType": 202
             },
             "body": {
@@ -1054,7 +1035,7 @@
               "fps": 4,
               "interactionType": 2002,
               "attributes": [ 40, 5, 6000, 10 ],
-              "tint":  "0xaa80ff"
+              "tint": "0xaa80ff"
             },
             "body": {
               "shape": "Circle",

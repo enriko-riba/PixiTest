@@ -18,7 +18,7 @@
       "objectiveMsg": "",
       "completedMsg": "OK lad,\n\nuse 'w' or space to jump\nand 'a', 'd' to move!",
       "finishedMsg": "Now jump on that big box.",
-      "rewardExp": 50,
+      "rewardExp": 25,
       "rewardCoins": 0
     },
     {
@@ -47,7 +47,7 @@
       "finishedMsg": "What? Could it be...\nI need so much this knowledge!\n\nYou must be the chosen one,\nproceed now!",
       "itemId": 201,
       "itemsNeeded": 1,
-      "rewardExp": 100,
+      "rewardExp": 500,
       "rewardCoins": 100
     },
     {
@@ -56,8 +56,8 @@
       "objectiveMsg": "Find the Kendo master in his dojo on\n the east.",
       "completedMsg": "",
       "finishedMsg": "",
-      "rewardExp": 100,
-      "rewardCoins": 50
+      "rewardExp": 300,
+      "rewardCoins": 150
     },
     {
       "id": 203,
@@ -67,7 +67,7 @@
       "finishedMsg": "I saw little girls performing better.\n\nYou show no potential...\nbut still, lets practice some more.",
       "itemId": 202,
       "itemsNeeded": 10,
-      "rewardExp": 1000,
+      "rewardExp": 500,
       "rewardCoins": 500
     }
   ]

@@ -92,7 +92,9 @@ export class LevelLoader {
                     let entity: IMobEntity = tos as IMobEntity;
 
                     //  concat attack (string | string[])
-                    assets = assets.concat(entity.attack);
+                    if (entity.attack) {
+                        assets = assets.concat(entity.attack);
+                    }
 
                     var entityTemplate = templates.filter((item, idx, arr) => item.name === entity.template);
                     if (entityTemplate && entityTemplate.length > 0) {
@@ -108,6 +110,10 @@ export class LevelLoader {
                             }
                         }
 
+                        if (displayObjectDefinition.attack) {
+                            assets = assets.concat(displayObjectDefinition.attack);
+                        }
+                         
                         if (displayObjectDefinition.sequences) {
                             displayObjectDefinition.sequences.forEach((item) => {
                                 //  add only if texture exists
