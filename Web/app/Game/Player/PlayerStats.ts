@@ -190,7 +190,13 @@ export class PlayerStats {
                 this.scevent.Stats = this.stats;
                 ko.postbox.publish<IStatChangeEvent>(STATCHANGE_TOPIC, this.scevent);
 
-                //  fix regular stat change event (for exp)
+
+                // refill HP & dust
+                this.setStat(StatType.Dust, this.stats[StatType.MaxDust]);
+                this.setStat(StatType.HP, this.stats[StatType.MaxHP]);
+
+
+                //  prepare regular stat change event (for exp)
                 this.scevent.Type = type;
                 this.scevent.OldValue = 0;
                 this.scevent.NewValue = this.stats[StatType.LevelExp];

@@ -3,11 +3,13 @@ $title-color: #dbc646;
 $color: #b7afac;
 $data-color: #d9f3a2;
 
+@import url('https://fonts.googleapis.com/css?family=Farsan|Chewy');
+
 html, body {
     margin: 0;
     color: $color;
     background-color: $back-color;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-family: 'Farsan', Calibri, cursive;
 }
 
 .padded-page {
@@ -88,7 +90,8 @@ button {
     min-height: 50px;
     width: 264px;
     color: black;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-family: 'Chewy', Calibri, cursive;
+    font-size: 18px;
     background-color: $data-color;
 
     &:disabled {
