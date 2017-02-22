@@ -9,6 +9,16 @@ import * as Global from "../Global";
 export class OptionsScene extends Scene {
 
     private currentMusicTrack: number = 0; 
+    private TEXT_STYLE: PIXI.ITextStyleStyle =
+    {
+        align: "left",
+        padding: 0,
+        fontSize: "22px",
+        fontFamily: Global.fontFamily,
+        fill: 0xaaaa13,
+        strokeThickness: 3,
+        stroke: 0x0f0f2f,
+    };
 
     /**
      *   Creates a new scene instance.
@@ -41,9 +51,7 @@ export class OptionsScene extends Scene {
         this.addChild(btnRestart);
         btnRestart.Text = new PIXI.Text("Restart level", Global.BTN_STYLE);
         btnRestart.onClick = () => {
-            //  repeat level (loader increases the level)
             this.resetSounds();
-            //Global.UserInfo.gamelevel--;
             Global.sceneMngr.ActivateScene("Loader");
         };
 
@@ -75,7 +83,7 @@ export class OptionsScene extends Scene {
         var fxSlider = new Slider("assets/_distribute/slider1.png", 10, Global.BTN_WIDTH, (Global.BTN_HEIGHT * 1) + 1, 150, 30);
         this.addChild(fxSlider);
 
-        var fxTxt = new PIXI.Text("0", Global.QUEST_STYLE);
+        var fxTxt = new PIXI.Text("0", this.TEXT_STYLE);
         fxTxt.position.set(fxSlider.x + fxSlider.width + 20, fxSlider.y + 2);
         this.addChild(fxTxt);
 
@@ -109,7 +117,7 @@ export class OptionsScene extends Scene {
         var musicSlider = new Slider("assets/_distribute/slider1.png", 10, Global.BTN_WIDTH, Global.BTN_HEIGHT * 2 + 1, 150, 30);
         this.addChild(musicSlider);
 
-        var mTxt = new PIXI.Text("0", Global.QUEST_STYLE);
+        var mTxt = new PIXI.Text("0", this.TEXT_STYLE);
         mTxt.position.set(musicSlider.x + musicSlider.width + 20, musicSlider.y + 2);
         this.addChild(mTxt);
 

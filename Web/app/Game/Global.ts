@@ -10,7 +10,7 @@ export var BTN_HEIGHT: number = 40;
 
 export var BACK_COLOR = 0x3a1010;//0x3a1818;
 
-let ff = "Farsan";
+export var fontFamily = "Farsan";
 
 export var BTN_STYLE: PIXI.ITextStyleStyle =
     {
@@ -20,7 +20,7 @@ export var BTN_STYLE: PIXI.ITextStyleStyle =
         dropShadowColor: 0x102010,
         dropShadowDistance: 5,
         fontSize: "42px",
-        fontFamily: ff,
+        fontFamily: "Chewy",
         fill: 0xf0f0f0,
         strokeThickness: 1,
         stroke: 0xCC5010
@@ -30,7 +30,7 @@ export var TXT_STYLE: PIXI.ITextStyleStyle =
         align: "center",
         padding: 0,
         fontSize: "26px",
-        fontFamily: ff,
+        fontFamily: fontFamily,
         fill: 0x905b15,
         strokeThickness: 3,
         stroke: 0xcfbfbf
@@ -40,7 +40,7 @@ export var TXT_SMALL_STYLE: PIXI.ITextStyleStyle =
         align: "center",
         padding: 0,
         fontSize: "13px",
-        fontFamily: ff,
+        fontFamily: fontFamily,
         fill: 0x111111,
         strokeThickness: 4,
         stroke: 0xffffff
@@ -51,7 +51,7 @@ export var INFO_STYLE: PIXI.ITextStyleStyle =
         align: "center",
         padding: 0,
         fontSize: "25px",
-        fontFamily: ff,
+        fontFamily: fontFamily,
         fill: 0x905b15,
         strokeThickness: 3,
         stroke: 0x111111
@@ -61,7 +61,7 @@ export var INFO2_STYLE: PIXI.ITextStyleStyle =
         align: "center",
         padding: 0,
         fontSize: "24px",
-        fontFamily: ff,
+        fontFamily: fontFamily,
         fill: 0x84c202,
         strokeThickness: 3,
         stroke: 0x112111
@@ -72,7 +72,7 @@ export var QUEST_ITEM_STYLE: PIXI.ITextStyleStyle =
         align: "center",
         padding: 0,
         fontSize: "28px",
-        fontFamily: ff,
+        fontFamily: fontFamily,
         fill: 0x84c2f2,
         strokeThickness: 4,
         stroke: 0x111121
@@ -82,7 +82,7 @@ export var WARN_STYLE: PIXI.ITextStyleStyle =
         align: "center",
         padding: 0,
         fontSize: "27px",
-        fontFamily: ff,
+        fontFamily: fontFamily,
         fill: 0xff0011,
         strokeThickness: 4,
         stroke: 0x222222
@@ -93,13 +93,13 @@ export var QUEST_STYLE: PIXI.ITextStyleStyle =
         align: "left",
         padding: 0,
         fontSize: "26px",
-        fontFamily: ff,
-        fill: 0x8a3333,
+        fontFamily: fontFamily,
+        fill: 0x8a8313,
         strokeThickness: 3,
-        stroke: 0xefefff,
+        stroke: 0x0f0faf,
         dropShadow: true,
-        dropShadowDistance: 7,
-        dropShadowBlur:8
+        dropShadowDistance: 6,
+        dropShadowBlur:7
     };
 
 export var sceneMngr: SceneManager;
