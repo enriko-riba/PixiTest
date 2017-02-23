@@ -8,7 +8,7 @@ export var SCENE_HEIGHT: number = 768;
 export var BTN_WIDTH: number = 90;
 export var BTN_HEIGHT: number = 40;
 
-export var BACK_COLOR = 0x3a1010;//0x3a1818;
+export var BACK_COLOR = 0x3a1010;
 
 export var fontFamily = "Farsan";
 
