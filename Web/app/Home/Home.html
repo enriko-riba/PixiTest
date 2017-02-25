@@ -43,6 +43,10 @@
             <label for="atr_exp">Exp</label>
             <input id="atr_exp" data-bind="value: usr_Exp" disabled />
         </div>
+        <div>
+            <label for="atr_atr">Attr. pts</label>
+            <input id="atr_atr" data-bind="value: usr_AtrPts" disabled />
+        </div>
     </div>
     <div class="commands" >
         <button data-bind="click: startGame, enable: isStartEnabled"><span data-bind="text: isStartEnabled() ? 'Start Game': 'Please wait...'"></span></button>

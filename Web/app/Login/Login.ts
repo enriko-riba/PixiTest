@@ -27,7 +27,7 @@ class LoginVM {
          */
         FB.getLoginStatus((response) => {
             if (response.status === 'connected') {
-                Global.UserInfo.id = response.authResponse.userID;
+                Global.stats.id = response.authResponse.userID;
                 this.getUserData();
             } else {
                 FB.login(this.checkLoginResponse);
@@ -43,14 +43,14 @@ class LoginVM {
     private checkLoginResponse = (response) => {
         //FB.Event.unsubscribe('auth.login', this.checkLoginResponse);
         if (response.status === 'connected') {
-            Global.UserInfo.id = response.authResponse.userID;
+            Global.stats.id = response.authResponse.userID;
             this.getUserData();
         }        
     }
 
     private getUserData = () => {
         FB.api('/me', (response: any) => {
-            Global.UserInfo.name = response.name;
+            Global.stats.name = response.name;
             (window as any).location = window.location.origin + "#home";
         });
     }

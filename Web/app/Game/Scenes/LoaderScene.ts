@@ -69,9 +69,9 @@ export class LoaderScene extends Scene {
 
     private downloadNextLevel = (): void => {
         //Global.UserInfo.gamelevel += 1;
-        console.log(`downloading level ${Global.UserInfo.gamelevel}...`);
+        console.log(`downloading level ${Global.stats.gameLevel}...`);
         
-        let assets: string[] = LevelLoader.GetLevelAssets(Global.GameLevels.root as any, Global.UserInfo.gamelevel);
+        let assets: string[] = LevelLoader.GetLevelAssets(Global.GameLevels.root as any, Global.stats.gameLevel);
 
         //  add assets not in level description
         assets = assets.concat(
@@ -138,13 +138,11 @@ export class LoaderScene extends Scene {
             inGame = new InGameScene();
             Global.sceneMngr.AddScene(inGame);
         }
-        inGame.StartLevel(Global.UserInfo.gamelevel);       
+        inGame.StartLevel(Global.stats.gameLevel);       
 
         //  setTimeout is only to make the "100%" noticeable
         setTimeout(() => {
-            this.removeChild(this.loadingMessage);            
-            //inGame.IsHeroInteractive = true;            
-            //Global.sceneMngr.ActivateScene("InGame");
+            this.removeChild(this.loadingMessage);
         }, 500);
     };
 }

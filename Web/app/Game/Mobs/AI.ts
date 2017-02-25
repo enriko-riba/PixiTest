@@ -35,14 +35,14 @@ export class AI {
     }
 
     private calcDistance() {
-        let dx = Global.UserInfo.position.x - this.mobEntity.x;
-        let dy = Global.UserInfo.position.y - this.mobEntity.y;
+        let dx = Global.stats.position.x - this.mobEntity.x;
+        let dy = Global.stats.position.y - this.mobEntity.y;
         this.targetDistance = Math.sqrt(dx * dx + dy * dy);
     }
 
     private turnTowardsTarget() {
         //  negative left, positive right
-        let dir = Global.UserInfo.position.x - this.mobEntity.x;
+        let dir = Global.stats.position.x - this.mobEntity.x;
 
         if (dir < 0 && this.mobEntity.Direction != DirectionH.Left) {
             this.mobEntity.Direction = DirectionH.Left;

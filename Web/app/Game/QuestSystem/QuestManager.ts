@@ -1,5 +1,4 @@
 ﻿import * as Global from "../Global";
-import * as AjaxHelper from "app/Common/AjaxHelper";
 import { QuestState } from "./QuestState";
 import { Quest } from "./Quest";
 import { WorldP2 } from "../Objects/WorldP2";
@@ -8,8 +7,8 @@ import { InGameScene } from "../Scenes/InGameScene";
 import { CutScene } from "../Scenes/CutScene";
 import { HeroCharacter } from "../Player/HeroCharacter";
 import { StatType } from "../Player/PlayerStats";
+import { Hud } from "../Hud";
 
-declare var baseUrl: string;
 
 /**
  * Contains quest related logic, checks and helpers.
@@ -17,8 +16,10 @@ declare var baseUrl: string;
 export class QuestManager {
     private questState: Array<QuestState> = [];
     private previousQuestMessage: PIXI.Sprite;
+    private hud: Hud;
 
     constructor(private gameScene: InGameScene) {
+        this.hud = this.gameScene.HudOverlay as Hud;
     }
 
     /**
@@ -37,11 +38,11 @@ export class QuestManager {
         let quest = this.findQuestWithItem(itemId);
         if (quest) {
             quest.itemsCollected++;
-            this.gameScene.addQuestItemMessage(`collected ${quest.itemsCollected} / ${quest.itemsNeeded}`);
+            this.hud.addQuestItemMessage(`collected ${quest.itemsCollected} / ${quest.itemsNeeded}`);
             if (quest.itemsCollected >= quest.itemsNeeded) {
                 this.setQuestState(quest.id, QuestState.Completed);
                 if (quest.completedMsg) {
-                    this.gameScene.hud.setQuestMessage(quest.completedMsg);
+                    this.hud.setQuestMessage(quest.completedMsg);
                 }
             }
         }
@@ -77,7 +78,6 @@ export class QuestManager {
         if (this.canActivateTrigger(trigger)) {
             trigger.lastActive = performance.now();
 
-            var hud = this.gameScene.hud;
             let quest: Quest = this.findQuest(trigger.questId);
 
             switch (trigger.questId) {
@@ -87,15 +87,15 @@ export class QuestManager {
                         this.setQuestState(trigger.questId, QuestState.Completed);
                         this.gameScene.IsHeroInteractive = false;
 
-                        hud.setQuestMessage(quest.welcomeMsg, 4000, () => {
-                            hud.setQuestMessage(quest.completedMsg, 4000, () => {
+                        this.hud.setQuestMessage(quest.welcomeMsg, 4000, () => {
+                            this.hud.setQuestMessage(quest.completedMsg, 4000, () => {
                                 this.gameScene.IsHeroInteractive = true;
                                 this.setQuestState(trigger.questId, QuestState.Finished);
                                 this.giveRewards(quest);
 
                                 this.setQuestState(trigger.questId + 1, QuestState.InProgress);
                                 quest = this.findQuest(trigger.questId + 1);
-                                hud.setQuestMessage(quest.welcomeMsg, 4000);
+                                this.hud.setQuestMessage(quest.welcomeMsg, 4000);
                             });
                         });
                     }
@@ -106,7 +106,7 @@ export class QuestManager {
                         if (state === QuestState.InProgress) {
                             this.setQuestState(trigger.questId, QuestState.Completed);
                             this.gameScene.IsHeroInteractive = false;
-                            hud.setQuestMessage(quest.completedMsg, 4000, () => {
+                            this.hud.setQuestMessage(quest.completedMsg, 4000, () => {
                                 this.gameScene.IsHeroInteractive = true;
                                 this.setQuestState(trigger.questId, QuestState.Finished);
                                 this.giveRewards(quest);
@@ -114,11 +114,11 @@ export class QuestManager {
                                 //  start quest 3
                                 quest = this.findQuest(trigger.questId + 1);
                                 this.setQuestState(trigger.questId + 1, QuestState.InProgress);
-                                hud.setQuestMessage(quest.welcomeMsg);
+                                this.hud.setQuestMessage(quest.welcomeMsg);
                             });
                         } else if (state >= QuestState.Finished) {
                             quest = this.findQuest(trigger.questId + 1);
-                            hud.setQuestMessage(quest.welcomeMsg, 4000);
+                            this.hud.setQuestMessage(quest.welcomeMsg, 4000);
                         }
                     }
                     break;
@@ -128,9 +128,9 @@ export class QuestManager {
                         this.setQuestState(trigger.questId, QuestState.Finished);
                         this.giveRewards(quest);
                         this.gameScene.IsHeroInteractive = false;
-                        hud.setQuestMessage(quest.completedMsg);
+                        this.hud.setQuestMessage(quest.completedMsg);
 
-                        this.saveUserState(true);
+                        Global.stats.saveUserState(true);
 
                         Global.snd.win();
                         var balloon = this.gameScene.worldContainer.getChildByName("balloon");
@@ -138,7 +138,7 @@ export class QuestManager {
                         var anim1 = new TWEEN.Tween(balloon)
                             .to({ x: dispObj.position.x }, 3000)
                             .onComplete(() => {
-                                this.gameScene.hud.visible = false;
+                                this.hud.visible = false;
                                 var cs = Global.sceneMngr.GetScene("CutScene") as CutScene;
                                 cs.SetText(quest.finishedMsg, Global.QUEST_STYLE);
                                 var rt = Global.sceneMngr.CaptureScene();
@@ -165,10 +165,10 @@ export class QuestManager {
                             this.giveRewards(quest);
                             this.gameScene.IsHeroInteractive = false;
 
-                            this.saveUserState(true);
+                            Global.stats.saveUserState(true);
 
                             Global.snd.win();
-                            this.gameScene.hud.visible = false;
+                            this.hud.visible = false;
                             var cs = Global.sceneMngr.GetScene("CutScene") as CutScene;
                             cs.SetText(quest.finishedMsg, Global.QUEST_STYLE);
                             var rt = Global.sceneMngr.CaptureScene();
@@ -195,26 +195,25 @@ export class QuestManager {
     }
 
     private genericQuestHandler(quest: Quest, state: QuestState, trigger: ITriggerDefinition, actions?: Array<() => void>) {
-        var hud = this.gameScene.hud;
 
         switch (state) {
             case QuestState.None:
                 this.setQuestState(quest.id, QuestState.InProgress);
-                hud.setQuestMessage(quest.welcomeMsg);
+                this.hud.setQuestMessage(quest.welcomeMsg);
                 break;
             case QuestState.InProgress:
-                hud.setQuestMessage(quest.objectiveMsg);
+                this.hud.setQuestMessage(quest.objectiveMsg);
                 break;
             case QuestState.Completed:
                 if (quest.itemId && quest.itemsCollected >= quest.itemsNeeded) { //  if the acquireItem has set quest to completed move to next stated
                     this.setQuestState(quest.id, QuestState.Finished);
                     trigger.lastActive = 0;
                 } else { 
-                    hud.setQuestMessage(quest.completedMsg);
+                    this.hud.setQuestMessage(quest.completedMsg);
                 }
                 break;
             case QuestState.Finished:
-                hud.setQuestMessage(quest.finishedMsg);
+                this.hud.setQuestMessage(quest.finishedMsg);
                 this.giveRewards(quest);
                 break;
         }
@@ -229,12 +228,12 @@ export class QuestManager {
         if (quest.rewardExp) {
             Global.stats.increaseStat(StatType.TotalExp, quest.rewardExp);
             let pt = new PIXI.Point(hero.x, hero.y + 50);
-            this.gameScene.addInfoMessage(pt, `+${quest.rewardExp} exp`, Global.INFO2_STYLE);
+            this.hud.addInfoMessage(pt, `+${quest.rewardExp} exp`, Global.MSG_EXP_STYLE);
         }
         if (quest.rewardCoins) {
             Global.stats.increaseStat(StatType.Coins, quest.rewardCoins);
             let pt = new PIXI.Point(hero.x + 50, hero.y + 100);
-            this.gameScene.addInfoMessage(pt, `+${quest.rewardCoins} coins`);
+            this.hud.addInfoMessage(pt, `+${quest.rewardCoins} coins`);
         }
         this.setQuestState(quest.id, QuestState.Rewarded);
     }
@@ -289,24 +288,6 @@ export class QuestManager {
             }
         });
         return foundBody;
-    }
-
-    private saveUserState(isLevelCompleted: boolean) {
-        if (isLevelCompleted) {
-            Global.UserInfo.gamelevel += 1;
-        }
-        let model = {
-            ExternalId: Global.UserInfo.id,
-            Coins: Global.stats.getStat(StatType.Coins),
-            Gold: Global.stats.getStat(StatType.Gold),
-            Dust: Math.floor(Global.stats.getStat(StatType.Dust)),
-            Exp: Global.stats.getStat(StatType.TotalExp),
-            LastLevel: Global.UserInfo.gamelevel,
-            // TODO: add sending attributes, skills, exp etc
-        };
-        AjaxHelper.Post(baseUrl + "/api/user/save", model, (data, status) => {
-            console.log("connectUser() response", data);
-        });
     }
 }
 

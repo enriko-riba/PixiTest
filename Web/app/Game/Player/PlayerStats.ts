@@ -1,5 +1,10 @@
 ﻿import * as ko from "knockout";
+import * as AjaxHelper from "app/Common/AjaxHelper";
+
 import { Dictionary } from "app/_engine/Dictionary";
+
+declare var baseUrl: string;
+
 
 export enum StatType {
     MaxHP,
@@ -15,7 +20,8 @@ export enum StatType {
     LevelMaxExp,    // calculated value: current level exp needed to reach next level 
     TotalExp,       // total exp  
 
-    
+    AttributePoints,
+
     CharacterLevel, // calculated value: current char level based on total experience
 }
 
@@ -45,23 +51,35 @@ export class PlayerStats {
     private accumulator: number = 0.0;
     private dpsDecreaseAmount: number = 0;
 
-    private atr_points: number = 0;
     private attributes: Array<number> = [];
 
+    //  acquired skills
     private hasJumpAttack: boolean = false;
     private hasMagicAttack: boolean = false;
-    private characterLevel: number = 0;
+
+    //  achievement levels
+    public characterLevel: number = 0;
+    public gameLevel: number = 0;
     private expForNextLevel: number = 0;
 
-    public static expForLevel: Array<number> = [];
+    //  user related
+    public id: number;
+    public name: string;
+    public position: PIXI.Point;
+
+
+    private static expForLevel: Array<number> = [];
 
     constructor() {
+        this.id = 0;
+        this.position = new PIXI.Point();
         this.stats[StatType.Coins] = 0;
         this.stats[StatType.MaxHP] = 0;
         this.stats[StatType.HP] = 0;
         this.stats[StatType.MaxDust] = 0;
         this.stats[StatType.Dust] = 0;
         this.stats[StatType.TotalExp] = 0;
+        this.stats[StatType.AttributePoints] = 0;
 
 
         let diff = 1000;
@@ -184,23 +202,33 @@ export class PlayerStats {
                 this.stats[StatType.LevelMaxExp] = this.expForNextLevel - PlayerStats.expForLevel[this.characterLevel];
                 this.stats[StatType.LevelExp] = newValue - PlayerStats.expForLevel[this.characterLevel];
 
+                //  lvl up event
                 this.scevent.Type = StatType.CharacterLevel;
                 this.scevent.OldValue = this.characterLevel - 1;
                 this.scevent.NewValue = this.characterLevel;
                 this.scevent.Stats = this.stats;
                 ko.postbox.publish<IStatChangeEvent>(STATCHANGE_TOPIC, this.scevent);
-
+                
+                //  atr change event
+                newValue = this.getStat(StatType.AttributePoints) + 5;
+                this.scevent.Type = StatType.AttributePoints;
+                this.scevent.OldValue = this.getStat(StatType.AttributePoints);
+                this.scevent.NewValue = newValue;
+                this.setStat(StatType.AttributePoints, newValue);
+                this.scevent.Stats = this.stats;
+                ko.postbox.publish<IStatChangeEvent>(STATCHANGE_TOPIC, this.scevent);
 
                 // refill HP & dust
                 this.setStat(StatType.Dust, this.stats[StatType.MaxDust]);
                 this.setStat(StatType.HP, this.stats[StatType.MaxHP]);
-
 
                 //  prepare regular stat change event (for exp)
                 this.scevent.Type = type;
                 this.scevent.OldValue = 0;
                 this.scevent.NewValue = this.stats[StatType.LevelExp];
                 this.scevent.Stats = this.stats;
+
+                this.saveUserState(false);
             } 
         } 
 
@@ -240,5 +268,25 @@ export class PlayerStats {
         this.scevent.OldValue = this.stats[type];
         this.scevent.NewValue = newValue;
         this.scevent.Stats = this.stats;
+    }
+
+
+    public saveUserState(isLevelCompleted: boolean) {
+        if (isLevelCompleted) {
+            this.gameLevel += 1;
+        }
+        let model = {
+            ExternalId: this.id,
+            Coins: this.getStat(StatType.Coins),
+            Gold: this.getStat(StatType.Gold),
+            Dust: Math.floor(this.getStat(StatType.Dust)),
+            Exp: this.getStat(StatType.TotalExp),
+            AtrPts: this.getStat(StatType.AttributePoints),
+            LastLevel: this.gameLevel,
+            // TODO: add sending skills etc.
+        };
+        AjaxHelper.Post(baseUrl + "/api/user/save", model, (data, status) => {
+            console.log("connectUser() response", data);
+        });
     }
 }

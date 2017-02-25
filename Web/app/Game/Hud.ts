@@ -154,11 +154,11 @@ export class Hud extends PIXI.Container {
             this.fillLen = pnl.width - 6; // 3 pixels for left/right border;
 
 
-            this.txtExp = new PIXI.Text("0 / 1000", Global.TXT_SMALL_STYLE);
+            this.txtExp = new PIXI.Text("0 / 1000", Global.EXP_BAR_STYLE);
             this.txtExp.pivot.set(0.5);
             this.txtExp.anchor.set(0.5);
             this.txtExp.resolution = window.devicePixelRatio;
-            this.txtExp.position = new PIXI.Point(pnl.width / 2, pnl.height/2);
+            this.txtExp.position = new PIXI.Point(pnl.width / 2, pnl.height / 2);
             pnl.addChild(this.txtExp);
 
         }
@@ -211,7 +211,9 @@ export class Hud extends PIXI.Container {
     private handleLevelUp = (event: IStatChangeEvent) => {
         this.txtExp.text = `${Math.round(event.Stats[StatType.LevelExp])} / ${event.Stats[StatType.LevelMaxExp]}`;
         this.expFiller.width = 1;
-        //  TODO: show level up GUI icon
+        this.addLvlUpMessage("Level " + event.NewValue);
+
+        //  TODO: animate attribute point icon
     };
 
     private fillLen: number;
@@ -243,6 +245,100 @@ export class Hud extends PIXI.Container {
 
         //this.expFiller.width = (this.fillLen * pct)|0;
         this.txtExp.text = `${Math.round(event.Stats[StatType.LevelExp])} / ${event.Stats[StatType.LevelMaxExp]}`;
+    }
+
+    /**
+     * Ads text message about acquired quest items.
+     * @param message the message to be added
+     * @param style optional PIXI.ITextStyle
+     */
+    public addQuestItemMessage(message: string, style?: PIXI.ITextStyleStyle): void {
+        var stl = style || Global.QUEST_ITEM_STYLE;
+        var txtInfo = new PIXI.Text(message, stl);
+        txtInfo.anchor.set(0.5, 0.5);
+        //txtInfo.position.set(this.heroPosition.x, Global.SCENE_HEIGHT - 150);
+        //txtInfo.scale.set(1, -1);   //  scale invert since everything is upside down due to coordinate system
+        txtInfo.position.set(Global.SCENE_WIDTH / 2, 150);
+
+        this.addChild(txtInfo);
+
+        var scale = new TWEEN.Tween(txtInfo.scale)
+            .to({ x: 1.8, y: 1.8 }, 2200)
+            .easing(TWEEN.Easing.Linear.None);
+
+        var fade = new TWEEN.Tween(txtInfo)
+            .to({ alpha: 0 }, 3000)
+            .onComplete(() => this.removeChild(txtInfo));
+        scale.chain(fade).start();
+    }
+
+    /**
+     * Starts an animation tween with informational text moving upwards from the given position.
+     * @param position the start position of the message
+     * @param message the message to be added
+     * @param style optional PIXI.ITextStyle
+     */
+    public addInfoMessage(position: PIXI.Point, message: string, style?: PIXI.ITextStyleStyle): void {
+        var stl = style || Global.MSG_HP_STYLE;
+        var txtInfo = new PIXI.Text(message, stl);
+
+        txtInfo.position.set(Global.SCENE_WIDTH / 2, Global.SCENE_HEIGHT - position.y - 70);
+        txtInfo.scale.set(1, 1);
+
+        this.addChild(txtInfo);
+
+        var dy = (position.y > Global.SCENE_HEIGHT / 2) ? 250 : -250;
+        var upY = Global.SCENE_HEIGHT - position.y + dy;
+        var moveUp = new TWEEN.Tween(txtInfo.position)
+            .to({ y: upY }, 2000);
+        moveUp.start();
+
+        var scale = new TWEEN.Tween(txtInfo.scale)
+            .to({ x: 1.6, y: 1.6 }, 2200)
+            .easing(TWEEN.Easing.Linear.None);
+
+        var fade = new TWEEN.Tween(txtInfo)
+            .to({ alpha: 0 }, 3000)
+            .onComplete(() => this.removeChild(txtInfo));
+        scale.chain(fade).start();
+    }
+
+    /**
+     * Starts an animation tween with level up message.
+     * @param message the message to be added
+     */
+    private addLvlUpMessage(message: string): void {
+        var stl: PIXI.ITextStyleStyle =
+            {
+                align: "center",
+                padding: 0,
+                fontSize: "64px",
+                fontFamily: Global.fontFamily,
+                fill: 0x335533,
+                strokeThickness: 6,
+                stroke: 0xccccff
+            };
+
+        var txtInfo = new PIXI.Text(message, stl);
+        txtInfo.scale.set(1, 1);
+        txtInfo.anchor.set(0.5);
+        txtInfo.position.set(Global.SCENE_WIDTH / 2, Global.SCENE_HEIGHT - this.heroPosition.y - 70);
+        this.addChild(txtInfo);
+
+        var dy = (this.heroPosition.y > Global.SCENE_HEIGHT / 2) ? 450 : -450;
+        var upY = Global.SCENE_HEIGHT - this.heroPosition.y + dy;
+        var moveUp = new TWEEN.Tween(txtInfo.position)
+            .to({ y: upY }, 2000);
+        moveUp.start();
+
+        var scale = new TWEEN.Tween(txtInfo.scale)
+            .to({ x: 1.6, y: 1.6 }, 1500)
+            .easing(TWEEN.Easing.Linear.None);
+
+        var fade = new TWEEN.Tween(txtInfo)
+            .to({ alpha: 0.4 }, 6000)
+            .onComplete(() => this.removeChild(txtInfo));
+        scale.chain(fade).start();
     }
 
     /**

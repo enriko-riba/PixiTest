@@ -117,8 +117,8 @@ export class HeroCharacter extends AnimatedSprite {
      * @param dt elapsed time in milliseconds
      */
     public update = (dt: number) => {
-        this.position.x = Global.UserInfo.position.x;
-        this.position.y = Global.UserInfo.position.y;
+        this.position.x = Global.stats.position.x;
+        this.position.y = Global.stats.position.y;
 
         if (this.IsInteractive) {
             this.movementCtrl.update(dt);

@@ -45,7 +45,7 @@
 
                 // get user
                 var docDb = await docDbFactory.CreateDB("testDB");
-                var qry = docDb.CreateQuery<PP2.Server.Models.User>("realm").Where(u => u.ExternalId == model.ExternalId);
+                var qry = docDb.CreateQuery<User>("realm").Where(u => u.ExternalId == model.ExternalId);
                 User user = qry.AsEnumerable().FirstOrDefault();
 
                 //  insert user 
@@ -54,9 +54,10 @@
                     //  TODO: update user with new data
                     user.LastLevel = model.LastLevel;
                     user.Gold = model.Gold;
-                    user.Coins= model.Coins;
+                    user.Coins = model.Coins;
                     user.Dust = model.Dust;
                     user.Exp = model.Exp;
+                    user.AtrPts = model.AtrPts;
                     await docDb.SaveDocumentAsync("realm", user);
                 }
                 else
@@ -87,7 +88,7 @@
                 // get user
                 var docDb = await docDbFactory.CreateDB("testDB");
                 var qry = docDb.CreateQuery<User>("realm").Where(u => u.ExternalId == id);
-                user = qry.AsEnumerable().FirstOrDefault();                
+                user = qry.AsEnumerable().FirstOrDefault();
                 return user;
             }
             catch (System.Exception ex)

@@ -13,11 +13,12 @@ class HomeVM {
     private usr_Dust = ko.observable<string>("");
     private usr_Exp = ko.observable<string>("");
     private usr_MaxHP = ko.observable<string>("");
+    private usr_AtrPts = ko.observable<string>("");
     private hasProfileData = ko.observable<boolean>(false);
     private isStartEnabled = ko.observable<boolean>(true);
 
     constructor() {
-        if (Global.UserInfo.id === 0) {
+        if (Global.stats.id === 0) {
             window.location.hash = "#login";
         } else {
 
@@ -28,8 +29,8 @@ class HomeVM {
 
             vm.isLoadingVisible(false);
             (window as any).baseUrl = window.location.origin;
-            this.usr_Name(Global.UserInfo.name);
-            this.connectUser(Global.UserInfo.id, Global.UserInfo.name);
+            this.usr_Name(Global.stats.name);
+            this.connectUser(Global.stats.id, Global.stats.name);
 
         }
     }
@@ -39,12 +40,9 @@ class HomeVM {
         AjaxHelper.GetWithData(baseUrl + "/api/user/login", model, (data, status) => {
             console.log("connectUser() response", data);
 
-            //  for game logic
-            Global.UserInfo.coins = data.Coins;
-            Global.UserInfo.gold = data.Gold;
-            Global.UserInfo.gamelevel = data.LastLevel;
-            Global.UserInfo.dust = data.Dust;
-            Global.UserInfo.exp = data.Exp;
+            //  for game logic           
+            Global.stats.gameLevel = data.LastLevel;
+            
 
             //  for GUI binding
             this.usr_Name(data.Name);
@@ -54,6 +52,7 @@ class HomeVM {
             this.usr_Dust(`${data.Dust}/1000`);
             this.usr_Exp(data.Exp);
             this.usr_MaxHP("120/150");
+            this.usr_AtrPts(data.AtrPts);
             this.hasProfileData(true);
         });
     }

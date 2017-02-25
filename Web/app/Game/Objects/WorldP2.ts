@@ -63,7 +63,7 @@ export class WorldP2 {
         //------------------------------------------
         this.playerBody = new p2.Body({
             mass: 38,
-            position: [Global.UserInfo.position.x, Global.UserInfo.position.y],
+            position: [Global.stats.position.x, Global.stats.position.y],
             fixedRotation: true,
         });
         shape = new p2.Circle({
@@ -121,8 +121,8 @@ export class WorldP2 {
     public update(dt: number): void {
         //console.log("worldp2 update() dt: " + dt/1000);
         this.world.step(this.fixedTimeStep, dt/1000, 20);
-        Global.UserInfo.position.x = this.playerBody.interpolatedPosition[0];
-        Global.UserInfo.position.y = this.playerBody.interpolatedPosition[1];
+        Global.stats.position.x = this.playerBody.interpolatedPosition[0];
+        Global.stats.position.y = this.playerBody.interpolatedPosition[1];
     }
 
     /**
