@@ -11,44 +11,51 @@
         <div class="sk-cube sk-cube8"></div>
         <div class="sk-cube sk-cube9"></div>
     </div>
-</div>  
+</div>
 
 <div data-bind="visible: hasProfileData">
     <h2>The great PP2 adventure</h2>
     <div class="greeting">Hi&nbsp;<span data-bind="text: usr_Name"></span></div>
 
-    <div class="profile-data" >
+    <div class="profile-data">
         <div class="subtitle">User statistics</div>
-        <div>
-            <label for="atr_lvl">Level</label>
-            <input id="atr_lvl" data-bind="value: usr_GameLevel" disabled />
-        </div>
-        <div>
-            <label for="atr_mhp">HP</label>
-            <input id="atr_mhp" data-bind="value: usr_MaxHP" disabled />
-        </div>
-        <div>
-            <label for="atr_dst">Magic Dust</label>
-            <input id="atr_dst" data-bind="value: usr_Dust" disabled />
-        </div>
-        <div>
-            <label for="atr_cns">Coins</label>
-            <input id="atr_cns" data-bind="value: usr_Coins" disabled />
-        </div>
-        <div>
-            <label for="atr_gld">Gold</label>
-            <input id="atr_gld" data-bind="value: usr_Gold" disabled />
-        </div>
-        <div>
-            <label for="atr_exp">Exp</label>
-            <input id="atr_exp" data-bind="value: usr_Exp" disabled />
-        </div>
-        <div>
-            <label for="atr_atr">Attr. pts</label>
-            <input id="atr_atr" data-bind="value: usr_AtrPts" disabled />
+        <div class="container">
+            <div class="item">
+                <div>
+                    <label for="atr_lvl">Level</label>
+                    <input id="atr_lvl" data-bind="value: usr_GameLevel" disabled />
+                </div>
+                <div>
+                    <label for="atr_mhp">HP</label>
+                    <input id="atr_mhp" data-bind="value: usr_MaxHP" disabled />
+                </div>
+                <div>
+                    <label for="atr_dst">Magic Dust</label>
+                    <input id="atr_dst" data-bind="value: usr_Dust" disabled />
+                </div>
+                <div>
+                    <label for="atr_exp">Exp</label>
+                    <input id="atr_exp" data-bind="value: usr_Exp" disabled />
+                </div>
+            </div>
+            <div class="item">
+                <div>
+                    <label for="atr_cns">Coins</label>
+                    <input id="atr_cns" data-bind="value: usr_Coins" disabled />
+                </div>
+                <div>
+                    <label for="atr_gld">Gold</label>
+                    <input id="atr_gld" data-bind="value: usr_Gold" disabled />
+                </div>
+
+                <div>
+                    <label for="atr_atr">Attribute pts</label>
+                    <input id="atr_atr" data-bind="value: usr_AtrPts" disabled />
+                </div>
+            </div>
         </div>
     </div>
-    <div class="commands" >
+    <div class="commands">
         <button data-bind="click: startGame, enable: isStartEnabled"><span data-bind="text: isStartEnabled() ? 'Start Game': 'Please wait...'"></span></button>
     </div>
 
