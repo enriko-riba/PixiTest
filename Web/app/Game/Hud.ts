@@ -4,6 +4,7 @@ import * as ko from "knockout";
 import { Button } from "app/_engine/Button";
 import { InGameScene, createParticleEmitter } from "./Scenes/InGameScene";
 import { STATCHANGE_TOPIC, IStatChangeEvent, StatType } from "./Player/PlayerStats";
+import { AnimatedSprite, AnimationSequence } from "../_engine/AnimatedSprite";
 
 export class Hud extends PIXI.Container {
     constructor() {
@@ -20,11 +21,13 @@ export class Hud extends PIXI.Container {
     private txtDust: PIXI.Text;
     private txtHP: PIXI.Text;
     private txtExp: PIXI.Text;
+    private txtAtrPts: PIXI.Text;
+
     private expPreFiller: PIXI.Sprite;
     private expFiller: PIXI.Sprite;
 
     private emitter: PIXI.particles.Emitter;
-
+    private lvlUpIcon: AnimatedSprite;
 
     private questRect: PIXI.Sprite;
     private txtQuestMessage: PIXI.Text;
@@ -163,6 +166,30 @@ export class Hud extends PIXI.Container {
 
         }
 
+        //  level up icon (under coins)
+        this.lvlUpIcon = new AnimatedSprite();
+        this.lvlUpIcon.addAnimations(new AnimationSequence("play", "assets/_distribute/gui_lvl_up.png",
+            [0, 1, 2, 3, 4, 5, 5, 4, 3, 2, 1, 0], 128, 128));
+        this.lvlUpIcon.anchor.set(0.25);
+        this.lvlUpIcon.position.set(20, 260);
+        this.lvlUpIcon.scale.set(0.5);
+        this.lvlUpIcon.name = "lvlUpIcon";
+        this.lvlUpIcon.interactive = true;
+        this.lvlUpIcon.buttonMode = true;
+        this.addChild(this.lvlUpIcon);
+        this.lvlUpIcon.PlayAnimation("play", 6, true);
+        this.lvlUpIcon.on("pointerover", () => this.lvlUpIcon.tint = 0x1aff1a);
+        this.lvlUpIcon.on("pointerout", () => this.lvlUpIcon.tint = 0xffffff);
+        var atrpts = Global.stats.getStat(StatType.AttributePoints);
+        this.lvlUpIcon.visible = atrpts>0;
+
+        this.txtAtrPts = new PIXI.Text(atrpts.toString(), Global.TXT_STYLE);
+        this.txtAtrPts.resolution = window.devicePixelRatio;
+        this.txtAtrPts.anchor.set(0, 0)
+        this.txtAtrPts.position.set(80, 260);
+        this.addChild(this.txtAtrPts);
+        this.txtAtrPts.visible = atrpts > 0;
+
 
         //  TODO: remove or make a hud for lvl, position
         this.txtLevel = new PIXI.Text("1", Global.TXT_STYLE);
@@ -204,6 +231,12 @@ export class Hud extends PIXI.Container {
                 break;
             case StatType.CharacterLevel:
                 this.handleLevelUp(event);
+                break;
+
+            case StatType.AttributePoints:
+                this.lvlUpIcon.visible = event.NewValue > 0;
+                this.txtAtrPts.visible = event.NewValue > 0;
+                this.txtAtrPts.text = "points available: " + event.NewValue;
                 break;
         }
     };
@@ -367,5 +400,15 @@ export class Hud extends PIXI.Container {
                 this.onCompleteCB();
             }
         }
+
+        //-------------------------------------------
+        //  invoke update on each updateable
+        //-------------------------------------------
+        for (var i = 0, len = this.children.length; i < len; i++) {
+            let child: any = this.children[i];
+            if (child && child.onUpdate) {
+                child.onUpdate(dt);
+            }
+        };
     }
 }

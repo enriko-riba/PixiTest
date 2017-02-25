@@ -83,6 +83,7 @@ export class LoaderScene extends Scene {
                 "assets/_distribute/gui_snd_fx_on.png",
                 "assets/_distribute/gui_snd_music_off.png",
                 "assets/_distribute/gui_snd_music_on.png",
+                "assets/_distribute/gui_lvl_up.png",
                 "assets/_distribute/slider1.png",
 
                 "assets/_distribute/hero.png",
