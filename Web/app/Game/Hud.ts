@@ -170,20 +170,28 @@ export class Hud extends PIXI.Container {
         this.lvlUpIcon = new AnimatedSprite();
         this.lvlUpIcon.addAnimations(new AnimationSequence("play", "assets/_distribute/gui_lvl_up.png",
             [0, 1, 2, 3, 4, 5, 5, 4, 3, 2, 1, 0], 128, 128));
-        this.lvlUpIcon.anchor.set(0.25);
-        this.lvlUpIcon.position.set(20, 260);
+        this.lvlUpIcon.anchor.set(0.5);
         this.lvlUpIcon.scale.set(0.5);
+        this.lvlUpIcon.position.set(36, 280);
         this.lvlUpIcon.name = "lvlUpIcon";
         this.lvlUpIcon.interactive = true;
         this.lvlUpIcon.buttonMode = true;
-        this.addChild(this.lvlUpIcon);
-        this.lvlUpIcon.PlayAnimation("play", 6, true);
-        this.lvlUpIcon.on("pointerover", () => this.lvlUpIcon.tint = 0x1aff1a);
+        this.lvlUpIcon.on("pointerover", () => this.lvlUpIcon.tint = 0xff9944);
         this.lvlUpIcon.on("pointerout", () => this.lvlUpIcon.tint = 0xffffff);
         var atrpts = Global.stats.getStat(StatType.AttributePoints);
         this.lvlUpIcon.visible = atrpts>0;
+        this.addChild(this.lvlUpIcon);
+        this.lvlUpIcon.PlayAnimation("play", 12, true);
 
-        this.txtAtrPts = new PIXI.Text(atrpts.toString(), Global.TXT_STYLE);
+        var twIn = new TWEEN.Tween(this.lvlUpIcon.scale)
+            .to({ x: 0.6, y: 0.6 }, 500)
+            .onComplete(() => twOut.start());
+        var twOut = new TWEEN.Tween(this.lvlUpIcon.scale)
+            .to({ x: 0.4, y: 0.4 }, 500)
+            .onComplete(() => twIn.start());
+        twIn.start();
+
+        this.txtAtrPts = new PIXI.Text("points available", Global.MSG_WARN_STYLE);
         this.txtAtrPts.resolution = window.devicePixelRatio;
         this.txtAtrPts.anchor.set(0, 0)
         this.txtAtrPts.position.set(80, 260);
@@ -236,7 +244,7 @@ export class Hud extends PIXI.Container {
             case StatType.AttributePoints:
                 this.lvlUpIcon.visible = event.NewValue > 0;
                 this.txtAtrPts.visible = event.NewValue > 0;
-                this.txtAtrPts.text = "points available: " + event.NewValue;
+                //this.txtAtrPts.text = "points available";
                 break;
         }
     };
