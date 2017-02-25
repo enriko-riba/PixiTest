@@ -278,11 +278,11 @@ export class Hud extends PIXI.Container {
      * @param message the message to be added
      * @param style optional PIXI.ITextStyle
      */
-    public addInfoMessage(position: PIXI.Point, message: string, style?: PIXI.ITextStyleStyle): void {
+    public addInfoMessage(position: PIXI.Point, message: string, style?: PIXI.ITextStyleStyle, offsetX?: number): void {
         var stl = style || Global.MSG_HP_STYLE;
         var txtInfo = new PIXI.Text(message, stl);
-
-        txtInfo.position.set(Global.SCENE_WIDTH / 2, Global.SCENE_HEIGHT - position.y - 70);
+        offsetX = offsetX || 0;
+        txtInfo.position.set((Global.SCENE_WIDTH / 2) + offsetX , Global.SCENE_HEIGHT - position.y - 70);
         txtInfo.scale.set(1, 1);
 
         this.addChild(txtInfo);

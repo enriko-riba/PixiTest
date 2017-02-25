@@ -336,7 +336,7 @@ export class InGameScene extends Scene {
             case 1: //  small coin
                 Global.stats.increaseStat(StatType.Coins, 1);
                 this.addCollectibleTween(dispObj);
-                this.hud.addInfoMessage(dispObj.position, "+1 coin", Global.MSG_COIN_STYLE);
+                this.hud.addInfoMessage(dispObj.position, "+1 coin", Global.MSG_COIN_STYLE, -100);
                 this.removeEntity(body);
                 Global.snd.coin();
                 break;
@@ -344,7 +344,7 @@ export class InGameScene extends Scene {
             case 2: //  coin
                 Global.stats.increaseStat(StatType.Coins, 10);
                 this.addCollectibleTween(dispObj);
-                this.hud.addInfoMessage(dispObj.position, "+10 coins", Global.MSG_COIN_STYLE);
+                this.hud.addInfoMessage(dispObj.position, "+10 coins", Global.MSG_COIN_STYLE, -100);
                 this.removeEntity(body);
                 Global.snd.coin();
                 break;
@@ -352,7 +352,7 @@ export class InGameScene extends Scene {
             case 3: //  blue gem
                 Global.stats.increaseStat(StatType.Coins, 100);
                 this.addCollectibleTween(dispObj);
-                this.hud.addInfoMessage(dispObj.position, "+100 coins", Global.MSG_COIN_STYLE);
+                this.hud.addInfoMessage(dispObj.position, "+100 coins", Global.MSG_COIN_STYLE, -100);
                 this.removeEntity(body);
                 Global.snd.gem();
                 break;
@@ -386,7 +386,7 @@ export class InGameScene extends Scene {
                 {
                     let now = performance.now() / 1000;
                     if (!Global.stats.buffs[1000] || Global.stats.buffs[1000] < now) {
-                        this.hud.addInfoMessage(dispObj.position, "Burn", Global.MSG_WARN_STYLE);
+                        this.hud.addInfoMessage(dispObj.position, "Burn", Global.MSG_WARN_STYLE, 100);
                     }
                     Global.stats.buffs[1000] = this.secondsFromNow(1);
                 }
@@ -396,7 +396,7 @@ export class InGameScene extends Scene {
                 {
                     let now = performance.now() / 1000;
                     if (!Global.stats.buffs[1001] || Global.stats.buffs[1001] < now) {
-                        this.hud.addInfoMessage(dispObj.position, "Burn", Global.MSG_WARN_STYLE);
+                        this.hud.addInfoMessage(dispObj.position, "Burn", Global.MSG_WARN_STYLE, 100);
                     }
                     Global.stats.buffs[1001] = this.secondsFromNow(3);
                 }
@@ -445,7 +445,7 @@ export class InGameScene extends Scene {
         //  add exp       
         var exp = mob.Attributes[AtrType.HP] / 2;
         Global.stats.increaseStat(StatType.TotalExp, exp);
-        this.hud.addInfoMessage(mob.position, `+${exp} exp`, Global.MSG_EXP_STYLE);
+        this.hud.addInfoMessage(mob.position, `+${exp} exp`, Global.MSG_EXP_STYLE, -50);
     }
 
     /**
@@ -599,7 +599,7 @@ export class InGameScene extends Scene {
     }
 
     private handleDpsChange = (event: IDpsChangeEvent) => {
-        this.hud.addInfoMessage(this.hero.position, `${event.Amount} HP`);
+        this.hud.addInfoMessage(this.hero.position, `${event.Amount} HP`, Global.MSG_HP_STYLE, 50);
     };
 
     private handleMoveChange = (event: IMoveEvent) => {
@@ -878,7 +878,7 @@ export class InGameScene extends Scene {
         if (!bullet.IsDead) {
             if (event.playerHit) {
                 Global.snd.hitMagic1();
-                this.hud.addInfoMessage(this.hero.position, `${-bullet.damage} HP`);
+                this.hud.addInfoMessage(this.hero.position, `${-bullet.damage} HP`, Global.MSG_HP_STYLE, 50);
                 Global.stats.increaseStat(StatType.HP, -bullet.damage);
             } else {
 
