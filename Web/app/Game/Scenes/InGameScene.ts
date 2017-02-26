@@ -22,6 +22,7 @@ import { HeroCharacter, BURN_TOPIC, IBurnEvent } from "../Player/HeroCharacter";
 import { MovementState } from "../Player/MovementState";
 import { MOVE_TOPIC, IMoveEvent } from "../Player/MovementController";
 import { CutScene } from "./CutScene";
+import { CharacterScene } from "./CharacterScene";
 
 import "../../../Scripts/pixi-particles";
 
@@ -174,7 +175,7 @@ export class InGameScene extends Scene {
 
         Global.sceneMngr.AddScene(new OptionsScene());
         Global.sceneMngr.AddScene(new CutScene());
-
+        Global.sceneMngr.AddScene(new CharacterScene());
         //this.resetPlayerStats();
     };
     public onActivate = () => {
@@ -679,38 +680,7 @@ export class InGameScene extends Scene {
         return now;
     };
 
-    /**
-    * Assigns default player stats.
-    */
-    public resetPlayerStats(): JQueryDeferred<boolean> {
-        var promise = $.Deferred();
-
-        let model = { id: Global.stats.id};
-        AjaxHelper.GetWithData(baseUrl + "/api/user/data", model, (data, status) => {
-            console.log("resetPlayerStats() response", data);
-
-            Global.stats.gameLevel = data.LastLevel;
-
-            Global.stats.setStat(StatType.Coins, data.Coins);
-            Global.stats.setStat(StatType.Gold, data.Gold);
-
-            Global.stats.setStat(StatType.MaxDust, 1000);
-            Global.stats.setStat(StatType.Dust, data.Dust);
-
-            Global.stats.setStat(StatType.TotalExp, data.Exp);
-            Global.stats.setStat(StatType.AttributePoints, data.AtrPts);
-            Global.stats.setStat(StatType.MaxHP, 150);
-            Global.stats.setStat(StatType.HP, 120);
-
-            this.questMngr.reset();
-           
-            promise.resolve(true);
-        });
-
-        return promise;
-    }
-
-    /**
+        /**
      *  Invokes the level loading.
      */
     public StartLevel(levelId: number) {
@@ -728,7 +698,7 @@ export class InGameScene extends Scene {
     };
 
     /**
-     * Loads the level and adds all objects to the scene.
+     * Loads the level and adds all objects into the scene.
      * @param id
      */
     private loadLevel(lvl: ILevel) {
@@ -790,7 +760,8 @@ export class InGameScene extends Scene {
         Global.stats.position.x = lvl.start[0];
         Global.stats.position.y = lvl.start[1];
 
-        this.resetPlayerStats().done(() => {
+        Global.stats.loadUserState().done(() => {
+            this.questMngr.reset();
             this.hero.visible = true;
             this.IsHeroInteractive = true;
             Global.sceneMngr.ActivateScene(this);

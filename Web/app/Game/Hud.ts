@@ -27,7 +27,7 @@ export class Hud extends PIXI.Container {
     private expFiller: PIXI.Sprite;
 
     private emitter: PIXI.particles.Emitter;
-    private lvlUpIcon: AnimatedSprite;
+    private characterMngr: AnimatedSprite;
 
     private questRect: PIXI.Sprite;
     private txtQuestMessage: PIXI.Text;
@@ -164,29 +164,39 @@ export class Hud extends PIXI.Container {
             this.txtExp.position = new PIXI.Point(pnl.width / 2, pnl.height / 2);
             pnl.addChild(this.txtExp);
 
+            //  character level
+            this.txtLevel = new PIXI.Text(`Level ${Global.stats.characterLevel}`, Global.TXT_STYLE);
+            this.txtLevel.resolution = window.devicePixelRatio;
+            this.txtLevel.position.set(pnl.x + pnl.width + 4, pnl.y);
+            this.addChild(this.txtLevel);
         }
 
-        //  level up icon (under coins)
-        this.lvlUpIcon = new AnimatedSprite();
-        this.lvlUpIcon.addAnimations(new AnimationSequence("play", "assets/_distribute/gui_lvl_up.png",
-            [0, 1, 2, 3, 4, 5, 5, 4, 3, 2, 1, 0], 128, 128));
-        this.lvlUpIcon.anchor.set(0.5);
-        this.lvlUpIcon.scale.set(0.5);
-        this.lvlUpIcon.position.set(36, 280);
-        this.lvlUpIcon.name = "lvlUpIcon";
-        this.lvlUpIcon.interactive = true;
-        this.lvlUpIcon.buttonMode = true;
-        this.lvlUpIcon.on("pointerover", () => this.lvlUpIcon.tint = 0xff9944);
-        this.lvlUpIcon.on("pointerout", () => this.lvlUpIcon.tint = 0xffffff);
-        var atrpts = Global.stats.getStat(StatType.AttributePoints);
-        this.lvlUpIcon.visible = atrpts>0;
-        this.addChild(this.lvlUpIcon);
-        this.lvlUpIcon.PlayAnimation("play", 12, true);
 
-        var twIn = new TWEEN.Tween(this.lvlUpIcon.scale)
+        //  level up icon (under coins)
+        this.characterMngr = new AnimatedSprite();
+        this.characterMngr.addAnimations(new AnimationSequence("play", "assets/_distribute/gui_lvl_up.png",
+            [0, 1, 2, 3, 4, 5, 5, 4, 3, 2, 1, 0], 128, 128));
+        this.characterMngr.anchor.set(0.5);
+        this.characterMngr.scale.set(0.5);
+        this.characterMngr.position.set(36, 280);
+        this.characterMngr.name = "lvlUpIcon";
+        this.characterMngr.interactive = true;
+        this.characterMngr.buttonMode = true;
+        this.characterMngr.on("pointerover", () => this.characterMngr.tint = 0xff9944);
+        this.characterMngr.on("pointerout", () => this.characterMngr.tint = 0xffffff);
+        var atrpts = Global.stats.getStat(StatType.AttributePoints);
+        this.characterMngr.visible = atrpts>0;
+        this.addChild(this.characterMngr);
+        this.characterMngr.PlayAnimation("play", 12, true);
+
+        this.characterMngr.on("pointerdown", () => {
+            Global.sceneMngr.ActivateScene("Character");
+        });
+
+        var twIn = new TWEEN.Tween(this.characterMngr.scale)
             .to({ x: 0.6, y: 0.6 }, 500)
             .onComplete(() => twOut.start());
-        var twOut = new TWEEN.Tween(this.lvlUpIcon.scale)
+        var twOut = new TWEEN.Tween(this.characterMngr.scale)
             .to({ x: 0.4, y: 0.4 }, 500)
             .onComplete(() => twIn.start());
         twIn.start();
@@ -200,8 +210,7 @@ export class Hud extends PIXI.Container {
 
 
         //  TODO: remove or make a hud for lvl, position
-        this.txtLevel = new PIXI.Text("1", Global.TXT_STYLE);
-        this.txtLevel.resolution = window.devicePixelRatio;
+        
         this.txtPlayerPosition = new PIXI.Text("", Global.TXT_STYLE);
         this.txtPlayerPosition.resolution = window.devicePixelRatio;
 
@@ -242,7 +251,7 @@ export class Hud extends PIXI.Container {
                 break;
 
             case StatType.AttributePoints:
-                this.lvlUpIcon.visible = event.NewValue > 0;
+                this.characterMngr.visible = event.NewValue > 0;
                 this.txtAtrPts.visible = event.NewValue > 0;
                 //this.txtAtrPts.text = "points available";
                 break;
@@ -254,7 +263,7 @@ export class Hud extends PIXI.Container {
         this.expFiller.width = 1;
         this.addLvlUpMessage("Level " + event.NewValue);
 
-        //  TODO: animate attribute point icon
+        this.txtLevel.text = `Level ${Global.stats.characterLevel}`;
     };
 
     private fillLen: number;
@@ -284,7 +293,6 @@ export class Hud extends PIXI.Container {
             .easing(TWEEN.Easing.Bounce.Out);
         preFillTween.chain(fillTween).start();
 
-        //this.expFiller.width = (this.fillLen * pct)|0;
         this.txtExp.text = `${Math.round(event.Stats[StatType.LevelExp])} / ${event.Stats[StatType.LevelMaxExp]}`;
     }
 

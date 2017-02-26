@@ -57,6 +57,7 @@
                     user.Coins = model.Coins;
                     user.Dust = model.Dust;
                     user.Exp = model.Exp;
+                    user.HP = model.HP;
                     user.AtrPts = model.AtrPts;
                     await docDb.SaveDocumentAsync("realm", user);
                 }

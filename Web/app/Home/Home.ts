@@ -12,7 +12,7 @@ class HomeVM {
     private usr_Coins= ko.observable<string>("");
     private usr_Dust = ko.observable<string>("");
     private usr_Exp = ko.observable<string>("");
-    private usr_MaxHP = ko.observable<string>("");
+    private usr_HP = ko.observable<string>("");
     private usr_AtrPts = ko.observable<string>("");
     private hasProfileData = ko.observable<boolean>(false);
     private isStartEnabled = ko.observable<boolean>(true);
@@ -49,9 +49,11 @@ class HomeVM {
             this.usr_GameLevel(data.LastLevel);
             this.usr_Gold(data.Gold);
             this.usr_Coins(data.Coins);
-            this.usr_Dust(`${data.Dust}/1000`);
+            //this.usr_Dust(`${data.Dust}/1000`); //  TODO: reference playerstats formula for max dust
+            this.usr_Dust(`${data.Dust}`);
             this.usr_Exp(data.Exp);
-            this.usr_MaxHP("120/150");
+            //this.usr_HP(`${data.HP}/${data.MaxHP}`);    //  TODO: reference playerstats formula for max hp
+            this.usr_HP(`${data.HP}`);
             this.usr_AtrPts(data.AtrPts);
             this.hasProfileData(true);
         });
