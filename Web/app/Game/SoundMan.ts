@@ -261,6 +261,7 @@ export class SoundMan {
     }
 
     public questItem() {
+        this.questItemSnd.volume(this.fxVolume);
         this.questItemSnd.play();
     }
 

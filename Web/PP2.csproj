@@ -34,7 +34,7 @@
     <Content Include="assets\Images\Gui\exp_fill.png" />
     <Content Include="assets\Images\Gui\exp_panel.png" />
     <Content Include="assets\Images\Gui\exp_prefill.png" />
-    <Content Include="assets\Images\Gui\gui_lvl_up.png" />
+    <None Include="assets\Images\Gui\gui_lvl_up.png" />
     <Content Include="assets\Levels\quests.json" />
     <None Include="assets\Unused\trees01_dbg.png" />
     <None Include="assets\Unused\trees02_dbg.png" />
