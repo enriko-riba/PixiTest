@@ -167,6 +167,7 @@ export class Hud extends PIXI.Container {
             //  character level
             this.txtLevel = new PIXI.Text(`Level ${Global.stats.characterLevel}`, Global.TXT_STYLE);
             this.txtLevel.resolution = window.devicePixelRatio;
+            this.txtLevel.anchor.set(0, 0.2);
             this.txtLevel.position.set(pnl.x + pnl.width + 4, pnl.y);
             this.addChild(this.txtLevel);
         }
@@ -262,14 +263,15 @@ export class Hud extends PIXI.Container {
         this.txtExp.text = `${Math.round(event.Stats[StatType.LevelExp])} / ${event.Stats[StatType.LevelMaxExp]}`;
         this.expFiller.width = 1;
         this.addLvlUpMessage("Level " + event.NewValue);
-
         this.txtLevel.text = `Level ${Global.stats.characterLevel}`;
     };
 
     private fillLen: number;
     private renderExp(event: IStatChangeEvent) {
-        var pct = Math.min(event.Stats[StatType.LevelExp] / event.Stats[StatType.LevelMaxExp], 1.0);
+        this.txtExp.text = `${Math.round(event.Stats[StatType.LevelExp])} / ${event.Stats[StatType.LevelMaxExp]}`;
+        this.txtLevel.text = `Level ${Global.stats.characterLevel}`;
 
+        var pct = Math.min(event.Stats[StatType.LevelExp] / event.Stats[StatType.LevelMaxExp], 1.0);
         //  special case during level up
         if (pct === 0) {
             this.expFiller.width = 1;
@@ -293,7 +295,7 @@ export class Hud extends PIXI.Container {
             .easing(TWEEN.Easing.Bounce.Out);
         preFillTween.chain(fillTween).start();
 
-        this.txtExp.text = `${Math.round(event.Stats[StatType.LevelExp])} / ${event.Stats[StatType.LevelMaxExp]}`;
+        
     }
 
     /**

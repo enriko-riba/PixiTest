@@ -313,7 +313,7 @@ export class PlayerStats {
                 this.scevent.NewValue = this.stats[StatType.LevelExp];
                 this.scevent.Stats = this.stats;
 
-                this.saveUserState(false);
+                //this.saveUserState(false);
             } 
         } 
 
