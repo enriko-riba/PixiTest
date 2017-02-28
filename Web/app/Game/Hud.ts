@@ -272,6 +272,7 @@ export class Hud extends PIXI.Container {
         this.txtLevel.text = `Level ${Global.stats.characterLevel}`;
 
         var pct = Math.min(event.Stats[StatType.LevelExp] / event.Stats[StatType.LevelMaxExp], 1.0);
+
         //  special case during level up
         if (pct === 0) {
             this.expFiller.width = 1;
@@ -295,7 +296,6 @@ export class Hud extends PIXI.Container {
             .easing(TWEEN.Easing.Bounce.Out);
         preFillTween.chain(fillTween).start();
 
-        
     }
 
     /**
