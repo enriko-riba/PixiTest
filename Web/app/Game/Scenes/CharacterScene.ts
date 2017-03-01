@@ -63,45 +63,83 @@ export class CharacterScene extends Scene {
         var txtMaxHp = new PIXI.Text("Max HP", this.TEXT_STYLE);
         txtMaxHp.position.set(HALF_BTN_WIDTH, BTN_Y);
         this.addChild(txtMaxHp);
-        var btnAddMaxHp = new Button("assets/_distribute/gui_plus.png", HALF_BTN_WIDTH + 120, BTN_Y, 32, 32);
+        var btnAddMaxHp = new Button("assets/_distribute/gui_plus.png", Global.BTN_WIDTH + 120, BTN_Y, 32, 32);
         btnAddMaxHp.onClick = () => this.maxHpPts(this.maxHpPts()+1);
         this.addChild(btnAddMaxHp);
 
-        var btnRemoveMaxHp = new Button("assets/_distribute/gui_minus.png", HALF_BTN_WIDTH + 168, BTN_Y, 32, 32);
+        var btnRemoveMaxHp = new Button("assets/_distribute/gui_minus.png", Global.BTN_WIDTH + 168, BTN_Y, 32, 32);
         btnRemoveMaxHp.onClick = () => this.maxHpPts(this.maxHpPts() - 1);
         this.addChild(btnRemoveMaxHp);
-
-        var handlMaxHpChange = ko.computed(() => {
-            btnAddMaxHp.interactive = this.freePoints() > 0;
-            btnAddMaxHp.tint = this.freePoints() > 0 ? 0xffffff : 0xaaaaaa;
-
-            btnRemoveMaxHp.interactive = this.maxHpPts() > 0;
-            btnRemoveMaxHp.tint = this.maxHpPts() > 0 ? 0xffffff : 0xaaaaaa;
-
-            txtMaxHp.text = `Max HP: ${this.maxHpPts()}`;
-        });
-
+               
         //  Dust +/-
         BTN_Y = Global.BTN_HEIGHT * 3;
         var txtMaxDust = new PIXI.Text("Max Dust", this.TEXT_STYLE);
         txtMaxDust.position.set(HALF_BTN_WIDTH, BTN_Y);
         this.addChild(txtMaxDust);
-        var btnAddMaxDust = new Button("assets/_distribute/gui_plus.png", HALF_BTN_WIDTH + 120, BTN_Y, 32, 32);
+        var btnAddMaxDust = new Button("assets/_distribute/gui_plus.png", Global.BTN_WIDTH + 120, BTN_Y, 32, 32);
         btnAddMaxDust.onClick = () => this.maxDustPts(this.maxDustPts() + 1);
         this.addChild(btnAddMaxDust);
 
-        var btnRemoveMaxDust = new Button("assets/_distribute/gui_minus.png", HALF_BTN_WIDTH + 168, BTN_Y, 32, 32);
+        var btnRemoveMaxDust = new Button("assets/_distribute/gui_minus.png", Global.BTN_WIDTH + 168, BTN_Y, 32, 32);
         btnRemoveMaxDust.onClick = () => this.maxDustPts(this.maxDustPts() - 1);
         this.addChild(btnRemoveMaxDust);
 
-        var handlMaxDustChange = ko.computed(() => {
-            btnAddMaxDust.interactive = this.freePoints() > 0;
-            btnAddMaxDust.tint = this.freePoints() > 0 ? 0xffffff : 0xaaaaaa;
+        //  HP regen +/-
+        BTN_Y = Global.BTN_HEIGHT * 4;
+        var txtHpRegen = new PIXI.Text("HP regeneration", this.TEXT_STYLE);
+        txtHpRegen.position.set(HALF_BTN_WIDTH, BTN_Y);
+        this.addChild(txtHpRegen);
+        var btnAddHpRegen = new Button("assets/_distribute/gui_plus.png", Global.BTN_WIDTH + 120, BTN_Y, 32, 32);
+        btnAddHpRegen.onClick = () => this.regenHpPts(this.regenHpPts() + 1);
+        this.addChild(btnAddHpRegen);
+
+        var btnRemoveHpRegen = new Button("assets/_distribute/gui_minus.png", Global.BTN_WIDTH + 168, BTN_Y, 32, 32);
+        btnRemoveHpRegen.onClick = () => this.regenHpPts(this.regenHpPts() - 1);
+        this.addChild(btnRemoveHpRegen);
+
+        //  Dust regen +/-
+        BTN_Y = Global.BTN_HEIGHT * 5;
+        var txtDustRegen = new PIXI.Text("Dust regeneration", this.TEXT_STYLE);
+        txtDustRegen.position.set(HALF_BTN_WIDTH, BTN_Y);
+        this.addChild(txtDustRegen);
+        var btnAddDustRegen = new Button("assets/_distribute/gui_plus.png", Global.BTN_WIDTH + 120, BTN_Y, 32, 32);
+        btnAddDustRegen.onClick = () => this.regenDustPts(this.regenDustPts() + 1);
+        this.addChild(btnAddDustRegen);
+
+        var btnRemoveDustRegen = new Button("assets/_distribute/gui_minus.png", Global.BTN_WIDTH + 168, BTN_Y, 32, 32);
+        btnRemoveDustRegen.onClick = () => this.regenDustPts(this.regenDustPts() - 1);
+        this.addChild(btnRemoveDustRegen);
+
+        var handlPointsChange = ko.computed(() => {
+            let free = this.freePoints() > 0;
+            btnAddMaxHp.interactive = free;
+            btnAddMaxHp.tint = free ? 0xffffff : 0xaaaaaa;
+
+            btnAddMaxDust.interactive = free;
+            btnAddMaxDust.tint = free ? 0xffffff : 0xaaaaaa;
+
+            btnAddHpRegen.interactive = free;
+            btnAddHpRegen.tint = free ? 0xffffff : 0xaaaaaa;
+
+            btnAddDustRegen.interactive = free;
+            btnAddDustRegen.tint = free ? 0xffffff : 0xaaaaaa;
+
+            btnRemoveMaxHp.interactive = this.maxHpPts() > 0;
+            btnRemoveMaxHp.tint = this.maxHpPts() > 0 ? 0xffffff : 0xaaaaaa;
 
             btnRemoveMaxDust.interactive = this.maxDustPts() > 0;
             btnRemoveMaxDust.tint = this.maxDustPts() > 0 ? 0xffffff : 0xaaaaaa;
 
+            btnRemoveDustRegen.interactive = this.regenDustPts() > 0;
+            btnRemoveDustRegen.tint = this.regenDustPts() > 0 ? 0xffffff : 0xaaaaaa;
+
+            btnRemoveHpRegen.interactive = this.regenHpPts() > 0;
+            btnRemoveHpRegen.tint = this.regenHpPts() > 0 ? 0xffffff : 0xaaaaaa;
+
+            txtMaxHp.text = `Max HP: ${this.maxHpPts()}`;
             txtMaxDust.text = `Max Dust: ${this.maxDustPts()}`;
+            txtDustRegen.text = `Dust regeneration: ${this.regenDustPts()}`;
+            txtHpRegen.text = `HP regeneration: ${this.regenHpPts()}`;
         });
 
 
