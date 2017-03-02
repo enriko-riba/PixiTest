@@ -29,6 +29,9 @@
     <None Include="assets\Images\background\Canyon.png" />
     <None Include="assets\Images\background\ground.png" />
     <None Include="assets\Images\background\Mountains.png" />
+    <Content Include="assets\Audio\effects\jump-atk01.mp3" />
+    <Content Include="assets\Audio\effects\pain01.mp3" />
+    <Content Include="assets\Audio\effects\pain02.mp3" />
     <Content Include="assets\Images\Effects\hit.png" />
     <Content Include="assets\Images\Effects\load.png" />
     <Content Include="assets\Images\Gui\exp_fill.png" />

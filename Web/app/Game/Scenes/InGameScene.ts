@@ -848,7 +848,7 @@ export class InGameScene extends Scene {
         let bullet: Bullet = event.bulletBody.DisplayObject as Bullet;
         if (!bullet.IsDead) {
             if (event.playerHit) {
-                Global.snd.hitMagic1();
+                Global.snd.hitPain();
                 this.hud.addInfoMessage(this.hero.position, `${-bullet.damage} HP`, Global.MSG_HP_STYLE, 50);
                 Global.stats.increaseStat(StatType.HP, -bullet.damage);
             } else {

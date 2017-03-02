@@ -17,6 +17,7 @@ export class SoundMan {
     private jumpAtk: Howl;
     private woosh: Howl;
     private squish: Howl;
+    private pain: Howl;
 
     private fxDemoSnd: Howl;
 
@@ -125,12 +126,20 @@ export class SoundMan {
             volume: 1
         });
         this.jumpAtk = new Howl({
-            src: ['assets/Audio/effects/jump-atk.mp3'],
+            src: ['assets/Audio/effects/jump-atk01.mp3'],
             preload: true,
             autoplay: false,
             loop: false,
             volume: 1
         });
+        this.pain = new Howl({
+            src: ['assets/Audio/effects/pain01.mp3'],
+            preload: true,
+            autoplay: false,
+            loop: false,
+            volume: 1
+        });
+        
         this.woosh = new Howl({
             src: ['assets/Audio/effects/woosh.mp3'],
             preload: true,
@@ -233,6 +242,10 @@ export class SoundMan {
     public hitMagic1() {
         this.hitMag1.volume(this.fxVolume);
         this.hitMag1.play();
+    }
+    public hitPain() {
+        this.pain.volume(this.fxVolume);
+        this.pain.play();
     }
 
     public mobSquish() {
