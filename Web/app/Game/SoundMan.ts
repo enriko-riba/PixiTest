@@ -26,10 +26,13 @@ export class SoundMan {
     private musicTrackNames: Array<string> = [
         'assets/Audio/Two-Finger-Johnny.mp3',
         'assets/Audio/Bumbling-Burglars_Looping.mp3',
-        'assets/Audio/Funk-Soul.mp3',
+        'assets/Audio/Bama-Country.mp3',
+        'assets/Audio/Beachfront-Celebration.mp3',
+        'assets/Audio/Easy-Jam.mp3',
+        'assets/Audio/Whiskey-on-the-Mississippi.mp3',
+        'assets/Audio/ZigZag.mp3',
         'assets/Audio/Carrousel.mp3',
-
-        'assets/Audio/music-demo.mp3',
+        'assets/Audio/music-demo.mp3'
     ];
     private musicTracks: Array<Howl> = [];
     private currentTrack: number = 0;

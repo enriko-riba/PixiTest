@@ -29,14 +29,14 @@
     <None Include="assets\Images\background\Canyon.png" />
     <None Include="assets\Images\background\ground.png" />
     <None Include="assets\Images\background\Mountains.png" />
-    <Content Include="assets\Audio\Bama Country.mp3" />
-    <Content Include="assets\Audio\Beachfront Celebration.mp3" />
+    <Content Include="assets\Audio\Bama-Country.mp3" />
+    <Content Include="assets\Audio\Beachfront-Celebration.mp3" />
     <Content Include="assets\Audio\credits.txt" />
-    <Content Include="assets\Audio\Easy Jam.mp3" />
+    <Content Include="assets\Audio\Easy-Jam.mp3" />
     <Content Include="assets\Audio\effects\jump-atk01.mp3" />
     <Content Include="assets\Audio\effects\pain01.mp3" />
     <Content Include="assets\Audio\effects\pain02.mp3" />
-    <Content Include="assets\Audio\Whiskey on the Mississippi.mp3" />
+    <Content Include="assets\Audio\Whiskey-on-the-Mississippi.mp3" />
     <Content Include="assets\Audio\ZigZag.mp3" />
     <Content Include="assets\Images\Effects\hit.png" />
     <Content Include="assets\Images\Effects\load.png" />
@@ -158,7 +158,6 @@
     <Content Include="assets\Audio\effects\step.mp3" />
     <Content Include="assets\Audio\effects\win.mp3" />
     <Content Include="assets\Audio\effects\woosh.mp3" />
-    <Content Include="assets\Audio\Funk-Soul.mp3" />
     <Content Include="assets\Audio\music-demo.mp3" />
     <Content Include="assets\Audio\Two-Finger-Johnny.mp3" />
     <None Include="assets\Images\Gui\rect.png" />
