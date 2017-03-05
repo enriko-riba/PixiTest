@@ -18,6 +18,10 @@ export class MovementController {
     private readonly JUMP_FORCE = 17000;
     private readonly JUMP_ATTACK_FORCE = -14000;
 
+    private readonly JUMP_COOLDOWN = 500;
+    private readonly JUMP_ATTACK_COOLDOWN = 2000;
+
+
     private nextJumpAllowed: number = 0;
     private nextJumpDownAllowed: number = 0;
 
@@ -29,9 +33,9 @@ export class MovementController {
     private isJumping = false;
     private newState: MovementState = MovementState.Idle;
 
-    private isTouchLeft: boolean;
-    private isTouchRight: boolean;
-    private isTouchJump: boolean;
+    //private isTouchLeft: boolean;
+    //private isTouchRight: boolean;
+    //private isTouchJump: boolean;
 
     constructor(world: WorldP2) {
         this.world = world;
@@ -78,13 +82,13 @@ export class MovementController {
         if (direction === MovementState.JumpUp) {
             forceVector = [0, this.JUMP_FORCE];
         } else if (direction === MovementState.JumpLeft) {
-            forceVector = [-this.JUMP_FORCE * 0.120, this.JUMP_FORCE];
+            forceVector = [-this.JUMP_FORCE * 0.10, this.JUMP_FORCE];
         } else if (direction === MovementState.JumpRight) {
-            forceVector = [this.JUMP_FORCE * 0.120, this.JUMP_FORCE];
+            forceVector = [this.JUMP_FORCE * 0.10, this.JUMP_FORCE];
         }
         this.world.playerBody.applyImpulse(forceVector);
-        this.nextJumpAllowed = performance.now() + 450;
         this.world.clearContactsForBody(this.world.playerBody);
+        this.nextJumpAllowed = performance.now() + this.JUMP_COOLDOWN;
     }
 
     public StartJumpDown(): void {
@@ -103,13 +107,18 @@ export class MovementController {
                 this.newState = MovementState.JumpDown;
                 break;
         }
-        console.log("state change: " + MovementState[this.movementState] + " -> " + MovementState[this.newState]);
+        //console.log("state change: " + MovementState[this.movementState] + " -> " + MovementState[this.newState]);
         this.movementState = this.newState;
 
         var forceVector: number[] = [0, this.JUMP_ATTACK_FORCE];
         this.world.playerBody.setZeroForce();
         this.world.playerBody.applyImpulse(forceVector);
-        this.nextJumpDownAllowed = performance.now() + 1000;
+        this.nextJumpDownAllowed = performance.now() + this.JUMP_ATTACK_COOLDOWN;
+
+        this.isInteractive = false;
+        setTimeout(() => {
+            this.isInteractive = true, this.JUMP_ATTACK_COOLDOWN * 0.5;
+        });
 
         ko.postbox.publish<IMoveEvent>(MOVE_TOPIC, {
             newState: this.newState,
@@ -133,8 +142,10 @@ export class MovementController {
         const KEY_DOWN: number = 40;
         const SPACE: number = 32;
 
-        var isMovingVerticalyp = Math.abs(this.world.playerBody.velocity[1]) > 0.01;
-        if (isMovingVerticalyp) {
+        this.newState = MovementState.Idle;
+
+        var isMovingVerticaly = Math.abs(this.world.playerBody.velocity[1]) > 0.01;
+        if (isMovingVerticaly) {
             let hasOnlySensorContacts = this.world.playerContacts.every((body) => body.shapes[0].sensor);
             this.isJumping = hasOnlySensorContacts;
         } else {
@@ -159,17 +170,16 @@ export class MovementController {
 
 
         var canRun = Global.stats.getStat(StatType.Dust) > 1;
-        var newIsJumping: boolean = false;
         var newIsRunning: boolean = this.kbd.IsKeyDown(KEY_SHIFT) && canRun && this._isInteractive;
 
-        if (this.kbd.IsKeyDown(KEY_A) || this.kbd.IsKeyDown(KEY_LEFT) || this.isTouchLeft) {
+        if (this.kbd.IsKeyDown(KEY_A) || this.kbd.IsKeyDown(KEY_LEFT) /*|| this.isTouchLeft*/) {
             this.newState = MovementState.Left;
-        } else if (this.kbd.IsKeyDown(KEY_D) || this.kbd.IsKeyDown(KEY_RIGHT) || this.isTouchRight) {
+        } else if (this.kbd.IsKeyDown(KEY_D) || this.kbd.IsKeyDown(KEY_RIGHT) /*|| this.isTouchRight*/) {
             this.newState = MovementState.Right;
         }
 
         //  check if jump is pressed
-        if ((this.kbd.IsKeyDown(KEY_W) || this.kbd.IsKeyDown(KEY_UP) || this.kbd.IsKeyDown(SPACE) || this.isTouchJump) && this.CanJump) {
+        if ((this.kbd.IsKeyDown(KEY_W) || this.kbd.IsKeyDown(KEY_UP) || this.kbd.IsKeyDown(SPACE) /*|| this.isTouchJump*/) && this.CanJump) {
             if (this.movementState === MovementState.Left) {
                 this.newState = MovementState.JumpLeft;
             } else if (this.movementState === MovementState.Right) {
@@ -182,7 +192,7 @@ export class MovementController {
 
         //  has state changed
         if (this.newState !== this.movementState || newIsRunning !== this.IsRunning) {
-            //console.log("state change: " + MovementState[this.movementState] + " -> " + MovementState[this.newState]);
+            let newIsJumping: boolean = false;
             switch (this.newState) {
                 case MovementState.JumpLeft:
                     newIsJumping = true;
@@ -208,8 +218,8 @@ export class MovementController {
         //  update new states
         this.movementState = this.newState;
         this.isRunning = newIsRunning;
-        this.newState = MovementState.Idle;
-        this.isTouchJump = false;
+        //
+        //this.isTouchJump = false;
     }
 
     private calcMovementVelocity(): number {

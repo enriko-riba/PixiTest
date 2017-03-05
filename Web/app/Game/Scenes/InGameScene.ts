@@ -573,7 +573,7 @@ export class InGameScene extends Scene {
      */
     private addCollectibleTween(dispObj: PIXI.DisplayObject): void {
         var orgScaleX = dispObj.scale.x;
-        var orgScaleY = dispObj.scale.y;
+        //var orgScaleY = dispObj.scale.y;
         var upX = dispObj.position.x + 45;
         var upY = dispObj.position.y + 160;
 
@@ -639,19 +639,18 @@ export class InGameScene extends Scene {
                 Global.snd.jump();
                 break;
 
-            //  TODO: jmpdown sound should be a kiai or banzai like sound - not a hit sound
             case MovementState.JumpDownRight:
-                this.hero.PlayAnimation("jumpdownright", ANIMATION_FPS_NORMAL);
+                this.hero.PlayAnimation("jumpdownright", ANIMATION_FPS_NORMAL + ANIMATION_FPS_SLOW, false);
                 Global.snd.jumpAttack();
                 break;
 
             case MovementState.JumpDownLeft:
-                this.hero.PlayAnimation("jumpdownleft", ANIMATION_FPS_NORMAL);
+                this.hero.PlayAnimation("jumpdownleft", ANIMATION_FPS_NORMAL + ANIMATION_FPS_SLOW, false);
                 Global.snd.jumpAttack();
                 break;
 
             case MovementState.JumpDown:
-                this.hero.PlayAnimation("jumpdown", ANIMATION_FPS_NORMAL);
+                this.hero.PlayAnimation("jumpdown", ANIMATION_FPS_NORMAL + ANIMATION_FPS_SLOW, false);
                 Global.snd.jumpAttack();
                 break;
         }
@@ -816,7 +815,10 @@ export class InGameScene extends Scene {
                     this.handleMobInteraction(mob, body);
                 }
             }
-            if (this.hero.MovementState > MovementState.JumpUp) {
+            if (this.hero.MovementState === MovementState.JumpDown || 
+                this.hero.MovementState === MovementState.JumpDownLeft ||
+                this.hero.MovementState === MovementState.JumpDownRight
+            ) {
                 this.startGroundShake(400, 6);
             }
         } else if (verticalVelocity > SMOKE_VELOCITY) {
