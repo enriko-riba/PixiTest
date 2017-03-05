@@ -3,21 +3,18 @@
 import * as Global from "../Global";
 import * as TWEEN from "tween";
 import * as ko from "knockout";
-import * as AjaxHelper from "app/Common/AjaxHelper";
 
 import { Scene } from "app/_engine/Scene";
 import { Parallax } from "app/_engine/Parallax";
 import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
 import { Mob, AtrType } from "../Mobs/Mob";
 import { Hud } from "../Hud";
-import { SoundMan } from "../SoundMan";
 import { LevelLoader, ILevel, ILevelMap, IMapEntity } from "../LevelLoader";
 import { QuestManager } from "../QuestSystem/QuestManager";
-import { QuestState } from "../QuestSystem/QuestState";
 import { WorldP2 } from "../Objects/WorldP2";
 import { Bullet } from "../Objects/Bullet";
 import { OptionsScene } from "./OptionsScene";
-import { DPS_TOPIC, IDpsChangeEvent, StatType, PlayerStats } from "../Player/PlayerStats";
+import { DPS_TOPIC, IDpsChangeEvent, StatType } from "../Player/PlayerStats";
 import { HeroCharacter, BURN_TOPIC, IBurnEvent } from "../Player/HeroCharacter";
 import { MovementState } from "../Player/MovementState";
 import { MOVE_TOPIC, IMoveEvent } from "../Player/MovementController";
@@ -110,7 +107,6 @@ export class InGameScene extends Scene {
     private currentLevel: ILevel;
     private questMngr: QuestManager;
 
-    private shakeGroundYFilter: PIXI.filters.BlurYFilter;
     private shakeDuration: number = 0;
     private shakeEnd: number = 0;
     private nextShake: number = 0;
@@ -136,13 +132,13 @@ export class InGameScene extends Scene {
                 Date.now;  /*none found - fallback to browser default */
         })();
 
-       
+
         this.setup();
     }
 
     /**
-    * Sets up the scene.
-    */
+     * Sets up the scene.
+     */
     private setup(): void {
         PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.LINEAR;
 
@@ -150,7 +146,7 @@ export class InGameScene extends Scene {
         this.worldContainer.scale.y = -1;
         this.addChild(this.worldContainer);
 
-        this.hud = new Hud();        
+        this.hud = new Hud();
         this.HudOverlay = this.hud;
 
         //-----------------------------
@@ -187,7 +183,7 @@ export class InGameScene extends Scene {
             balloon.setFollowTarget(this.hero);
         }
     };
-    
+
     /**
      * Updates physics and handles player collisions.
      * @param dt elapsed time in milliseconds
@@ -329,7 +325,7 @@ export class InGameScene extends Scene {
      * Handles player collision with interactive objects.
      * @param body
      */
-    private handleInteractiveCollision(body: any): void {        
+    private handleInteractiveCollision(body: any): void {
         var dispObj: PIXI.DisplayObject = body.DisplayObject as PIXI.DisplayObject;
 
 
@@ -525,7 +521,7 @@ export class InGameScene extends Scene {
             }
         }
         return null;
-    }
+    };
 
 
     /**
@@ -535,20 +531,20 @@ export class InGameScene extends Scene {
     private addDropItem(mob: Mob, itemBody: p2.Body): void {
         let dispObj = (itemBody as any).DisplayObject as PIXI.DisplayObject;
         dispObj.x = mob.x;
-        dispObj.y = mob.y + 40;        
+        dispObj.y = mob.y + 40;
         this.worldContainer.addChild(dispObj);
 
         //  tween from mob position to random position near hero
         var upX = dispObj.position.x + 75;
         var upY = dispObj.position.y + 200;
 
-        
+
 
         var moveUp = new TWEEN.Tween(dispObj.position)
             .to({ x: upX, y: upY }, 400)
             .onComplete(() => {
                 itemBody.position = [dispObj.position.x, dispObj.position.y];
-                this.wp2.addBody(itemBody)
+                this.wp2.addBody(itemBody);
             });
 
 
@@ -680,7 +676,7 @@ export class InGameScene extends Scene {
         return now;
     };
 
-        /**
+    /**
      *  Invokes the level loading.
      */
     public StartLevel(levelId: number) {
@@ -723,7 +719,7 @@ export class InGameScene extends Scene {
             //  now remove all other display objects except hero
             var all = this.worldContainer.children.filter((c: PIXI.DisplayObject) => c.name !== "hero");
             all.forEach((child: any) => {
-                this.worldContainer.removeChild(child);                
+                this.worldContainer.removeChild(child);
             });
             this.wp2.clearLevel();
             this.bullets = [];
@@ -806,7 +802,7 @@ export class InGameScene extends Scene {
         const ATTACK_VELOCITY: number = 545;
 
         let body: p2.Body = event.body as p2.Body;
-        let verticalVelocity = Math.abs(event.velocity[1])
+        let verticalVelocity = Math.abs(event.velocity[1]);
         if (verticalVelocity > 400) {
             console.log("Vert velocity: " + verticalVelocity);
         }
@@ -820,7 +816,7 @@ export class InGameScene extends Scene {
                     this.handleMobInteraction(mob, body);
                 }
             }
-            if (this.hero.MovementState > MovementState.JumpUp){
+            if (this.hero.MovementState > MovementState.JumpUp) {
                 this.startGroundShake(400, 6);
             }
         } else if (verticalVelocity > SMOKE_VELOCITY) {

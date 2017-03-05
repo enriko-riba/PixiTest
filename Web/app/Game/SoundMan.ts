@@ -6,7 +6,6 @@ export class SoundMan {
     private walkSnd: Howl;
     private jumpSnd1: Howl;
     private jumpSnd2: Howl;
-    private hitSnd: Howl;
     private burnSnd: Howl;
     private coinSnd: Howl;
     private gemSnd: Howl;
@@ -119,7 +118,7 @@ export class SoundMan {
             preload: true,
             autoplay: false,
             loop: false,
-            volume: 1, 
+            volume: 1,
         });
         this.hitMag1 = new Howl({
             src: ['assets/Audio/effects/hit-mag01.mp3'],
@@ -142,7 +141,7 @@ export class SoundMan {
             loop: false,
             volume: 1
         });
-        
+
         this.woosh = new Howl({
             src: ['assets/Audio/effects/woosh.mp3'],
             preload: true,
@@ -183,7 +182,7 @@ export class SoundMan {
 
     public get FxVolume() { return this.fxVolume; }
     public set FxVolume(value: number) {
-        this.fxVolume = value;       
+        this.fxVolume = value;
     }
 
 
@@ -232,9 +231,9 @@ export class SoundMan {
         this.walkSnd.pause();
     }
     public walk(isRunning?: boolean) {
-        this.walkSnd.rate(isRunning ? 2.0 : 1.0)
+        this.walkSnd.rate(isRunning ? 2.0 : 1.0);
         if (!this.walkSnd.playing()) {
-            this.walkSnd.volume(this.fxVolume);          
+            this.walkSnd.volume(this.fxVolume);
             this.walkSnd.play();
         }
     }
@@ -312,7 +311,7 @@ export class SoundMan {
                 return i;
             }
         }
-        return -1;        
+        return -1;
     }
 
     public stopTrack() {

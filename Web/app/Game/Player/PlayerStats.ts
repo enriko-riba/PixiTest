@@ -1,8 +1,6 @@
 ﻿import * as ko from "knockout";
 import * as AjaxHelper from "app/Common/AjaxHelper";
 
-import { Dictionary } from "app/_engine/Dictionary";
-
 declare var baseUrl: string;
 
 
@@ -293,7 +291,7 @@ export class PlayerStats {
                 this.scevent.NewValue = this.characterLevel;
                 this.scevent.Stats = this.stats;
                 ko.postbox.publish<IStatChangeEvent>(STATCHANGE_TOPIC, this.scevent);
-                
+
                 //  atr change event
                 newValue = this.stats[StatType.AttributePoints] + 5;
                 this.scevent.Type = StatType.AttributePoints;
@@ -314,8 +312,8 @@ export class PlayerStats {
                 this.scevent.Stats = this.stats;
 
                 //this.saveUserState(false);
-            } 
-        } 
+            }
+        }
 
         ko.postbox.publish<IStatChangeEvent>(STATCHANGE_TOPIC, this.scevent);
     }
@@ -337,13 +335,13 @@ export class PlayerStats {
      * Searches the exp level starting from the current exp level.
      * @param exp
      */
-    private findExpLevelInternal(exp: number) {
-        for (var i = this.characterLevel, len = PlayerStats.expForLevel.length; i < len; i++) {
-            if (exp < PlayerStats.expForLevel[i]) {
-                return i - 1;
-            }
-        }
-    }
+    //private findExpLevelInternal(exp: number) {
+    //    for (var i = this.characterLevel, len = PlayerStats.expForLevel.length; i < len; i++) {
+    //        if (exp < PlayerStats.expForLevel[i]) {
+    //            return i - 1;
+    //        }
+    //    }
+    //}
 
     private rebuildStats() {
         //  calc max & regen stats

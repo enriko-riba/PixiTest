@@ -2,7 +2,7 @@
 import * as ko from "knockout";
 
 import { Button } from "app/_engine/Button";
-import { InGameScene, createParticleEmitter } from "./Scenes/InGameScene";
+import { createParticleEmitter } from "./Scenes/InGameScene";
 import { STATCHANGE_TOPIC, IStatChangeEvent, StatType } from "./Player/PlayerStats";
 import { AnimatedSprite, AnimationSequence } from "../_engine/AnimatedSprite";
 
@@ -76,7 +76,7 @@ export class Hud extends PIXI.Container {
 
         //  HP
         {
-            let y = 5;
+            let y: number = 5;
 
             let pnl = new PIXI.Sprite(PIXI.loader.resources["assets/_distribute/stat_panel.png"].texture);
             pnl.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.LINEAR;
@@ -186,7 +186,7 @@ export class Hud extends PIXI.Container {
         this.characterMngr.on("pointerover", () => this.characterMngr.tint = 0xff9944);
         this.characterMngr.on("pointerout", () => this.characterMngr.tint = 0xffffff);
         var atrpts = Global.stats.getStat(StatType.AttributePoints);
-        this.characterMngr.visible = atrpts>0;
+        this.characterMngr.visible = atrpts > 0;
         this.addChild(this.characterMngr);
         this.characterMngr.PlayAnimation("play", 12, true);
 
@@ -204,14 +204,14 @@ export class Hud extends PIXI.Container {
 
         this.txtAtrPts = new PIXI.Text("points available", Global.MSG_WARN_STYLE);
         this.txtAtrPts.resolution = window.devicePixelRatio;
-        this.txtAtrPts.anchor.set(0, 0)
+        this.txtAtrPts.anchor.set(0, 0);
         this.txtAtrPts.position.set(80, 260);
         this.addChild(this.txtAtrPts);
         this.txtAtrPts.visible = atrpts > 0;
 
 
         //  TODO: remove or make a hud for lvl, position
-        
+
         this.txtPlayerPosition = new PIXI.Text("", Global.TXT_STYLE);
         this.txtPlayerPosition.resolution = window.devicePixelRatio;
 
@@ -333,7 +333,7 @@ export class Hud extends PIXI.Container {
         var stl = style || Global.MSG_HP_STYLE;
         var txtInfo = new PIXI.Text(message, stl);
         offsetX = offsetX || 0;
-        txtInfo.position.set((Global.SCENE_WIDTH / 2) + offsetX , Global.SCENE_HEIGHT - position.y - 70);
+        txtInfo.position.set((Global.SCENE_WIDTH / 2) + offsetX, Global.SCENE_HEIGHT - position.y - 70);
         txtInfo.scale.set(1, 1);
 
         this.addChild(txtInfo);
@@ -359,16 +359,15 @@ export class Hud extends PIXI.Container {
      * @param message the message to be added
      */
     private addLvlUpMessage(message: string): void {
-        var stl: PIXI.ITextStyleStyle =
-            {
-                align: "center",
-                padding: 0,
-                fontSize: "64px",
-                fontFamily: Global.fontFamily,
-                fill: 0x335533,
-                strokeThickness: 6,
-                stroke: 0xccccff
-            };
+        var stl: PIXI.ITextStyleStyle = {
+            align: "center",
+            padding: 0,
+            fontSize: "64px",
+            fontFamily: Global.fontFamily,
+            fill: 0x335533,
+            strokeThickness: 6,
+            stroke: 0xccccff
+        };
 
         var txtInfo = new PIXI.Text(message, stl);
         txtInfo.scale.set(1, 1);

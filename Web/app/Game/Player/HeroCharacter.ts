@@ -4,7 +4,7 @@ import { WorldP2 } from "../Objects/WorldP2";
 import { createParticleEmitter } from "../Scenes/InGameScene";
 import { MovementController } from "./MovementController";
 import { MovementState } from "./MovementState";
-import { PlayerStats, StatType } from "./PlayerStats";
+import { StatType } from "./PlayerStats";
 import * as ko from "knockout";
 
 
@@ -16,13 +16,13 @@ export interface IBurnEvent {
 
 export class HeroCharacter extends AnimatedSprite {
     private readonly HERO_FRAME_SIZE: number = 64;
-   
+
 
     private emitterPixies: PIXI.particles.Emitter;
     private emitterBuffs: PIXI.particles.Emitter;
     private movementCtrl: MovementController;
     private wp2: WorldP2;
-    
+
 
     constructor(container: PIXI.Container) {
         super();
@@ -78,8 +78,8 @@ export class HeroCharacter extends AnimatedSprite {
      * Sets the physics world instance.
      */
     public SetWorldP2(wp2: WorldP2) {
-        this.wp2 = wp2;        
-        this.movementCtrl = new MovementController(this.wp2, this);
+        this.wp2 = wp2;
+        this.movementCtrl = new MovementController(this.wp2);
     }
 
     /**
@@ -97,20 +97,6 @@ export class HeroCharacter extends AnimatedSprite {
     }
 
 
-    /**
-     * Returns if the player attributes allow running.
-     */
-    public get CanRun(): boolean {
-        return Global.stats.getStat(StatType.Dust) > 1;
-    }
-
-    /**
-     * Returns if the player learned jump attacks.
-     */
-    public get CanJumpAttack(): boolean {
-        return Global.stats.HasJumpAtack;
-    }
-    
 
     /**
      * Checks movementCtrl.MovementState and updates pixi dust emitter and consumption.

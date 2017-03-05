@@ -1,11 +1,11 @@
 ﻿import { KeyboardMapper } from "app/_engine/KeyboardMapper";
 import { MovementState } from "./MovementState";
 import { WorldP2 } from "../Objects/WorldP2";
-import { HeroCharacter } from "../Player//HeroCharacter";
+import { StatType } from "./PlayerStats";
 import * as Global from "../Global";
 import * as ko from "knockout";
 
-export var MOVE_TOPIC = "move_event";
+export var MOVE_TOPIC: string = "move_event";
 export interface IMoveEvent {
     newState: MovementState;
     oldState: MovementState;
@@ -22,7 +22,6 @@ export class MovementController {
     private nextJumpDownAllowed: number = 0;
 
     private world: WorldP2;
-    private hero: HeroCharacter;
     private movementState: MovementState = -1;
     private kbd = new KeyboardMapper();
 
@@ -34,9 +33,8 @@ export class MovementController {
     private isTouchRight: boolean;
     private isTouchJump: boolean;
 
-    constructor(world: WorldP2, hero: HeroCharacter) {
+    constructor(world: WorldP2) {
         this.world = world;
-        this.hero = hero;
     }
 
     private _isInteractive: boolean = true;
@@ -137,7 +135,7 @@ export class MovementController {
 
         var isMovingVerticalyp = Math.abs(this.world.playerBody.velocity[1]) > 0.01;
         if (isMovingVerticalyp) {
-            let hasOnlySensorContacts = this.world.playerContacts.every((body, idx) => body.shapes[0].sensor);
+            let hasOnlySensorContacts = this.world.playerContacts.every((body) => body.shapes[0].sensor);
             this.isJumping = hasOnlySensorContacts;
         } else {
             this.isJumping = false;
@@ -145,7 +143,7 @@ export class MovementController {
 
         //  no movement (except jump down) while jumping
         if (this.isJumping && this._isInteractive) {
-            if ((this.kbd.IsKeyDown(KEY_S) || this.kbd.IsKeyDown(KEY_DOWN)) && this.hero.CanJumpAttack && this.nextJumpDownAllowed < performance.now()) {
+            if ((this.kbd.IsKeyDown(KEY_S) || this.kbd.IsKeyDown(KEY_DOWN)) && Global.stats.HasJumpAtack && this.nextJumpDownAllowed < performance.now()) {
                 this.StartJumpDown();
             }
             //  calculate the horizontal velocity
@@ -158,11 +156,11 @@ export class MovementController {
             var v: number = this.calcMovementVelocity();
             this.world.playerBody.velocity[0] = v;
         }
-       
 
-        
+
+        var canRun = Global.stats.getStat(StatType.Dust) > 1;
         var newIsJumping: boolean = false;
-        var newIsRunning: boolean = this.kbd.IsKeyDown(KEY_SHIFT) && this.hero.CanRun && this._isInteractive;        
+        var newIsRunning: boolean = this.kbd.IsKeyDown(KEY_SHIFT) && canRun && this._isInteractive;
 
         if (this.kbd.IsKeyDown(KEY_A) || this.kbd.IsKeyDown(KEY_LEFT) || this.isTouchLeft) {
             this.newState = MovementState.Left;
@@ -183,7 +181,7 @@ export class MovementController {
         }
 
         //  has state changed
-        if (this.newState !== this.movementState || newIsRunning != this.IsRunning) {
+        if (this.newState !== this.movementState || newIsRunning !== this.IsRunning) {
             //console.log("state change: " + MovementState[this.movementState] + " -> " + MovementState[this.newState]);
             switch (this.newState) {
                 case MovementState.JumpLeft:
