@@ -29,11 +29,23 @@
     <None Include="assets\Images\background\Canyon.png" />
     <None Include="assets\Images\background\ground.png" />
     <None Include="assets\Images\background\Mountains.png" />
+    <Content Include="assets\Audio\Bama-Country.mp3" />
+    <Content Include="assets\Audio\Beachfront-Celebration.mp3" />
+    <Content Include="assets\Audio\credits.txt" />
+    <Content Include="assets\Audio\Easy-Jam.mp3" />
+    <Content Include="assets\Audio\effects\jump-atk01.mp3" />
+    <Content Include="assets\Audio\effects\pain01.mp3" />
+    <Content Include="assets\Audio\effects\pain02.mp3" />
+    <Content Include="assets\Audio\Whiskey-on-the-Mississippi.mp3" />
+    <Content Include="assets\Audio\ZigZag.mp3" />
     <Content Include="assets\Images\Effects\hit.png" />
     <Content Include="assets\Images\Effects\load.png" />
     <Content Include="assets\Images\Gui\exp_fill.png" />
     <Content Include="assets\Images\Gui\exp_panel.png" />
     <Content Include="assets\Images\Gui\exp_prefill.png" />
+    <None Include="assets\Images\Gui\gui_lvl_up.png" />
+    <None Include="assets\Images\Gui\gui_minus.png" />
+    <None Include="assets\Images\Gui\gui_plus.png" />
     <Content Include="assets\Levels\quests.json" />
     <None Include="assets\Unused\trees01_dbg.png" />
     <None Include="assets\Unused\trees02_dbg.png" />
@@ -146,7 +158,6 @@
     <Content Include="assets\Audio\effects\step.mp3" />
     <Content Include="assets\Audio\effects\win.mp3" />
     <Content Include="assets\Audio\effects\woosh.mp3" />
-    <Content Include="assets\Audio\Funk-Soul.mp3" />
     <Content Include="assets\Audio\music-demo.mp3" />
     <Content Include="assets\Audio\Two-Finger-Johnny.mp3" />
     <None Include="assets\Images\Gui\rect.png" />
@@ -287,6 +298,7 @@
     <TypeScriptCompile Include="app\Game\Mobs\BasicStaticAI.ts" />
     <TypeScriptCompile Include="app\Game\Mobs\Mob.ts" />
     <TypeScriptCompile Include="app\Game\Objects\Bullet.ts" />
+    <TypeScriptCompile Include="app\Game\Scenes\CharacterScene.ts" />
     <TypeScriptCompile Include="app\Game\Scenes\OptionsScene.ts" />
     <TypeScriptCompile Include="app\Game\Objects\Platform.ts" />
     <TypeScriptCompile Include="app\Game\Objects\Lava.ts" />
@@ -428,6 +440,9 @@
     <Compile Include="Server\DocumentDB.cs" />
     <Compile Include="Server\Models\User.cs" />
     <Compile Include="Server\Models\UserDataBindingModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">12.0</VisualStudioVersion>

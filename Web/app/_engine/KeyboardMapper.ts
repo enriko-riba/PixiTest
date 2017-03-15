@@ -6,13 +6,13 @@ import { State } from "./SceneManager";
 export class KeyboardMapper {
 
     /**
-    *   Stores keyboard pressed state.
-    */
+     *   Stores keyboard pressed state.
+     */
     private keyboard: boolean[];
 
     /**
-    *   Stores an array of KeyboardAction instances per Global.State. The 'state' indexer is a numeric value from the Global.State enum.
-    */
+     *   Stores an array of KeyboardAction instances per Global.State. The 'state' indexer is a numeric value from the Global.State enum.
+     */
     private stateActions: { [state: number]: KeyboardAction[]; };
 
     private ALT_KEY: number = 18;
@@ -21,8 +21,8 @@ export class KeyboardMapper {
 
 
     /**
-    *   Creates a new KeyboardMapper instance.
-    */
+     *   Creates a new KeyboardMapper instance.
+     */
     constructor() {
         this.stateActions = {};
         this.keyboard = [];
@@ -33,8 +33,8 @@ export class KeyboardMapper {
     }
 
     /*
-    *   Invokes needed action handlers based on the pressed keys.
-    */
+     *   Invokes needed action handlers based on the pressed keys.
+     */
     public update(currentState: State) {
 
         //  state specific handler
@@ -48,8 +48,8 @@ export class KeyboardMapper {
     }
 
     /**
-    *   Searches for all keyboard handlers with matching current pressed key combinations and invokes them.
-    */
+     *   Searches for all keyboard handlers with matching current pressed key combinations and invokes them.
+     */
     private findHandlerAndInvoke(actions: KeyboardAction[]) {
         if (actions) {
             var len = actions.length;

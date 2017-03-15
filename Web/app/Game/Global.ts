@@ -8,7 +8,7 @@ export var SCENE_HEIGHT: number = 768;
 export var BTN_WIDTH: number = 90;
 export var BTN_HEIGHT: number = 40;
 
-export var BACK_COLOR = 0x3a1010;//0x3a1818;
+export var BACK_COLOR = 0x3a1010;
 
 export var fontFamily = "Farsan";
 
@@ -35,7 +35,7 @@ export var TXT_STYLE: PIXI.ITextStyleStyle =
         strokeThickness: 3,
         stroke: 0xcfbfbf
     };
-export var TXT_SMALL_STYLE: PIXI.ITextStyleStyle =
+export var EXP_BAR_STYLE: PIXI.ITextStyleStyle =
     {
         align: "center",
         padding: 0,
@@ -46,17 +46,17 @@ export var TXT_SMALL_STYLE: PIXI.ITextStyleStyle =
         stroke: 0xffffff
     };
 
-export var INFO_STYLE: PIXI.ITextStyleStyle =
+export var MSG_HP_STYLE: PIXI.ITextStyleStyle =
     {
         align: "center",
         padding: 0,
         fontSize: "25px",
         fontFamily: fontFamily,
-        fill: 0x905b15,
+        fill: 0x904b15,
         strokeThickness: 3,
         stroke: 0x111111
     };
-export var INFO2_STYLE: PIXI.ITextStyleStyle =
+export var MSG_EXP_STYLE: PIXI.ITextStyleStyle =
     {
         align: "center",
         padding: 0,
@@ -65,6 +65,17 @@ export var INFO2_STYLE: PIXI.ITextStyleStyle =
         fill: 0x84c202,
         strokeThickness: 3,
         stroke: 0x112111
+    };
+
+export var MSG_COIN_STYLE: PIXI.ITextStyleStyle =
+    {
+        align: "center",
+        padding: 0,
+        fontSize: "26px",
+        fontFamily: fontFamily,
+        fill: 0xaaaa00,
+        strokeThickness: 3,
+        stroke: 0x904b15
     };
 
 export var QUEST_ITEM_STYLE: PIXI.ITextStyleStyle =
@@ -77,7 +88,7 @@ export var QUEST_ITEM_STYLE: PIXI.ITextStyleStyle =
         strokeThickness: 4,
         stroke: 0x111121
     };
-export var WARN_STYLE: PIXI.ITextStyleStyle =
+export var MSG_WARN_STYLE: PIXI.ITextStyleStyle =
     {
         align: "center",
         padding: 0,
@@ -115,24 +126,3 @@ export var GameLevels: {
             quests: undefined
         }
     };
-
-export var UserInfo: {
-    id: number;
-    name: string;
-    coins: number;
-    gold: number;
-    dust: number;
-    exp: number;
-    gamelevel: number;
-    position: PIXI.Point;
-} = {
-        id: 0,
-        name: "",
-        coins: 0,
-        gold: 0,
-        dust: 0,
-        exp: 0,
-        gamelevel: 0,
-        position: new PIXI.Point()
-    };
-

@@ -17,7 +17,7 @@ html, body {
 }
 
 .tab-content {
-    margin: 0 0 15px 0;    
+    margin: 0 0 15px 0;
 }
 
 p {
@@ -59,26 +59,38 @@ h2, .login-message {
     border: solid 2px $color;
     margin: 10px 20px;
     font-size: 1.15em;
-    width: 260px;
 
     div {
         padding: 10px 25px;
     }
 
     label {
-        position: absolute;
-        width: 150px;
-        left: 30px;
+        display: inline-block;
+        width: 90px;
     }
 
     input {
-        margin-left: 70px;
-        width: 100px;
         background-color: $back-color;
         border-style: ridge;
         padding-left: 10px;
         color: $data-color;
+        width: 100px;
     }
+}
+
+
+.container {
+    display: -webkit-flex; /* Safari */
+    display: flex;
+   
+     -webkit-flex-direction: row; /* Safari */
+    flex-direction: row;
+
+    justify-content: center;
+}
+
+.item {
+    flex-grow: 1;
 }
 
 .commands {
@@ -87,12 +99,12 @@ h2, .login-message {
 
 button {
     cursor: pointer;
-    min-height: 50px;
-    width: 264px;
+    min-height: 40px;
+    width: 200px;
     color: black;
     font-family: 'Chewy', Calibri, cursive;
     font-size: 18px;
-    background-color: $data-color;
+    //background-color: $data-color;
 
     &:disabled {
         cursor: not-allowed;

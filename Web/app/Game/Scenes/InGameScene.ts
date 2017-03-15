@@ -3,25 +3,23 @@
 import * as Global from "../Global";
 import * as TWEEN from "tween";
 import * as ko from "knockout";
-import * as AjaxHelper from "app/Common/AjaxHelper";
 
 import { Scene } from "app/_engine/Scene";
 import { Parallax } from "app/_engine/Parallax";
 import { AnimatedSprite, AnimationSequence } from "app/_engine/AnimatedSprite";
 import { Mob, AtrType } from "../Mobs/Mob";
 import { Hud } from "../Hud";
-import { SoundMan } from "../SoundMan";
 import { LevelLoader, ILevel, ILevelMap, IMapEntity } from "../LevelLoader";
 import { QuestManager } from "../QuestSystem/QuestManager";
-import { QuestState } from "../QuestSystem/QuestState";
 import { WorldP2 } from "../Objects/WorldP2";
 import { Bullet } from "../Objects/Bullet";
 import { OptionsScene } from "./OptionsScene";
-import { DPS_TOPIC, IDpsChangeEvent, StatType, PlayerStats } from "../Player/PlayerStats";
+import { DPS_TOPIC, IDpsChangeEvent, StatType } from "../Player/PlayerStats";
 import { HeroCharacter, BURN_TOPIC, IBurnEvent } from "../Player/HeroCharacter";
 import { MovementState } from "../Player/MovementState";
 import { MOVE_TOPIC, IMoveEvent } from "../Player/MovementController";
 import { CutScene } from "./CutScene";
+import { CharacterScene } from "./CharacterScene";
 
 import "../../../Scripts/pixi-particles";
 
@@ -99,9 +97,9 @@ export class InGameScene extends Scene {
     private readonly SCENE_HALF_WIDTH: number = Global.SCENE_WIDTH / 2;
 
     public worldContainer: PIXI.Container;
-    public hud = new Hud();
     public wp2: WorldP2;
     public hero: HeroCharacter;
+    private hud: Hud;
 
     private parallaxBackgrounds: Array<Parallax> = [];
 
@@ -109,7 +107,6 @@ export class InGameScene extends Scene {
     private currentLevel: ILevel;
     private questMngr: QuestManager;
 
-    private shakeGroundYFilter: PIXI.filters.BlurYFilter;
     private shakeDuration: number = 0;
     private shakeEnd: number = 0;
     private nextShake: number = 0;
@@ -135,24 +132,58 @@ export class InGameScene extends Scene {
                 Date.now;  /*none found - fallback to browser default */
         })();
 
+
+        this.setup();
+    }
+
+    /**
+     * Sets up the scene.
+     */
+    private setup(): void {
+        PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.LINEAR;
+
         this.worldContainer = new PIXI.Container();
         this.worldContainer.scale.y = -1;
         this.addChild(this.worldContainer);
 
+        this.hud = new Hud();
         this.HudOverlay = this.hud;
-        this.setup();
-    }
 
+        //-----------------------------
+        //  setup hero
+        //-----------------------------     
+        this.hero = new HeroCharacter(this.worldContainer);
+        this.hero.name = "hero";
+
+        ko.postbox.subscribe<IDpsChangeEvent>(DPS_TOPIC, this.handleDpsChange);
+        ko.postbox.subscribe<IMoveEvent>(MOVE_TOPIC, this.handleMoveChange);
+        ko.postbox.subscribe<IBurnEvent>(BURN_TOPIC, this.handleBurnChange);
+
+        //--------------------------------------
+        //  setup physics subsystem
+        //--------------------------------------
+        this.wp2 = new WorldP2();
+        this.hero.SetWorldP2(this.wp2);
+        this.worldContainer.addChild(this.hero);
+        this.questMngr = new QuestManager(this);
+        this.wp2.on("playerContact", this.onPlayerContact, this);
+        this.wp2.on("bulletContact", this.onBulletContact, this);
+
+        Global.sceneMngr.AddScene(new OptionsScene());
+        Global.sceneMngr.AddScene(new CutScene());
+        Global.sceneMngr.AddScene(new CharacterScene());
+        //this.resetPlayerStats();
+    };
     public onActivate = () => {
         this.hud.visible = true;
 
         //  special setup logic for tutorial
-        if (Global.UserInfo.gamelevel === 0) {
+        if (Global.stats.gameLevel === 0) {
             var balloon = this.worldContainer.getChildByName("balloon") as any;
             balloon.setFollowTarget(this.hero);
         }
     };
-    
+
     /**
      * Updates physics and handles player collisions.
      * @param dt elapsed time in milliseconds
@@ -294,7 +325,7 @@ export class InGameScene extends Scene {
      * Handles player collision with interactive objects.
      * @param body
      */
-    private handleInteractiveCollision(body: any): void {        
+    private handleInteractiveCollision(body: any): void {
         var dispObj: PIXI.DisplayObject = body.DisplayObject as PIXI.DisplayObject;
 
 
@@ -302,7 +333,7 @@ export class InGameScene extends Scene {
             case 1: //  small coin
                 Global.stats.increaseStat(StatType.Coins, 1);
                 this.addCollectibleTween(dispObj);
-                this.addInfoMessage(dispObj.position, "+1 coin");
+                this.hud.addInfoMessage(dispObj.position, "+1 coin", Global.MSG_COIN_STYLE, -100);
                 this.removeEntity(body);
                 Global.snd.coin();
                 break;
@@ -310,7 +341,7 @@ export class InGameScene extends Scene {
             case 2: //  coin
                 Global.stats.increaseStat(StatType.Coins, 10);
                 this.addCollectibleTween(dispObj);
-                this.addInfoMessage(dispObj.position, "+10 coins");
+                this.hud.addInfoMessage(dispObj.position, "+10 coins", Global.MSG_COIN_STYLE, -100);
                 this.removeEntity(body);
                 Global.snd.coin();
                 break;
@@ -318,7 +349,7 @@ export class InGameScene extends Scene {
             case 3: //  blue gem
                 Global.stats.increaseStat(StatType.Coins, 100);
                 this.addCollectibleTween(dispObj);
-                this.addInfoMessage(dispObj.position, "+100 coins");
+                this.hud.addInfoMessage(dispObj.position, "+100 coins", Global.MSG_COIN_STYLE, -100);
                 this.removeEntity(body);
                 Global.snd.gem();
                 break;
@@ -328,7 +359,7 @@ export class InGameScene extends Scene {
             //------------------------------------
 
             case 201:  //  kendo knowledge
-                this.addInfoMessage(dispObj.position, "Kendo knowledge acquired!");
+                this.hud.addInfoMessage(dispObj.position, "Kendo knowledge acquired!", Global.MSG_COIN_STYLE);
                 this.addCollectibleTween(dispObj);
                 this.removeEntity(body);
                 Global.snd.questItem();
@@ -336,7 +367,7 @@ export class InGameScene extends Scene {
                 break;
 
             case 202:  //  KI
-                this.addInfoMessage(dispObj.position, "1 Ki acquired!");
+                this.hud.addInfoMessage(dispObj.position, "1 Ki acquired!", Global.MSG_COIN_STYLE);
                 this.addCollectibleTween(dispObj);
                 this.removeEntity(body);
                 Global.snd.questItem();
@@ -352,7 +383,7 @@ export class InGameScene extends Scene {
                 {
                     let now = performance.now() / 1000;
                     if (!Global.stats.buffs[1000] || Global.stats.buffs[1000] < now) {
-                        this.addInfoMessage(dispObj.position, "Burn", Global.WARN_STYLE);
+                        this.hud.addInfoMessage(dispObj.position, "Burn", Global.MSG_WARN_STYLE, 100);
                     }
                     Global.stats.buffs[1000] = this.secondsFromNow(1);
                 }
@@ -362,7 +393,7 @@ export class InGameScene extends Scene {
                 {
                     let now = performance.now() / 1000;
                     if (!Global.stats.buffs[1001] || Global.stats.buffs[1001] < now) {
-                        this.addInfoMessage(dispObj.position, "Burn", Global.WARN_STYLE);
+                        this.hud.addInfoMessage(dispObj.position, "Burn", Global.MSG_WARN_STYLE, 100);
                     }
                     Global.stats.buffs[1001] = this.secondsFromNow(3);
                 }
@@ -411,7 +442,7 @@ export class InGameScene extends Scene {
         //  add exp       
         var exp = mob.Attributes[AtrType.HP] / 2;
         Global.stats.increaseStat(StatType.TotalExp, exp);
-        this.addInfoMessage(mob.position, `+${exp} exp`, Global.INFO2_STYLE);
+        this.hud.addInfoMessage(mob.position, `+${exp} exp`, Global.MSG_EXP_STYLE, -50);
     }
 
     /**
@@ -473,7 +504,7 @@ export class InGameScene extends Scene {
         }
 
         bullet.position = position;
-        bullet.Direction = new PIXI.Point(Global.UserInfo.position.x - position.x, Global.UserInfo.position.y - position.y);
+        bullet.Direction = new PIXI.Point(Global.stats.position.x - position.x, Global.stats.position.y - position.y);
         bullet.damage = damage;
         bullet.IsDead = false;
         bullet.body.velocity[0] = bullet.Direction.x * bullet.velocity;
@@ -490,7 +521,7 @@ export class InGameScene extends Scene {
             }
         }
         return null;
-    }
+    };
 
 
     /**
@@ -500,20 +531,20 @@ export class InGameScene extends Scene {
     private addDropItem(mob: Mob, itemBody: p2.Body): void {
         let dispObj = (itemBody as any).DisplayObject as PIXI.DisplayObject;
         dispObj.x = mob.x;
-        dispObj.y = mob.y + 40;        
+        dispObj.y = mob.y + 40;
         this.worldContainer.addChild(dispObj);
 
         //  tween from mob position to random position near hero
         var upX = dispObj.position.x + 75;
         var upY = dispObj.position.y + 200;
 
-        
+
 
         var moveUp = new TWEEN.Tween(dispObj.position)
             .to({ x: upX, y: upY }, 400)
             .onComplete(() => {
                 itemBody.position = [dispObj.position.x, dispObj.position.y];
-                this.wp2.addBody(itemBody)
+                this.wp2.addBody(itemBody);
             });
 
 
@@ -542,7 +573,7 @@ export class InGameScene extends Scene {
      */
     private addCollectibleTween(dispObj: PIXI.DisplayObject): void {
         var orgScaleX = dispObj.scale.x;
-        var orgScaleY = dispObj.scale.y;
+        //var orgScaleY = dispObj.scale.y;
         var upX = dispObj.position.x + 45;
         var upY = dispObj.position.y + 160;
 
@@ -564,95 +595,8 @@ export class InGameScene extends Scene {
         moveUp.chain(scale, moveAway).start();
     }
 
-    /**
-     * Ads text message about acquired quest items.
-     * @param message the message to be added
-     * @param style optional PIXI.ITextStyle
-     */
-    public addQuestItemMessage(message: string, style?: PIXI.ITextStyleStyle): void {
-        var stl = style || Global.QUEST_ITEM_STYLE;
-        var txtInfo = new PIXI.Text(message, stl);
-        txtInfo.anchor.set(0.5, 0.5);
-        txtInfo.position.set(this.hero.x, Global.SCENE_HEIGHT - 150);
-        txtInfo.scale.set(1, -1);   //  scale invert since everything is upside down due to coordinate system
-
-        this.worldContainer.addChild(txtInfo);
-
-        var scale = new TWEEN.Tween(txtInfo.scale)
-            .to({ x: 1.8, y: -1.8 }, 2200)
-            .easing(TWEEN.Easing.Linear.None);
-
-        var fade = new TWEEN.Tween(txtInfo)
-            .to({ alpha: 0 }, 3000)
-            .onComplete(() => this.worldContainer.removeChild(txtInfo));
-        scale.chain(fade).start();
-    }
-
-
-    /**
-     * Starts an animation tween with informational text moving upwards from the given position.
-     * @param position the start position of the message
-     * @param message the message to be added
-     * @param style optional PIXI.ITextStyle
-     */
-    public addInfoMessage(position: PIXI.Point, message: string, style?: PIXI.ITextStyleStyle): void {
-        var stl = style || Global.INFO_STYLE;
-        var txtInfo = new PIXI.Text(message, stl);
-        txtInfo.position.set(position.x, position.y);
-        txtInfo.scale.set(1, -1);   //  scale invert since everything is upside down due to coordinate system
-
-        this.worldContainer.addChild(txtInfo);
-
-        var dy = (position.y > Global.SCENE_HEIGHT / 2) ? - 250 : +250;
-        var upY = position.y + dy;
-        var moveUp = new TWEEN.Tween(txtInfo.position)
-            .to({ y: upY }, 2000);
-        moveUp.start();
-
-        var scale = new TWEEN.Tween(txtInfo.scale)
-            .to({ x: 1.6, y: -1.6 }, 2200)
-            .easing(TWEEN.Easing.Linear.None);
-
-        var fade = new TWEEN.Tween(txtInfo)
-            .to({ alpha: 0 }, 3000)
-            .onComplete(() => this.worldContainer.removeChild(txtInfo));
-        scale.chain(fade).start();
-    }
-
-    /**
-     * Sets up the scene.
-     */
-    private setup(): void {
-        PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.LINEAR;
-
-        //-----------------------------
-        //  setup hero
-        //-----------------------------     
-        this.hero = new HeroCharacter(this.worldContainer);
-        this.hero.name = "hero";
-
-        ko.postbox.subscribe<IDpsChangeEvent>(DPS_TOPIC, this.handleDpsChange);
-        ko.postbox.subscribe<IMoveEvent>(MOVE_TOPIC, this.handleMoveChange);
-        ko.postbox.subscribe<IBurnEvent>(BURN_TOPIC, this.handleBurnChange);
-
-        //--------------------------------------
-        //  setup physics subsystem
-        //--------------------------------------
-        this.wp2 = new WorldP2();
-        this.hero.SetWorldP2(this.wp2);
-        this.worldContainer.addChild(this.hero);
-        this.questMngr = new QuestManager(this);
-        this.wp2.on("playerContact", this.onPlayerContact, this);
-        this.wp2.on("bulletContact", this.onBulletContact, this);
-
-        Global.sceneMngr.AddScene(new OptionsScene());
-        Global.sceneMngr.AddScene(new CutScene());
-
-        //this.resetPlayerStats();
-    };
-
     private handleDpsChange = (event: IDpsChangeEvent) => {
-        this.addInfoMessage(this.hero.position, `${event.Amount} HP`);
+        this.hud.addInfoMessage(this.hero.position, `${event.Amount} HP`, Global.MSG_HP_STYLE, 50);
     };
 
     private handleMoveChange = (event: IMoveEvent) => {
@@ -695,19 +639,18 @@ export class InGameScene extends Scene {
                 Global.snd.jump();
                 break;
 
-            //  TODO: jmpdown sound should be a kiai or banzai like sound - not a hit sound
             case MovementState.JumpDownRight:
-                this.hero.PlayAnimation("jumpdownright", ANIMATION_FPS_NORMAL);
+                this.hero.PlayAnimation("jumpdownright", ANIMATION_FPS_NORMAL + ANIMATION_FPS_SLOW, false);
                 Global.snd.jumpAttack();
                 break;
 
             case MovementState.JumpDownLeft:
-                this.hero.PlayAnimation("jumpdownleft", ANIMATION_FPS_NORMAL);
+                this.hero.PlayAnimation("jumpdownleft", ANIMATION_FPS_NORMAL + ANIMATION_FPS_SLOW, false);
                 Global.snd.jumpAttack();
                 break;
 
             case MovementState.JumpDown:
-                this.hero.PlayAnimation("jumpdown", ANIMATION_FPS_NORMAL);
+                this.hero.PlayAnimation("jumpdown", ANIMATION_FPS_NORMAL + ANIMATION_FPS_SLOW, false);
                 Global.snd.jumpAttack();
                 break;
         }
@@ -733,41 +676,6 @@ export class InGameScene extends Scene {
     };
 
     /**
-    * Assigns default player stats.
-    */
-    public resetPlayerStats(): JQueryDeferred<boolean> {
-        var promise = $.Deferred();
-
-        let model = { id: Global.UserInfo.id};
-        AjaxHelper.GetWithData(baseUrl + "/api/user/data", model, (data, status) => {
-            console.log("resetPlayerStats() response", data);
-
-            Global.UserInfo.coins = data.Coins;
-            Global.UserInfo.gold = data.Gold;
-            Global.UserInfo.gamelevel = data.LastLevel;
-            Global.UserInfo.dust = data.Dust;
-            Global.UserInfo.exp = data.Exp;
-
-            Global.stats.setStat(StatType.Coins, Global.UserInfo.coins);
-            Global.stats.setStat(StatType.Gold, Global.UserInfo.gold);
-
-            Global.stats.setStat(StatType.MaxDust, 1000);
-            Global.stats.setStat(StatType.Dust, Global.UserInfo.dust);
-
-            Global.stats.setStat(StatType.TotalExp, Global.UserInfo.exp);
-
-            Global.stats.setStat(StatType.MaxHP, 150);
-            Global.stats.setStat(StatType.HP, 120);
-
-            this.questMngr.reset();
-           
-            promise.resolve(true);
-        });
-
-        return promise;
-    }
-
-    /**
      *  Invokes the level loading.
      */
     public StartLevel(levelId: number) {
@@ -785,7 +693,7 @@ export class InGameScene extends Scene {
     };
 
     /**
-     * Loads the level and adds all objects to the scene.
+     * Loads the level and adds all objects into the scene.
      * @param id
      */
     private loadLevel(lvl: ILevel) {
@@ -810,7 +718,7 @@ export class InGameScene extends Scene {
             //  now remove all other display objects except hero
             var all = this.worldContainer.children.filter((c: PIXI.DisplayObject) => c.name !== "hero");
             all.forEach((child: any) => {
-                this.worldContainer.removeChild(child);                
+                this.worldContainer.removeChild(child);
             });
             this.wp2.clearLevel();
             this.bullets = [];
@@ -844,10 +752,11 @@ export class InGameScene extends Scene {
         //  set start for player
         this.wp2.playerBody.position[0] = lvl.start[0];
         this.wp2.playerBody.position[1] = lvl.start[1];
-        Global.UserInfo.position.x = lvl.start[0];
-        Global.UserInfo.position.y = lvl.start[1];
+        Global.stats.position.x = lvl.start[0];
+        Global.stats.position.y = lvl.start[1];
 
-        this.resetPlayerStats().done(() => {
+        Global.stats.loadUserState().done(() => {
+            this.questMngr.reset();
             this.hero.visible = true;
             this.IsHeroInteractive = true;
             Global.sceneMngr.ActivateScene(this);
@@ -892,7 +801,7 @@ export class InGameScene extends Scene {
         const ATTACK_VELOCITY: number = 545;
 
         let body: p2.Body = event.body as p2.Body;
-        let verticalVelocity = Math.abs(event.velocity[1])
+        let verticalVelocity = Math.abs(event.velocity[1]);
         if (verticalVelocity > 400) {
             console.log("Vert velocity: " + verticalVelocity);
         }
@@ -906,7 +815,10 @@ export class InGameScene extends Scene {
                     this.handleMobInteraction(mob, body);
                 }
             }
-            if (this.hero.MovementState > MovementState.JumpUp){
+            if (this.hero.MovementState === MovementState.JumpDown || 
+                this.hero.MovementState === MovementState.JumpDownLeft ||
+                this.hero.MovementState === MovementState.JumpDownRight
+            ) {
                 this.startGroundShake(400, 6);
             }
         } else if (verticalVelocity > SMOKE_VELOCITY) {
@@ -934,8 +846,8 @@ export class InGameScene extends Scene {
         let bullet: Bullet = event.bulletBody.DisplayObject as Bullet;
         if (!bullet.IsDead) {
             if (event.playerHit) {
-                Global.snd.hitMagic1();
-                this.addInfoMessage(this.hero.position, `${-bullet.damage} HP`);
+                Global.snd.hitPain();
+                this.hud.addInfoMessage(this.hero.position, `${-bullet.damage} HP`, Global.MSG_HP_STYLE, 50);
                 Global.stats.increaseStat(StatType.HP, -bullet.damage);
             } else {
 

@@ -12,7 +12,7 @@ class StartVM extends ViewModelBase{
         super();        
 
         vm.isLoadingVisible(true);
-        if (Global.UserInfo.id === 0) {
+        if (Global.stats.id === 0) {
             window.location.hash = "#login";
             return;
         }
