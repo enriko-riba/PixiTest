@@ -12,7 +12,7 @@ export var BACK_COLOR = 0x3a1010;
 
 export var fontFamily = "Farsan";
 
-export var BTN_STYLE: PIXI.ITextStyleStyle =
+export var BTN_STYLE: PIXI.TextStyleOptions =
     {
         align: "center",
         padding: 0,
@@ -25,7 +25,7 @@ export var BTN_STYLE: PIXI.ITextStyleStyle =
         strokeThickness: 1,
         stroke: 0xCC5010
     };
-export var TXT_STYLE: PIXI.ITextStyleStyle =
+export var TXT_STYLE: PIXI.TextStyleOptions =
     {
         align: "center",
         padding: 0,
@@ -35,7 +35,7 @@ export var TXT_STYLE: PIXI.ITextStyleStyle =
         strokeThickness: 3,
         stroke: 0xcfbfbf
     };
-export var EXP_BAR_STYLE: PIXI.ITextStyleStyle =
+export var EXP_BAR_STYLE: PIXI.TextStyleOptions =
     {
         align: "center",
         padding: 0,
@@ -46,7 +46,7 @@ export var EXP_BAR_STYLE: PIXI.ITextStyleStyle =
         stroke: 0xffffff
     };
 
-export var MSG_HP_STYLE: PIXI.ITextStyleStyle =
+export var MSG_HP_STYLE: PIXI.TextStyleOptions =
     {
         align: "center",
         padding: 0,
@@ -56,7 +56,7 @@ export var MSG_HP_STYLE: PIXI.ITextStyleStyle =
         strokeThickness: 3,
         stroke: 0x111111
     };
-export var MSG_EXP_STYLE: PIXI.ITextStyleStyle =
+export var MSG_EXP_STYLE: PIXI.TextStyleOptions =
     {
         align: "center",
         padding: 0,
@@ -67,7 +67,7 @@ export var MSG_EXP_STYLE: PIXI.ITextStyleStyle =
         stroke: 0x112111
     };
 
-export var MSG_COIN_STYLE: PIXI.ITextStyleStyle =
+export var MSG_COIN_STYLE: PIXI.TextStyleOptions =
     {
         align: "center",
         padding: 0,
@@ -78,7 +78,7 @@ export var MSG_COIN_STYLE: PIXI.ITextStyleStyle =
         stroke: 0x904b15
     };
 
-export var QUEST_ITEM_STYLE: PIXI.ITextStyleStyle =
+export var QUEST_ITEM_STYLE: PIXI.TextStyleOptions =
     {
         align: "center",
         padding: 0,
@@ -88,7 +88,7 @@ export var QUEST_ITEM_STYLE: PIXI.ITextStyleStyle =
         strokeThickness: 4,
         stroke: 0x111121
     };
-export var MSG_WARN_STYLE: PIXI.ITextStyleStyle =
+export var MSG_WARN_STYLE: PIXI.TextStyleOptions =
     {
         align: "center",
         padding: 0,
@@ -99,7 +99,7 @@ export var MSG_WARN_STYLE: PIXI.ITextStyleStyle =
         stroke: 0x222222
     };
 
-export var QUEST_STYLE: PIXI.ITextStyleStyle =
+export var QUEST_STYLE: PIXI.TextStyleOptions =
     {
         align: "left",
         padding: 0,

@@ -29,7 +29,7 @@ export class Mob extends AnimatedSprite {
     private attributes: number[];
     private ai: AI;
     private direction: DirectionH;
-    private emitBullet: (textureName: string, position: PIXI.Point, damage: number)=> Bullet;    
+    private emitBullet: (textureName: string, position: PIXI.Point | PIXI.ObservablePoint, damage: number)=> Bullet;    
 
     constructor(private textureName: string) {
         super();

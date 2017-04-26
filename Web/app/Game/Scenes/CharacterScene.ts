@@ -9,7 +9,7 @@ import * as ko from "knockout";
  */
 export class CharacterScene extends Scene {
 
-    private TEXT_STYLE: PIXI.ITextStyleStyle =
+    private TEXT_STYLE: PIXI.TextStyleOptions =
     {
         align: "left",
         padding: 0,

@@ -13,7 +13,7 @@ export class Hud extends PIXI.Container {
     }
 
     public heroLevel: string = "1";
-    public heroPosition: PIXI.Point;
+    public heroPosition: PIXI.Point | PIXI.ObservablePoint;
 
     private txtPlayerPosition: PIXI.Text;
     private txtLevel: PIXI.Text;
@@ -303,7 +303,7 @@ export class Hud extends PIXI.Container {
      * @param message the message to be added
      * @param style optional PIXI.ITextStyle
      */
-    public addQuestItemMessage(message: string, style?: PIXI.ITextStyleStyle): void {
+    public addQuestItemMessage(message: string, style?: PIXI.TextStyle): void {
         var stl = style || Global.QUEST_ITEM_STYLE;
         var txtInfo = new PIXI.Text(message, stl);
         txtInfo.anchor.set(0.5, 0.5);
@@ -329,7 +329,7 @@ export class Hud extends PIXI.Container {
      * @param message the message to be added
      * @param style optional PIXI.ITextStyle
      */
-    public addInfoMessage(position: PIXI.Point, message: string, style?: PIXI.ITextStyleStyle, offsetX?: number): void {
+    public addInfoMessage(position: PIXI.Point | PIXI.ObservablePoint, message: string, style?: PIXI.TextStyleOptions, offsetX?: number): void {
         var stl = style || Global.MSG_HP_STYLE;
         var txtInfo = new PIXI.Text(message, stl);
         offsetX = offsetX || 0;
@@ -359,7 +359,7 @@ export class Hud extends PIXI.Container {
      * @param message the message to be added
      */
     private addLvlUpMessage(message: string): void {
-        var stl: PIXI.ITextStyleStyle = {
+        var stl: PIXI.TextStyleOptions = {
             align: "center",
             padding: 0,
             fontSize: "64px",

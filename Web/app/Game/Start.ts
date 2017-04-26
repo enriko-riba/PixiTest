@@ -19,7 +19,7 @@ class StartVM extends ViewModelBase{
 
         //  prepare canvas and scene manager
         var canvas: HTMLCanvasElement = document.getElementById("stage") as HTMLCanvasElement;
-        var renderOptions : PIXI.IRendererOptions = {
+        var renderOptions : PIXI.RendererOptions = {
             view: canvas,
             backgroundColor: 0x684123,
             antialias: true,

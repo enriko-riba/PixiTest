@@ -116,10 +116,10 @@ export class CutScene extends Scene {
         this.backSprite.scale.set(1 / scale.x, 1 / scale.y);  //  rescale to fit full scene
     }
 
-    public SetText(text: string, style?: PIXI.ITextStyleStyle) {
+    public SetText(text: string, style?: PIXI.TextStyleOptions) {
         this.textMessage.text = text;
         if (style) {
-            this.textMessage.style = style as PIXI.TextStyle;
+            this.textMessage.style = new PIXI.TextStyle(style);
         }
     }
 

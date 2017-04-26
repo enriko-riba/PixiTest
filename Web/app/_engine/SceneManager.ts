@@ -36,7 +36,7 @@ export class SceneManager {
      *   @param height the height of the scene
      *   @param resizer custom resize function
      */
-    constructor(width: number, height: number, options?: PIXI.IRendererOptions, resizer?: ISceneResizer) {
+    constructor(width: number, height: number, options?: PIXI.RendererOptions, resizer?: ISceneResizer) {
         this.designWidth = width;
         this.designHeight = height;
         this.sceneResizer = resizer || new DefaultResizer(this.designWidth, this.designHeight);

@@ -9,7 +9,7 @@ import * as Global from "../Global";
 export class OptionsScene extends Scene {
 
     private currentMusicTrack: number = 0; 
-    private TEXT_STYLE: PIXI.ITextStyleStyle =
+    private TEXT_STYLE: PIXI.TextStyleOptions =
     {
         align: "left",
         padding: 0,

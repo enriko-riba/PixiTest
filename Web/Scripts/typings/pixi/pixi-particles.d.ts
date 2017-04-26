@@ -90,7 +90,7 @@ declare module PIXI {
             particleSpacing: number;
             angleStart: number;
             rotation: number;
-            ownerPos: PIXI.Point;
+            ownerPos: PIXI.Point | PIXI.ObservablePoint;
             protected _prevEmitterPos: PIXI.Point;
             protected _prevPosIsValid: boolean;
             protected _posChanged: boolean;
