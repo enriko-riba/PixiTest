@@ -20,6 +20,7 @@ export class MovementController {
 
     private readonly JUMP_COOLDOWN = 500;
     private readonly JUMP_ATTACK_COOLDOWN = 2000;
+    private readonly JUMP_ATTACK_FREEZE = 800;
 
 
     private nextJumpAllowed: number = 0;
@@ -116,9 +117,7 @@ export class MovementController {
         this.nextJumpDownAllowed = performance.now() + this.JUMP_ATTACK_COOLDOWN;
 
         this.isInteractive = false;
-        setTimeout(() => {
-            this.isInteractive = true, this.JUMP_ATTACK_COOLDOWN * 0.5;
-        });
+        setTimeout(() => this.isInteractive = true, this.JUMP_ATTACK_FREEZE);
 
         ko.postbox.publish<IMoveEvent>(MOVE_TOPIC, {
             newState: this.newState,
