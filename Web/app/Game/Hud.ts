@@ -288,11 +288,11 @@ export class Hud extends PIXI.Container {
         //  tween pre-fill width
         this.expPreFiller.width = 1;
         var preFillTween = new TWEEN.Tween(this.expPreFiller)
-            .to({ width: diff }, 500)
+            .to({ width: diff }, 1500)
             .easing(TWEEN.Easing.Linear.None);
 
         var fillTween = new TWEEN.Tween(this.expFiller)
-            .to({ width: targetWidth }, 600)
+            .to({ width: targetWidth }, 2000)
             .easing(TWEEN.Easing.Bounce.Out);
         preFillTween.chain(fillTween).start();
 
