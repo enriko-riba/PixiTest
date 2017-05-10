@@ -350,10 +350,10 @@ export class LevelLoader {
                         var aseq = new AnimationSequence(seq.name, textureName as string, seq.frames, seq.framesize[0], seq.framesize[1]);
                         mob.addAnimations(aseq);
                     });
-                    mob.PlayAnimation(definition.sequences[0].name);
+                    mob.play(definition.sequences[0].name);
                 }
                 if (definition.fps) {
-                    mob.Fps = definition.fps;
+                    mob.fps = definition.fps;
                 }
                 mob.anchor.set(0.5, 0.5);
                 (mob as any).typeName = "Mob";
@@ -371,7 +371,7 @@ export class LevelLoader {
                     var aseq = new AnimationSequence(seq.name, seq.texture, seq.frames, seq.framesize[0], seq.framesize[1]);
                     aspr.addAnimations(aseq);
                 });
-                aspr.PlayAnimation(definition.sequences[0].name, definition.fps);
+                aspr.play(definition.sequences[0].name, definition.fps);
                 aspr.anchor.set(0.5, 0.5);
                 (aspr as any).typeName = "AnimatedSprite";
                 dispObj = aspr;

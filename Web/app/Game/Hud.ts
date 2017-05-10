@@ -188,7 +188,7 @@ export class Hud extends PIXI.Container {
         var atrpts = Global.stats.getStat(StatType.AttributePoints);
         this.characterMngr.visible = atrpts > 0;
         this.addChild(this.characterMngr);
-        this.characterMngr.PlayAnimation("play", 12, true);
+        this.characterMngr.play("play", 12, true);
 
         this.characterMngr.on("pointerdown", () => {
             Global.sceneMngr.ActivateScene("Character");

@@ -17,7 +17,7 @@ export class Balloon extends PIXI.Container {
         super();
         this.balloon = new AnimatedSprite();
         this.balloon.addAnimations(new AnimationSequence("spin", TEXTURE_BALLOON, [0, 1, 2, 3, 4, 5], FRAME_SIZE, FRAME_SIZE));
-        this.balloon.Fps = 2;
+        this.balloon.fps = 2;
         this.addChild(this.balloon);
 
         this.basket = new PIXI.Sprite(PIXI.loader.resources[TEXTURE_BASKET].texture);
@@ -26,7 +26,7 @@ export class Balloon extends PIXI.Container {
         this.basket.y = -FRAME_SIZE / 2;
         this.addChild(this.basket);
 
-        this.balloon.PlayAnimation("spin");
+        this.balloon.play("spin");
     }
 
     public setFollowTarget(followTarget: PIXI.DisplayObject) {

@@ -315,7 +315,7 @@ export class InGameScene extends Scene {
         if (this.hero.IsInteractive !== value) {
             this.hero.IsInteractive = value;
             if (!this.hero.IsInteractive) {
-                this.hero.PlayAnimation("idle", ANIMATION_FPS_SLOW);
+                this.hero.play("idle", ANIMATION_FPS_SLOW);
                 Global.snd.idle();
             }
         }
@@ -606,51 +606,51 @@ export class InGameScene extends Scene {
 
         switch (event.newState) {
             case MovementState.Idle:
-                this.hero.PlayAnimation("idle", ANIMATION_FPS_SLOW);
+                this.hero.play("idle", ANIMATION_FPS_SLOW);
                 Global.snd.idle();
                 break;
 
             case MovementState.Left:
-                this.hero.PlayAnimation("left", animationFPS);
+                this.hero.play("left", animationFPS);
                 if (!this.hero.isJumping) {
                     Global.snd.walk(event.isRunning);
                 }
                 break;
 
             case MovementState.Right:
-                this.hero.PlayAnimation("right", animationFPS);
+                this.hero.play("right", animationFPS);
                 if (!this.hero.isJumping) {
                     Global.snd.walk(event.isRunning);
                 }
                 break;
 
             case MovementState.JumpLeft:
-                this.hero.PlayAnimation("jumpleft", ANIMATION_FPS_SLOW);
+                this.hero.play("jumpleft", ANIMATION_FPS_SLOW);
                 Global.snd.jump();
                 break;
 
             case MovementState.JumpRight:
-                this.hero.PlayAnimation("jumpright", ANIMATION_FPS_SLOW);
+                this.hero.play("jumpright", ANIMATION_FPS_SLOW);
                 Global.snd.jump();
                 break;
 
             case MovementState.JumpUp:
-                this.hero.PlayAnimation("jumpup", ANIMATION_FPS_SLOW);
+                this.hero.play("jumpup", ANIMATION_FPS_SLOW);
                 Global.snd.jump();
                 break;
 
             case MovementState.JumpDownRight:
-                this.hero.PlayAnimation("jumpdownright", ANIMATION_FPS_NORMAL + ANIMATION_FPS_SLOW, false);
+                this.hero.play("jumpdownright", ANIMATION_FPS_NORMAL + ANIMATION_FPS_SLOW, false);
                 Global.snd.jumpAttack();
                 break;
 
             case MovementState.JumpDownLeft:
-                this.hero.PlayAnimation("jumpdownleft", ANIMATION_FPS_NORMAL + ANIMATION_FPS_SLOW, false);
+                this.hero.play("jumpdownleft", ANIMATION_FPS_NORMAL + ANIMATION_FPS_SLOW, false);
                 Global.snd.jumpAttack();
                 break;
 
             case MovementState.JumpDown:
-                this.hero.PlayAnimation("jumpdown", ANIMATION_FPS_NORMAL + ANIMATION_FPS_SLOW, false);
+                this.hero.play("jumpdown", ANIMATION_FPS_NORMAL + ANIMATION_FPS_SLOW, false);
                 Global.snd.jumpAttack();
                 break;
         }
@@ -832,8 +832,8 @@ export class InGameScene extends Scene {
             smoke.alpha = 0.7;
             smoke.rotation = Math.random() * Math.PI;
             this.worldContainer.addChild(smoke);
-            smoke.OnComplete = () => this.worldContainer.removeChild(smoke);
-            smoke.PlayAnimation("smoke", 5, false);
+            smoke.onComplete = () => this.worldContainer.removeChild(smoke);
+            smoke.play("smoke", 5, false);
         }
     }
 
@@ -864,8 +864,8 @@ export class InGameScene extends Scene {
                 explode.alpha = 0.7;
                 explode.rotation = Math.random() * Math.PI;
                 this.worldContainer.addChild(explode);
-                explode.OnComplete = () => this.worldContainer.removeChild(explode);
-                explode.PlayAnimation("exp", 10, false);
+                explode.onComplete = () => this.worldContainer.removeChild(explode);
+                explode.play("exp", 10, false);
                 Global.snd.bulletHitWall();
             }
             bullet.IsDead = true;

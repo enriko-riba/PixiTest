@@ -40,7 +40,7 @@ export class Mob extends AnimatedSprite {
         this.addAnimations(new AnimationSequence("ratk", textureName, [9, 10, 11], FRAME_SIZE, FRAME_SIZE));
         this.addAnimations(new AnimationSequence("lsquish", textureName, [12, 13, 14, 15, 16, 17], FRAME_SIZE, FRAME_SIZE));
         this.addAnimations(new AnimationSequence("rsquish", textureName, [18, 19, 20, 21, 22, 23], FRAME_SIZE, FRAME_SIZE));
-        this.PlayAnimation("left");   
+        this.play("left");   
         this.direction = DirectionH.Left;  
 
         //  borrow bullet emitter from in game scene
@@ -82,8 +82,8 @@ export class Mob extends AnimatedSprite {
     public Squish(cb?: () => void) {     
         this.IsDead = true;   
         var aname = (this.direction == DirectionH.Left ? "lsquish" : "rsquish");
-        this.OnComplete = cb;
-        this.PlayAnimation(aname, 12, false);
+        this.onComplete = cb;
+        this.play(aname, 12, false);
     }
 
     public get Direction(): DirectionH {
@@ -93,9 +93,9 @@ export class Mob extends AnimatedSprite {
         if (this.direction != dir) {
             this.direction = dir;
             if (dir === DirectionH.Left) {
-                this.PlayAnimation("left");
+                this.play("left");
             } else {
-                this.PlayAnimation("right");
+                this.play("right");
             }
         }
     }
@@ -109,18 +109,18 @@ export class Mob extends AnimatedSprite {
 
     public Attack = ()=> {
         var currentSeq = this.currentSequence;
-        var currentFps = this.Fps;
+        var currentFps = this.fps;
         Global.snd.atkMagic1();
         if (this.direction == DirectionH.Left) {
-            this.PlayAnimation("latk", currentFps, false);
+            this.play("latk", currentFps, false);
         } else {
-            this.PlayAnimation("ratk", currentFps, false);
+            this.play("ratk", currentFps, false);
         }
 
-        this.OnComplete = (seq: AnimationSequence) => {
-            this.OnComplete = null;
+        this.onComplete = (seq: AnimationSequence) => {
+            this.onComplete = null;
             this.fireBullet();
-            this.PlayAnimation(currentSeq.sequenceName, currentFps);
+            this.play(currentSeq.sequenceName, currentFps);
         };
     }
 
