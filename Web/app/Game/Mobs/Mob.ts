@@ -24,11 +24,11 @@ export enum DirectionH {
  */
 export class Mob extends AnimatedSprite {
 
-    private onDeath: () => void;
-    private isDead: boolean = false;
-    private attributes: number[];
-    private ai: AI;
-    private direction: DirectionH;
+    private onDeathCallBack: () => void;
+    private _isDead: boolean = false;
+    private _attributes: number[];
+    private _ai: AI;
+    private _direction: DirectionH;
     private emitBullet: (textureName: string, position: PIXI.Point | PIXI.ObservablePoint, damage: number)=> Bullet;    
 
     constructor(private textureName: string) {
@@ -41,57 +41,57 @@ export class Mob extends AnimatedSprite {
         this.addAnimations(new AnimationSequence("lsquish", textureName, [12, 13, 14, 15, 16, 17], FRAME_SIZE, FRAME_SIZE));
         this.addAnimations(new AnimationSequence("rsquish", textureName, [18, 19, 20, 21, 22, 23], FRAME_SIZE, FRAME_SIZE));
         this.play("left");   
-        this.direction = DirectionH.Left;  
+        this._direction = DirectionH.Left;  
 
         //  borrow bullet emitter from in game scene
         var igs = Global.sceneMngr.GetScene("InGame") as any;
         this.emitBullet = igs.emitBullet;        
     }
 
-    public IsLoading: boolean = false;
+    public isLoading: boolean = false;
 
-    public get IsDead() {
-        return this.isDead;
+    public get isDead() {
+        return this._isDead;
     }
-    public set IsDead(value: boolean) {
-        if (value != this.isDead) {
-            this.isDead = value;
-            if (this.isDead && this.onDeath) {
-                this.onDeath();
+    public set isDead(value: boolean) {
+        if (value != this._isDead) {
+            this._isDead = value;
+            if (this._isDead && this.onDeathCallBack) {
+                this.onDeathCallBack();
             }
         }
     }
 
-    public set OnDeath(cb: () => void) {
-        this.onDeath = cb;
+    public set onDeath(cb: () => void) {
+        this.onDeathCallBack = cb;
     }
-    public get OnDeath(): () => void {
-        return this.onDeath;
+    public get onDeath(): () => void {
+        return this.onDeathCallBack;
     }
 
 
     /**
      * texture used for attacks emitted by the mob.
      */
-    public AtkTexture: string | string[];
+    public atkTexture: string | string[];
 
     /**
      * Kills the mob, plays squish animation and invokes the optional call back
      * @param cb
      */
-    public Squish(cb?: () => void) {     
-        this.IsDead = true;   
-        var aname = (this.direction == DirectionH.Left ? "lsquish" : "rsquish");
+    public squish(cb?: () => void) {     
+        this.isDead = true;   
+        var aname = (this._direction == DirectionH.Left ? "lsquish" : "rsquish");
         this.onComplete = cb;
         this.play(aname, 12, false);
     }
 
-    public get Direction(): DirectionH {
-        return this.direction;
+    public get direction(): DirectionH {
+        return this._direction;
     }
-    public set Direction(dir: DirectionH) {
-        if (this.direction != dir) {
-            this.direction = dir;
+    public set direction(dir: DirectionH) {
+        if (this._direction != dir) {
+            this._direction = dir;
             if (dir === DirectionH.Left) {
                 this.play("left");
             } else {
@@ -100,18 +100,18 @@ export class Mob extends AnimatedSprite {
         }
     }
 
-    public set Attributes(values: number[]) {
-        this.attributes = values;
+    public set attributes(values: number[]) {
+        this._attributes = values;
     }
-    public get Attributes(): number[] {
-        return this.attributes;
+    public get attributes(): number[] {
+        return this._attributes;
     }
 
-    public Attack = ()=> {
+    public attack = ()=> {
         var currentSeq = this.currentSequence;
         var currentFps = this.fps;
         Global.snd.atkMagic1();
-        if (this.direction == DirectionH.Left) {
+        if (this._direction == DirectionH.Left) {
             this.play("latk", currentFps, false);
         } else {
             this.play("ratk", currentFps, false);
@@ -125,18 +125,18 @@ export class Mob extends AnimatedSprite {
     }
 
     private fireBullet() {
-        if (this.AtkTexture.constructor === Array) {
+        if (this.atkTexture.constructor === Array) {
             //  TODO: animated sprite
         } else {
             //  sprite
-            this.emitBullet(this.AtkTexture as string, this.position, this.attributes[AtrType.Atk]);
+            this.emitBullet(this.atkTexture as string, this.position, this._attributes[AtrType.Atk]);
         }
     }
 
-    public CreateAI(aiTypeName: string):void {
+    public createAI(aiTypeName: string):void {
         switch (aiTypeName.toLowerCase()) {
             case "basic_static":
-                this.ai = new BasicStaticAI(this);
+                this._ai = new BasicStaticAI(this);
                 break;
 
             case "basic":
@@ -147,8 +147,8 @@ export class Mob extends AnimatedSprite {
     public onUpdate(dt: number) {
         super.onUpdate(dt);
 
-        if (!this.IsDead && !this.IsLoading) {
-            this.ai.onUpdate(dt);
+        if (!this.isDead && !this.isLoading) {
+            this._ai.onUpdate(dt);
         }
     }
 }

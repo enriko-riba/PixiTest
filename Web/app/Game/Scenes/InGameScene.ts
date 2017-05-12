@@ -436,11 +436,11 @@ export class InGameScene extends Scene {
         }
 
         this.removeEntity(body);
-        mob.Squish(() => this.worldContainer.removeChild(dispObj));
+        mob.squish(() => this.worldContainer.removeChild(dispObj));
         Global.snd.mobSquish();
 
         //  add exp       
-        var exp = mob.Attributes[AtrType.HP] / 2;
+        var exp = mob.attributes[AtrType.HP] / 2;
         Global.stats.increaseStat(StatType.TotalExp, exp);
         this.hud.addInfoMessage(mob.position, `+${exp} exp`, Global.MSG_EXP_STYLE, -50);
     }
@@ -811,7 +811,7 @@ export class InGameScene extends Scene {
             //console.log("Mob hit!");
             var mob: Mob = (body as any).DisplayObject as Mob;
             if (mob instanceof Mob) {
-                if (!mob.IsLoading) {
+                if (!mob.isLoading) {
                     this.handleMobInteraction(mob, body);
                 }
             }

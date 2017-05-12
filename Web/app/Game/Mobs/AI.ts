@@ -31,7 +31,7 @@ export class AI {
     protected attackCD: number;
 
     constructor(protected mobEntity: Mob) {
-        this.attackCD = mobEntity.Attributes[AtrType.AtkCD];
+        this.attackCD = mobEntity.attributes[AtrType.AtkCD];
     }
 
     private calcDistance() {
@@ -44,10 +44,10 @@ export class AI {
         //  negative left, positive right
         let dir = Global.stats.position.x - this.mobEntity.x;
 
-        if (dir < 0 && this.mobEntity.Direction != DirectionH.Left) {
-            this.mobEntity.Direction = DirectionH.Left;
-        } else if (dir > 0 && this.mobEntity.Direction != DirectionH.Right) {
-            this.mobEntity.Direction = DirectionH.Right;
+        if (dir < 0 && this.mobEntity.direction != DirectionH.Left) {
+            this.mobEntity.direction = DirectionH.Left;
+        } else if (dir > 0 && this.mobEntity.direction != DirectionH.Right) {
+            this.mobEntity.direction = DirectionH.Right;
         }
     }
 
@@ -69,7 +69,7 @@ export class AI {
 
             //  check attack CD            
             if (this.canFire()) {
-                this.mobEntity.Attack();
+                this.mobEntity.attack();
                 this.lastFire = performance.now();
             }
         } else {

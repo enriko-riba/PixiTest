@@ -46,7 +46,7 @@ export class CutScene extends Scene {
             //(Global.SCENE_HEIGHT - Global.BTN_HEIGHT + this.callout.height + 30) / 2,
             this.callout.height,
             Global.BTN_WIDTH, Global.BTN_HEIGHT);
-        this.btnContinue.Text = new PIXI.Text("Continue", Global.BTN_STYLE);
+        this.btnContinue.text = new PIXI.Text("Continue", Global.BTN_STYLE);
         this.btnContinue.onClick = () => {
             Global.sceneMngr.ActivateScene("Loader");
         };
@@ -58,7 +58,7 @@ export class CutScene extends Scene {
         this.callout.visible = !this.deathScene;
         this.corpse.visible = this.deathScene;
         this.corpse.scale.set(0.1);
-        this.btnContinue.Text.text = this.deathScene ? "Retry" : "Continue";
+        this.btnContinue.text.text = this.deathScene ? "Retry" : "Continue";
 
         if (this.deathScene) {
             var deathTrackId = Global.snd.getTrack("Carrousel");

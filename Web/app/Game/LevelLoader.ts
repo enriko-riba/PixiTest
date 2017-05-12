@@ -269,9 +269,9 @@ export class LevelLoader {
         (mobDispObj as any).templateName = defs.templateName;
 
         // attributes and AI
-        mobDispObj.Attributes = entity.attributes || defs.doDef.attributes || [];
-        mobDispObj.CreateAI(entity.ai || "basic_static");
-        mobDispObj.AtkTexture = entity.attack || defs.doDef.attack;
+        mobDispObj.attributes = entity.attributes || defs.doDef.attributes || [];
+        mobDispObj.createAI(entity.ai || "basic_static");
+        mobDispObj.atkTexture = entity.attack || defs.doDef.attack;
 
         //  body        
         defs.bdDef.material = defs.bdDef.material || "mob_default";

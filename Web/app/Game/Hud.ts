@@ -60,9 +60,9 @@ export class Hud extends PIXI.Container {
         btnFullScreen.on('click', () => {
             this.toggleFullScreen();
             if (this.isFullScreen) {
-                btnFullScreen.SetTexture("assets/_distribute/gui_fs_exit.png");
+                btnFullScreen.setTexture("assets/_distribute/gui_fs_exit.png");
             } else {
-                btnFullScreen.SetTexture("assets/_distribute/gui_fs_enter.png");
+                btnFullScreen.setTexture("assets/_distribute/gui_fs_enter.png");
             }
         });
 
