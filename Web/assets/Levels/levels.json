@@ -1178,7 +1178,17 @@
             "xy": [ 6700, 30 ],
             "trigger": {
               "type": "collision",
-              "questId": 203
+              "questId": 203,
+              "dependsOn": [ 202 ]
+            }
+          },
+          {
+            "template": "sensor",
+            "xy": [ 6705, 30 ],
+            "trigger": {
+              "type": "collision",
+              "questId": 204,
+              "dependsOn": [203]
             }
           },
           {

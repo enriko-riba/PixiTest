@@ -611,6 +611,7 @@ export interface ITriggerDefinition {
     distance?: number;
     questId?: number;
     state?: number;
+    dependsOn?: Array<number>;
     desc?: string;
 
     /*

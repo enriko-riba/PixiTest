@@ -57,6 +57,16 @@ export class QuestManager {
             return false;
         }
 
+        //  check if trigger depends on quest 
+        if (Array.isArray(trigger.dependsOn)) {
+            for (var i = 0; i < trigger.dependsOn.length; i++) {
+                let dependency = trigger.dependsOn[i];
+                let state = this.questState[dependency];
+                if (!state || state != QuestState.Rewarded)
+                    return false;
+            }
+        }
+
         let TEN_SECONDS = 10000;
         let nextAllowedTime = (trigger.lastActive || -TEN_SECONDS) + TEN_SECONDS;
         return nextAllowedTime < performance.now();
@@ -68,10 +78,10 @@ export class QuestManager {
      */
     public handleTriggerEvent(body: any): void {
         let TEN_SECONDS = 10000;
-        var dispObj: PIXI.DisplayObject = body.DisplayObject as PIXI.DisplayObject;
-
+        
         var trigger: ITriggerDefinition = body.Trigger;
-        var pos = new PIXI.Point(dispObj.position.x, dispObj.position.y);
+
+        //  note: trigger can have a predefined state (so we skip previous states)
         let state = Math.max(this.getQuestState(trigger.questId), trigger.state || 0);
 
         // react only if trigger has quest id and last active is older than 10 seconds 
@@ -136,7 +146,7 @@ export class QuestManager {
                         var balloon = this.gameScene.worldContainer.getChildByName("balloon");
                         (balloon as any).setFollowTarget(null); // prevent following the hero
                         var anim1 = new TWEEN.Tween(balloon)
-                            .to({ x: dispObj.position.x }, 3000)
+                            .to({ x: body.DisplayObject.position.x }, 3000)
                             .onComplete(() => {
                                 this.hud.visible = false;
                                 var cs = Global.sceneMngr.GetScene("CutScene") as CutScene;
@@ -151,12 +161,11 @@ export class QuestManager {
                     break;
 
                 case 201:   //  Kendo knowledge
-                    this.genericQuestHandler(quest, state, trigger, [
+                    this.genericQuestHandler(quest, state, body, [
                         () => {
                             let item = this.gameScene.worldContainer.getChildByName("quest_item_201");
                             item.visible = true;
-                            var lock: any = this.findBodyByName("lock");
-                            //this.gameScene.worldContainer.removeChild(lock.DisplayObject);
+                            var lock: any = this.findBodyByName("lock");                            
                             this.gameScene.removeEntity(lock, true);
                         },
                         () => { },
@@ -179,23 +188,27 @@ export class QuestManager {
                     break;
 
                 case 202:   //  seek the hanshi Kendo master
-                    this.genericQuestHandler(quest, state, trigger);
+                    this.genericQuestHandler(quest, state, body);
                     break;
 
                 case 203:   //  hanshi Kendo master dojo: collect 10 ki
-                    this.genericQuestHandler(quest, state, trigger, [
+                    this.genericQuestHandler(quest, state, body, [
                         () => { Global.stats.HasJumpAtack = true;},
                         () => { },
                         () => { },
                         () => { }
                     ]);
                     break;
+
+                case 204:   //  hanshi Kendo master dojo: collect 25 ki
+                    this.genericQuestHandler(quest, state, body);
+                    break;
             }
         }
     }
 
-    private genericQuestHandler(quest: Quest, state: QuestState, trigger: ITriggerDefinition, actions?: Array<() => void>) {
-
+    private genericQuestHandler(quest: Quest, state: QuestState, body, actions?: Array<() => void>) {
+        let trigger: ITriggerDefinition = body.Trigger;
         switch (state) {
             case QuestState.None:
                 this.setQuestState(quest.id, QuestState.InProgress);
@@ -215,6 +228,7 @@ export class QuestManager {
             case QuestState.Finished:
                 this.hud.setQuestMessage(quest.finishedMsg);
                 this.giveRewards(quest);
+                this.gameScene.removeEntity(body, true); // remove the sensor from physics and the displayobject from scene
                 break;
         }
         if (actions && actions[state]) {
