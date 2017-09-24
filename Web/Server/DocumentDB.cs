@@ -20,12 +20,6 @@ namespace PP2.Server.Dal
 			this.client = new Lazy<DocumentClient>(Initialize, LazyThreadSafetyMode.ExecutionAndPublication);
 		}
 
-		//public DocumentDBFactory(string endpointUrl, string authorizationKey)
-		//{
-		//	this.authorizationKey = authorizationKey;
-		//	this.endpointUrl = endpointUrl;
-		//	this.client = new Lazy<DocumentClient>(Initialize, LazyThreadSafetyMode.ExecutionAndPublication);
-		//}
 
 		private string endpointUrl;
 		private string authorizationKey;

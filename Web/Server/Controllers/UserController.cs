@@ -51,7 +51,6 @@
                 //  insert user 
                 if (user != null)
                 {
-                    //  TODO: update user with new data
                     user.LastLevel = model.LastLevel;
                     user.Gold = model.Gold;
                     user.Coins = model.Coins;
