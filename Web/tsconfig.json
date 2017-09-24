@@ -1,7 +1,16 @@
 {
-    "compilerOptions": {
-        "target": "es5",
-        "module": "amd",
-        "sourceMap": true
-    }
+  "compileOnSave": true,
+  "compilerOptions": {    
+    "module": "amd",
+    "types": [],
+    "noImplicitAny": false,
+    "noEmitOnError": true,
+    "removeComments": false,
+    "sourceMap": true,
+    "target": "es5"
+  },
+  "exclude": [
+    "node_modules",
+    "wwwroot"
+  ]
 }

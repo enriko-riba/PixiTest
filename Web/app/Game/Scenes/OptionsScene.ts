@@ -37,7 +37,7 @@ export class OptionsScene extends Scene {
         //  back to game
         //--------------------
         var btnBack = new Button("assets/_distribute/Button1.png", HALF_BTN_WIDTH, BTN_Y, Global.BTN_WIDTH, Global.BTN_HEIGHT);
-        btnBack.Text = new PIXI.Text("Back to game", Global.BTN_STYLE);
+        btnBack.text = new PIXI.Text("Back to game", Global.BTN_STYLE);
         btnBack.onClick = () => {
             this.resetSounds();
             Global.sceneMngr.ActivateScene("InGame");
@@ -49,7 +49,7 @@ export class OptionsScene extends Scene {
         //--------------------
         var btnRestart = new Button("assets/_distribute/Button1.png", HALF_BTN_WIDTH * 3.5, BTN_Y, Global.BTN_WIDTH, Global.BTN_HEIGHT);
         this.addChild(btnRestart);
-        btnRestart.Text = new PIXI.Text("Restart level", Global.BTN_STYLE);
+        btnRestart.text = new PIXI.Text("Restart level", Global.BTN_STYLE);
         btnRestart.onClick = () => {
             this.resetSounds();
             Global.sceneMngr.ActivateScene("Loader");
@@ -60,7 +60,7 @@ export class OptionsScene extends Scene {
         //--------------------
         var btnQuit = new Button("assets/_distribute/Button1.png", HALF_BTN_WIDTH * 6, BTN_Y, Global.BTN_WIDTH, Global.BTN_HEIGHT);
         this.addChild(btnQuit);
-        btnQuit.Text = new PIXI.Text("Quit game", Global.BTN_STYLE);
+        btnQuit.text = new PIXI.Text("Quit game", Global.BTN_STYLE);
         btnQuit.onClick = () => {
             this.resetSounds();
             window.location.href = "#home";
@@ -95,7 +95,7 @@ export class OptionsScene extends Scene {
         fxSlider.on('valueChanged', (v:number) => {
             Global.snd.fxDemo.volume(v);
             let tname = "assets/_distribute/gui_snd_fx_" + (Global.snd.IsFxOn ? "on.png" : "off.png");
-            btnFx.SetTexture(tname);
+            btnFx.setTexture(tname);
         });
         fxSlider.Value = Global.snd.FxVolume;
 
@@ -127,7 +127,7 @@ export class OptionsScene extends Scene {
         });
         musicSlider.on('valueChanged', (v:number) => {
             let tname = "assets/_distribute/gui_snd_music_" + (Global.snd.IsMusicOn ? "on.png" : "off.png");
-            btnMusic.SetTexture(tname);
+            btnMusic.setTexture(tname);
         });
         musicSlider.Value = Global.snd.MusicVolume;
     };

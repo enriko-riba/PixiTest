@@ -24,18 +24,21 @@ export class AnimatedSprite extends PIXI.Sprite {
     }
 
     public clearAnimations() {
-        this.Stop();
+        this.stop();
         this.currentSequence = null;
         this.animations.clear();
     }
 
-    public PlayAnimation = (name: string, fps?: number, loop = true) :void => {
+    /**
+     *  Plays the animation sequence by name
+     */
+    public play = (name: string, fps?: number, loop = true) :void => {
         if (!this.currentSequence || this.currentSequence.sequenceName !== name) {
             this.resetAnimation();
             this.currentSequence = this.animations.get(name);
             this.texture = this.currentSequence.textureAtlas;
             this.texture.frame = this.currentSequence.frames[0];
-            this.Fps = fps || this.Fps;
+            this.fps = fps || this.fps;
             this.isLooping = loop;
             this.isPlaying = true;
         }
@@ -45,13 +48,13 @@ export class AnimatedSprite extends PIXI.Sprite {
     private isPlaying: boolean = false;
     private isLooping: boolean = false;
     private frameIndex: number = 0;
-    private fps: number = 8;
-    private onComplete: (seq:AnimationSequence) => void;
+    private currentFps: number = 8;
+    private onCompleteCallBack: (seq:AnimationSequence) => void;
 
     public onUpdate (dt: number) { 
         if (this.isPlaying && this.texture.valid) {
             this.accumulator += dt;
-            let secForFrame = 1000 / this.Fps;
+            let secForFrame = 1000 / this.fps;
             if (this.accumulator > secForFrame) {
                 this.accumulator -= secForFrame;
                 this.texture.frame = this.currentSequence.frames[++this.frameIndex];
@@ -61,42 +64,41 @@ export class AnimatedSprite extends PIXI.Sprite {
                     //  end the animation if not looping
                     if (!this.isLooping) {
                         this.isPlaying = false;
-                        if (this.onComplete) {
-                            this.onComplete(this.currentSequence);
+                        if (this.onCompleteCallBack) {
+                            this.onCompleteCallBack(this.currentSequence);
                         }
                     }
-                }
-                
+                }                
             }
         }
     }
 
-    public set OnComplete(cb: (seq: AnimationSequence) => void) {
-        this.onComplete = cb;
+    public set onComplete(cb: (seq: AnimationSequence) => void) {
+        this.onCompleteCallBack = cb;
     }
-    public get OnComplete(): (seq: AnimationSequence) => void {
-        return this.onComplete;
+    public get onComplete(): (seq: AnimationSequence) => void {
+        return this.onCompleteCallBack;
     }
 
-    public Stop():void {
+    public stop():void {
         this.isPlaying = false;
     }
-    public get Fps():number {
-        return this.fps;
+    public get fps():number {
+        return this.currentFps;
     }
-    public set Fps(fps: number) {
-        this.fps = fps;
+    public set fps(fps: number) {
+        this.currentFps = fps;
         if (fps < 2) debugger;
     }    
-    public set Loop(isLooping: boolean) {
+    public set loop(isLooping: boolean) {
         this.isLooping = isLooping;
     }
-    public get Loop(): boolean {
+    public get loop(): boolean {
         return this.isLooping;
     }
     
     protected resetAnimation():void {
-        this.Stop();
+        this.stop();
         this.currentSequence = null;
         this.accumulator = 0;
         this.frameIndex = -1;
@@ -105,8 +107,8 @@ export class AnimatedSprite extends PIXI.Sprite {
 }
 
 /*
-*   Creates and holds textures form a texture atlas.
-*/
+ *   Creates textures for all individual frames of the sequence from the given texture atlas.
+ */
 export class AnimationSequence  {
     public textureAtlas: PIXI.Texture;
     public frames: PIXI.Rectangle[] = [];
@@ -123,7 +125,7 @@ export class AnimationSequence  {
         });
     }
     
-    public get FrameCount(): number {
+    public get frameCount(): number {
         return this.frames.length;
     }
 }

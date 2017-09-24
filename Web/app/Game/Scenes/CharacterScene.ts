@@ -149,7 +149,7 @@ export class CharacterScene extends Scene {
         //  Cancel (back to game)
         //------------------------
         var btnBack = new Button("assets/_distribute/Button1.png", HALF_BTN_WIDTH, BTN_Y, Global.BTN_WIDTH, Global.BTN_HEIGHT);
-        btnBack.Text = new PIXI.Text("Cancel", Global.BTN_STYLE);
+        btnBack.text = new PIXI.Text("Cancel", Global.BTN_STYLE);
         btnBack.onClick = () => Global.sceneMngr.ActivateScene("InGame");
         this.addChild(btnBack);
 
@@ -158,7 +158,7 @@ export class CharacterScene extends Scene {
         //------------------------
         var btnSave = new Button("assets/_distribute/Button1.png", HALF_BTN_WIDTH * 3.5, BTN_Y, Global.BTN_WIDTH, Global.BTN_HEIGHT);
         this.addChild(btnSave);
-        btnSave.Text = new PIXI.Text("Save", Global.BTN_STYLE);
+        btnSave.text = new PIXI.Text("Save", Global.BTN_STYLE);
         btnSave.onClick = () => {
             //  TODO: save attribute distribution
             Global.sceneMngr.ActivateScene("InGame");

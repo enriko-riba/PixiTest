@@ -53,24 +53,24 @@ export class SpawnPoint {
 
                 dispObj.position.set(x, y);
                 dispObj.visible = false;
-                dispObj.IsLoading = true;
+                dispObj.isLoading = true;
                 this.worldContainer.addChild(dispObj);
 
                 let loadSpr = new AnimatedSprite();
                 loadSpr.addAnimations(new AnimationSequence("load", "assets/_distribute/load.png", [0, 1, 2, 3], 64, 64));
                 loadSpr.anchor.set(0.5);
                 loadSpr.position.set(x, y+10);
-                loadSpr.PlayAnimation("load", 4, true);
+                loadSpr.play("load", 4, true);
                 //loadSpr.scale.set(1, -1);
                 this.worldContainer.addChild(loadSpr);
 
                 setTimeout(() => {
                     this.worldContainer.removeChild(loadSpr);
-                    dispObj.IsLoading = false;
+                    dispObj.isLoading = false;
                     dispObj.visible = true;
                 }, 3000);
 
-                (dispObj as Mob).OnDeath = () => {
+                (dispObj as Mob).onDeath = () => {
                     console.log("mob died");
                     this.mobCount--;
                 }

@@ -153,7 +153,7 @@ export class MovementController {
 
         //  no movement (except jump down) while jumping
         if (this.isJumping && this._isInteractive) {
-            if ((this.kbd.IsKeyDown(KEY_S) || this.kbd.IsKeyDown(KEY_DOWN)) && Global.stats.HasJumpAtack && this.nextJumpDownAllowed < performance.now()) {
+            if ((this.kbd.isKeyDown(KEY_S) || this.kbd.isKeyDown(KEY_DOWN)) && Global.stats.HasJumpAtack && this.nextJumpDownAllowed < performance.now()) {
                 this.StartJumpDown();
             }
             //  calculate the horizontal velocity
@@ -169,16 +169,16 @@ export class MovementController {
 
 
         var canRun = Global.stats.getStat(StatType.Dust) > 1;
-        var newIsRunning: boolean = this.kbd.IsKeyDown(KEY_SHIFT) && canRun && this._isInteractive;
+        var newIsRunning: boolean = this.kbd.isKeyDown(KEY_SHIFT) && canRun && this._isInteractive;
 
-        if (this.kbd.IsKeyDown(KEY_A) || this.kbd.IsKeyDown(KEY_LEFT) /*|| this.isTouchLeft*/) {
+        if (this.kbd.isKeyDown(KEY_A) || this.kbd.isKeyDown(KEY_LEFT) /*|| this.isTouchLeft*/) {
             this.newState = MovementState.Left;
-        } else if (this.kbd.IsKeyDown(KEY_D) || this.kbd.IsKeyDown(KEY_RIGHT) /*|| this.isTouchRight*/) {
+        } else if (this.kbd.isKeyDown(KEY_D) || this.kbd.isKeyDown(KEY_RIGHT) /*|| this.isTouchRight*/) {
             this.newState = MovementState.Right;
         }
 
         //  check if jump is pressed
-        if ((this.kbd.IsKeyDown(KEY_W) || this.kbd.IsKeyDown(KEY_UP) || this.kbd.IsKeyDown(SPACE) /*|| this.isTouchJump*/) && this.CanJump) {
+        if ((this.kbd.isKeyDown(KEY_W) || this.kbd.isKeyDown(KEY_UP) || this.kbd.isKeyDown(SPACE) /*|| this.isTouchJump*/) && this.CanJump) {
             if (this.movementState === MovementState.Left) {
                 this.newState = MovementState.JumpLeft;
             } else if (this.movementState === MovementState.Right) {

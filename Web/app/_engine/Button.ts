@@ -4,11 +4,12 @@
     private textureHighlight: PIXI.Texture;
     private textureDown: PIXI.Texture;
 
-    private isPressed: boolean;
+    private _isPressed: boolean;
     private isClickStarted: boolean;
-    private text: PIXI.Text;
+    private _text: PIXI.Text;
     private requestedWidth: number = undefined;
     private requestedHeight: number = undefined;
+
     constructor(texturePath: string, x?: number, y?: number, width?: number, height?: number) {
         super();
         this.position.set(x || 0, y || 0);
@@ -16,7 +17,7 @@
         this.requestedWidth = width;
 
         //  setup button textures
-        this.SetTexture(texturePath);
+        this.setTexture(texturePath);
 
         this.buttonMode = true;
         this.interactive = true;
@@ -38,32 +39,32 @@
         // set the mouseout callback...
         this.on('mouseout', this.onButtonOut)
 
-        this.IsPressed = false;
+        this.isPressed = false;
         this.applyTexture();
     }
 
-    public get IsPressed() {
-        return this.isPressed;
+    public get isPressed() {
+        return this._isPressed;
     }
-    public set IsPressed(state: boolean) {
-        this.isPressed = state;
+    public set isPressed(state: boolean) {
+        this._isPressed = state;
         this.applyTexture();
     }
 
-    public get Text() {
-        return this.text;
+    public get text() {
+        return this._text;
     }
-    public set Text(text: PIXI.Text) {
-        if (this.text) {
-            this.removeChild(this.text);
+    public set text(text: PIXI.Text) {
+        if (this._text) {
+            this.removeChild(this._text);
         }
-        this.text = text;
-        if (this.text) {
-            this.text.anchor.set(0.5, 0.5);
+        this._text = text;
+        if (this._text) {
+            this._text.anchor.set(0.5, 0.5);
             var x = (this.width / this.scale.x) / 2;
             var y = (this.height / this.scale.y) / 2;
-            this.text.position.set(x, y);
-            this.addChild(this.text);
+            this._text.position.set(x, y);
+            this.addChild(this._text);
         }
     }
 
@@ -101,10 +102,10 @@
 
 
     private applyTexture() {
-        this.texture = this.isPressed ? this.textureDown : this.textureUp;
+        this.texture = this._isPressed ? this.textureDown : this.textureUp;
     }
 
-    public SetTexture(textureAtlasName: string) {
+    public setTexture(textureAtlasName: string) {
         var atlasTexture = PIXI.loader.resources[textureAtlasName].texture;
         var btnHeight = atlasTexture.height / 3;
         var btnWidth = atlasTexture.width;

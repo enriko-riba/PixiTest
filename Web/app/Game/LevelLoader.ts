@@ -269,9 +269,9 @@ export class LevelLoader {
         (mobDispObj as any).templateName = defs.templateName;
 
         // attributes and AI
-        mobDispObj.Attributes = entity.attributes || defs.doDef.attributes || [];
-        mobDispObj.CreateAI(entity.ai || "basic_static");
-        mobDispObj.AtkTexture = entity.attack || defs.doDef.attack;
+        mobDispObj.attributes = entity.attributes || defs.doDef.attributes || [];
+        mobDispObj.createAI(entity.ai || "basic_static");
+        mobDispObj.atkTexture = entity.attack || defs.doDef.attack;
 
         //  body        
         defs.bdDef.material = defs.bdDef.material || "mob_default";
@@ -350,10 +350,10 @@ export class LevelLoader {
                         var aseq = new AnimationSequence(seq.name, textureName as string, seq.frames, seq.framesize[0], seq.framesize[1]);
                         mob.addAnimations(aseq);
                     });
-                    mob.PlayAnimation(definition.sequences[0].name);
+                    mob.play(definition.sequences[0].name);
                 }
                 if (definition.fps) {
-                    mob.Fps = definition.fps;
+                    mob.fps = definition.fps;
                 }
                 mob.anchor.set(0.5, 0.5);
                 (mob as any).typeName = "Mob";
@@ -371,7 +371,7 @@ export class LevelLoader {
                     var aseq = new AnimationSequence(seq.name, seq.texture, seq.frames, seq.framesize[0], seq.framesize[1]);
                     aspr.addAnimations(aseq);
                 });
-                aspr.PlayAnimation(definition.sequences[0].name, definition.fps);
+                aspr.play(definition.sequences[0].name, definition.fps);
                 aspr.anchor.set(0.5, 0.5);
                 (aspr as any).typeName = "AnimatedSprite";
                 dispObj = aspr;
@@ -611,6 +611,7 @@ export interface ITriggerDefinition {
     distance?: number;
     questId?: number;
     state?: number;
+    dependsOn?: Array<number>;
     desc?: string;
 
     /*

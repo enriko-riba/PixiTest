@@ -64,11 +64,22 @@
       "welcomeMsg": "I expected you, we must hurry!\nYour first lesson will be:\nFumikomi-ashi (jump attack).\nJump on the enemy and press 's'.\n\nLets practice Fumikomi-ashi,\ncollect 10 ki from magic slimes!",
       "objectiveMsg": "Collect 10 Ki from magic slimes.\n\nAttack with: Jump + 's'",
       "completedMsg": "Quest completed!\nHurry back to the dojo!",
-      "finishedMsg": "I saw little girls performing better.\n\nYou show no potential...\nbut still, lets practice some more.",
+      "finishedMsg": "",
       "itemId": 202,
       "itemsNeeded": 10,
       "rewardExp": 500,
       "rewardCoins": 500
+    },
+    {
+      "id": 204,
+      "welcomeMsg": "I saw little girls performing better.\n\nYou show no potential...\nbut still, lets practice some more.",
+      "objectiveMsg": "Collect 25 Ki from magic slimes.\n\nAttack with: Jump + 's'",
+      "completedMsg": "Quest completed!\nHurry back to the dojo!",
+      "finishedMsg": "You made it!",
+      "itemId": 202,
+      "itemsNeeded": 25,
+      "rewardExp": 750,
+      "rewardCoins": 1000
     }
   ]
 }

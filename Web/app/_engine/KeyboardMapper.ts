@@ -75,12 +75,12 @@ export class KeyboardMapper {
         this.keyboard[e.which] = false;
     }
 
-    public AddKeyboardActionHandler = (action: KeyboardAction, state: State) => {
+    public addKeyboardActionHandler = (action: KeyboardAction, state: State) => {
         if (!this.stateActions[state]) this.stateActions[state] = [];
         this.stateActions[state].push(action);
     }
 
-    public IsKeyDown(keyCode: number) {
+    public isKeyDown(keyCode: number) {
         return this.keyboard[keyCode];
     }
 }

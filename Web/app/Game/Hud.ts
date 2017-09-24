@@ -60,9 +60,9 @@ export class Hud extends PIXI.Container {
         btnFullScreen.on('click', () => {
             this.toggleFullScreen();
             if (this.isFullScreen) {
-                btnFullScreen.SetTexture("assets/_distribute/gui_fs_exit.png");
+                btnFullScreen.setTexture("assets/_distribute/gui_fs_exit.png");
             } else {
-                btnFullScreen.SetTexture("assets/_distribute/gui_fs_enter.png");
+                btnFullScreen.setTexture("assets/_distribute/gui_fs_enter.png");
             }
         });
 
@@ -188,7 +188,7 @@ export class Hud extends PIXI.Container {
         var atrpts = Global.stats.getStat(StatType.AttributePoints);
         this.characterMngr.visible = atrpts > 0;
         this.addChild(this.characterMngr);
-        this.characterMngr.PlayAnimation("play", 12, true);
+        this.characterMngr.play("play", 12, true);
 
         this.characterMngr.on("pointerdown", () => {
             Global.sceneMngr.ActivateScene("Character");
@@ -288,11 +288,11 @@ export class Hud extends PIXI.Container {
         //  tween pre-fill width
         this.expPreFiller.width = 1;
         var preFillTween = new TWEEN.Tween(this.expPreFiller)
-            .to({ width: diff }, 500)
+            .to({ width: diff }, 1500)
             .easing(TWEEN.Easing.Linear.None);
 
         var fillTween = new TWEEN.Tween(this.expFiller)
-            .to({ width: targetWidth }, 600)
+            .to({ width: targetWidth }, 2000)
             .easing(TWEEN.Easing.Bounce.Out);
         preFillTween.chain(fillTween).start();
 
