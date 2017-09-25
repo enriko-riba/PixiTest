@@ -11,7 +11,7 @@ namespace PP2
 			var container = new Container();
 			container.Options.DefaultScopedLifestyle = new WebApiRequestLifestyle();
 			//container.Register<Authentication.TokenCache>(Lifestyle.Singleton);
-			container.Register<Server.Dal.DocumentDBFactory>(Lifestyle.Singleton);
+			//container.Register<Server.Dal.DocumentDBFactory>(Lifestyle.Singleton);
 
             // This is an extension method from the integration package.
             container.RegisterWebApiControllers(GlobalConfiguration.Configuration);

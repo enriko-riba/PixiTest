@@ -3,7 +3,7 @@
 require.config({
     baseUrl:"../",
     paths: {
-        "jquery": "Scripts/jquery-3.1.1.min",
+        "jquery": "Scripts/jquery-3.2.1.min",
         "knockout": "Scripts/knockout-3.4.2",
         "knockout-amd-helpers": "Scripts/knockout-amd-helpers.min",
         "postbox": "Scripts/knockout-postbox.min",

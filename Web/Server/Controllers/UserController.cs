@@ -1,25 +1,24 @@
 ﻿namespace PP2.Server.Controllers
 {
     #region usings
-    using Dal;
-    using Models;
-    using System.Web.Http;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using System.Collections.Generic;
     using log4net;
+    using Models;
+    using System.Threading.Tasks;
+    using System.Web.Http;
     #endregion
 
     public class UserController : ApiController
     {
+        private const int PP2_SERVICE_ID = 1;
         private static readonly ILog log = LogManager.GetLogger(typeof(UserController));
+        private MyDatabase db = new MyDatabase();
 
-        private DocumentDBFactory docDbFactory;
+        //private DocumentDBFactory docDbFactory;
 
-        public UserController(DocumentDBFactory docDbFactory)
-        {
-            this.docDbFactory = docDbFactory;
-        }
+        //public UserController(DocumentDBFactory docDbFactory)
+        //{
+        //    this.docDbFactory = docDbFactory;
+        //}
 
         /// <summary>
         /// Saves the user data.
@@ -43,29 +42,28 @@
                     return BadRequest(ModelState);
                 }
 
-                // get user
-                var docDb = await docDbFactory.CreateDB("testDB");
-                var qry = docDb.CreateQuery<User>("realm").Where(u => u.ExternalId == model.ExternalId);
-                User user = qry.AsEnumerable().FirstOrDefault();
+                // get user            
+                var userLogin = db.First<UserLogin>("WHERE ExternalId = @0", model.ExternalId);
+                var data = db.First<UserData>("WHERE UserId = @0", userLogin.UserId);
 
                 //  insert user 
-                if (user != null)
-                {
-                    user.LastLevel = model.LastLevel;
-                    user.Gold = model.Gold;
-                    user.Coins = model.Coins;
-                    user.Dust = model.Dust;
-                    user.Exp = model.Exp;
-                    user.HP = model.HP;
-                    user.AtrPts = model.AtrPts;
-                    await docDb.SaveDocumentAsync("realm", user);
+                if (data != null)
+                {                    
+                    data.LastLevel = model.LastLevel;
+                    data.Gold = model.Gold;
+                    data.Coins = model.Coins;
+                    data.Dust = model.Dust;
+                    data.Exp = model.Exp;
+                    data.HP = model.HP;
+                    data.AtrPts = model.AtrPts;
+                    await db.UpdateAsync(data);
                 }
                 else
                 {
                     log.WarnFormat("ExternalId: {0} not found in DB", model.ExternalId);
                     throw new System.ArgumentException("mode.ExternalId not found");
                 }
-                return Ok(user);
+                return Ok(data);
             }
             catch (System.Exception ex)
             {
@@ -80,16 +78,25 @@
         /// <param name="id"></param>
         [Route("api/user/data")]
         [HttpGet]
-        public async Task<User> GetUserData(string id)
+        public UserDto GetUserData(string id)
         {
-            User user = null;
             try
             {
-                // get user
-                var docDb = await docDbFactory.CreateDB("testDB");
-                var qry = docDb.CreateQuery<User>("realm").Where(u => u.ExternalId == id);
-                user = qry.AsEnumerable().FirstOrDefault();
-                return user;
+                var userLogin = db.First<UserLogin>("WHERE ExternalId = @0", id);
+                var user = db.First<User>("WHERE Id = @0", userLogin.UserId);
+                var data = db.First<UserData>("WHERE UserId = @0", userLogin.UserId);
+                UserDto dto = new UserDto()
+                {
+                    Name = user.Name,
+                    AtrPts = data.AtrPts,
+                    Coins = data.Coins,
+                    Dust = data.Coins,
+                    Exp = data.Exp,
+                    Gold = data.Gold,
+                    HP = data.HP,
+                    LastLevel = data.LastLevel
+                };
+                return dto;
             }
             catch (System.Exception ex)
             {
@@ -105,23 +112,46 @@
         /// <param name="name"></param>
         [Route("api/user/login")]
         [HttpGet]
-        public async Task<User> Login(string id, string name)
+        public async Task<UserDto> Login(string id, string name)
         {
-            User user = null;
             try
             {
-                // get user
-                var docDb = await docDbFactory.CreateDB("testDB");
-                var qry = docDb.CreateQuery<User>("realm").Where(u => u.ExternalId == id);
-                user = qry.AsEnumerable().FirstOrDefault();
-
+                User user = null;
+                UserData data = null;
+                UserLogin userLogin = db.FirstOrDefault<UserLogin>("WHERE ExternalId = @0", id);
+                
                 //  insert user 
-                if (user == null)
+                if (userLogin == null)
                 {
-                    user = new User() { ExternalId = id, Name = name, Gold = 0, LastLevel = 0 };
-                    await docDb.InsertDocumentAsync("realm", user);
+                    db.BeginTransaction();
+                    user = new User() { Name = name, };
+                    await db.InsertAsync(user);
+
+                    userLogin = new UserLogin() { ExternalId = id, UserId = user.Id, ServiceId = PP2_SERVICE_ID };
+                    await db.InsertAsync(userLogin);
+
+                    data = new UserData() {UserId = user.Id, HP = 100, Dust = 100 };
+                    await db.InsertAsync(data);
+                    db.CompleteTransaction();
                 }
-                return user;
+                else
+                {
+                    user = db.First<User>("WHERE Id = @0", userLogin.UserId);
+                    data = db.First<UserData>("WHERE UserId = @0", userLogin.UserId);
+                }
+
+                UserDto dto = new UserDto()
+                {
+                    Name = user.Name,
+                    AtrPts = data.AtrPts,
+                    Coins = data.Coins,
+                    Dust = data.Coins,
+                    Exp = data.Exp,
+                    Gold = data.Gold,
+                    HP = data.HP,
+                    LastLevel = data.LastLevel
+                };
+                return dto;
             }
             catch (System.Exception ex)
             {

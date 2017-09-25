@@ -17,7 +17,7 @@ namespace PP2
             //-------------------------
             //  SimpleInjector setup
             //-------------------------
-            IocConfig.Register();
+            //IocConfig.Register();
         }
     }
 }
