@@ -12,13 +12,7 @@
         private const int PP2_SERVICE_ID = 1;
         private static readonly ILog log = LogManager.GetLogger(typeof(UserController));
         private MyDatabase db = new MyDatabase();
-
-        //private DocumentDBFactory docDbFactory;
-
-        //public UserController(DocumentDBFactory docDbFactory)
-        //{
-        //    this.docDbFactory = docDbFactory;
-        //}
+        
 
         /// <summary>
         /// Saves the user data.
