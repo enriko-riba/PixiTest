@@ -6,6 +6,8 @@ namespace PP2
     {
         public static void Register(HttpConfiguration config)
         {
+            config.EnableSystemDiagnosticsTracing();
+
             config.MapHttpAttributeRoutes();
 
             config.Routes.MapHttpRoute(

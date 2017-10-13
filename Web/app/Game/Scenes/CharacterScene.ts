@@ -141,8 +141,7 @@ export class CharacterScene extends Scene {
             txtDustRegen.text = `Dust regeneration: ${this.regenDustPts()}`;
             txtHpRegen.text = `HP regeneration: ${this.regenHpPts()}`;
         });
-
-
+        
 
         BTN_Y = Global.SCENE_HEIGHT - Global.BTN_HEIGHT - (Global.BTN_HEIGHT / 2);
         //------------------------
@@ -162,9 +161,6 @@ export class CharacterScene extends Scene {
         btnSave.onClick = () => {
             //  TODO: save attribute distribution
             Global.sceneMngr.ActivateScene("InGame");
-        };      
-        
-    };
-
-     
+        };       
+    };     
 }
